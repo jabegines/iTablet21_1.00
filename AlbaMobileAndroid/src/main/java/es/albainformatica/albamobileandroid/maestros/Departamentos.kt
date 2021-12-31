@@ -3,7 +3,6 @@ package es.albainformatica.albamobileandroid.maestros
 import android.content.Context
 import android.database.Cursor
 import es.albainformatica.albamobileandroid.ponerCeros
-import es.albainformatica.albamobileandroid.BaseDatos
 import android.database.sqlite.SQLiteDatabase
 import es.albainformatica.albamobileandroid.ancho_departamento
 import es.albainformatica.albamobileandroid.ancho_grupo

@@ -18,7 +18,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import es.albainformatica.albamobileandroid.BaseDatos
 import es.albainformatica.albamobileandroid.R
 import es.albainformatica.albamobileandroid.actividades.Main
 import es.albainformatica.albamobileandroid.dao.ArticDatAdicDao

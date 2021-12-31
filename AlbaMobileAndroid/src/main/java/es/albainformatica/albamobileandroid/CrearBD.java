@@ -6,70 +6,29 @@ import android.database.sqlite.SQLiteDatabase;
 /**
  * Created by jabegines on 10/10/13.
  */
-public class CrearBD extends BaseDatos {
-    private final SQLiteDatabase dbAlba;
+public class CrearBD {
 
     public CrearBD(Context contexto) {
-        super(contexto);
-        dbAlba = getWritableDatabase();
 
-        crearArticulos();
-        crearArtHabituales();
-        crearBusquedas();
-        crearIvas();
-        crearStock();
         crearClientes();
         crearDtosCltes();
-        crearCnfTarifas();
-        crearRutero();
         crearDirecciones();
-        crearTarifas();
         crearCabeceras();
         crearLineasDiferidas();
         crearDesctosLineas();
-        crearRatingArt();
         crearLineas();
         crearFtosLineas();
         crearHistorico();
         crearTmpHco();
-        crearGrupos();
-        crearDepartamentos();
-        crearClasificadores();
         crearArticulosClasif();
-        crearFormatos();
-        crearTrfFormatos();
         crearHistMes();
-        crearCargas();
-        crearCargasLineas();
         crearHcoArtClte();
         crearEstadDevoluc();
         crearHcoCompSemMes();
     }
 
-    public void close() {
-        if (dbAlba != null)
-            dbAlba.close();
-    }
 
-  private void crearArticulos() {
-      dbAlba.execSQL("DROP TABLE IF EXISTS articulos");
 
-      String cadenaSQL = "CREATE TABLE IF NOT EXISTS articulos("
-              + "articulo INTEGER NOT NULL, codigo VARCHAR(15) NOT NULL, descr VARCHAR(40) COLLATE NOCASE NOT NULL,"
-              + " tipoiva VARCHAR(3), grupo VARCHAR(3), dpto VARCHAR(3), prov VARCHAR(5), costo VARCHAR(10), ucaja VARCHAR(7),"
-              + " medida VARCHAR(3), flag1 VARCHAR(5), flag2 VARCHAR(5), peso VARCHAR(10), tasa1 VARCHAR(10),"
-              + " tasa2 VARCHAR(10), enlace INTEGER, PRIMARY KEY (articulo))";
-      dbAlba.execSQL(cadenaSQL);
-  }
-
-  private void crearArtHabituales() {
-    dbAlba.execSQL("DROP TABLE IF EXISTS arthabituales");
-
-    String cadenaSQL = "CREATE TABLE IF NOT EXISTS arthabituales(" +
-              "articulo INTEGER NOT NULL, cliente VARCHAR(9) NOT NULL, formato INTEGER NOT NULL, flag INTEGER," +
-              " texto VARCHAR(200), PRIMARY KEY (articulo, cliente, formato))";
-    dbAlba.execSQL(cadenaSQL);
-  }
 
     private void crearClientes() {
         dbAlba.execSQL("DROP TABLE IF EXISTS clientes");
@@ -96,54 +55,7 @@ public class CrearBD extends BaseDatos {
         dbAlba.execSQL(cadenaSQL);
     }
 
-    private void crearBusquedas() {
-        dbAlba.execSQL("DROP TABLE IF EXISTS busquedas");
 
-        String cadenaSQL = "CREATE TABLE IF NOT EXISTS busquedas("
-            + "clave VARCHAR(25), articulo INTEGER, tipo VARCHAR(1),"
-            + " tcaja VARCHAR(1), ucaja VARCHAR(10), PRIMARY KEY (clave))";
-        dbAlba.execSQL(cadenaSQL);
-    }
-
-
-    private void crearIvas() {
-        dbAlba.execSQL("DROP TABLE IF EXISTS ivas");
-
-        String cadenaSQL = "CREATE TABLE IF NOT EXISTS ivas("
-                + "codigo VARCHAR(3), tipo VARCHAR(3), iva VARCHAR(5),"
-                + " recargo VARCHAR(5), PRIMARY KEY (codigo))";
-        dbAlba.execSQL(cadenaSQL);
-    }
-
-
-    private void crearStock() {
-        dbAlba.execSQL("DROP TABLE IF EXISTS stock");
-
-        String cadenaSQL = "CREATE TABLE IF NOT EXISTS stock("
-                + "articulo INTEGER, empresa INTEGER, ent VARCHAR(12), entc VARCHAR(12), entp VARCHAR(12),"
-                + " sal VARCHAR(12), salc VARCHAR(12), salp VARCHAR(12), PRIMARY KEY (articulo, empresa))";
-        dbAlba.execSQL(cadenaSQL);
-    }
-
-
-    private void crearCnfTarifas() {
-        dbAlba.execSQL("DROP TABLE IF EXISTS cnftarifas");
-
-        String cadenaSQL = "CREATE TABLE IF NOT EXISTS cnftarifas("
-                + "codigo VARCHAR(2), tarifa VARCHAR(20), precios VARCHAR(1), flag INTEGER,"
-                + "PRIMARY KEY (codigo))";
-        dbAlba.execSQL(cadenaSQL);
-    }
-
-
-
-    private void crearRutero() {
-        dbAlba.execSQL("DROP TABLE IF EXISTS rutero");
-
-        String cadenaSQL = "CREATE TABLE IF NOT EXISTS rutero("
-                + "_id INTEGER PRIMARY KEY AUTOINCREMENT, ruta VARCHAR(4), orden VARCHAR(4), cliente VARCHAR(9))";
-        dbAlba.execSQL(cadenaSQL);
-    }
 
 
     private void crearDirecciones() {
@@ -157,13 +69,6 @@ public class CrearBD extends BaseDatos {
         dbAlba.execSQL(cadenaSQL);
     }
 
-    private void crearTarifas() {
-        dbAlba.execSQL("DROP TABLE IF EXISTS tarifas");
-
-        String cadenaSQL = "CREATE TABLE IF NOT EXISTS tarifas("
-                + "articulo INTEGER, tarifa VARCHAR(2), precio VARCHAR(10), dto VARCHAR(7))";
-        dbAlba.execSQL(cadenaSQL);
-    }
 
     private void crearCabeceras() {
         dbAlba.execSQL("DROP TABLE IF EXISTS cabeceras");
@@ -229,15 +134,6 @@ public class CrearBD extends BaseDatos {
         dbAlba.execSQL(cadenaSQL);
     }
 
-    private void crearRatingArt() {
-        dbAlba.execSQL("DROP TABLE IF EXISTS ratingart");
-
-        String cadenaSQL = "CREATE TABLE IF NOT EXISTS ratingart("
-                + "_id INTEGER PRIMARY KEY AUTOINCREMENT, articulo INTEGER, alm VARCHAR(3), cliente VARCHAR(9), ramo VARCHAR(4), tarifa VARCHAR(2),"
-                + "inicio VARCHAR(10), fin VARCHAR(10), formato INTEGER, precio VARCHAR(10), dto VARCHAR(6), flag VARCHAR(5))";
-        dbAlba.execSQL(cadenaSQL);
-    }
-
 
     private void crearHistorico() {
         dbAlba.execSQL("DROP TABLE IF EXISTS historico");
@@ -273,29 +169,6 @@ public class CrearBD extends BaseDatos {
     }
 
 
-    private void crearGrupos(){
-        dbAlba.execSQL("DROP TABLE IF EXISTS grupos");
-
-        String cadenaSQL = "CREATE TABLE IF NOT EXISTS grupos(codigo INTEGER PRIMARY KEY, descr VARCHAR(30))";
-        dbAlba.execSQL(cadenaSQL);
-    }
-
-    private void crearDepartamentos(){
-        dbAlba.execSQL("DROP TABLE IF EXISTS departamentos");
-
-        String cadenaSQL = "CREATE TABLE IF NOT EXISTS departamentos("
-            + "grupo INTEGER, codigo INTEGER, descr VARCHAR(30), PRIMARY KEY(grupo, codigo))";
-        dbAlba.execSQL(cadenaSQL);
-    }
-
-    private void crearClasificadores(){
-        dbAlba.execSQL("DROP TABLE IF EXISTS clasificadores");
-
-        String cadenaSQL = "CREATE TABLE IF NOT EXISTS clasificadores("
-            + "codigo INTEGER PRIMARY KEY, descr VARCHAR(150), padre INTEGER, nivel INTEGER, orden INTEGER, flag INTEGER)";
-        dbAlba.execSQL(cadenaSQL);
-    }
-
     private void crearArticulosClasif(){
         dbAlba.execSQL("DROP TABLE IF EXISTS articclasif");
 
@@ -303,44 +176,6 @@ public class CrearBD extends BaseDatos {
             + "articulo INTEGER, clasificador INTEGER, orden INTEGER, PRIMARY KEY(articulo, clasificador))";
         dbAlba.execSQL(cadenaSQL);
     }
-
-
-    private void crearFormatos(){
-        dbAlba.execSQL("DROP TABLE IF EXISTS formatos");
-
-        String cadenaSQL = "CREATE TABLE IF NOT EXISTS formatos("
-            + "codigo INTEGER PRIMARY KEY, descr VARCHAR(30), flag INTEGER, dosis1 VARCHAR(8))";
-        dbAlba.execSQL(cadenaSQL);
-    }
-
-    private void crearTrfFormatos(){
-        dbAlba.execSQL("DROP TABLE IF EXISTS trfformatos");
-
-        String cadenaSQL = "CREATE TABLE IF NOT EXISTS trfformatos("
-            + "articulo INTEGER, tarifa INTEGER, formato INTEGER, precio VARCHAR(10), dto VARCHAR(7), PRIMARY KEY (articulo, tarifa, formato))";
-        dbAlba.execSQL(cadenaSQL);
-    }
-
-
-    private void crearCargas() {
-        dbAlba.execSQL("DROP TABLE IF EXISTS cargas");
-
-        String cadenaSQL = "CREATE TABLE IF NOT EXISTS cargas("
-            + "cargaId INTEGER PRIMARY KEY AUTOINCREMENT, empresa INTEGER, fecha VARCHAR(10), "
-            + "hora VARCHAR(5), esFinDeDia VARCHAR(1),"
-            + " estado VARCHAR(1), numexport INTEGER, matricula VARCHAR(50))";
-        dbAlba.execSQL(cadenaSQL);
-    }
-
-    private void crearCargasLineas() {
-        dbAlba.execSQL("DROP TABLE IF EXISTS cargasLineas");
-
-        String cadenaSQL = "CREATE TABLE IF NOT EXISTS cargasLineas("
-            + "_id INTEGER PRIMARY KEY AUTOINCREMENT, cargaId INTEGER, articulo INTEGER, lote VARCHAR(20), cajas VARCHAR(7),"
-            + " cantidad VARCHAR(13))";
-        dbAlba.execSQL(cadenaSQL);
-    }
-
 
 
     private void crearHcoArtClte() {

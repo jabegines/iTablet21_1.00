@@ -39,7 +39,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
     var rutaLocalEnvio: String
     private var fCodTerminal: String = prefs.getString("terminal", "") ?: ""
     private var fUsarMultisistema: Boolean = false
-    private lateinit var bd: BaseDatos
+
     private lateinit var dbAlba: SQLiteDatabase
     private var fImportando: Boolean = false
     var aCabeceras: ArrayList<Int> = ArrayList()
@@ -383,47 +383,47 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
 
     private fun importarArticulos() {
+        val articulosDao: ArticulosDao? = MyDatabase.getInstance(fContext)?.articulosDao()
         val f = File(rutaLocal, "Articulos.xml")
         val fin = FileInputStream(f)
         var sCampo: String
 
         try {
-            val values = ContentValues()
             val parser = Xml.newPullParser()
             try {
                 // Borro la tabla.
-                dbAlba.delete("articulos", "1=1", null)
+                articulosDao?.vaciar()
 
                 parser.setInput(fin, "UTF-8")
                 var event = parser.next()
 
                 while (event != XmlPullParser.END_DOCUMENT && !fTerminar) {
                     if (event == XmlPullParser.START_TAG) {
+                        val articEnt = ArticulosEnt()
                         for (i in 0 until parser.attributeCount) {
                             sCampo = parser.getAttributeName(i)
 
                             when {
-                                sCampo.equals("ARTICULO", true) -> values.put("articulo", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("CODIGO", true) -> values.put("codigo", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("DESCR", true) -> values.put("descr", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("IVA", true) -> values.put("tipoiva", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("PROV", true) -> values.put("prov", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("UCAJA", true) -> values.put("ucaja", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("FLAG1", true) -> values.put("flag1", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("FLAG2", true) -> values.put("flag2", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("MEDIDA", true) -> values.put("medida", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("GRUPO", true) -> values.put("grupo", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("DPTO", true) -> values.put("dpto", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("PESO", true) -> values.put("peso", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("COSTO", true) -> values.put("costo", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("TASA1", true) -> values.put("tasa1", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("TASA2", true) -> values.put("tasa2", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("ENLACE", true) -> values.put("enlace", parser.getAttributeValue("", sCampo))
+                                sCampo.equals("Articulo", true) -> articEnt.articuloId = parser.getAttributeValue("", sCampo).toInt()
+                                sCampo.equals("Codigo", true) -> articEnt.codigo = parser.getAttributeValue("", sCampo)
+                                sCampo.equals("Descr", true) -> articEnt.descripcion = parser.getAttributeValue("", sCampo)
+                                sCampo.equals("Iva", true) -> articEnt.tipoiva = parser.getAttributeValue("", sCampo).toShort()
+                                sCampo.equals("Prov", true) -> articEnt.proveedorId = parser.getAttributeValue("", sCampo).toInt()
+                                sCampo.equals("UCaja", true) -> articEnt.uCaja = parser.getAttributeValue("", sCampo)
+                                sCampo.equals("Flag1", true) -> articEnt.flag1 = parser.getAttributeValue("", sCampo).toInt()
+                                sCampo.equals("Faag2", true) -> articEnt.flag2 = parser.getAttributeValue("", sCampo).toInt()
+                                sCampo.equals("Medida", true) -> articEnt.medida = parser.getAttributeValue("", sCampo)
+                                sCampo.equals("Grupo", true) -> articEnt.grupoId = parser.getAttributeValue("", sCampo).toShort()
+                                sCampo.equals("Dpto", true) -> articEnt.departamentoId = parser.getAttributeValue("", sCampo).toShort()
+                                sCampo.equals("Peso", true) -> articEnt.peso = parser.getAttributeValue("", sCampo)
+                                sCampo.equals("Costo", true) -> articEnt.costo = parser.getAttributeValue("", sCampo)
+                                sCampo.equals("Tasa1", true) -> articEnt.tasa1 = parser.getAttributeValue("", sCampo)
+                                sCampo.equals("Tasa2", true) -> articEnt.tasa2 = parser.getAttributeValue("", sCampo)
+                                sCampo.equals("Enlace", true) -> articEnt.enlace = parser.getAttributeValue("", sCampo).toInt()
                             }
                         }
-                        if (values.getAsString("articulo") != null)
-                            dbAlba.insertWithOnConflict("articulos", null, values, SQLiteDatabase.CONFLICT_IGNORE)
-                        values.clear()
+                        if (articEnt.articuloId > 0)
+                            articulosDao?.insertar(articEnt)
                     }
                     event = parser.next()
                 }
@@ -759,37 +759,37 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
     }
 
     private fun importarArtHabituales() {
+        val artHabitualesDao: ArtHabitualesDao? = MyDatabase.getInstance(fContext)?.artHabitualesDao()
         val f = File(rutaLocal, "ArticulosHabituales.xml")
         val fin = FileInputStream(f)
         var sCampo: String
 
         try {
-            val values = ContentValues()
             val parser = Xml.newPullParser()
             try {
                 // Borro la tabla.
-                dbAlba.delete("arthabituales", "1=1", null)
+                artHabitualesDao?.vaciar()
 
                 parser.setInput(fin, "UTF-8")
                 var event = parser.next()
 
                 while (event != XmlPullParser.END_DOCUMENT && !fTerminar) {
                     if (event == XmlPullParser.START_TAG) {
+                        val artHabitualEnt = ArtHabitualesEnt()
                         for (i in 0 until parser.attributeCount) {
                             sCampo = parser.getAttributeName(i)
 
                             when {
-                                sCampo.equals("ARTICULO", ignoreCase = true) -> values.put("articulo", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("CLIENTE", ignoreCase = true) -> values.put("cliente", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("FORMATO", ignoreCase = true) -> values.put("formato", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("FLAG", ignoreCase = true) -> values.put("flag", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("TEXTO", ignoreCase = true) -> values.put("texto", parser.getAttributeValue("", sCampo))
+                                sCampo.equals("Articulo", ignoreCase = true) -> artHabitualEnt.articuloId = parser.getAttributeValue("", sCampo).toInt()
+                                sCampo.equals("Cliente", ignoreCase = true) -> artHabitualEnt.clienteId = parser.getAttributeValue("", sCampo).toInt()
+                                sCampo.equals("Formato", ignoreCase = true) -> artHabitualEnt.formatoId = parser.getAttributeValue("", sCampo).toShort()
+                                sCampo.equals("Flag", ignoreCase = true) -> artHabitualEnt.flag = parser.getAttributeValue("", sCampo).toInt()
+                                sCampo.equals("Texto", ignoreCase = true) -> artHabitualEnt.texto = parser.getAttributeValue("", sCampo)
                             }
                         }
-                        if (values.getAsString("articulo") != null) {
-                            dbAlba.insertWithOnConflict("arthabituales", null, values, SQLiteDatabase.CONFLICT_IGNORE)
+                        if (artHabitualEnt.articuloId > 0) {
+                            artHabitualesDao?.insertar(artHabitualEnt)
                         }
-                        values.clear()
                     }
                     event = parser.next()
                 }
@@ -812,37 +812,37 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
 
     private fun importarBusquedas() {
+        val busquedasDao: BusquedasDao? = MyDatabase.getInstance(fContext)?.busquedasDao()
         val f = File(rutaLocal, "Busquedas.xml")
         val fin = FileInputStream(f)
         var sCampo: String
 
         try {
-            val values = ContentValues()
             val parser = Xml.newPullParser()
             try {
                 // Borro la tabla.
-                dbAlba.delete("busquedas", "1=1", null)
+                busquedasDao?.vaciar()
 
                 parser.setInput(fin, "UTF-8")
                 var event = parser.next()
 
                 while (event != XmlPullParser.END_DOCUMENT && !fTerminar) {
                     if (event == XmlPullParser.START_TAG) {
+                        val busquedaEnt = BusquedasEnt()
                         for (i in 0 until parser.attributeCount) {
                             sCampo = parser.getAttributeName(i)
 
                             when {
-                                sCampo.equals("CLAVE", ignoreCase = true) -> values.put("clave", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("ARTICULO", ignoreCase = true) -> values.put("articulo", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("TIPO", ignoreCase = true) -> values.put("tipo", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("TCAJA", ignoreCase = true) -> values.put("tcaja", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("UCAJA", ignoreCase = true) -> values.put("ucaja", parser.getAttributeValue("", sCampo))
+                                sCampo.equals("Clave", ignoreCase = true) -> busquedaEnt.clave = parser.getAttributeValue("", sCampo)
+                                sCampo.equals("Articulo", ignoreCase = true) -> busquedaEnt.articuloId = parser.getAttributeValue("", sCampo).toInt()
+                                sCampo.equals("Tipo", ignoreCase = true) -> busquedaEnt.tipo = parser.getAttributeValue("", sCampo).toShort()
+                                sCampo.equals("TCaja", ignoreCase = true) -> busquedaEnt.tcaja = parser.getAttributeValue("", sCampo)
+                                sCampo.equals("UCaja", ignoreCase = true) -> busquedaEnt.ucaja = parser.getAttributeValue("", sCampo)
                             }
                         }
-                        if (values.getAsString("clave") != null) {
-                            dbAlba.insertWithOnConflict("busquedas", null, values, SQLiteDatabase.CONFLICT_IGNORE)
+                        if (busquedaEnt.clave != "") {
+                            busquedasDao?.insertar(busquedaEnt)
                         }
-                        values.clear()
                     }
                     event = parser.next()
                 }
@@ -1632,36 +1632,36 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
 
     private fun importarIvas() {
+        val ivasDao: IvasDao? = MyDatabase.getInstance(fContext)?.ivasDao()
         val f = File(rutaLocal, "Ivas.xml")
         val fin = FileInputStream(f)
         var sCampo: String
 
         try {
-            val values = ContentValues()
             val parser = Xml.newPullParser()
             try {
                 // Borro la tabla.
-                dbAlba.delete("ivas", "1=1", null)
+                ivasDao?.vaciar()
 
                 parser.setInput(fin, "UTF-8")
                 var event = parser.next()
 
                 while (event != XmlPullParser.END_DOCUMENT && !fTerminar) {
                     if (event == XmlPullParser.START_TAG) {
+                        val ivaEnt = IvasEnt()
                         for (i in 0 until parser.attributeCount) {
                             sCampo = parser.getAttributeName(i)
 
                             when {
-                                sCampo.equals("CODIGO", ignoreCase = true) -> values.put("codigo", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("TIPO", ignoreCase = true) -> values.put("tipo", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("IVA", ignoreCase = true) -> values.put("iva", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("RECARGO", ignoreCase = true) -> values.put("recargo", parser.getAttributeValue("", sCampo))
+                                sCampo.equals("Codigo", ignoreCase = true) -> ivaEnt.codigo = parser.getAttributeValue("", sCampo).toShort()
+                                sCampo.equals("Tipo", ignoreCase = true) -> ivaEnt.tipo = parser.getAttributeValue("", sCampo).toShort()
+                                sCampo.equals("Iva", ignoreCase = true) -> ivaEnt.porcIva = parser.getAttributeValue("", sCampo)
+                                sCampo.equals("Recargo", ignoreCase = true) -> ivaEnt.porcRe = parser.getAttributeValue("", sCampo)
                             }
                         }
-                        if (values.getAsString("codigo") != null) {
-                            dbAlba.insertWithOnConflict("ivas", null, values, SQLiteDatabase.CONFLICT_IGNORE)
+                        if (ivaEnt.codigo > 0) {
+                            ivasDao?.insertar(ivaEnt)
                         }
-                        values.clear()
                     }
                     event = parser.next()
                 }
@@ -1735,43 +1735,43 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
 
     private fun importarRatingArt() {
+        val ratingArtDao: RatingArtDao? = MyDatabase.getInstance(fContext)?.ratingArtDao()
         val f = File(rutaLocal, "RatingArt.xml")
         val fin = FileInputStream(f)
         var sCampo: String
 
         try {
-            val values = ContentValues()
             val parser = Xml.newPullParser()
             try {
                 // Borro la tabla.
-                dbAlba.delete("ratingart", "1=1", null)
+                ratingArtDao?.vaciar()
 
                 parser.setInput(fin, "UTF-8")
                 var event = parser.next()
 
                 while (event != XmlPullParser.END_DOCUMENT && !fTerminar) {
                     if (event == XmlPullParser.START_TAG) {
+                        val ratingEnt = RatingArtEnt()
                         for (i in 0 until parser.attributeCount) {
                             sCampo = parser.getAttributeName(i)
 
                             when {
-                                sCampo.equals("ARTICULO", ignoreCase = true) -> values.put("articulo", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("ALM", ignoreCase = true) -> values.put("alm", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("CLIENTE", ignoreCase = true) -> values.put("cliente", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("RAMO", ignoreCase = true) -> values.put("ramo", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("TARIFA", ignoreCase = true) -> values.put("tarifa", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("INICIO", ignoreCase = true) -> values.put("inicio", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("FIN", ignoreCase = true) -> values.put("fin", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("FORMATO", ignoreCase = true) -> values.put("formato", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("PRECIO", ignoreCase = true) -> values.put("precio", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("DTO", ignoreCase = true) -> values.put("dto", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("FLAG", ignoreCase = true) -> values.put("flag", parser.getAttributeValue("", sCampo))
+                                sCampo.equals("Articulo", ignoreCase = true) -> ratingEnt.articuloId = parser.getAttributeValue("", sCampo).toInt()
+                                sCampo.equals("Alm", ignoreCase = true) -> ratingEnt.almacen = parser.getAttributeValue("", sCampo).toShort()
+                                sCampo.equals("Cliente", ignoreCase = true) -> ratingEnt.clienteId = parser.getAttributeValue("", sCampo).toInt()
+                                sCampo.equals("Ramo", ignoreCase = true) -> ratingEnt.ramoId = parser.getAttributeValue("", sCampo).toShort()
+                                sCampo.equals("Tarifa", ignoreCase = true) -> ratingEnt.tarifaId = parser.getAttributeValue("", sCampo).toShort()
+                                sCampo.equals("Inicio", ignoreCase = true) -> ratingEnt.inicio = parser.getAttributeValue("", sCampo)
+                                sCampo.equals("Fin", ignoreCase = true) -> ratingEnt.fin = parser.getAttributeValue("", sCampo)
+                                sCampo.equals("Formato", ignoreCase = true) -> ratingEnt.formatoId = parser.getAttributeValue("", sCampo).toShort()
+                                sCampo.equals("Precio", ignoreCase = true) -> ratingEnt.precio = parser.getAttributeValue("", sCampo)
+                                sCampo.equals("Dto", ignoreCase = true) -> ratingEnt.dto = parser.getAttributeValue("", sCampo)
+                                sCampo.equals("Flag", ignoreCase = true) -> ratingEnt.flag = parser.getAttributeValue("", sCampo).toInt()
                             }
                         }
-                        if (values.getAsString("articulo") != null) {
-                            dbAlba.insertWithOnConflict("ratingart", null, values, SQLiteDatabase.CONFLICT_IGNORE)
+                        if (ratingEnt.articuloId > 0) {
+                            ratingArtDao?.insertar(ratingEnt)
                         }
-                        values.clear()
                     }
                     event = parser.next()
                 }
@@ -1852,35 +1852,35 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
 
     private fun importarRutero() {
+        val ruterosDao: RuterosDao? = MyDatabase.getInstance(fContext)?.ruterosDao()
         val f = File(rutaLocal, "Rutero.xml")
         val fin = FileInputStream(f)
         var sCampo: String
 
         try {
-            val values = ContentValues()
             val parser = Xml.newPullParser()
             try {
                 // Borro la tabla.
-                dbAlba.delete("rutero", "1=1", null)
+                ruterosDao?.vaciar()
 
                 parser.setInput(fin, "UTF-8")
                 var event = parser.next()
 
                 while (event != XmlPullParser.END_DOCUMENT && !fTerminar) {
                     if (event == XmlPullParser.START_TAG) {
+                        val ruteroEnt = RuterosEnt()
                         for (i in 0 until parser.attributeCount) {
                             sCampo = parser.getAttributeName(i)
 
                             when {
-                                sCampo.equals("RUTA", true) -> values.put("ruta", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("ORDEN", true) -> values.put("orden", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("CLIENTE", true) -> values.put("cliente", parser.getAttributeValue("", sCampo))
+                                sCampo.equals("Ruta", true) -> ruteroEnt.rutaId = parser.getAttributeValue("", sCampo).toShort()
+                                sCampo.equals("Orden", true) -> ruteroEnt.orden = parser.getAttributeValue("", sCampo).toShort()
+                                sCampo.equals("Cliente", true) -> ruteroEnt.clienteId = parser.getAttributeValue("", sCampo).toInt()
                             }
                         }
-                        if (values.getAsString("ruta") != null) {
-                            dbAlba.insertWithOnConflict("rutero", null, values, SQLiteDatabase.CONFLICT_IGNORE)
+                        if (ruteroEnt.rutaId > 0) {
+                            ruterosDao?.insertar(ruteroEnt)
                         }
-                        values.clear()
                     }
                     event = parser.next()
                 }
@@ -2901,40 +2901,40 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
 
     private fun importarStock() {
+        val stockDao: StockDao? = MyDatabase.getInstance(fContext)?.stockDao()
         val f = File(rutaLocal, "Stock.xml")
         val fin = FileInputStream(f)
         var sCampo: String
 
         try {
-            val values = ContentValues()
             val parser = Xml.newPullParser()
             try {
                 // Borro la tabla.
-                dbAlba.delete("stock", "1=1", null)
+                stockDao?.vaciar()
 
                 parser.setInput(fin, "UTF-8")
                 var event = parser.next()
 
                 while (event != XmlPullParser.END_DOCUMENT && !fTerminar) {
                     if (event == XmlPullParser.START_TAG) {
+                        val stockEnt = StockEnt()
                         for (i in 0 until parser.attributeCount) {
                             sCampo = parser.getAttributeName(i)
 
                             when {
-                                sCampo.equals("Articulo", ignoreCase = true) -> values.put("articulo", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("Empresa", ignoreCase = true) -> values.put("empresa", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("Ent", ignoreCase = true) -> values.put("ent", parser.getAttributeValue("", sCampo).replace(',', '.'))
-                                sCampo.equals("EntC", ignoreCase = true) -> values.put("entc", parser.getAttributeValue("", sCampo).replace(',', '.'))
-                                sCampo.equals("EntP", ignoreCase = true) -> values.put("entp", parser.getAttributeValue("", sCampo).replace(',', '.'))
-                                sCampo.equals("Sal", ignoreCase = true) -> values.put("sal", parser.getAttributeValue("", sCampo).replace(',', '.'))
-                                sCampo.equals("SalC", ignoreCase = true) -> values.put("salc", parser.getAttributeValue("", sCampo).replace(',', '.'))
-                                sCampo.equals("SalP", ignoreCase = true) -> values.put("salp", parser.getAttributeValue("", sCampo).replace(',', '.'))
+                                sCampo.equals("Articulo", ignoreCase = true) -> stockEnt.articuloId = parser.getAttributeValue("", sCampo).toInt()
+                                sCampo.equals("Empresa", ignoreCase = true) -> stockEnt.empresa = parser.getAttributeValue("", sCampo).toShort()
+                                sCampo.equals("Ent", ignoreCase = true) -> stockEnt.ent = parser.getAttributeValue("", sCampo).replace(',', '.')
+                                sCampo.equals("EntC", ignoreCase = true) -> stockEnt.entc = parser.getAttributeValue("", sCampo).replace(',', '.')
+                                sCampo.equals("EntP", ignoreCase = true) -> stockEnt.entp = parser.getAttributeValue("", sCampo).replace(',', '.')
+                                sCampo.equals("Sal", ignoreCase = true) -> stockEnt.sal = parser.getAttributeValue("", sCampo).replace(',', '.')
+                                sCampo.equals("SalC", ignoreCase = true) -> stockEnt.salc = parser.getAttributeValue("", sCampo).replace(',', '.')
+                                sCampo.equals("SalP", ignoreCase = true) -> stockEnt.salp = parser.getAttributeValue("", sCampo).replace(',', '.')
                             }
                         }
-                        if (values.getAsString("articulo") != null) {
-                            dbAlba.insertWithOnConflict("stock", null, values, SQLiteDatabase.CONFLICT_IGNORE)
+                        if (stockEnt.articuloId > 0) {
+                            stockDao?.insertar(stockEnt)
                         }
-                        values.clear()
                     }
                     event = parser.next()
                 }
@@ -2956,36 +2956,36 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
 
     private fun importarTarifas() {
+        val tarifasDao: TarifasDao? = MyDatabase.getInstance(fContext)?.tarifasDao()
         val f = File(rutaLocal, "Tarifas.xml")
         val fin = FileInputStream(f)
         var sCampo: String
 
         try {
-            val values = ContentValues()
             val parser = Xml.newPullParser()
             try {
                 // Borro la tabla.
-                dbAlba.delete("tarifas", "1=1", null)
+                tarifasDao?.vaciar()
 
                 parser.setInput(fin, "UTF-8")
                 var event = parser.next()
 
                 while (event != XmlPullParser.END_DOCUMENT && !fTerminar) {
                     if (event == XmlPullParser.START_TAG) {
+                        val tarifaEnt = TarifasEnt()
                         for (i in 0 until parser.attributeCount) {
                             sCampo = parser.getAttributeName(i)
 
                             when {
-                                sCampo.equals("ARTICULO", ignoreCase = true) -> values.put("articulo", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("TARIFA", ignoreCase = true) -> values.put("tarifa", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("PRECIO", ignoreCase = true) -> values.put("precio", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("DTO", ignoreCase = true) -> values.put("dto", parser.getAttributeValue("", sCampo))
+                                sCampo.equals("Articulo", ignoreCase = true) -> tarifaEnt.articuloId = parser.getAttributeValue("", sCampo).toInt()
+                                sCampo.equals("Tarifa", ignoreCase = true) -> tarifaEnt.tarifaId = parser.getAttributeValue("", sCampo).toShort()
+                                sCampo.equals("Precio", ignoreCase = true) -> tarifaEnt.precio = parser.getAttributeValue("", sCampo)
+                                sCampo.equals("Dto", ignoreCase = true) -> tarifaEnt.dto = parser.getAttributeValue("", sCampo)
                             }
                         }
-                        if (values.getAsString("articulo") != null) {
-                            dbAlba.insertWithOnConflict("tarifas", null, values, SQLiteDatabase.CONFLICT_IGNORE)
+                        if (tarifaEnt.articuloId > 0) {
+                            tarifasDao?.insertar(tarifaEnt)
                         }
-                        values.clear()
                     }
                     event = parser.next()
                 }
@@ -3008,33 +3008,34 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
 
     private fun importarGrupos() {
+        val gruposDao: GruposDao? = MyDatabase.getInstance(fContext)?.gruposDao()
         val f = File(rutaLocal, "Grupos.xml")
         val fin = FileInputStream(f)
         var sCampo: String
 
         try {
-            val values = ContentValues()
             val parser = Xml.newPullParser()
             try {
                 // Borro la tabla.
-                dbAlba.delete("grupos", "1=1", null)
+                gruposDao?.vaciar()
+
                 parser.setInput(fin, "UTF-8")
                 var event = parser.next()
 
                 while (event != XmlPullParser.END_DOCUMENT && !fTerminar) {
                     if (event == XmlPullParser.START_TAG) {
+                        val grupoEnt = GruposEnt()
                         for (i in 0 until parser.attributeCount) {
                             sCampo = parser.getAttributeName(i)
 
                             when {
-                                sCampo.equals("CODIGO", ignoreCase = true) -> values.put("codigo", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("GRUPO", ignoreCase = true) -> values.put("descr", parser.getAttributeValue("", sCampo))
+                                sCampo.equals("Codigo", ignoreCase = true) -> grupoEnt.codigo = parser.getAttributeValue("", sCampo).toInt()
+                                sCampo.equals("Grupo", ignoreCase = true) -> grupoEnt.descripcion = parser.getAttributeValue("", sCampo)
                             }
                         }
-                        if (values.getAsString("codigo") != null) {
-                            dbAlba.insertWithOnConflict("grupos", null, values, SQLiteDatabase.CONFLICT_IGNORE)
+                        if (grupoEnt.codigo > 0) {
+                            gruposDao?.insertar(grupoEnt)
                         }
-                        values.clear()
                     }
                     event = parser.next()
                 }
@@ -3056,34 +3057,35 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
 
     private fun importarDepartamentos() {
+        val departamentosDao: DepartamentosDao? = MyDatabase.getInstance(fContext)?.departamentosDao()
         val f = File(rutaLocal, "Departamentos.xml")
         val fin = FileInputStream(f)
         var sCampo: String
 
         try {
-            val values = ContentValues()
             val parser = Xml.newPullParser()
             try {
                 // Borro la tabla.
-                dbAlba.delete("departamentos", "1=1", null)
+                departamentosDao?.vaciar()
+
                 parser.setInput(fin, "UTF-8")
                 var event = parser.next()
 
                 while (event != XmlPullParser.END_DOCUMENT && !fTerminar) {
                     if (event == XmlPullParser.START_TAG) {
+                        val departamentoEnt = DepartamentosEnt()
                         for (i in 0 until parser.attributeCount) {
                             sCampo = parser.getAttributeName(i)
 
                             when {
-                                sCampo.equals("GRUPO", ignoreCase = true) -> values.put("grupo", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("CODIGO", ignoreCase = true) -> values.put("codigo", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("DEPARTAMENTO", ignoreCase = true) -> values.put("descr", parser.getAttributeValue("", sCampo))
+                                sCampo.equals("Grupo", ignoreCase = true) -> departamentoEnt.grupoId = parser.getAttributeValue("", sCampo).toShort()
+                                sCampo.equals("Codigo", ignoreCase = true) -> departamentoEnt.departamentoId = parser.getAttributeValue("", sCampo).toShort()
+                                sCampo.equals("Departamento", ignoreCase = true) -> departamentoEnt.descripcion = parser.getAttributeValue("", sCampo)
                             }
                         }
-                        if (values.getAsString("grupo") != null) {
-                            dbAlba.insertWithOnConflict("departamentos", null, values, SQLiteDatabase.CONFLICT_IGNORE)
+                        if (departamentoEnt.grupoId > 0) {
+                            departamentosDao?.insertar(departamentoEnt)
                         }
-                        values.clear()
                     }
                     event = parser.next()
                 }
@@ -3105,37 +3107,38 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
 
     private fun importarClasificadores() {
+        val clasificadoresDao: ClasificadoresDao? = MyDatabase.getInstance(fContext)?.clasificadoresDao()
         val f = File(rutaLocal, "Clasificadores.xml")
         val fin = FileInputStream(f)
         var sCampo: String
 
         try {
-            val values = ContentValues()
             val parser = Xml.newPullParser()
             try {
                 // Borro la tabla.
-                dbAlba.delete("clasificadores", "1=1", null)
+                clasificadoresDao?.vaciar()
+
                 parser.setInput(fin, "UTF-8")
                 var event = parser.next()
 
                 while (event != XmlPullParser.END_DOCUMENT && !fTerminar) {
                     if (event == XmlPullParser.START_TAG) {
+                        val clasificadorEnt = ClasificadoresEnt()
                         for (i in 0 until parser.attributeCount) {
                             sCampo = parser.getAttributeName(i)
 
                             when {
-                                sCampo.equals("CODIGO", ignoreCase = true) -> values.put("codigo", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("DESCRIPCION", ignoreCase = true) -> values.put("descr", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("PADRE", ignoreCase = true) -> values.put("padre", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("NIVEL", ignoreCase = true) -> values.put("nivel", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("ORDEN", ignoreCase = true) -> values.put("orden", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("FLAG", ignoreCase = true) -> values.put("flag", parser.getAttributeValue("", sCampo))
+                                sCampo.equals("Codigo", ignoreCase = true) -> clasificadorEnt.clasificadorId = parser.getAttributeValue("", sCampo).toInt()
+                                sCampo.equals("Descripcion", ignoreCase = true) -> clasificadorEnt.descripcion = parser.getAttributeValue("", sCampo)
+                                sCampo.equals("Padre", ignoreCase = true) -> clasificadorEnt.padre = parser.getAttributeValue("", sCampo).toInt()
+                                sCampo.equals("Nivel", ignoreCase = true) -> clasificadorEnt.nivel = parser.getAttributeValue("", sCampo).toInt()
+                                sCampo.equals("Orden", ignoreCase = true) -> clasificadorEnt.orden = parser.getAttributeValue("", sCampo).toInt()
+                                sCampo.equals("Flag", ignoreCase = true) -> clasificadorEnt.flag = parser.getAttributeValue("", sCampo).toInt()
                             }
                         }
-                        if (values.getAsString("codigo") != null) {
-                            dbAlba.insertWithOnConflict("clasificadores", null, values, SQLiteDatabase.CONFLICT_IGNORE)
+                        if (clasificadorEnt.clasificadorId > 0) {
+                            clasificadoresDao?.insertar(clasificadorEnt)
                         }
-                        values.clear()
                     }
                     event = parser.next()
                 }
@@ -3207,35 +3210,36 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
 
     private fun importarFormatos() {
+        val formatosDao: FormatosDao? = MyDatabase.getInstance(fContext)?.formatosDao()
         val f = File(rutaLocal, "Formatos.xml")
         val fin = FileInputStream(f)
         var sCampo: String
 
         try {
-            val values = ContentValues()
             val parser = Xml.newPullParser()
             try {
                 // Borro la tabla.
-                dbAlba.delete("formatos", "1=1", null)
+                formatosDao?.vaciar()
+
                 parser.setInput(fin, "UTF-8")
                 var event = parser.next()
 
                 while (event != XmlPullParser.END_DOCUMENT && !fTerminar) {
                     if (event == XmlPullParser.START_TAG) {
+                        val formatoEnt = FormatosEnt()
                         for (i in 0 until parser.attributeCount) {
                             sCampo = parser.getAttributeName(i)
 
                             when {
-                                sCampo.equals("CODIGO", ignoreCase = true) -> values.put("codigo", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("DESCRIPCION", ignoreCase = true) -> values.put("descr", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("FLAG", ignoreCase = true) -> values.put("flag", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("DOSIS1", ignoreCase = true) -> values.put("dosis1", parser.getAttributeValue("", sCampo))
+                                sCampo.equals("Codigo", ignoreCase = true) -> formatoEnt.formatoId = parser.getAttributeValue("", sCampo).toShort()
+                                sCampo.equals("Descripcion", ignoreCase = true) -> formatoEnt.descripcion = parser.getAttributeValue("", sCampo)
+                                sCampo.equals("Flag", ignoreCase = true) -> formatoEnt.flag = parser.getAttributeValue("", sCampo).toInt()
+                                sCampo.equals("Dosis1", ignoreCase = true) -> formatoEnt.dosis1 = parser.getAttributeValue("", sCampo)
                             }
                         }
-                        if (values.getAsString("codigo") != null) {
-                            dbAlba.insertWithOnConflict("formatos", null, values, SQLiteDatabase.CONFLICT_IGNORE)
+                        if (formatoEnt.formatoId > 0) {
+                            formatosDao?.insert(formatoEnt)
                         }
-                        values.clear()
                     }
                     event = parser.next()
                 }
@@ -3258,36 +3262,37 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
 
     private fun importarTrfFormatos() {
+        val trfFormatosDao: TrfFormatosDao? = MyDatabase.getInstance(fContext)?.trfFormatosDao()
         val f = File(rutaLocal, "TarifasFormatos.xml")
         val fin = FileInputStream(f)
         var sCampo: String
 
         try {
-            val values = ContentValues()
             val parser = Xml.newPullParser()
             try {
                 // Borro la tabla.
-                dbAlba.delete("trfformatos", "1=1", null)
+                trfFormatosDao?.vaciar()
+
                 parser.setInput(fin, "UTF-8")
                 var event = parser.next()
 
                 while (event != XmlPullParser.END_DOCUMENT && !fTerminar) {
                     if (event == XmlPullParser.START_TAG) {
+                        val trfFormatoEnt = TrfFormatosEnt()
                         for (i in 0 until parser.attributeCount) {
                             sCampo = parser.getAttributeName(i)
 
                             when {
-                                sCampo.equals("ARTICULO", ignoreCase = true) -> values.put("articulo", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("TARIFA", ignoreCase = true) -> values.put("tarifa", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("FORMATO", ignoreCase = true) -> values.put("formato", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("PRECIO", ignoreCase = true) -> values.put("precio", parser.getAttributeValue("", sCampo))
-                                sCampo.equals("DTO", ignoreCase = true) -> values.put("dto", parser.getAttributeValue("", sCampo))
+                                sCampo.equals("Articulo", ignoreCase = true) -> trfFormatoEnt.articuloId = parser.getAttributeValue("", sCampo).toInt()
+                                sCampo.equals("Tarifa", ignoreCase = true) -> trfFormatoEnt.tarifaId = parser.getAttributeValue("", sCampo).toShort()
+                                sCampo.equals("Formato", ignoreCase = true) -> trfFormatoEnt.formatoId = parser.getAttributeValue("", sCampo).toShort()
+                                sCampo.equals("Precio", ignoreCase = true) -> trfFormatoEnt.precio = parser.getAttributeValue("", sCampo)
+                                sCampo.equals("Dto", ignoreCase = true) -> trfFormatoEnt.dto = parser.getAttributeValue("", sCampo)
                             }
                         }
-                        if (values.getAsString("articulo") != null) {
-                            dbAlba.insertWithOnConflict("trfformatos", null, values, SQLiteDatabase.CONFLICT_IGNORE)
+                        if (trfFormatoEnt.articuloId > 0) {
+                            trfFormatosDao?.insertar(trfFormatoEnt)
                         }
-                        values.clear()
                     }
                     event = parser.next()
                 }

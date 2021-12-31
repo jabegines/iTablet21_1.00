@@ -1,6 +1,5 @@
 package es.albainformatica.albamobileandroid.historicos
 
-import es.albainformatica.albamobileandroid.BaseDatos
 import android.database.sqlite.SQLiteDatabase
 import android.content.ContentValues
 import android.content.Context

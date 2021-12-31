@@ -2,7 +2,6 @@ package es.albainformatica.albamobileandroid.maestros
 
 import android.content.Context
 import android.database.Cursor
-import es.albainformatica.albamobileandroid.BaseDatos
 import android.database.sqlite.SQLiteDatabase
 
 /**

@@ -10,7 +10,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.view.View.OnTouchListener
 import android.view.MotionEvent
 import android.widget.TextView
-import es.albainformatica.albamobileandroid.BaseDatos
 import android.widget.Toast
 import android.view.View
 import android.widget.ImageView

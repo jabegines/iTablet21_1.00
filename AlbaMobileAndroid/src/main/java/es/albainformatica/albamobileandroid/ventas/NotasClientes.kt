@@ -1,6 +1,5 @@
 package es.albainformatica.albamobileandroid.ventas
 
-import es.albainformatica.albamobileandroid.BaseDatos
 import android.content.Context
 import es.albainformatica.albamobileandroid.dao.NotasCltesDao
 import es.albainformatica.albamobileandroid.database.MyDatabase

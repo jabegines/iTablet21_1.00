@@ -2,7 +2,6 @@ package es.albainformatica.albamobileandroid.ventas
 
 import android.content.Context
 import es.albainformatica.albamobileandroid.Redondear
-import es.albainformatica.albamobileandroid.BaseDatos
 import android.database.sqlite.SQLiteDatabase
 import java.util.ArrayList
 

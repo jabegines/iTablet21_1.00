@@ -1,7 +1,6 @@
 package es.albainformatica.albamobileandroid.maestros
 
 import android.content.Context
-import es.albainformatica.albamobileandroid.BaseDatos
 import es.albainformatica.albamobileandroid.dao.RutasDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 

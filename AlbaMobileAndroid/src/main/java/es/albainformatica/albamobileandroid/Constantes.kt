@@ -3,9 +3,9 @@ package es.albainformatica.albamobileandroid
 
 
 const val VERSION_PROGRAMA = "1.00"
-const val COMPILACION_PROGRAMA = ".25"
+const val COMPILACION_PROGRAMA = ".1"
 const val VERSION_BD = 4
-const val VERSION_BD_ROOM = 7
+const val VERSION_BD_ROOM = 1
 
 
 const val est_Telef_Browse: Byte = 1

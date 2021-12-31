@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="es.albainformatica.albamobileandroid"
     android:installLocation="auto"
-    android:versionCode="2"
-    android:versionName="2.00">
+    android:versionCode="1"
+    android:versionName="1.00">
 
 
     <supports-screens

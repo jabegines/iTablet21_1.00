@@ -7,7 +7,6 @@ import android.os.Environment
 import android.preference.PreferenceManager
 import android.provider.Settings
 import android.util.Log
-import es.albainformatica.albamobileandroid.BaseDatos
 import es.albainformatica.albamobileandroid.maestros.ArticulosClase
 import es.albainformatica.albamobileandroid.sha1
 import okhttp3.OkHttpClient

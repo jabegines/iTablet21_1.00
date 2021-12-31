@@ -2,7 +2,6 @@ package es.albainformatica.albamobileandroid.cobros
 
 import android.content.Context
 import android.database.Cursor
-import es.albainformatica.albamobileandroid.BaseDatos
 import es.albainformatica.albamobileandroid.FLAGPENDIENTE_EN_CARTERA
 import es.albainformatica.albamobileandroid.Comunicador
 import es.albainformatica.albamobileandroid.actualizarSaldo

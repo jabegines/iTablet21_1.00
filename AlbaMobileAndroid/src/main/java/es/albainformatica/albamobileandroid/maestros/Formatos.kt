@@ -3,9 +3,6 @@ package es.albainformatica.albamobileandroid.maestros
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import android.util.Log
-import es.albainformatica.albamobileandroid.BaseDatos
-
 
 
 class Formatos(val contexto: Context): BaseDatos(contexto) {

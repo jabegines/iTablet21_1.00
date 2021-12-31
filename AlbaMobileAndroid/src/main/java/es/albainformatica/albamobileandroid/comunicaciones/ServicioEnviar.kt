@@ -15,7 +15,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import es.albainformatica.albamobileandroid.BaseDatos
 import es.albainformatica.albamobileandroid.ListaPaquetes
 import es.albainformatica.albamobileandroid.R
 import es.albainformatica.albamobileandroid.dao.NumExportDao

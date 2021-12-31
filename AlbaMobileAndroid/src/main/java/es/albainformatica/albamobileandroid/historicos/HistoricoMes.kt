@@ -3,7 +3,6 @@ package es.albainformatica.albamobileandroid.historicos
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import es.albainformatica.albamobileandroid.BaseDatos
 import java.util.*
 
 
