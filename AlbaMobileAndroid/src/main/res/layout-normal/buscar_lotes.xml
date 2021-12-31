@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:layout_margin="5dp"
+    android:baselineAligned="false">
+
+
+    <include
+        layout="@layout/ly_toolbar_normal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:paddingLeft="5dp"
+        android:paddingRight="10dp"
+        android:background="#FFFFFF"
+        android:baselineAligned="false">
+
+        <TextView
+            android:id="@+id/textView1"
+            style="@style/Texto14"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text="@string/lote" />
+
+        <TextView
+            android:id="@+id/textView2"
+            style="@style/Texto14"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="@string/stock" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:background="#000000" />
+
+    <ListView
+        android:id="@+id/lvLotes"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:background="#FFFFFFFF"
+        android:fastScrollEnabled="true"
+        android:listSelector="@drawable/list_selector"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp" >
+
+    </ListView>
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:background="#FFFFFFFF"
+        android:fastScrollEnabled="true"
+        android:listSelector="@drawable/list_selector"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"/>
+
+
+</LinearLayout>

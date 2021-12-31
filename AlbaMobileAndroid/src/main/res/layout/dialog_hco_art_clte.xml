@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:padding="10dp">
+
+  <LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp">
+
+    <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/imageView11"
+      android:src="@drawable/marca_historico"/>
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Histórico del artículo"
+      android:id="@+id/textView22"
+      android:layout_marginLeft="20dp"
+      android:layout_gravity="center_vertical"/>
+  </LinearLayout>
+
+  <LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/fecha"
+      android:id="@+id/textView21"
+      android:layout_weight="0.25"/>
+
+    <TextView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/cajas"
+      android:id="@+id/textView23"
+      android:layout_weight="0.2"
+      android:gravity="end"/>
+
+    <TextView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/cantidad"
+      android:id="@+id/textView24"
+      android:layout_weight="0.2"
+      android:gravity="end"/>
+
+    <TextView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/precio"
+      android:id="@+id/textView25"
+      android:layout_weight="0.2"
+      android:gravity="end"/>
+
+    <TextView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/dto"
+      android:id="@+id/textView26"
+      android:layout_weight="0.15"
+      android:gravity="end"/>
+  </LinearLayout>
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/gris_alba"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"/>
+
+  <LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/fecha"
+      android:id="@+id/tvHAC_Fecha"
+      android:layout_weight="0.25"/>
+
+    <TextView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/cajas"
+      android:id="@+id/tvHAC_Cajas"
+      android:layout_weight="0.2"
+      android:gravity="end"/>
+
+    <TextView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/cantidad"
+      android:id="@+id/tvHAC_Cant"
+      android:layout_weight="0.2"
+      android:gravity="end"/>
+
+    <TextView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/precio"
+      android:id="@+id/tvHAC_Precio"
+      android:layout_weight="0.2"
+      android:gravity="end"/>
+
+    <TextView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/dto"
+      android:id="@+id/tvHAC_Dto"
+      android:layout_weight="0.15"
+      android:gravity="end"/>
+  </LinearLayout>
+
+</LinearLayout>

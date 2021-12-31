@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="5dp"
+    >
+
+    <include
+        layout="@layout/ly_toolbar_normal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <include
+        android:id="@+id/cabecera_ventas"
+        layout="@layout/ly_ventas_cabecera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:id="@+id/llyVL_Lineas"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="5dp"
+        android:layout_weight="5"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="18dp">
+
+            <TextView
+                android:id="@+id/tvCantidad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="@string/cantidad"
+                android:textColor="@color/azul_alba"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/gris_alba" />
+
+        <ListView
+            android:id="@+id/lvVL_LineasDoc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="#FFFFFF"
+            android:listSelector="@drawable/list_selector"></ListView>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@android:color/background_dark"
+        />
+
+
+    <LinearLayout
+        android:id="@+id/llyVL_Botones"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:baselineAligned="false"
+        >
+
+        <LinearLayout
+            android:id="@+id/llyVl_Nueva"
+            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.15"
+            android:background="@color/azul_alba"
+            android:onClick="nuevaLinea"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView8"
+                android:src="@drawable/mas_blanco"
+                android:layout_gravity="center_vertical"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.85"
+        >
+
+            <Button
+                android:id="@+id/btnVL_Devoluciones"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/devoluciones"
+                android:onClick="devoluciones"
+                android:text="@string/btn_dev_abreviado"
+                android:textColor="@color/texto_botones"
+                android:textSize="14sp"/>
+
+            <Button
+                android:id="@+id/btnVL_Editar"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/editar"
+                android:onClick="editarLinea"
+                android:text="@string/entregar"
+                android:textColor="@color/texto_botones"
+                android:textSize="14sp"/>
+
+            <Button
+                android:id="@+id/btnVL_Borrar"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/borrar"
+                android:onClick="borrarLinea"
+                android:text="@string/btn_borrar"
+                android:textColor="@color/texto_botones"
+                android:textSize="14sp"/>
+
+            <Button
+                android:id="@+id/btnVL_Terminar"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/aceptar"
+                android:onClick="terminarDoc"
+                android:text="@string/btn_guardar"
+                android:textColor="@color/texto_botones"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+</LinearLayout>

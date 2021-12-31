@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/mi_borde"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:baselineAligned="false">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:id="@+id/imvArticulo"
+            android:contentDescription="@string/articulos"
+            android:adjustViewBounds="false"
+            android:onClick="verFichaArt"
+            android:clickable="true"
+        />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imvHco"
+            android:focusableInTouchMode="false"
+            android:src="@drawable/marca_historico"
+            android:onClick="verHcoArticulo"
+            android:clickable="true"
+            android:layout_marginTop="5dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:layout_weight="0.8"
+        android:layout_marginLeft="5dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/descr"
+            android:id="@+id/tvArticulo"
+            style="@style/Texto20.Negrita"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:gravity="center_vertical"
+            />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:baselineAligned="false">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.45">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/codigo"
+                    android:id="@+id/tvCodigoArt"
+                    android:autoText="false"/>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/stock"
+                            android:id="@+id/tvExistencias"
+                            style="@style/Texto16"
+                            android:gravity="end"
+                            android:drawableLeft="@drawable/ctlg_stock"
+                            android:background="@color/gris_alba"
+                            android:padding="3dp"
+                            android:layout_marginTop="5dp"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/precio"
+                            android:id="@+id/tvPrecio"
+                            style="@style/Texto16"
+                            android:layout_marginTop="10dp"
+                            android:gravity="end"
+                            android:drawableLeft="@drawable/ctlg_precio"
+                            android:background="@color/gris_alba"
+                            android:padding="3dp"
+                            android:layout_marginRight="2dp"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/porciva"
+                            android:id="@+id/tvDescuento"
+                            style="@style/Texto16"
+                            android:layout_marginTop="10dp"
+                            android:gravity="end"
+                            android:background="@color/gris_alba"
+                            android:drawableLeft="@drawable/ctlg_dto"
+                            android:padding="3dp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5"
+                        android:layout_marginLeft="2dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/cajas"
+                            android:id="@+id/tvUnidadesCaja"
+                            style="@style/Texto16"
+                            android:gravity="end"
+                            android:drawableLeft="@drawable/ctlg_cajas"
+                            android:background="@color/gris_alba"
+                            android:layout_marginTop="5dp"
+                            android:padding="3dp"
+                            android:layout_marginRight="2dp"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/precio"
+                            android:id="@+id/tvPrCajas"
+                            style="@style/Texto16"
+                            android:layout_marginTop="10dp"
+                            android:gravity="end"
+                            android:drawableLeft="@drawable/ctlg_precio"
+                            android:background="@color/gris_alba"
+                            android:padding="3dp"
+                            android:layout_marginRight="2dp"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/porciva"
+                            android:id="@+id/tvDtCajas"
+                            style="@style/Texto16"
+                            android:layout_marginTop="10dp"
+                            android:gravity="end"
+                            android:background="@color/gris_alba"
+                            android:drawableLeft="@drawable/ctlg_dto"
+                            android:padding="3dp"/>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- La propiedad android:text tiene un texto cualquiera, no se corresponde con el contenido real de la etiqueta -->
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.30"
+                android:layout_marginLeft="6dp">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.7">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cajas"
+                        android:id="@+id/tvCapCajas"
+                        style="@style/Texto16"
+                        android:layout_gravity="right"
+                        android:layout_marginRight="5dp"/>
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/edtCajas"
+                        style="@style/Texto20.Negrita"
+                        android:gravity="end"
+                        android:layout_marginTop="20dp"
+                        android:clickable="true"
+                        android:onClick="editarCajas"
+                        android:editable="false"
+                        android:focusable="true"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.3">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:id="@+id/imvCajasMas"
+                        android:src="@drawable/ctlg_mas"
+                        android:layout_weight="0.5"
+                        android:contentDescription="@string/cajas"
+                        android:onClick="sumarCajas"
+                        android:scaleType="center"/>
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:id="@+id/imvCajasMenos"
+                        android:src="@drawable/ctlg_menos"
+                        android:layout_weight="0.5"
+                        android:contentDescription="@string/cajas"
+                        android:onClick="restarCajas"
+                        android:scaleType="center"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.25">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.7">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/unidades"
+                        android:id="@+id/tvCapUnidades"
+                        style="@style/Texto16"
+                        android:layout_gravity="right"
+                        android:layout_marginRight="5dp"/>
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/edtUnidades"
+                        style="@style/Texto20.Negrita"
+                        android:gravity="end"
+                        android:editable="false"
+                        android:layout_marginTop="20dp"
+                        android:onClick="editarUnidades"
+                        android:clickable="true"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.3"
+                    >
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:id="@+id/imvCantidadMas"
+                        android:src="@drawable/ctlg_mas"
+                        android:layout_weight="0.5"
+                        android:contentDescription="@string/cajas"
+                        android:onClick="sumarCantidad"
+                        android:scaleType="center"/>
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:id="@+id/imvCantidadMenos"
+                        android:src="@drawable/ctlg_menos"
+                        android:layout_weight="0.5"
+                        android:contentDescription="@string/cajas"
+                        android:onClick="restarCantidad"
+                        android:scaleType="center"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
+
+    <!--
+      <ImageView
+          android:layout_width="70dp"
+          android:layout_height="70dp"
+          android:id="@+id/imvPromocion"
+          android:src="@drawable/promocion"
+          android:contentDescription="@string/articulos"
+          android:layout_gravity="right"
+          android:layout_alignParentRight="true"
+          android:focusableInTouchMode="false"/>
+    -->

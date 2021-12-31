@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:layout_margin="5dp"
+    android:baselineAligned="false">
+
+    <include
+        layout="@layout/ly_toolbar_large"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@color/gris_alba"
+        android:orientation="horizontal"
+        android:paddingTop="10dp" >
+
+        <ImageView
+            android:id="@+id/imgvArtOft"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/aceptar"
+            android:src="@drawable/cliente_azul" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="7"
+            android:orientation="vertical"
+            android:paddingLeft="10dp" >
+
+            <TextView
+                android:id="@+id/tvNombreClte"
+                style="@style/Texto18.Negrita"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nombrefiscal" />
+
+            <TextView
+                android:id="@+id/tvNComClte"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nombrecomercial"
+                style="@style/Texto18"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvIncidencia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/nueva_incid"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/TextView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/texto_incid"
+            android:textSize="14sp"/>
+
+        <EditText
+            android:id="@+id/edtIncid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="top"
+            android:padding="10dp"/>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@android:color/background_dark" />
+
+
+    <LinearLayout
+        android:id="@+id/lyMenuIncidencia"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:paddingTop="10dp">
+
+
+        <Button
+            android:id="@+id/btnLimpiar"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/borrar"
+            android:onClick="limpiar"
+            android:text="@string/limpiar"
+            android:textColor="@color/texto_botones"
+            android:textAllCaps="false"
+            />
+
+        <Button
+            android:id="@+id/btnCancelar"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/cancelar"
+            android:onClick="cancelar"
+            android:text="@string/cancelar"
+            android:textColor="@color/texto_botones"
+            android:textAllCaps="false"
+            />
+
+        <Button
+            android:id="@+id/btnGuardar"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/aceptar"
+            android:onClick="aceptar"
+            android:text="@string/btn_aceptar"
+            android:textColor="@color/texto_botones"
+            android:textAllCaps="false"
+        />
+
+    </LinearLayout>
+
+</LinearLayout>

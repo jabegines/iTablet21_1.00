@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:layout_margin="5dp"
+    android:background="#FFFFFF">
+
+    <include
+        layout="@layout/ly_toolbar_large"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:id="@+id/llReparto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:id="@+id/tvNombreReparto"
+            style="@style/Texto18.Negrita"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="0.9"
+            android:gravity="center_vertical"
+            android:text="@string/reparto"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:orientation="horizontal"
+        >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.9"
+            android:background="@drawable/mi_borde"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageView7"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.1"
+                android:contentDescription="@string/aceptar"
+                android:src="@drawable/lista_articulos"
+                />
+
+            <TextView
+                android:id="@+id/tvDocsRRutaAct"
+                style="@style/Texto18.Negrita"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="0.9"
+                android:gravity="center_vertical"
+                android:text="@string/ruta"
+                android:textColor="#006EAF"
+                />
+        </LinearLayout>
+
+        <Spinner
+            android:id="@+id/spnVt_Ruta"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="0.1"
+            android:background="@drawable/mi_borde"
+            />
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/lvDRDocumentos"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fastScrollEnabled="true"
+        android:layout_weight="1" />
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@android:color/background_dark"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:paddingTop="10dp"
+    >
+
+        <Button
+            android:id="@+id/btnDREditar"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/editar"
+            android:onClick="modificarDoc"
+            android:text="@string/btn_anomalias"
+            android:textColor="@color/texto_botones"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+        />
+
+        <Button
+            android:id="@+id/btnDRPdte"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/pendiente"
+            android:onClick="pendienteClte"
+            android:text="@string/btn_pendiente"
+            android:textColor="@color/texto_botones"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+        />
+
+        <Button
+            android:id="@+id/btnDRFirmar"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/firmardoc"
+            android:onClick="firmarDoc"
+            android:text="@string/btn_firmar"
+            android:textColor="@color/texto_botones"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+        />
+
+        <Button
+            android:id="@+id/btnDRIncidencia"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/incidencia"
+            android:onClick="incidenciaDoc"
+            android:text="@string/btn_incid_full"
+            android:textColor="@color/texto_botones"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+        />
+
+        <Button
+            android:id="@+id/btnDRRutero"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ventas"
+            android:onClick="irARutero"
+            android:text="@string/ventas"
+            android:textColor="@color/texto_botones"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+        />
+
+    </LinearLayout>
+
+</LinearLayout>

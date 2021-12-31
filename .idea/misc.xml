@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/buscar_articulos.xml" value="0.4675" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/clientes_activity.xml" value="0.4675" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/cobrar.xml" value="0.42125" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/cobros.xml" value="0.4675" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/cobros_pendientes.xml" value="0.42125" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/editar_hco.xml" value="0.42125" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/ficha_articulos.xml" value="0.4675" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/ficha_clientes.xml" value="0.30083333333333334" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/layout_basesdoc.xml" value="0.5275" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/layout_telf_cltes.xml" value="0.26416666666666666" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/ly_artic_imagen.xml" value="0.5275" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/ly_docs_reparto.xml" value="0.5" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/ly_numexportac.xml" value="0.26416666666666666" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/ly_ventas_totales.xml" value="0.4675" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/ly_ver_documentos.xml" value="0.42125" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/ly_ver_pendientes.xml" value="0.48" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/main.xml" value="0.4675" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/pedir_numexport.xml" value="0.30083333333333334" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/tab_telefonos_clientes.xml" value="0.30083333333333334" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/ventas.xml" value="0.22875" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/ventas_lineas.xml" value="0.4675" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/ventas_rutero.xml" value="0.42125" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/ver_documentos.xml" value="0.4675" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-normal/cobrar.xml" value="0.31203703703703706" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-normal/cobros.xml" value="0.31203703703703706" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-normal/layout_basesdoc.xml" value="1.31875" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-normal/ly_numexportac.xml" value="0.990625" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-normal/ly_ventas_totales.xml" value="1.31875" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-normal/ly_ver_pendientes.xml" value="0.32222222222222224" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-normal/pedir_numexport.xml" value="1.128125" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-normal/tab_telefonos_clientes.xml" value="1.128125" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-normal/ventas.xml" value="0.9" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-normal/ventas_rutero.xml" value="0.31203703703703706" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-normal/ver_documentos.xml" value="0.34629629629629627" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-sw600dp/docs_reparto.xml" value="0.33" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-sw600dp/modif_doc_reparto.xml" value="0.42125" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-sw600dp/new_prefs.xml" value="0.4675" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-sw600dp/ventas_datoslinea.xml" value="0.33" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-sw600dp/ventas_fin_doc.xml" value="0.42125" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/alert_dialog_pedir_fechas.xml" value="0.48875" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/bio_vtadetallescat.xml" value="0.435" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/cargas.xml" value="0.42125" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/catalogo_articulos.xml" value="0.42125" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/catalogo_catalogos.xml" value="0.2808333333333333" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/catalogo_gruposdep.xml" value="0.25" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/com_servicio_enviar.xml" value="0.26416666666666666" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/docs_reparto.xml" value="0.9" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/inf_cobros.xml" value="0.42125" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/item_cargas_list.xml" value="0.435" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/item_formatos_list.xml" value="0.42125" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/ly_inf_cobros.xml" value="0.435" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/ly_notas_cltes.xml" value="0.26416666666666666" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/ly_res_inf_cobros.xml" value="0.435" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/ly_selecc_direc_clte.xml" value="0.2808333333333333" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/ly_toolbar_large.xml" value="0.4675" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/ly_ver_cobros.xml" value="0.33" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/modif_doc_reparto.xml" value="0.75" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/nueva_carga.xml" value="0.435" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/reparto_devoluciones.xml" value="1.128125" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/ventas_cp.xml" value="0.18" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/ventas_datoslinea.xml" value="1.1" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/ventas_fin_doc.xml" value="1.1" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/ver_notas_cliente.xml" value="0.30083333333333334" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout/vtas_selecc_serie.xml" value="0.42125" />
+        <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/menu/menu_configuracion.xml" value="0.26416666666666666" />
+        <entry key="..\:/Users/jabegines/AppData/Local/Android/Sdk/platforms/android-28/data/res/layout/simple_spinner_dropdown_item.xml" value="0.990625" />
+        <entry key="..\:/Users/jabegines/AppData/Local/Android/Sdk/platforms/android-28/data/res/layout/simple_spinner_item.xml" value="0.990625" />
+      </map>
+    </option>
+  </component>
+  <component name="NullableNotNullManager">
+    <option name="myDefaultNullable" value="android.support.annotation.Nullable" />
+    <option name="myDefaultNotNull" value="androidx.annotation.RecentlyNonNull" />
+    <option name="myNullables">
+      <value>
+        <list size="15">
+          <item index="0" class="java.lang.String" itemvalue="org.jetbrains.annotations.Nullable" />
+          <item index="1" class="java.lang.String" itemvalue="javax.annotation.Nullable" />
+          <item index="2" class="java.lang.String" itemvalue="javax.annotation.CheckForNull" />
+          <item index="3" class="java.lang.String" itemvalue="edu.umd.cs.findbugs.annotations.Nullable" />
+          <item index="4" class="java.lang.String" itemvalue="android.support.annotation.Nullable" />
+          <item index="5" class="java.lang.String" itemvalue="androidx.annotation.Nullable" />
+          <item index="6" class="java.lang.String" itemvalue="androidx.annotation.RecentlyNullable" />
+          <item index="7" class="java.lang.String" itemvalue="org.checkerframework.checker.nullness.qual.Nullable" />
+          <item index="8" class="java.lang.String" itemvalue="org.checkerframework.checker.nullness.compatqual.NullableDecl" />
+          <item index="9" class="java.lang.String" itemvalue="org.checkerframework.checker.nullness.compatqual.NullableType" />
+          <item index="10" class="java.lang.String" itemvalue="android.annotation.Nullable" />
+          <item index="11" class="java.lang.String" itemvalue="com.android.annotations.Nullable" />
+          <item index="12" class="java.lang.String" itemvalue="org.eclipse.jdt.annotation.Nullable" />
+          <item index="13" class="java.lang.String" itemvalue="io.reactivex.annotations.Nullable" />
+          <item index="14" class="java.lang.String" itemvalue="io.reactivex.rxjava3.annotations.Nullable" />
+        </list>
+      </value>
+    </option>
+    <option name="myNotNulls">
+      <value>
+        <list size="15">
+          <item index="0" class="java.lang.String" itemvalue="org.jetbrains.annotations.NotNull" />
+          <item index="1" class="java.lang.String" itemvalue="javax.annotation.Nonnull" />
+          <item index="2" class="java.lang.String" itemvalue="edu.umd.cs.findbugs.annotations.NonNull" />
+          <item index="3" class="java.lang.String" itemvalue="android.support.annotation.NonNull" />
+          <item index="4" class="java.lang.String" itemvalue="androidx.annotation.NonNull" />
+          <item index="5" class="java.lang.String" itemvalue="androidx.annotation.RecentlyNonNull" />
+          <item index="6" class="java.lang.String" itemvalue="org.checkerframework.checker.nullness.qual.NonNull" />
+          <item index="7" class="java.lang.String" itemvalue="org.checkerframework.checker.nullness.compatqual.NonNullDecl" />
+          <item index="8" class="java.lang.String" itemvalue="org.checkerframework.checker.nullness.compatqual.NonNullType" />
+          <item index="9" class="java.lang.String" itemvalue="android.annotation.NonNull" />
+          <item index="10" class="java.lang.String" itemvalue="com.android.annotations.NonNull" />
+          <item index="11" class="java.lang.String" itemvalue="org.eclipse.jdt.annotation.NonNull" />
+          <item index="12" class="java.lang.String" itemvalue="io.reactivex.annotations.NonNull" />
+          <item index="13" class="java.lang.String" itemvalue="io.reactivex.rxjava3.annotations.NonNull" />
+          <item index="14" class="java.lang.String" itemvalue="lombok.NonNull" />
+        </list>
+      </value>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+  <component name="SvnBranchConfigurationManager">
+    <option name="myConfigurationMap">
+      <map>
+        <entry key="$PROJECT_DIR$">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="branchUrls">
+                <list>
+                  <option value="file://alba2016/ALBA/Fuentes/Android/albaMobileAndroid_SVN/albaMobileAndroid_1.05/branches" />
+                  <option value="file://alba2016/ALBA/Fuentes/Android/albaMobileAndroid_SVN/albaMobileAndroid_1.05/tags" />
+                </list>
+              </option>
+              <option name="trunkUrl" value="file://alba2016/ALBA/Fuentes/Android/albaMobileAndroid_SVN/albaMobileAndroid_1.05/trunk" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

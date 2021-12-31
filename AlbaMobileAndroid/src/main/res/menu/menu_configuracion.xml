@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <item android:id="@+id/mni_cargas"
+        android:title="@string/mni_cargas"
+        android:icon="@android:drawable/ic_menu_preferences" />
+
+  <item android:id="@+id/mni_informes"
+        android:title="@string/mni_informes"
+        android:icon="@android:drawable/ic_menu_agenda" >
+
+    <menu>
+      <item android:id="@+id/mni_infStock"
+            android:title="@string/mni_infstock" />
+
+      <item android:id="@+id/mni_infDoc"
+            android:title="@string/mni_infdoc" />
+
+      <item android:id="@+id/mni_resPedidos"
+          android:title="Resumen de pedidos" />
+
+      <item android:id="@+id/mni_vtasRepre"
+            android:title="Ventas del representante" />
+
+    </menu>
+  </item>
+
+  <item android:id="@+id/mni_configuracion"
+    android:title="@string/mni_configuracion"
+    android:icon="@android:drawable/ic_menu_preferences" />
+
+  <item android:id="@+id/mni_confimpresora"
+    android:title="@string/mni_confimpr"
+    android:icon="@android:drawable/ic_menu_preferences" />
+
+  <item android:id="@+id/mni_actualizar"
+    android:title="@string/mni_actualizar"
+    android:icon="@android:drawable/ic_menu_upload" />
+
+  <item android:id="@+id/mni_verID"
+    android:title="@string/mni_verID"
+    android:icon="@android:drawable/ic_menu_info_details" />
+
+  <item android:id="@+id/mni_hacerBackup"
+    android:title="Hacer backup"
+    android:icon="@android:drawable/ic_menu_add" />
+
+</menu>

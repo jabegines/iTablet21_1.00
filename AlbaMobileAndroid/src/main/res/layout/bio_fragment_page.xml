@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="0.88">
+
+    <ImageView
+        android:id="@+id/image1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:contentDescription="@string/articulos"
+        android:focusable="true"
+        android:onClick="seleccArticulo"
+        android:tag="0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/articulo_azul" />
+
+    <ImageView
+        android:id="@+id/imgArtEnHco1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:contentDescription="@string/articulos"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@drawable/marca_historico" />
+
+    <ImageView
+        android:id="@+id/imgArtVendido1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/articulos"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/esquina" />
+
+    <TextView
+        android:id="@+id/tvCantidad1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:text=""
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/tvCajas1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text=""
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/tvCantidad1" />
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="#FFFFFF"
+      android:orientation="vertical"
+      android:padding="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+      <TextView
+          android:id="@+id/textView4"
+          style="@style/Texto18"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.25"
+          android:text="@string/codigo_dosp" />
+
+      <TextView
+          android:id="@+id/tvCodigo1"
+          style="@style/Texto18"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.75"
+          android:text="@string/codigo"
+          android:textColor="@color/azul_alba" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+      <TextView
+          android:id="@+id/textView5"
+          style="@style/Texto18"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.25"
+          android:text="@string/descr_dosp" />
+
+      <TextView
+          android:id="@+id/tvDescr1"
+          style="@style/Texto18"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.75"
+          android:lines="1"
+          android:text="@string/descr"
+          android:textColor="@color/azul_alba" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+      <TextView
+          android:id="@+id/textView3"
+          style="@style/Texto18"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.25"
+          android:text="@string/cod_altern" />
+
+      <TextView
+          android:id="@+id/tvCodAlt1"
+          style="@style/Texto18"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.75"
+          android:text="@string/codigo"
+          android:textColor="@color/azul_alba" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+      <TextView
+          android:id="@+id/tvbioTitPrecio"
+          style="@style/Texto18"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.1"
+          android:text="@string/precioclte" />
+
+      <TextView
+          android:id="@+id/tvPrVta1"
+          style="@style/Texto18"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.3"
+          android:text=""
+          android:textColor="@color/azul_alba" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+      <TextView
+          android:id="@+id/textView2"
+          style="@style/Texto18"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.1"
+          android:text="@string/cat_dto" />
+
+      <TextView
+          android:id="@+id/tvDtoVta1"
+          style="@style/Texto18"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.3"
+          android:lines="1"
+          android:text=""
+          android:textColor="@color/azul_alba" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+      <TextView
+          android:id="@+id/textView6"
+          style="@style/Texto18"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.1"
+          android:text="@string/importe_dosp" />
+
+      <TextView
+          android:id="@+id/tvImpteVta1"
+          style="@style/Texto18"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.3"
+          android:text=""
+          android:textColor="@color/azul_alba" />
+
+    </LinearLayout>
+  </LinearLayout>
+
+
+</LinearLayout>

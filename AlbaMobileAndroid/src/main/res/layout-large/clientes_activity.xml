@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#FFFFFFFF"
+    android:layout_margin="5dp"
+    android:orientation="vertical">
+
+
+  <include
+      layout="@layout/ly_toolbar_large"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"/>
+
+
+  <LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    >
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvClientes"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        />
+
+    <LinearLayout
+      android:id="@+id/side_index"
+      android:layout_width="35dp"
+      android:layout_height="match_parent"
+      android:background="@color/gris_alba"
+      android:gravity="center_horizontal"
+      android:orientation="vertical"
+      >
+
+    </LinearLayout>
+  </LinearLayout>
+
+  <View
+      android:id="@+id/view2"
+      android:layout_width="wrap_content"
+      android:layout_height="1dp"
+      android:background="@android:color/background_dark" />
+
+  <LinearLayout
+    android:id="@+id/lyMenuBuscarClt"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+   >
+
+    <LinearLayout
+      android:orientation="horizontal"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="0.2"
+      android:background="@color/azul_alba"
+      android:onClick="nuevoClte"
+      android:clickable="true">
+
+      <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView9"
+        android:src="@drawable/mas_blanco"
+        android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+
+    <LinearLayout
+      android:orientation="horizontal"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="0.8"
+      android:paddingTop="10dp">
+
+      <Button
+          android:id="@+id/btnVerClte"
+          style="?android:attr/buttonBarButtonStyle"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:drawableTop="@drawable/ver"
+          android:onClick="fichaClte"
+          android:text="@string/ficha"
+          android:textAllCaps="false"
+          android:textSize="14sp"
+          android:textColor="@color/texto_botones"
+          />
+
+      <Button
+        android:id="@+id/btnEditClte"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/editar"
+        android:onClick="editarClte"
+        android:text="@string/btn_modif"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        android:textColor="@color/texto_botones"
+      />
+
+      <Button
+        android:id="@+id/btnBuscarClte"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/lupa"
+        android:onClick="buscarClte"
+        android:text="@string/buscar"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        android:textColor="@color/texto_botones"
+        />
+
+      <Button
+          android:id="@+id/btnOrdenarClte"
+          style="?android:attr/buttonBarButtonStyle"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:background="#FFFFFF"
+          android:drawableTop="@drawable/ordenacion_alf"
+          android:onClick="ordenarClte"
+          android:text="@string/ordenacion"
+          android:textAllCaps="false"
+          android:textColor="@color/texto_botones"
+          android:textSize="14sp" />
+
+      <Button
+        android:id="@+id/btnHcoClte"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/historico"
+        android:onClick="hcoClte"
+        android:text="@string/btn_hco"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        android:textColor="@color/texto_botones"
+        />
+
+    </LinearLayout>
+  </LinearLayout>
+
+</LinearLayout>

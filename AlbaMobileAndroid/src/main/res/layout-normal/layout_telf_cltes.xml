@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/LinearLayout"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:padding="6dip" >
+
+  <TextView
+      android:id="@+id/ly_contacto"
+      style="@style/Texto14"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="2"
+      android:text="@string/contacto"
+      android:textIsSelectable="false"
+      android:textSize="12sp" />
+
+  <TextView
+      android:id="@+id/ly_telf1"
+      style="@style/Texto14"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="5dp"
+      android:layout_weight="1"
+      android:text="@string/tlf1"
+      android:textSize="12sp" />
+
+  <TextView
+      android:id="@+id/ly_telf2"
+      style="@style/Texto14"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="5dp"
+      android:layout_weight="1"
+      android:text="@string/tlf2"
+      android:textSize="12sp" />
+
+</LinearLayout>

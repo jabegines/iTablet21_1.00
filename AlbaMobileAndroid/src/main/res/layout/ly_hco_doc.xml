@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvHcoArtClTipoDoc"
+            style="@style/Texto16"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:text="@string/etq_tipodoc" />
+
+        <TextView
+            android:id="@+id/tvHcoArtClSerieNum"
+            style="@style/Texto16"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="0.2"
+            android:lines="2"
+            android:text="@string/etq_serienum" />
+
+        <TextView
+            android:id="@+id/tvHcoArtClFecha"
+            style="@style/Texto16"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="0.2"
+            android:lines="2"
+            android:text="@string/fecha" />
+
+        <TextView
+            android:id="@+id/tvHcoArtClVentas"
+            style="@style/Texto16"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="0.2"
+            android:gravity="right"
+            android:text="@string/ventas" />
+
+        <TextView
+            android:id="@+id/tvHcoArtClDevoluciones"
+            style="@style/Texto16"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="0.2"
+            android:gravity="right"
+            android:text="@string/btn_devoluciones" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

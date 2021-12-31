@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="30dp">
+
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp">
+
+    <TextView
+      android:id="@+id/tvDatosDev_Articulo"
+      style="@style/Texto18.Negrita"
+      android:layout_width="wrap_content"
+      android:layout_height="50dp"
+      android:enabled="true"
+      android:maxLines="2"
+      android:text="@string/descr"/>
+
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    android:paddingBottom="20dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+      <TextView
+          android:id="@+id/textView1"
+          style="@style/Texto18"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:text="@string/cajas" />
+
+      <EditText
+          android:id="@+id/edtDatosDev_Cajas"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:gravity="right"
+          android:inputType="numberDecimal"
+          android:nextFocusDown="@+id/edtHco_Piezas"
+          android:selectAllOnFocus="true" />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="20dp">
+
+      <TextView
+        android:id="@+id/textView3"
+        style="@style/Texto18"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/cantidad"/>
+
+      <EditText
+        android:id="@+id/edtDatosDev_Cant"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:inputType="numberDecimal"
+        android:nextFocusDown="@+id/edtHco_Precio"
+        android:selectAllOnFocus="true"/>
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="40dp">
+
+    <TextView
+        android:id="@+id/tvCapIncidencia"
+        style="@style/Texto18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/incidencia_dosp" />
+
+    <TextView
+        android:id="@+id/tvDescrIncidencia"
+        style="@style/Texto18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="@string/incidencia" />
+
+  </LinearLayout>
+
+  <View
+      android:id="@+id/view2"
+      android:layout_width="wrap_content"
+      android:layout_height="1dp"
+      android:background="@android:color/background_dark"
+      android:layout_marginTop="30dp"
+      />
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="60dp"
+      android:paddingTop="10dp">
+
+    <Button
+        android:id="@+id/btnDatosDev_Incidencia"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/reenviar"
+        android:onClick="incidenciaDatosDev"
+        android:text="@string/btn_incid_full"
+        android:textColor="@color/texto_botones"
+        android:textSize="12sp" />
+
+    <Button
+        android:id="@+id/btnDatosDev_Terminar"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/cancelar"
+        android:onClick="cancelarDatosDev"
+        android:text="@string/btn_cancelar"
+        android:textColor="@color/texto_botones"
+        android:textSize="12sp" />
+
+    <Button
+        android:id="@+id/btnDatosDev_Aceptar"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/aceptar"
+        android:onClick="salvarDatosDev"
+        android:text="@string/btn_aceptar"
+        android:textColor="@color/texto_botones"
+        android:textSize="12sp" />
+
+  </LinearLayout>
+
+
+
+</LinearLayout>

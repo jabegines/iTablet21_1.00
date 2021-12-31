@@ -1,0 +1,35 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+  <TextView
+    android:id="@+id/textViewArt"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginTop="10dp"
+    android:text="@string/codigo"
+    android:textSize="18sp"/>
+
+
+  <LinearLayout
+    android:id="@+id/linearChart"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_above="@+id/view"
+    android:gravity="bottom"
+    android:orientation="horizontal">
+  </LinearLayout>
+
+  <View
+    android:id="@+id/view"
+    android:layout_width="match_parent"
+    android:layout_height="25dp"
+    android:layout_alignParentBottom="true"
+    android:background="@color/texto_botones"/>
+
+</RelativeLayout>
+
+

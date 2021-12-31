@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    android:layout_margin="5dp"
+    android:baselineAligned="false">
+
+  <include
+      layout="@layout/ly_toolbar_large"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"/>
+
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="20dp"
+    android:layout_weight="2"
+    android:background="#FFFFFF"
+    android:paddingBottom="10dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:paddingTop="10dp"
+    android:orientation="horizontal">
+
+    <LinearLayout
+      android:orientation="horizontal"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="0.7">
+
+      <TextView
+          android:id="@+id/tvEjer"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:drawableLeft="@drawable/forma_pago"
+          android:drawablePadding="10dp"
+          android:text="@string/fpago"
+          android:textSize="16sp"
+          android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+      android:orientation="horizontal"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="0.3">
+
+      <Spinner
+        android:id="@+id/spnCobrar_FPago"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:gravity="right"/>
+    </LinearLayout>
+  </LinearLayout>
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/gris_alba"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"/>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_weight="2"
+    android:background="#FFFFFF"
+    android:paddingBottom="10dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:paddingTop="10dp" >
+
+    <LinearLayout
+      android:orientation="horizontal"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="0.7">
+
+      <TextView
+          android:id="@+id/tvRec_Datos"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/importe"
+          android:textSize="16sp"
+          android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+      android:orientation="horizontal"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="0.3">
+
+      <EditText
+        android:id="@+id/edtCobrar_Impte"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:inputType="numberSigned|numberDecimal"
+        android:maxLength="@string/ml_precio"
+        android:selectAllOnFocus="true"
+        />
+    </LinearLayout>
+  </LinearLayout>
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/gris_alba"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"/>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_weight="2"
+    android:background="#FFFFFF"
+    android:paddingBottom="10dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:paddingTop="10dp" >
+
+    <LinearLayout
+      android:orientation="horizontal"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="0.7">
+
+      <TextView
+          android:id="@+id/textView3"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:drawableLeft="@drawable/divisa"
+          android:drawablePadding="10dp"
+          android:text="@string/divisa"
+          android:textSize="16sp"
+          android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+      android:orientation="horizontal"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="0.3">
+
+      <Spinner
+        android:id="@+id/spnCobrar_Divisas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:layout_gravity="right"/>
+    </LinearLayout>
+
+  </LinearLayout>
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/gris_alba"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"/>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_weight="2"
+    android:background="#FFFFFF"
+    android:paddingBottom="10dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:paddingTop="10dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/observaciones"
+        android:drawablePadding="10dp"
+        android:text="@string/anotacion"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <EditText
+      android:id="@+id/edtCobrar_Anot"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:inputType="text"
+      android:maxLength="40" />
+  </LinearLayout>
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/gris_alba"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginBottom="20dp"/>
+
+  <LinearLayout
+    android:id="@+id/llyCobrar_TotalesDoc"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="2"
+    android:orientation="horizontal"
+    android:background="@drawable/mi_borde_sombra"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginBottom="20dp"
+    android:paddingLeft="1dp"
+    >
+
+    <View
+      android:layout_width="1dp"
+      android:layout_height="80dp"
+      android:background="@color/gris_alba"
+      android:layout_marginLeft="5dp"
+      android:layout_marginRight="10dp"
+      android:layout_gravity="center_vertical"/>
+
+    <LinearLayout
+    android:id="@+id/lyPendiente"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_weight="0.8"
+    android:paddingTop="15dp"
+    android:paddingLeft="5dp">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:orientation="horizontal"
+      android:layout_weight="0.33"
+      android:paddingRight="20dp">
+
+      <TextView
+          android:id="@+id/textView5"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:text="@string/totalbase"
+          android:textSize="16sp"
+          android:textStyle="bold" />
+
+      <TextView
+        android:id="@+id/tvCobrar_Total"
+        style="@style/Texto18"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_weight="2"
+        android:gravity="right" />
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:orientation="horizontal"
+      android:layout_weight="0.33"
+      android:paddingRight="20dp">
+
+      <TextView
+          android:id="@+id/textView6"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:text="@string/cobrado"
+          android:textSize="16sp"
+          android:textStyle="bold" />
+
+      <TextView
+        android:id="@+id/tvCobrar_Cobrado"
+        style="@style/Texto18"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_weight="2"
+        android:gravity="right" />
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:orientation="horizontal"
+      android:layout_weight="0.33"
+      android:paddingRight="20dp">
+
+      <TextView
+          android:id="@+id/textView7"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:text="@string/pendiente"
+          android:textSize="16sp"
+          android:textStyle="bold" />
+
+      <TextView
+        android:id="@+id/tvCobrar_Pdte"
+        style="@style/Texto18"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="right" />
+    </LinearLayout>
+    </LinearLayout>
+
+  </LinearLayout>
+
+
+  <View
+      android:id="@+id/view2"
+      android:layout_width="wrap_content"
+      android:layout_height="1dp"
+      android:background="@android:color/background_dark" />
+
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:paddingTop="10dp" >
+
+    <Button
+      android:id="@+id/btnCobrar_Cancelar"
+      style="?android:attr/buttonBarButtonStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:drawableTop="@drawable/cancelar"
+      android:onClick="salir"
+      android:text="@string/cancelar"
+      android:textColor="@color/texto_botones"
+      android:textSize="14sp"
+      />
+
+    <Button
+      android:id="@+id/btnCobrar_Aceptar"
+      style="?android:attr/buttonBarButtonStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:drawableTop="@drawable/aceptar"
+      android:onClick="hacerCobro"
+      android:text="@string/aceptar"
+      android:textColor="@color/texto_botones"
+      android:textSize="14sp"
+      />
+  </LinearLayout>
+
+</LinearLayout>

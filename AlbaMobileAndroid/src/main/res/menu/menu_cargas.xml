@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/mni_confcargas"
+        android:title="@string/mni_configuracion"
+        android:icon="@android:drawable/ic_menu_preferences" />
+
+</menu>

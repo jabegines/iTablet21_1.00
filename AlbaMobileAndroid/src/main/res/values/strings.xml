@@ -1,0 +1,580 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <string name="app_name">ibsTablet</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Etiquetas de título -->
+    <string name="ett_undcaja">Un. por caja</string>
+
+    <!-- Etiquetas -->
+    <string name="aceptar_corto">Acep.</string>
+    <string name="activa">Ruta activa</string>
+    <string name="acum_corto">Acum.</string>
+    <string name="acum_mes">Acumulados del mes</string>
+    <string name="albaIBS">Alba IBS</string>
+    <string name="almacen">Almacen</string>
+    <string name="anotacion">Anotacion</string>
+    <string name="anular_busq">Anular busqueda</string>
+    <string name="anular_busq_resum">Anul. bsq.</string>
+    <string name="aplicariva">Aplicar IVA</string>
+    <string name="aplicarre">Aplicar recargo</string>
+    <string name="asignar_impr">Conectar impresora bluetooth</string>
+    <string name="baseimp">Base imp.</string>
+    <string name="buscar_lote">Buscar lote</string>
+    <string name="cajas">Cajas</string>
+    <string name="cajas_dosp">Cajas:</string>
+    <string name="cajas_abr_dosp">Cj:</string>
+    <string name="cancelar_corto">Canc.</string>
+    <string name="cantidad">Cantidad</string>
+    <string name="cantidad_dosp">Cantidad:</string>
+    <string name="cant_abr_dosp">Cant:</string>
+    <string name="cant_ant" tools:ignore="Typos">Cant. ant.</string>
+    <string name="cantped">C.pedida</string>
+    <string name="cero">0</string>
+    <string name="cif">CIF</string>
+    <string name="cliente">Cliente</string>
+    <string name="cliente_resum">Clte.</string>
+    <string name="cobrado">Cobrado</string>
+    <string name="codbarras">Cod. barras</string>
+    <string name="codigo">Codigo</string>
+    <string name="codigo_dosp">Código:</string>
+    <string name="cod_altern">Cód. alternativo:</string>
+    <string name="cod_postal">Código postal:</string>
+    <string name="contacto">Contacto:</string>
+    <string name="continuar">Continuar</string>
+    <string name="copias">Copias</string>
+    <string name="costo">Costo</string>
+    <string name="datoscliente">Datos del cliente</string>
+    <string name="datoslinea">Datos de la línea</string>
+    <string name="descr">Descripcion</string>
+    <string name="descr_dosp">Descripción:</string>
+    <string name="desde_fecha">Desde fecha:</string>
+    <string name="devoluciones">Devoluc.</string>
+    <string name="diferencia">Dif.</string>
+    <string name="direccion">Direccion</string>
+    <string name="dir_direccion">Direccion:</string>
+    <string name="dir_poblacion">Poblacion:</string>
+    <string name="dir_cpostal">C. Postal:</string>
+    <string name="dir_provincia">Provincia:</string>
+    <string name="disp_bt_vinc">Dispositivos Bluetooth vinculados</string>
+    <string name="divisa">Divisa</string>
+    <string name="docum_resum">Doc.</string>
+    <string name="dt_promoc">Dto. promocion</string>
+    <string name="dtcd_enporc">En porcentaje</string>
+    <string name="dtcd_enimp">En importe</string>
+    <string name="dtcd_porct">Por cantidad</string>
+    <string name="dtcd_por">x</string>
+    <string name="dto">%Dto</string>
+    <string name="dtoCaja">%Dt.caja:</string>
+    <string name="dtopie">Dto. pie:</string>
+    <string name="dtoeur">Dto €</string>
+    <string name="documento">Documento</string>
+    <string name="editar_hco">Editar histórico</string>
+    <string name="email">E-mail:</string>
+    <string name="empresa">Empr.</string>
+    <string name="empresas">Empresas</string>
+    <string name="envio">Envío</string>
+    <string name="env_ftp_res">Env. FTP</string>
+    <string name="env_wifi_res">Env. WIFI</string>
+    <string name="entregar">Entregar</string>
+    <string name="escojer_empresa">Escoja una empresa</string>
+    <string name="escojer_serie">Escoja una serie</string>
+    <string name="estadocom">Estado de la comunicacion</string>
+    <string name="exento">Exento</string>
+    <string name="existencias">Existencias</string>
+    <string name="etq_serienum">Serie/Número</string>
+    <string name="etq_lyn_serienum">Serie/Nº</string>
+    <string name="etq_precioii">Precio I.I.</string>
+    <string name="etq_lyn_precioii">Pr. II.</string>
+    <string name="etq_tipodoc">Tipo</string>
+    <string name="etq_datosdoc">Datos del documento</string>
+    <string name="f_entrega">Fecha de entrega</string>
+    <string name="fecha">Fecha</string>
+    <string name="fechavto">F. vto</string>
+    <string name="fenvio">Fecha de envio</string>
+    <string name="ficha_art">Ficha del artículo</string>
+    <string name="fin_doc">Fin documento</string>
+    <string name="formato">Formato</string>
+    <string name="formatos">Formatos</string>
+    <string name="formatos_upp">FORMATOS</string>
+    <string name="fpago">Forma de pago</string>
+    <string name="fpagodtos">Forma de pago y descuentos</string>
+    <string name="frecogida">Fecha de recogida</string>
+    <string name="inf_resum">Inf.</string>
+    <string name="ftppassword">Password FTP:</string>
+    <string name="ftpservidor">Servidor FTP:</string>
+    <string name="ftpusuario">Usuario FTP:</string>
+    <string name="getFechaVto">Indique la fecha de vencimiento:</string>
+    <string name="grupos_y_dep">Grupos y departamentos</string>
+    <string name="guardar_conf">Deberá de guardar la configuración antes de probar</string>
+    <string name="hasta_fecha">Hasta fecha:</string>
+    <string name="hco_art_clte">Histórico del artículo y cliente</string>
+    <string name="hora">Hora</string>
+    <string name="importe">Importe</string>
+    <string name="imp_ant">Imp. ant.</string>
+    <string name="impiva">IVA</string>
+    <string name="importe_dosp">Importe:</string>
+    <string name="impre">Rec.</string>
+    <string name="imprimirDoc">IMPRIMIR</string>
+    <string name="imprimirSinVal">Sin valorar</string>
+    <string name="incidencia">Incidencia</string>
+    <string name="incidencia_dosp">Incidencia:</string>
+    <string name="inf_cobros">Informe de cobros</string>
+    <string name="lote">Lote</string>
+    <string name="lote_dosp">Lote:</string>
+    <string name="lyn_baseimp">B. imp.</string>
+    <string name="lyn_cantidad" tools:ignore="Typos">Cant.</string>
+    <string name="lyn_cantped">C. pedida</string>
+    <string name="lyn_dtopie">"%Dto.:</string>
+    <string name="lyn_piezped">P.pedida</string>
+    <string name="lyn_recibirdocas">Rec. doc. asoc.</string>
+    <string name="lyn_recibirimag">Rec. imag.</string>
+    <string name="lyn_vaciarBD">Vaciar BD</string>
+    <string name="mas_direcc">Más direcc.</string>
+    <string name="noImprimirDoc">NO IMPRIMIR</string>
+    <string name="nombrefiscal">Nombre</string>
+    <string name="nombrecomercial">Nombre comercial</string>
+    <string name="nombrecom_corto">Nombre com.</string>
+    <string name="nueva_incid">Nueva incidencia</string>
+    <string name="numero">Número</string>
+    <string name="num_paquete">Nº paquete</string>
+    <string name="observ">Observac.:</string>
+    <string name="observ1">Observacion 1</string>
+    <string name="observ2">Observacion 2</string>
+    <string name="observdoc">Observaciones</string>
+    <string name="ordenacion">Ordenacion</string>
+    <string name="ord_resum">Ord.</string>
+    <string name="orden">Orden rutero</string>
+    <string name="pedirpassw">Introduzca la contraseña</string>
+    <string name="pagare_resum">Pag.</string>
+    <string name="pendiente">Pendiente</string>
+    <string name="peso">Peso</string>
+    <string name="piezas">Piezas</string>
+    <string name="porc_devol">% Dev.</string>
+    <string name="porciva">% IVA</string>
+    <string name="porcre">% Rec.</string>
+    <string name="porcre_small">%RE</string>
+    <string name="prbase">Precio Base</string>
+    <string name="prbase_lyn">Pr. Base</string>
+    <string name="prCaja">Pr.caja:</string>
+    <string name="precio">Precio</string>
+    <string name="precioclte">Precio:</string>
+    <string name="pr_especial">Pr. especial</string>
+    <string name="pr_especiales">Precios especiales</string>
+    <string name="pr_esp">Pr. esp.</string>
+    <string name="priva">Precio Iva</string>
+    <string name="priva_lyn">Pr. Iva</string>
+    <string name="probar_serv">Probar comunicación con servicio</string>
+    <string name="promociones">Promociones</string>
+    <string name="prom_resum">Prom.</string>
+    <string name="prneto">Pr.neto</string>
+    <string name="proveedor">Proveedor</string>
+    <string name="pr_promoc">Pr. promocion</string>
+    <string name="pr_promoc_ii">Pr. prom. iva incl.</string>
+    <string name="pulsar_bt">Pulse sobre el que vaya a usar como impresora</string>
+    <string name="recibirimag">Recibir imagenes: </string>
+    <string name="recibirdocas">Recibir doc. asociados: </string>
+    <string name="rec_docasc_abr">Rec. doc. asoc.:</string>
+    <string name="recogida">Recogida</string>
+    <string name="reparto">Reparto</string>
+    <string name="resdivisa">Resumen por divisa</string>
+    <string name="riesgo">Riesgo</string>
+    <string name="ruta">Ruta</string>
+    <string name="ruta_act">Ruta activa:</string>
+    <string name="saldo">Saldo</string>
+    <string name="selec_formato">Seleccione un formato</string>
+    <string name="serie">Serie</string>
+    <string name="series">Series</string>
+    <string name="simboloEuro"> €</string>
+    <string name="sincargo">Sin cargo</string>
+    <string name="stock">Stock</string>
+    <string name="stockclte">Existencias:</string>
+    <string name="sup_riesgo">Superado el riesgo máximo autorizado</string>
+    <string name="tarifa">Tarifa</string>
+    <string name="tarifadto">Tarifa dto.</string>
+    <string name="tasa1">Tasa 1</string>
+    <string name="tasa2">Tasa 2</string>
+    <string name="terminal">Terminal:</string>
+    <string name="texto_incid">Introduzca texto:</string>
+    <string name="texto_linea"> Tx</string>
+    <string name="texto_l_modif"> Tx - Md</string>
+    <string name="tipoiva">Tipo Iva</string>
+    <string name="tlf1">Telefono 1:</string>
+    <string name="tlf2">Telefono 2:</string>
+    <string name="totalbase">Total</string>
+    <string name="totales">TOTALES</string>
+    <string name="totales_min">Totales</string>
+    <string name="totalVentas">Total ventas:</string>
+    <string name="unidades">Unidades</string>
+    <string name="und_resum">Und.</string>
+    <string name="undcaja">Unid. por caja:</string>
+    <string name="udCajaRes">Und.caja:</string>
+    <string name="vaciarBD">Vaciar base de datos</string>
+    <string name="vacio"> </string>
+    <string name="vendedor">Vendedor:</string>
+    <string name="vender">Vender</string>
+    <string name="verdtos">Ver dtos.</string>
+    <string name="version">Versión:</string>
+    <string name="vtos_agrup">Vtos. agrup.</string>
+    <string name="wifi">Wifi</string>
+
+    <!-- Botones -->
+    <string name="btn_anomalias">Anomalías</string>
+    <string name="articulos">Artículos</string>
+    <string name="atras">Atras</string>
+    <string name="btn_aceptar">Aceptar</string>
+    <string name="btn_borrar">Borrar</string>
+    <string name="btn_cancelar">Cancelar</string>
+    <string name="btn_cliente">Cliente</string>
+    <string name="btn_cobrar">Cobrar</string>
+    <string name="btn_devoluciones">Devoluciones</string>
+    <string name="btn_dev_abreviado">Devol.</string>
+    <string name="btn_dosis">Dosis</string>
+    <string name="btn_firmar">Firmar</string>
+    <string name="btn_incid_abr">Incid.</string>
+    <string name="btn_incid_full">Incidencia</string>
+    <string name="btn_nueva">Nueva</string>
+    <string name="btn_nuevo">Nuevo</string>
+    <string name="clientes">Clientes</string>
+    <string name="cobros">Cobros</string>
+    <string name="depart">Departamentos</string>
+    <string name="detalle">Detalle</string>
+    <string name="enviar">Enviar</string>
+    <string name="estado_envio">Ver estado envio</string>
+    <string name="filtrar">Filtrar</string>
+    <string name="ventas">Ventas</string>
+    <string name="ventas_rep">Ventas/Reparto</string>
+    <string name="rutas">Rutas</string>
+    <string name="recibir">Recibir</string>
+    <string name="salir">Salir</string>
+    <string name="basedatos">Base de datos</string>
+    <string name="preparardatos">Preparar datos</string>
+    <string name="prep_num_exp">Preparar exp.</string>
+    <string name="lyn_preparardatos">Prep. datos</string>
+    <string name="enviarwifi">Enviar WIFI</string>
+    <string name="enviarftp">Enviar FTP</string>
+    <string name="recibirftp">Recibir FTP</string>
+    <string name="recibirwifi">Recibir WIFI</string>
+    <string name="btn_hco">Histórico</string>
+    <string name="btn_guardar">Guardar</string>
+    <string name="btn_salir">Salir</string>
+    <string name="btn_ver">Ver</string>
+    <string name="btn_marcarpagare">Pagaré</string>
+    <string name="btn_marcarpag_small">Pag.</string>
+    <string name="btn_modif">Modificar</string>
+    <string name="btn_modif_corto">Modif.</string>
+    <string name="btn_reenv">Reenviar</string>
+    <string name="btn_notas">Notas</string>
+    <string name="btn_pendiente">Pendiente</string>
+    <string name="btn_pendiente_corto">Pdte.</string>
+    <string name="btn_por_meses">Por meses</string>
+    <string name="btn_por_semanas">Por semanas</string>
+    <string name="btn_cobrosrealiz">Cobros realiz.</string>
+    <string name="btn_cobros">Cobros</string>
+    <string name="btn_cobrosreal_small">Cobros r.</string>
+    <string name="btn_documentos">Docum.</string>
+    <string name="btn_documentos_full">Documentos</string>
+    <string name="btn_todosdoc">Todos</string>
+    <string name="btn_Si">Si</string>
+    <string name="btn_No">No</string>
+    <string name="btn_crearPDF">Exp. PDF</string>
+    <string name="btn_crearPDF_corto">PDF</string>
+    <string name="btn_imprimir">Imprimir</string>
+    <string name="btn_imprimir_corto">Impr.</string>
+    <string name="btn_desupervisor">Supervisor</string>
+    <string name="btn_ficha">Ficha</string>
+    <string name="btn_escanear">Escanear</string>
+    <string name="btn_lineas">Lineas</string>
+    <string name="btn_catalogo">Catalogo</string>
+    <string name="btn_informe">Informe</string>
+    <string name="btn_findoc">Fin documento</string>
+    <string name="btn_textolin">Texto</string>
+    <string name="btn_rutero">Rutero</string>
+    <string name="btn_rutero_corto">Rut.</string>
+    <string name="btn_veracumul">Acumulados</string>
+
+    <!-- RadioButtons -->
+    <string name="rdb_que_empiece">Que empiece</string>
+    <string name="rdb_que_contenga">Que contenga</string>
+    <string name="rdb_factura">Factura</string>
+    <string name="lyn_rdb_factura">Fra.</string>
+    <string name="rdb_albaran">Albaran</string>
+    <string name="lyn_rdb_albaran">Alb.</string>
+    <string name="rdb_pedido">Pedido</string>
+    <string name="lyn_rdb_pedido">Ped.</string>
+    <string name="rdb_presup">Presupuesto</string>
+    <string name="lyn_rdb_presup">Pres.</string>
+
+    <!-- TextViews -->
+    <string name="tv_num_sistemas">Numero de sistemas</string>
+
+    <!-- Menus -->
+    <string name="aceptar">Aceptar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="cancelar_upp">CANCELAR</string>
+    <string name="mni_actualizar">Actualizar la aplicacion</string>
+    <string name="mni_cargas">Cargas</string>
+    <string name="mni_catVisual">Catálogo visual</string>
+    <string name="mni_configuracion">Configuracion</string>
+    <string name="mni_confimpr">Impresora</string>
+    <string name="mni_equivalenc">Equivalencias</string>
+    <string name="mni_exp_pdf">Exp. PDF</string>
+    <string name="mni_imprimir">Imprimir</string>
+    <string name="mni_numeroexp">Preparar num. exportacion</string>
+    <string name="mni_modolista">Modo lista</string>
+    <string name="mni_vergruposydep">Grupos</string>
+    <string name="mni_verhistorico">Historico</string>
+    <string name="mni_hco_resum">Hco.</string>
+    <string name="mni_vercatalogos">Catalogos</string>
+    <string name="min_catalog_resum">Cat.</string>
+    <string name="mni_verclasifav">Clasif. avanzada</string>
+    <string name="mni_verID">Ver ID del dispositivo</string>
+    <string name="mni_informes">Informes</string>
+    <string name="mni_infstock">Inf. de stock</string>
+    <string name="mni_infdoc">Inf. de documentos</string>
+    <string name="mni_graf_vtas_art_clte">Ventas por artículo y clte.</string>
+    <string name="mni_graf_vtas_clte">Ventas al cliente</string>
+    <string name="mni_graf_hco_clte">Histórico del cliente</string>
+    <string name="ok_upp">OK</string>.
+    <string name="mni_ver_doc">Ver documento</string>
+
+    <!-- CheckBoxs -->
+    <string name="chk_usar_multisistema">Usar multisistema:</string>
+
+    <!-- ActionBar -->
+    <string name="activar_ruta">Activar</string>
+    <string name="borrar">Borrar</string>
+    <string name="buscar">Buscar</string>
+    <string name="donde_buscar">Dónde buscar:</string>
+    <string name="editar">Editar</string>
+    <string name="enarticulos">En artículos</string>
+    <string name="encatalogo">En el catálogo</string>
+    <string name="ficha">Ficha</string>
+    <string name="hacerdoc">Terminar</string>
+    <string name="limpiar">Limpiar</string>
+    <string name="mapa">Mapa</string>
+    <string name="nueva">Nueva</string>
+    <string name="nuevo">Nuevo</string>
+    <string name="puesta_cero">Puesta a cero</string>
+
+
+
+    <!-- Hints -->
+    <string name="hint_codigo">codigo</string>
+    <string name="hint_nfiscal">nombre fiscal</string>
+    <string name="hint_ncomercial">nombre comercial</string>
+    <string name="hint_cif">cif</string>
+    <string name="hint_direccion">direccion</string>
+    <string name="hint_poblacion">poblacion</string>
+    <string name="hint_codpostal">codigo postal</string>
+    <string name="hint_provincia">provincia</string>
+    <string name="hint_sincodigo">\t</string>
+    <string name="hint_rutaactiva">ninguna</string>
+    <string name="hint_serienum">serie/numero</string>
+    <string name="hint_descr">descripcion</string>
+
+    <!-- Mensajes -->
+    <string name="msj_ActApk">Actualizando la aplicación ...</string>
+    <string name="msj_AlgunProblema">Hubo algun problema al arrancar la aplicacion</string>
+    <string name="msj_Borrar">Solo puedo borrar pedidos no comunicados</string>
+    <string name="msj_CobroExiste">Parece que hay otro cobro con idénticos datos, ¿continuar?</string>
+    <string name="msj_CodNoExiste">El codigo indicado no existe</string>
+    <string name="msj_DocVacio">El documento esta vacio</string>
+    <string name="msj_FechaRango">Fecha del dispositivo fuera de rango. No podra realizar ningun documento.</string>
+    <string name="msj_FirmarRegExp">No puede firmar un documento exportado</string>
+    <string name="msj_ImportandoFich">Importando fichero: \t</string>
+    <string name="msj_ImprNuevo">Solo puede imprimir documentos no comunicados</string>
+    <string name="msj_IncidRegExp">No puede indicar una incidencia a un documento exportado</string>
+    <string name="msj_MarcarEnviar">¿Marcar el documento para enviar?</string>
+    <string name="msj_Modificar">Solo puede modificar documentos no comunicados</string>
+    <string name="msj_NoAutorizado">No está autorizado a realizar la operación</string>
+    <string name="msj_NoDatosExport">No se encontraron datos para exportar</string>
+    <string name="msj_NoDiferida">La factura no es diferida</string>
+    <string name="msj_NoRegSelecc">No ha seleccionado ningun registro</string>
+    <string name="msj_NoVacCarpEnvio">No se pudo vaciar la carpeta de envio</string>
+    <string name="msj_NoVenderNeg">No está permitido vender en negativo</string>
+    <string name="msj_Reenviar">El documento no se puede reenviar</string>
+    <string name="msj_SinAlmacen">No ha indicado ningun almacen</string>
+    <string name="msj_SinCodigo">No ha indicado ningun codigo</string>
+    <string name="msj_SinFechaIF">No se han podido establecer las fecha de inicio y final del ejercicio.</string>
+    <string name="msj_SinImpte">No ha indicado ningun importe</string>
+    <string name="msj_DocNoCargado">Documento no cargado</string>
+    <string name="msj_SinDocumento">No ha elegido ningun documento</string>
+    <string name="msj_ImpteMayorPdte">El importe supera al pendiente</string>
+    <string name="msj_SinSerie">No se encontro una serie o un numero validos</string>
+    <string name="msj_NoExisteDirect">No se encontro la carpeta</string>
+    <string name="msj_RecibiendoFich">Recibiendo fichero: \t</string>
+    <string name="msj_EnviandoFich">Enviando fichero: \t</string>
+    <string name="msj_DocContado">No se puede modificar un documento de contado</string>
+    <string name="msj_CodYaExiste">El codigo indicado ya existe</string>
+    <string name="msj_SinBusqueda">No ha indicado ninguna cadena de búsqueda</string>
+    <string name="msj_SinRutaWifi">No ha configurado una ruta para comunicar via WIFI</string>
+    <string name="msj_SinFich_RutaEnv">No se encontraron ficheros en la carpeta de envio</string>
+    <string name="msj_SinFich_Servidor">No se encontraron ficheros en el servidor</string>
+    <string name="msj_FinEnvio">Fin del envio</string>
+    <string name="msj_FinRecepcion">Fin de la recepcion, preparando importacion</string>
+    <string name="msj_BorrFich">Borrando ficheros</string>
+    <string name="msj_FinPrep">"Se termino de preparar"</string>
+    <string name="msj_Abandonar">¿Esta seguro de abandonar?</string>
+    <string name="msj_NoVender">No está permitido vender al cliente</string>
+    <string name="msj_SinNumExp">No ha indicado ningun numero de exportacion</string>
+    <string name="msj_SinClte">Tiene que seleccionar un cliente</string>
+    <string name="msj_SinDto">Tiene que indicar algún descuento</string>
+    <string name="msj_GpsDesact">Tiene el GPS desactivado. Por favor, actívelo.</string>
+    <string name="msj_GpsAct">El GPS se ha activado</string>
+    <string name="msj_SerieNoEjerc">La serie configurada no pertenece al ejercicio actual</string>
+    <string name="msj_SinDatos">No se encontraron datos</string>
+    <string name="msj_SinFormatos">No se encontraron formatos para el artículo</string>
+    <string name="msj_SinTexto">No ha indicado ningún texto</string>
+    <string name="msj_CodTermIncorr">EL CODIGO DEL TERMINAL NO ES CORRECTO</string>
+    <string name="msj_RiesgoSup">Ha superado el riesgo del cliente</string>
+    <string name="msj_DatosYaRec">Ya ha recibido los datos que están en la carpeta o hubo un error. Vuelva a hacer un envio.</string>
+    <string name="msj_FPrepNoValida">La fecha del último envío es mayor que la de la última preparación, no se importará.</string>
+    <string name="msj_ConfigGuardada">La configuración ha sido guardada</string>
+    <string name="msj_MarcarPagare">¿Marcar como pagaré?</string>
+    <string name="msj_VtoCobrado">El vencimiento ya está cobrado</string>
+    <string name="msj_VtoDeFra">Solo podrá convertir a pagaré un vencimento de factura</string>
+    <string name="msj_VtoYaEsPagare">El vencimiento ya es un pagaré</string>
+
+    <!-- Toast -->
+    <string name="tst_docpdf">Se creó el documento PDF</string>
+    <string name="tst_envinf">Se envió el informe</string>
+
+    <!-- Dialogos con el usuario -->
+    <string name="dlg_apl_oft_ped">¿Aplicar ofertas en el pedido?</string>
+    <string name="dlg_si">Si</string>
+    <string name="dlg_no">No</string>
+    <string name="dlg_enviowifi">¿Comenzar con el envio por WIFI?</string>
+    <string name="dlg_recepwifi">¿Comenzar con la recepcion por WIFI?</string>
+    <string name="dlg_envioftp">¿Comenzar con el envio por FTP?</string>
+    <string name="dlg_recepftp">¿Comenzar con la recepcion por FTP?</string>
+    <string name="dlg_datosenvio">¿Preparar los datos para el envio?</string>
+    <string name="dlg_abandrecep">¿Abandonar la recepcion?</string>
+    <string name="dlg_borrarped">¿Borrar el pedido?</string>
+
+    <!-- Titulos de dialogos -->
+    <string name="tit_apl_oft_ped">Aplicar ofertas</string>
+    <string name="tit_borrardoc">Borrar documento</string>
+    <string name="tit_enviowifi">Enviar WIFI</string>
+    <string name="tit_envioftp">Enviar FTP</string>
+    <string name="tit_marcarenv">Marcar para enviar</string>
+    <string name="tit_prepdatos">Preparar datos</string>
+    <string name="tit_recepwifi">Recibir WIFI</string>
+    <string name="tit_recepftp">Recibir FTP</string>
+    <string name="tit_impdatos">Importar datos</string>
+    <string name="tit_cancelar_hco">Cancelar historico</string>
+    <string name="tit_riesgosup">Riesgo superado</string>
+
+    <!-- Catalogo -->
+    <string name="grupos">GRUPOS</string>
+    <string name="departamentos">DEPARTAMENTOS</string>
+    <string name="cat_articulos">ARTICULOS</string>
+    <string name="cat_catalogos">CATALOGOS</string>
+    <string name="cat_estad_doc_asoc">ESTADISTICAS Y DOCUMENTOS ASOCIADOS</string>
+    <string name="cat_udscaja">Uds.Caja:</string>
+    <string name="cat_precio">Precio:</string>
+    <string name="cat_dto">Dto.:</string>
+    <string name="cat_codart_may">CODIGO</string>
+    <string name="cat_cbart_may">CODIGO BARRAS</string>
+    <string name="cat_exist_may">EXISTENCIAS</string>
+    <string name="cat_cajas_may">CAJAS</string>
+    <string name="cat_prov_may">PROVEEDOR</string>
+    <string name="cat_undcj_may">UNID. CAJA</string>
+    <string name="cat_peso_may">PESO</string>
+    <string name="cat_cliente">CLIENTE</string>
+    <string name="cat_tipodoc">DOCUMENTO</string>
+    <string name="cat_solooft">PROMOCIONES</string>
+    <string name="clas_avanz">CLASIFICACION AVANZADA</string>
+
+    <!-- Pantalla ventas -->
+    <string name="vtas_ruta">RUTA</string>
+    <string name="vtas_docymov">DOCUMENTO Y MOV.</string>
+
+    <!-- Nombres de bases de datos -->
+    <string name="EscojerBD">Escoja las bases de datos </string>
+    <string name="TituloBD_0">AlbaDB00</string>
+    <string name="TituloBD_1">AlbaDB10</string>
+    <string name="TituloBD_2">AlbaDB20</string>
+    <string name="TituloBD_3">AlbaDB30</string>
+    <string name="TituloBD_4">AlbaDB40</string>
+    <string name="TituloBD_5">AlbaDB50</string>
+    <string name="TituloBD_6">AlbaDB60</string>
+    <string name="TituloBD_7">AlbaDB70</string>
+    <string name="TituloBD_8">AlbaDB80</string>
+    <string name="TituloBD_9">AlbaDB90</string>
+
+    <string name="BD_0">DBAlba00</string>
+    <string name="BD_1">DBAlba10</string>
+    <string name="BD_2">DBAlba20</string>
+    <string name="BD_3">DBAlba30</string>
+    <string name="BD_4">DBAlba40</string>
+    <string name="BD_5">DBAlba50</string>
+    <string name="BD_6">DBAlba60</string>
+    <string name="BD_7">DBAlba70</string>
+    <string name="BD_8">DBAlba80</string>
+    <string name="BD_9">DBAlba90</string>
+
+    <!-- Configuracion  Preferencias -->
+    <string name="pref_cargas_cod_val">Pedir código de validación para cargas</string>
+    <string name="pref_detall_cat_vis">Pedir detalles en catálogo visual:</string>
+    <string name="pref_doc_defecto">Documento por defecto</string>
+    <string name="pref_env_doc_autom">Enviar documentos automáticamente</string>
+    <string name="pref_incid_por_def">Incidencia por defecto:</string>
+    <string name="pref_modo_venta">Modo de venta por defecto</string>
+    <string name="pref_num_imag_cat">Numero de imagenes en catalogo</string>
+    <string name="pref_pedir_codigo_ventas">Pedir código primero en vez de buscar:</string>
+    <string name="pref_pedir_cobro_reparto">Pedir cobro al hacer la entrega:</string>
+    <string name="pref_pedir_detalle_cat">Pedir detalle de cada artículo</string>
+    <string name="pref_pedir_firma_reparto">Pedir la firma al hacer la entrega:</string>
+    <string name="pref_pedir_incid_reparto">Pedir incid. en cada línea de devol.:</string>
+    <string name="pref_rutero_cp">Presentar clientes por código postal:</string>
+    <string name="pref_usar_camara_cb">Usar camara como lector de codigos de barras</string>
+    <string name="pref_usar_servicio">Usar servicio</string>
+    <string name="pref_vtas_env_guardar">Clasificar docs. como Enviar/Guardar:</string>
+    <string name="pref_vtas_exp_pdf">Exportar pedidos como pdf al terminar:</string>
+    <string name="prfsummary_cargar_todos_art">Cargar todos los articulos al abrir en modo lista, bien al vender o al visualizar</string>
+    <string name="prfsummary_cargas_cod_val">Se pedirá un código de validación para terminar cada carga</string>
+    <string name="prfsummary_codigo_ventas">La aplicación pedirá el código del artículo en lugar de la ventana de búsquedas</string>
+    <string name="prfsummary_detall_cat_vis">La aplicación pedirá datos de cada artículo seleccionado</string>
+    <string name="prfsummary_doc_defecto">Documento que se nos aconsejará al vender</string>
+    <string name="prfsummary_env_doc_autom">Se aconseja activar la configuración \'Clasificar documentos como Enviar/Guardar\'</string>
+    <string name="prfsummary_env_guardar">Los documentos se marcarán como enviado o guardado</string>
+    <string name="prfsummary_incid_por_def">Incidencia que se aconsejará en cada linea de devolución</string>
+    <string name="prfsummary_modo_venta">Forma en la que veremos los artículos al comenzar a vender</string>
+    <string name="prfsummary_num_imag_cat">Numero de imagenes que veremos en una sola pantalla</string>
+    <string name="prfsummary_pedir_cobro_reparto">La aplicación pedirá el cobro al terminar el reparto</string>
+    <string name="prfsummary_pedir_firma_reparto">La aplicación pedirá la firma al terminar el reparto</string>
+    <string name="prfsummary_pedir_incid_reparto">Se podrá indicar un tipo de incidencia en cada línea de devolución</string>
+    <string name="prfsummary_rutero_cp">Los clientes se presentarán por código postal</string>
+    <string name="prfsummary_usar_camara_cb">Se requiere una resolución mínima de 5 MP y tener instalado Barcode Scanner</string>
+    <string name="prfsummary_vtas_exp_pdf">Los pedidos se enviarán por correo a los clientes</string>
+
+
+
+
+    <!-- Maxlengths -->
+    <string name="ml_precio">8</string>
+    <string name="ml_codart">15</string>
+    <string name="btn_editar">Editar</string>
+
+    <!-- Lista de titulos de navegacion -->
+    <string-array name="nav_options">
+        <item>Galeria</item>
+        <item>General</item>
+        <item>Tarifas</item>
+    </string-array>
+
+    <!-- Lista de iconos de navegacion -->
+    <array name="navigation_icons">
+        <item>@drawable/menulateral_galeria</item>
+        <item>@drawable/menulateral_general</item>
+        <item>@drawable/menulateral_tarifas</item>
+    </array>
+    <string name="title_activity_aaaaa">aaaaa</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+
+</resources>

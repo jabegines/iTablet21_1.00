@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp">
+
+
+    <TextView
+        android:id="@+id/tvLNCCodigo"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:text="@string/codigo"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/tvLNCDescr"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="0.3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvLNCDescr"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:text="@string/descr"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="0.7"
+        app:layout_constraintStart_toEndOf="@+id/tvLNCCodigo"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/tvNCCapLote"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:text="@string/lote_dosp"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/tvLNCLote"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvLNCCodigo" />
+
+    <TextView
+        android:id="@+id/tvLNCLote"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:text="@string/lote"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/tvNCCapCajas"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="0.4"
+        app:layout_constraintStart_toEndOf="@+id/tvNCCapLote"
+        app:layout_constraintTop_toBottomOf="@id/tvLNCCodigo" />
+
+    <TextView
+        android:id="@+id/tvNCCapCajas"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:text="@string/cajas_dosp"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/tvLNCCajas"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="0.1"
+        app:layout_constraintStart_toEndOf="@+id/tvLNCLote"
+        app:layout_constraintTop_toBottomOf="@id/tvLNCDescr" />
+
+    <TextView
+        android:id="@+id/tvLNCCajas"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:gravity="end"
+        android:text="@string/cajas"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/tvNCCapCant"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="0.1"
+        app:layout_constraintStart_toEndOf="@+id/tvNCCapCajas"
+        app:layout_constraintTop_toBottomOf="@id/tvLNCDescr" />
+
+    <TextView
+        android:id="@+id/tvNCCapCant"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:gravity="end"
+        android:text="@string/cantidad_dosp"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/tvLNCCantidad"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="0.2"
+        app:layout_constraintStart_toEndOf="@+id/tvLNCCajas"
+        app:layout_constraintTop_toBottomOf="@id/tvLNCDescr" />
+
+    <TextView
+        android:id="@+id/tvLNCCantidad"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:gravity="end"
+        android:text="@string/cantidad"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="0.2"
+        app:layout_constraintStart_toEndOf="@+id/tvNCCapCant"
+        app:layout_constraintTop_toBottomOf="@id/tvLNCDescr" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

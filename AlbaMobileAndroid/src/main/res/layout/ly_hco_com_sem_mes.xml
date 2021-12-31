@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/lyhcoSemMesCodigo"
+            style="@style/Texto16"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/codigo" />
+
+        <TextView
+            android:id="@+id/lyhcoSemMesDescr"
+            style="@style/Texto16"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="4"
+            android:text="@string/descr" />
+
+        <TextView
+            android:id="@+id/lyhcoSemMesCant1"
+            style="@style/Texto16"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="@string/cantidad" />
+
+        <TextView
+            android:id="@+id/lyhcoSemMesCant2"
+            style="@style/Texto16"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="@string/cantidad" />
+
+    </LinearLayout>
+
+</LinearLayout>

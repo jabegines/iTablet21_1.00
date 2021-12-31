@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <item android:id="@+id/mni_bioImgAcumArt"
+        android:title="@string/mni_graf_vtas_art_clte"
+        android:icon="@drawable/acum_artic_48" />
+
+  <item android:id="@+id/mni_bioVtasClte"
+        android:title="@string/mni_graf_vtas_clte"
+        android:icon="@drawable/acum_artic_48" />
+
+  <item android:id="@+id/mni_bioHcoClte"
+        android:title="@string/mni_graf_hco_clte"
+        android:icon="@drawable/acum_artic_48" />
+
+</menu>

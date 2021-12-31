@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:layout_margin="5dp"
+    android:orientation="vertical" >
+
+    <include
+        layout="@layout/ly_toolbar_large"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvNumExp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight = "1"
+     />
+
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@android:color/background_dark" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:paddingTop="10dp"
+    >
+
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:id="@+id/btnCancelar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/cancelar"
+            android:onClick="cancelar"
+            android:text="@string/btn_cancelar"
+            android:textColor="@color/texto_botones"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+        />
+
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:id="@+id/btnAceptar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/aceptar"
+            android:onClick="aceptar"
+            android:text="@string/btn_aceptar"
+            android:textColor="@color/texto_botones"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+        />
+
+    </LinearLayout>
+
+</LinearLayout>

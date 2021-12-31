@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical" >
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@color/gris_alba"
+    android:orientation="horizontal"
+    android:paddingTop="5dp"
+    >
+
+    <ImageView
+      android:id="@+id/imgvArtOft"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="0.1"
+      android:contentDescription="@string/aceptar"
+      android:src="@drawable/cliente_azul" />
+
+    <LinearLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="0.9"
+      android:orientation="vertical"
+      android:paddingLeft="10dp" >
+
+      <TextView
+        android:id="@+id/tvDirNombreClte"
+        style="@style/Texto14.Negrita"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/nombrefiscal" />
+
+      <TextView
+        android:id="@+id/tvDirNComClte"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/nombrecomercial"
+        style="@style/Texto14"/>
+    </LinearLayout>
+  </LinearLayout>
+
+  <ListView
+      android:id="@+id/lvDirCltes"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_marginLeft="5dp"
+      android:layout_marginRight="5dp"
+      android:layout_weight="0.4"
+      android:fastScrollEnabled="true"
+      android:listSelector="@drawable/list_selector"></ListView>
+
+  <View
+    android:layout_width="wrap_content"
+    android:layout_height="10dp"
+    android:background="@drawable/separador"
+    />
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginTop="15dp"
+    android:orientation="vertical"
+    android:layout_weight="0.6">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="5dp"
+      >
+
+      <TextView
+          android:id="@+id/tvTotalTarifas"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/dir_direccion"
+          android:textSize="12sp"
+          android:textStyle="bold" />
+
+      <EditText
+          android:id="@+id/edtDir_Direcc"
+          style="@style/Texto14"
+          android:layout_width="250dp"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="5dp"
+          android:enabled="false"
+          android:inputType="text"
+          android:maxLength="50"
+          android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="5dp" >
+
+      <TextView
+          android:id="@+id/tvVt_Orden"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/dir_poblacion"
+          android:textSize="12sp"
+          android:textStyle="bold" />
+
+      <EditText
+          android:id="@+id/edtDir_Poblacion"
+          style="@style/Texto14"
+          android:layout_width="250dp"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="5dp"
+          android:enabled="false"
+          android:inputType="text"
+          android:maxLength="50"
+          android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="5dp" >
+
+      <TextView
+          android:id="@+id/tvVt_NombreClte"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/dir_cpostal"
+          android:textSize="12sp"
+          android:textStyle="bold" />
+
+      <EditText
+          android:id="@+id/edtDir_CPostal"
+          style="@style/Texto14"
+          android:layout_width="150dp"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="5dp"
+          android:enabled="false"
+          android:inputType="text"
+          android:maxLength="5"
+          android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="5dp" >
+
+      <TextView
+          android:id="@+id/ly_vl_dto"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/dir_provincia"
+          android:textSize="12sp"
+          android:textStyle="bold" />
+
+      <EditText
+          android:id="@+id/edtDir_Provincia"
+          style="@style/Texto14"
+          android:layout_width="250dp"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="5dp"
+          android:ems="10"
+          android:enabled="false"
+          android:inputType="text"
+          android:maxLength="40"
+          android:textSize="12sp" />
+
+    </LinearLayout>
+  </LinearLayout>
+
+  <View
+    android:layout_width="wrap_content"
+    android:layout_height="1dp"
+    android:layout_marginTop="15dp"
+    android:background="#EFEFEF"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"/>
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="40dp"
+      android:baselineAligned="false"
+      android:orientation="horizontal"
+      android:paddingBottom="2dp">
+
+    <ImageView
+        android:id="@+id/imvMenuDir"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:onClick="menuDirecciones"
+        android:src="@drawable/mas" />
+
+    <ImageView
+        android:id="@+id/imvNuevaDir"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentTop="false"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_marginTop="7dp"
+        android:layout_toLeftOf="@+id/imvMenuDir"
+        android:layout_toStartOf="@+id/imvMenuDir"
+        android:onClick="nuevaDir"
+        android:src="@drawable/nuevo_sin"
+        android:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/imvEditarDir"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentTop="false"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="7dp"
+        android:layout_toLeftOf="@+id/imvNuevaDir"
+        android:layout_toStartOf="@+id/imvNuevaDir"
+        android:onClick="editarDir"
+        android:src="@drawable/editar_sin"
+        android:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/imvBorrarDir"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentTop="false"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="7dp"
+        android:layout_toLeftOf="@+id/imvEditarDir"
+        android:layout_toStartOf="@+id/imvEditarDir"
+        android:onClick="borrarDir"
+        android:src="@drawable/borrar_sin"
+        android:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/imvMapaDir"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentTop="false"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="7dp"
+        android:layout_toLeftOf="@+id/imvBorrarDir"
+        android:layout_toStartOf="@+id/imvBorrarDir"
+        android:onClick="mapaDirContacto"
+        android:src="@drawable/pin"
+        android:visibility="visible" />
+
+  </RelativeLayout>
+</LinearLayout>

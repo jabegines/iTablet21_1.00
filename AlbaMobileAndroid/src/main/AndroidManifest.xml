@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="es.albainformatica.albamobileandroid"
+    android:installLocation="auto"
+    android:versionCode="2"
+    android:versionName="2.00">
+
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
+
+
+    <uses-feature android:name="android.hardware.camera" />
+
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- Este permiso es para tablets a partir de Android 11, ya que sin él no podremos
+        descargarnos nada, por ejemplo los archivos .zip del servicio -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- Permiso para poder instalar una aplicación desde el programa. Lo hacemos en ActualizarApk.java -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+    <!-- Librería para dispositivos Zebra -->
+    <!-- <uses-permission android:name="com.symbol.emdk.permission.EMDK" /> -->
+
+
+    <application
+        android:allowBackup="false"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/TemaAlba"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="m">
+
+        <!--
+        <uses-library
+            android:name="com.symbol.emdk"
+            android:required="false"
+        />
+        -->
+
+        <provider
+          android:name="androidx.core.content.FileProvider"
+          android:authorities="${applicationId}.provider"
+          android:exported="false"
+          android:grantUriPermissions="true">
+            <meta-data
+              android:name="android.support.FILE_PROVIDER_PATHS"
+              android:resource="@xml/file_paths"/>
+        </provider>
+
+        <activity
+            android:name=".actividades.Main"
+            android:label="@string/app_name"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".maestros.ArticulosActivity"
+            android:label="Articulos"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+        <activity
+            android:name=".maestros.FichaArticuloActivity"
+            android:label="Ficha artículo"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".maestros.ClientesActivity"
+            android:label="Clientes"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".maestros.FichaClteActivity"
+            android:label="Cliente"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
+        <activity
+            android:name=".maestros.EditarTlfClte"
+            android:label="Contactos"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity
+            android:name=".maestros.EditarDirClte"
+            android:label="Direcciones"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            />
+        <activity
+            android:name=".ventas.VentasActivity"
+            android:label="Ventas"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+        <activity
+            android:name=".ventas.VentasLineas"
+            android:label="Ventas"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".ventas.VentasDatosLinea"
+            android:label="Ventas"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".ventas.VentasFinDoc"
+            android:label="Fin documento"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="stateHidden|adjustNothing"
+        />
+        <activity
+            android:name=".ventas.VerDocumentosActivity"
+            android:label="Documentos"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".comunicaciones.Enviar"
+            android:label="Enviar"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".comunicaciones.Recibir"
+            android:label="Recibir"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".historicos.CargarHco"
+            android:label="Historico"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".historicos.EditarHcoActivity"
+            android:label="Historico"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".ventas.AcumuladosMes"
+            android:label="Acumulados"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".cobros.Cobrar"
+            android:label="Cobrar"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:windowSoftInputMode="stateHidden|adjustNothing"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".cobros.CobrosActivity"
+            android:label="Cobros"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".cobros.InfCobrosActivity"
+            android:label="Inf. cobros"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+
+        <!--
+        <activity
+            android:name=".impresion_informes.ImprimirDocumento"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"/>
+        -->
+
+        <activity
+            android:name=".actividades.BuscarBluetooth"
+            android:label="Config. impresora Bluetooth"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".ventas.BuscarLotes"
+            android:label="Buscar lote"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".actividades.PedirPassword"
+            android:label="Introducir password"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:name=".actividades.ConfMultisistema"
+            android:label="Configuracion multisistema"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:name=".historicos.VerHcoArtCliente"
+            android:label="Historico del articulo"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".comunicaciones.PedirNumExport"
+            android:label="Escoger numero de exportacion"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".actividades.ActualizarApk"
+            android:label="Actualizar aplicacion"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".actividades.ActApkServicio"
+            android:label="Actualizar aplicacion"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ventas.EditarDtosCascada"
+            android:label="Dtos. cascada"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog.NoActionBar" />
+        <activity
+            android:name=".reparto.FirmarDoc"
+            android:label="Firmar documento"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".reparto.DocsReparto"
+            android:label="Documentos reparto"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".reparto.ModifDocReparto"
+            android:label="Anomalias"
+            android:screenOrientation="sensorPortrait"
+        />
+        <activity
+            android:name=".ventas.VentasIncidencia"
+            android:label="Incidencia"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".ventas.TextoLinea"
+            android:label="Texto linea"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".ventas.AcumuladosAnyo"
+            android:label="Acumulados del año"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity
+            android:name=".cobros.PedirAnotacion"
+            android:label="Anotacion"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity
+            android:name=".ventas.VerNotasCliente"
+            android:label="Notas"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity
+            android:name=".ventas.EditarNota"
+            android:label="Nota"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity
+            android:name=".ventas.ListaPreciosEspeciales"
+            android:label="Precios especiales"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".reparto.RepartoDevoluciones"
+            android:label="Devoluciones"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity
+            android:name=".reparto.DatosDevolucion"
+            android:label="Datos devolucion"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity
+            android:name=".comunicaciones.PedirConfigFtp"
+            android:label="Configuracion ftp"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity
+            android:name=".maestros.ArticuloImagen"
+            android:label="Imagen artículo"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"/>
+
+        <activity
+            android:name=".biocatalogo.BioCatalogo"
+            android:label="Catalogo"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+
+        <activity
+            android:name=".biocatalogo.VerImagenAsoc"
+            android:label="Catalogo"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+
+        <activity
+            android:name=".biocatalogo.VtaFormatosCat"
+            android:label="Formatos"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/TemaAppCompat"
+            />
+
+        <activity
+            android:name=".biocatalogo.VtaDetallesCat"
+            android:label="Detalles"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert"
+            />
+
+        <activity
+            android:name=".biocatalogo.BioCambiarDistr"
+            android:label="Cambiar distribucion"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert"
+            />
+
+        <activity
+            android:name=".impresion_informes.Graf_Vtas_Art"
+            android:label=""
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+
+        <activity
+            android:name=".impresion_informes.Graf_Vtas_Clte"
+            android:label=""
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+
+        <activity
+            android:name=".impresion_informes.GrafVtasRepre"
+            android:label=""
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+
+        <activity
+            android:name=".impresion_informes.Graf_Hco_Clte"
+            android:label=""
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+
+        <activity
+            android:name=".comunicaciones.ServicioRecibir"
+            android:label="Recibir de servicio"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+
+        <activity
+            android:name=".comunicaciones.ServicioEnviar"
+            android:label="Enviar a servicio"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+
+        <activity
+            android:name=".ventas.VerRiesgo"
+            android:label="Riesgo del cliente"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+
+        <activity
+            android:name=".cargas.VerCargas"
+            android:label="Cargas"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light"
+            />
+
+        <activity
+            android:name=".cargas.NuevaCarga"
+            android:label="Nueva carga"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light"
+            />
+
+        <activity
+            android:name=".historicos.CargarHcoPorDoc"
+            android:label="Histórico por documento"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light"
+            />
+
+        <activity
+            android:name=".cargas.ConfigurarCargas"
+            android:label="Configurar cargas"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light"
+            />
+
+        <activity
+            android:name=".historicos.AcumComSemMes"
+            android:label="Comparativa por períodos"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light"
+            />
+        <activity
+            android:name=".actividades.NewPrefs"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+        <activity
+            android:name=".maestros.GetDireccClte"
+            android:label="Direcciones"
+            android:screenOrientation="sensorPortrait"
+            />
+        <activity
+            android:name=".ventas.PedirDosis"
+            android:label="Seleccione un formato"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light"
+            />
+
+        <activity
+            android:name=".oldcatalogo.CatalogoArticulos"
+            android:label="Artículos"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+
+        <activity
+            android:name=".oldcatalogo.CatalogoGruposDep"
+            android:label="Grupos"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+
+        <activity
+            android:name=".oldcatalogo.CatalogoCatalogos"
+            android:label="Catalogos"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+
+        <activity
+            android:name=".ventas.SeleccSerieActivity"
+            android:label="Series"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+        <activity
+            android:name=".maestros.ElegirEmpresaActivity"
+            android:label="Empresas"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+
+    </application>
+
+</manifest>

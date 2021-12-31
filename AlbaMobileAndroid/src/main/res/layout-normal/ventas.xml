@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:baselineAligned="false"
+            android:layout_margin="5dp"
+            android:background="#FFFFFF">
+
+  <include
+      layout="@layout/ly_toolbar_normal"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"/>
+
+
+
+
+  <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/mi_borde"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginBottom="10dp"
+    android:layout_marginTop="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+      <LinearLayout
+          android:orientation="horizontal"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="20dp"
+          >
+
+        <EditText
+            android:id="@+id/edtVt_CodClte"
+            style="@style/Texto14"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:background="@drawable/mi_rectangulo"
+            android:hint="@string/codigo"
+            android:inputType="number"
+            android:maxLines="1" />
+
+        <ImageView
+            android:id="@+id/imvLyClasific"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignRight="@+id/edtVt_CodClte"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="7dp"
+            android:background="@drawable/lupa"
+            android:contentDescription="@string/buscar"
+            android:onClick="buscarCliente" />
+
+
+        <ImageView
+            android:id="@+id/imgNoVender"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/bio_restar_48" />
+
+
+      </LinearLayout>
+
+      <TextView
+          android:id="@+id/edtVt_NFiscal"
+          style="@style/Texto14"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="10dp"
+          android:text="@string/nombrefiscal"
+          android:textSize="12sp" />
+
+      <TextView
+          android:id="@+id/edtVt_NComercial"
+          style="@style/Texto14"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/nombrecomercial"
+          android:textSize="12sp" />
+
+    </LinearLayout>
+  </LinearLayout>
+
+  <LinearLayout
+      android:orientation="horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:baselineAligned="false"
+      android:id="@+id/lyVtCpTipoDoc"
+      android:focusableInTouchMode="false"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mi_borde"
+        android:layout_marginTop="10dp"
+        android:layout_weight="0.6">
+
+      <TextView
+          android:id="@+id/tvVtTipoDoc"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_gravity="center"
+          android:gravity="center"
+          android:text="@string/etq_tipodoc"
+          android:textStyle="bold" />
+
+      <RadioGroup
+          android:id="@+id/radioGroup"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:clickable="true"
+          android:orientation="vertical"
+          android:padding="5dp"
+          >
+
+        <RadioButton
+            android:id="@+id/rdbVt_Fra"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/radiobutton_selector"
+            android:paddingLeft="7dp"
+            android:text="@string/rdb_factura"
+            android:textSize="12sp" />
+
+        <RadioButton
+            android:id="@+id/rdbVt_Alb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:button="@drawable/radiobutton_selector"
+            android:paddingLeft="7dp"
+            android:text="@string/rdb_albaran"
+            android:textSize="12sp" />
+
+        <RadioButton
+            android:id="@+id/rdbVt_Ped"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:button="@drawable/radiobutton_selector"
+            android:paddingLeft="7dp"
+            android:text="@string/rdb_pedido"
+            android:textSize="12sp" />
+
+        <RadioButton
+            android:id="@+id/rdbVt_Presp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:button="@drawable/radiobutton_selector"
+            android:paddingLeft="7dp"
+            android:text="@string/rdb_presup"
+            android:textSize="12sp" />
+      </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_weight="0.3"
+        android:background="@drawable/mi_borde"
+        android:orientation="vertical">
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.15"
+          android:clickable="true"
+          android:focusable="true"
+          android:onClick="cambiarSerie"
+          android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvVtCapSerie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/serie"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/edtVtSerie"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="@string/serie"
+            android:textSize="12sp" />
+      </LinearLayout>
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+
+  <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="0.1">
+
+  </LinearLayout>
+
+
+  <View
+      android:id="@+id/view2"
+      android:layout_width="wrap_content"
+      android:layout_height="1dp"
+      android:background="@android:color/background_dark"
+      />
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="75dp"
+      android:baselineAligned="false"
+      >
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.15"
+        android:background="@color/azul_alba"
+        android:onClick="lanzarLineas"
+        android:clickable="true">
+
+      <ImageView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:id="@+id/imageView8"
+          android:src="@drawable/mas_blanco"
+          android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.85"
+        android:orientation="horizontal"
+        android:paddingTop="5dp">
+
+      <Button
+          android:id="@+id/btnVtDocumentos"
+          style="?android:attr/buttonBarButtonStyle"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:drawableTop="@drawable/documentos"
+          android:onClick="verDocumentos"
+          android:text="@string/btn_documentos"
+          android:textColor="@color/texto_botones"
+          android:textSize="12sp"
+          android:textAllCaps="false"
+          />
+
+      <Button
+          android:id="@+id/btnVtPdte"
+          style="?android:attr/buttonBarButtonStyle"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:drawableTop="@drawable/pendiente"
+          android:onClick="pendienteClte"
+          android:text="@string/btn_pendiente_corto"
+          android:textColor="@color/texto_botones"
+          android:textSize="12sp"
+          android:textAllCaps="false"
+          />
+
+      <Button
+          android:id="@+id/btnVtNotas"
+          style="?android:attr/buttonBarButtonStyle"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:drawableTop="@drawable/notas"
+          android:onClick="notasClte"
+          android:text="@string/btn_notas"
+          android:textColor="@color/texto_botones"
+          android:textSize="12sp"
+          android:textAllCaps="false"
+          />
+
+      <Button
+          android:id="@+id/btnCancelarClte"
+          style="?android:attr/buttonBarButtonStyle"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:drawableTop="@drawable/cancelar"
+          android:onClick="finalizar"
+          android:text="@string/cancelar_corto"
+          android:textColor="@color/texto_botones"
+          android:textSize="12sp"
+          android:textAllCaps="false"
+          />
+    </LinearLayout>
+
+
+  </LinearLayout>
+
+</LinearLayout>

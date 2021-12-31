@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+  <TextView
+      android:id="@+id/tvRecibiendo"
+      android:layout_width="339dp"
+      android:layout_height="35dp"
+      android:layout_marginLeft="16dp"
+      android:layout_marginTop="16dp"
+      android:text="TextView"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintTop_toTopOf="parent"/>
+
+  <ProgressBar
+      android:id="@+id/progressBar"
+      style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="20dp"
+      android:layout_marginLeft="16dp"
+      android:layout_marginRight="16dp"
+      android:layout_marginTop="88dp"
+      android:max="0"
+      android:progress="0"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="@+id/tvRecibiendo"/>
+
+  <TextView
+      android:id="@+id/tvPorcentaje"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="16dp"
+      android:layout_marginTop="12dp"
+      android:text="TextView"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/progressBar"
+      app:layout_constraintVertical_bias="0.002"/>
+
+  <TextView
+      android:id="@+id/tvNumArchivos"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginRight="16dp"
+      android:layout_marginTop="12dp"
+      android:text="TextView"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/progressBar"/>
+
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="80dp"
+      android:paddingTop="10dp"
+      app:layout_constraintBottom_toBottomOf="parent">
+
+
+    <Button
+        android:id="@+id/btnServRecImag"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/bajar"
+        android:onClick="recImagenes"
+        android:text="@string/recibirimag"
+        android:textAllCaps="false"
+        android:textColor="@color/texto_botones"
+        android:textSize="14sp"/>
+
+
+    <Button
+        android:id="@+id/btnServRecibir"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/bajar"
+        android:onClick="recibir"
+        android:text="@string/recibir"
+        android:textAllCaps="false"
+        android:textColor="@color/texto_botones"
+        android:textSize="14sp"/>
+
+  </LinearLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

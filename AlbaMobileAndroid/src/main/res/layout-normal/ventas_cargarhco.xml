@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:layout_margin="5dp"
+    android:orientation="vertical" >
+
+    <include
+        layout="@layout/ly_toolbar_normal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:background="#FFFFFF"
+        android:orientation="vertical"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
+                android:id="@+id/tvPiezPed"
+                style="@style/Texto12"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="right"
+                android:text="@string/lyn_piezped"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/textView11"
+                style="@style/Texto12"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="right"
+                android:text="@string/lyn_cantped"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/tvEjer"
+                style="@style/Texto12"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="right"
+                android:text="@string/cantidad"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/textView7"
+                style="@style/Texto12"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.9"
+                android:gravity="right"
+                android:text="@string/precio"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/textView8"
+                style="@style/Texto12"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/dto"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/textView9"
+                style="@style/Texto12"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.9"
+                android:gravity="right"
+                android:text="@string/cajas"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/textView10"
+                style="@style/Texto12"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2.1"
+                android:gravity="center"
+                android:text="@string/fecha"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:background="#000000" />
+
+        <ListView
+            android:id="@+id/lvHcoArticulos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:listSelector="@drawable/list_selector"></ListView>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@android:color/background_dark"
+        />
+
+    <LinearLayout
+        android:id="@+id/llyHco_Botones"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        >
+
+        <Button
+            android:id="@+id/btnBuscar"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/lupa"
+            android:onClick="buscarEnHco"
+            android:text="@string/buscar"
+            android:textAllCaps="false"
+            android:textColor="@color/texto_botones"
+            android:textSize="14sp"
+        />
+
+        <Button
+            android:id="@+id/btnPrecEsp"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:drawableTop="@drawable/estadisticas"
+            android:onClick="verPrecEspeciales"
+            android:text="@string/pr_esp"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            android:textColor="@color/texto_botones"
+        />
+
+        <Button
+            android:id="@+id/btnHco_Editar"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/editar"
+            android:onClick="editarHco"
+            android:text="@string/btn_modif_corto"
+            android:textColor="@color/texto_botones"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+        />
+
+        <Button
+            android:id="@+id/btnHco_Terminar"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/cancelar"
+            android:onClick="cancelarHco"
+            android:text="@string/cancelar_corto"
+            android:textColor="@color/texto_botones"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+        />
+
+        <Button
+            android:id="@+id/btnHco_Acumulados"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/articulos"
+            android:onClick="verAcumulados"
+            android:text="@string/acum_corto"
+            android:textColor="@color/texto_botones"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+        />
+
+        <Button
+            android:id="@+id/btnHco_Limpiar"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/historico"
+            android:onClick="limpiarHco"
+            android:text="@string/limpiar"
+            android:textColor="@color/texto_botones"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+        />
+
+        <Button
+            android:id="@+id/btnHco_Aceptar"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/aceptar"
+            android:onClick="salvarHco"
+            android:text="@string/aceptar_corto"
+            android:textColor="@color/texto_botones"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+        />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_weight="2"
+    android:background="#FFFFFF"
+    android:paddingBottom="10dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:paddingTop="10dp"
+    android:orientation="vertical">
+
+    <TextView
+      android:id="@+id/textView4"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      style="@style/Texto24.Negrita"
+      android:text="@string/anotacion"
+      android:drawableLeft="@drawable/observaciones"
+      android:drawablePadding="10dp"
+      />
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/anotacion"
+      android:id="@+id/textView17"
+      android:textColor="@color/gris_alba"
+      android:layout_marginTop="5dp"/>
+
+    <EditText
+      android:id="@+id/edt_Anotacion"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:inputType="textMultiLine"
+      android:maxLength="30"/>
+
+    <TextView
+      android:id="@+id/textView14"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="40dp"
+      android:text="@string/getFechaVto"
+      style="@style/Texto16.Negrita"/>
+
+    <DatePicker
+      android:id="@+id/dpFechaVto"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="20dp"
+      android:datePickerMode="calendar"
+      android:spinnersShown="false"/>
+  </LinearLayout>
+
+
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:background="@color/gris_alba"
+    android:paddingTop="15dp" >
+
+    <Button
+      android:id="@+id/btnCobrar_Cancelar"
+      style="?android:attr/buttonBarButtonStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:background="@color/gris_alba"
+      android:drawableTop="@drawable/cancelar"
+      android:onClick="cancelar"
+      android:text="@string/cancelar"
+      android:textColor="@color/texto_botones"
+      android:textSize="14sp"
+      />
+
+    <Button
+      android:id="@+id/btnCobrar_Aceptar"
+      style="?android:attr/buttonBarButtonStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:background="@color/gris_alba"
+      android:drawableTop="@drawable/aceptar"
+      android:onClick="hacerAnotacion"
+      android:text="@string/aceptar"
+      android:textColor="@color/texto_botones"
+      android:textSize="14sp"
+      />
+  </LinearLayout>
+
+</LinearLayout>

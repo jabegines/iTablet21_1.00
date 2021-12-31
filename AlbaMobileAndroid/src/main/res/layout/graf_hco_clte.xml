@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#FFFFFF"
+              android:orientation="vertical"
+              android:padding="5dp">
+
+
+  <LinearLayout
+    android:id="@+id/lyGrafHcoClteTit"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_marginTop="5dp"
+    android:layout_weight="0.05"
+    android:background="#FFFFFF"
+    android:orientation="horizontal"
+    android:padding="5dp">
+
+    <TextView
+      style="@style/Texto20.Negrita"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_weight="0.2"
+      android:text="Histórico de artículos vendidos del cliente"/>
+
+  </LinearLayout>
+
+  <View
+    android:id="@+id/divider5"
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:layout_marginBottom="5dp"
+    android:layout_marginTop="10dp"
+    android:background="?android:attr/listDivider"/>
+
+  <LinearLayout
+    android:id="@+id/lyGrafHcoClteCap"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="0.04"
+    android:background="#FFFFFF"
+    android:orientation="horizontal">
+
+    <TextView
+      android:id="@+id/tvgrafhcoCodigo"
+      style="@style/Texto16.Negrita"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="0.2"
+      android:text="@string/codigo"/>
+
+    <TextView
+      android:id="@+id/tvgrafhcoDescr"
+      style="@style/Texto16.Negrita"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="0.5"
+      android:text="@string/descr"/>
+
+    <TextView
+      android:id="@+id/tvgrafhcoCantAnt"
+      style="@style/Texto16.Negrita"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="0.15"
+      android:gravity="end"
+      android:text="@string/cant_ant"/>
+
+    <TextView
+      android:id="@+id/tvgrafhcoCant"
+      style="@style/Texto16.Negrita"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="0.15"
+      android:gravity="end"
+      android:text="@string/cantidad"/>
+
+    <TextView
+      android:id="@+id/tvgrafhcoImpteAnt"
+      style="@style/Texto16.Negrita"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="0.15"
+      android:gravity="end"
+      android:text="@string/imp_ant"/>
+
+    <TextView
+      android:id="@+id/tvgrafhcoImpte"
+      style="@style/Texto16.Negrita"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="0.15"
+      android:gravity="end"
+      android:text="@string/importe"/>
+
+  </LinearLayout>
+
+  <View
+    android:id="@+id/divider3"
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:layout_marginBottom="5dp"
+    android:background="?android:attr/listDivider"/>
+
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="0.9"
+    android:background="#FFFFFF"
+    android:orientation="horizontal">
+
+    <ListView
+      android:id="@+id/lvGrafHcoClte"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="#FFFFFF"
+      android:listSelector="@drawable/list_selector">
+    </ListView>
+
+  </LinearLayout>
+
+  <View
+    android:id="@+id/divider4"
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="?android:attr/listDivider"
+    />
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_marginTop="10dp"
+    android:layout_weight="0.04"
+    android:background="#FFFFFF"
+    android:orientation="horizontal">
+
+    <TextView
+      android:id="@+id/tvgrafhcoTCod"
+      style="@style/Texto16.Negrita"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="0.18"
+      />
+
+    <TextView
+      android:id="@+id/tvgrafhcoTD"
+      style="@style/Texto16.Negrita"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="0.45"
+      android:text="@string/totales_min"/>
+
+    <TextView
+      android:id="@+id/tvgrhcoTotCAnt"
+      style="@style/Texto16.Negrita"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="0.17"
+      android:gravity="end"
+      android:text="@string/cant_ant"/>
+
+    <TextView
+      android:id="@+id/tvgrhcoTotCant"
+      style="@style/Texto16.Negrita"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="0.17"
+      android:gravity="end"
+      android:text="@string/cantidad"/>
+
+    <TextView
+      android:id="@+id/tvgrhcoTotIAnt"
+      style="@style/Texto16.Negrita"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="0.17"
+      android:gravity="end"
+      android:text="@string/imp_ant"/>
+
+    <TextView
+      android:id="@+id/tvgrhcoTotImpte"
+      style="@style/Texto16.Negrita"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="0.17"
+      android:gravity="end"
+      android:text="@string/importe"/>
+
+  </LinearLayout>
+
+
+</LinearLayout>

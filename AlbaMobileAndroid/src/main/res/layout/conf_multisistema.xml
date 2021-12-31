@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="280dp"
+              android:layout_height="match_parent"
+              android:background="#FFFFFF"
+              android:baselineAligned="false"
+              android:orientation="vertical"
+              android:paddingLeft="10dp"
+              android:paddingRight="10dp">
+
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="10dp">
+
+    <TextView
+      android:id="@+id/textView"
+      style="@style/Texto18"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/chk_usar_multisistema"/>
+
+    <CheckBox
+      android:id="@+id/chkUsarMult"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="10dp"
+      android:button="@drawable/checkbox_selector"
+      android:onClick="actNumSistemas"/>
+
+  </LinearLayout>
+
+  <TextView
+    android:id="@+id/tvEscojerBD"
+    style="@style/Texto18.Negrita"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:text="@string/EscojerBD"/>
+
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="1dp">
+
+    <TextView
+      android:id="@+id/textView0"
+      style="@style/Texto18"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/TituloBD_0"/>
+
+    <CheckBox
+      android:id="@+id/checkBox"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="10dp"
+      android:button="@drawable/checkbox_selector"/>
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="1dp">
+
+    <TextView
+      android:id="@+id/textView1"
+      style="@style/Texto18"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/TituloBD_1"/>
+
+    <CheckBox
+      android:id="@+id/checkBox1"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="10dp"
+      android:button="@drawable/checkbox_selector"/>
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="1dp">
+
+    <TextView
+      android:id="@+id/textView2"
+      style="@style/Texto18"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/TituloBD_2"/>
+
+    <CheckBox
+      android:id="@+id/checkBox2"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="10dp"
+      android:button="@drawable/checkbox_selector"/>
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="1dp">
+
+    <TextView
+      android:id="@+id/textView3"
+      style="@style/Texto18"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/TituloBD_3"/>
+
+    <CheckBox
+      android:id="@+id/checkBox3"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="10dp"
+      android:button="@drawable/checkbox_selector"/>
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="1dp">
+
+    <TextView
+      android:id="@+id/textView4"
+      style="@style/Texto18"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/TituloBD_4"/>
+
+    <CheckBox
+      android:id="@+id/checkBox4"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="10dp"
+      android:button="@drawable/checkbox_selector"/>
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="1dp">
+
+    <TextView
+      android:id="@+id/textView5"
+      style="@style/Texto18"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/TituloBD_5"/>
+
+    <CheckBox
+      android:id="@+id/checkBox5"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="10dp"
+      android:button="@drawable/checkbox_selector"/>
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:layout_marginBottom="5dp"
+    android:layout_marginTop="5dp"
+    android:background="#B6B6B6"
+    android:orientation="horizontal">
+
+    <Button
+      android:id="@+id/btnCnfMlt_Cancelar"
+      style="@android:style/ButtonBar"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:background="#B6B6B6"
+      android:drawableTop="@drawable/ic_action_bar_cancel_blanco"
+      android:onClick="cancelar"
+      android:textColor="#FFFFFF"/>
+
+    <Button
+      android:id="@+id/btnCnfMlt_Aceptar"
+      style="@android:style/ButtonBar"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:background="#B6B6B6"
+      android:drawableTop="@drawable/ic_action_bar_ok_blanco"
+      android:onClick="aceptar"
+      android:textColor="#FFFFFF"/>
+  </LinearLayout>
+
+
+</LinearLayout>

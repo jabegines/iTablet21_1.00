@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:paddingBottom="3dp"
+              android:paddingTop="3dp">
+
+  <TextView
+    android:id="@+id/lygrafhcoCodigo"
+    style="@style/Texto16"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="0.18"
+    android:gravity="center_vertical"
+    android:text="@string/codigo"/>
+
+  <TextView
+    android:id="@+id/lygrafhcoDescr"
+    style="@style/Texto16"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="0.45"
+    android:text="@string/descr"/>
+
+  <TextView
+    android:id="@+id/lygrafhcoCantAnt"
+    style="@style/Texto16"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="0.17"
+    android:gravity="right|center_vertical"
+    android:text="@string/cantidad"/>
+
+  <TextView
+    android:id="@+id/lygrafhcoCant"
+    style="@style/Texto16"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="0.17"
+    android:gravity="right|center_vertical"
+    android:text="@string/cantidad"/>
+
+
+  <TextView
+    android:id="@+id/lygrafhcoImpteAnt"
+    style="@style/Texto16"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="0.17"
+    android:gravity="right|center_vertical"
+    android:text="@string/importe"/>
+
+  <TextView
+    android:id="@+id/lygrafhcoImpte"
+    style="@style/Texto16"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="0.17"
+    android:gravity="right|center_vertical"
+    android:text="@string/importe"/>
+
+
+</LinearLayout>

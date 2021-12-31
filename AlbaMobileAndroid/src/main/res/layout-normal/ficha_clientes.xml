@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#FFFFFFFF"
+              android:orientation="vertical" >
+
+  <TabHost
+    android:id="@android:id/tabhost"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1" >
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      >
+
+      <TabWidget
+          android:id="@android:id/tabs"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@color/azul_alba"></TabWidget>
+
+      <FrameLayout
+        android:id="@android:id/tabcontent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+          android:id="@+id/tab1Cltes"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:orientation="vertical" >
+
+          <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/gris_alba"
+            android:orientation="horizontal"
+            android:paddingTop="5dp"
+            >
+
+            <ImageView
+              android:id="@+id/imgvArtOft"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="0.1"
+              android:contentDescription="@string/aceptar"
+              android:src="@drawable/cliente_azul" />
+
+            <LinearLayout
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="0.9"
+              android:orientation="vertical"
+              android:paddingLeft="10dp" >
+
+              <TextView
+                android:id="@+id/tvNombreClte"
+                style="@style/Texto14.Negrita"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nombrefiscal" />
+
+              <TextView
+                android:id="@+id/tvNComClte"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nombrecomercial"
+                style="@style/Texto14"/>
+            </LinearLayout>
+          </LinearLayout>
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="5dp"
+              android:text="@string/nombrefiscal"
+              android:textSize="12sp"
+              android:textStyle="bold" />
+
+          <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <EditText
+                android:id="@+id/edtCodClte"
+                style="@style/Texto14"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="3dp"
+                android:layout_weight="1.6"
+                android:enabled="false"
+                android:hint="@string/hint_codigo"
+                android:inputType="number"
+                android:maxLines="1"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/edtNFiscal"
+                style="@style/Texto14"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="6"
+                android:hint="@string/hint_nfiscal"
+                android:inputType="text"
+                android:maxLength="40"
+                android:maxLines="1"
+                android:textSize="12sp" />
+          </LinearLayout>
+
+          <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#EFEFEF" />
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="5dp"
+              android:text="@string/nombrecomercial"
+              android:textSize="12sp"
+              android:textStyle="bold" />
+
+          <EditText
+              android:id="@+id/edtNComercial"
+              style="@style/Texto14"
+              android:layout_width="350dp"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="5dp"
+              android:hint="@string/hint_ncomercial"
+              android:inputType="text"
+              android:maxLength="40"
+              android:maxLines="1"
+              android:textSize="12sp" />
+
+          <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#EFEFEF" />
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="5dp"
+              android:text="@string/cif"
+              android:textSize="12sp"
+              android:textStyle="bold" />
+
+          <EditText
+              android:id="@+id/edtCIF"
+              style="@style/Texto14"
+              android:layout_width="242dp"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="5dp"
+              android:hint="@string/hint_cif"
+              android:inputType="text"
+              android:maxLength="16"
+              android:maxLines="1"
+              android:textSize="12sp" />
+
+          <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#EFEFEF" />
+
+          <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="@string/direccion"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+          </LinearLayout>
+
+          <EditText
+              android:id="@+id/edtDireccion"
+              style="@style/Texto14"
+              android:layout_width="350dp"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="5dp"
+              android:hint="@string/hint_direccion"
+              android:inputType="text"
+              android:maxLength="35"
+              android:maxLines="1"
+              android:textSize="12sp" />
+
+          <EditText
+              android:id="@+id/edtCodPostal"
+              style="@style/Texto14"
+              android:layout_width="150dp"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="5dp"
+              android:ems="10"
+              android:hint="@string/hint_codpostal"
+              android:inputType="text"
+              android:maxLength="5"
+              android:maxLines="1"
+              android:textSize="12sp" />
+
+          <EditText
+              android:id="@+id/edtPoblacion"
+              style="@style/Texto14"
+              android:layout_width="350dp"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="5dp"
+              android:hint="@string/hint_poblacion"
+              android:inputType="text"
+              android:maxLength="30"
+              android:maxLines="1"
+              android:textSize="12sp" />
+
+          <EditText
+              android:id="@+id/edtProvincia"
+              style="@style/Texto14"
+              android:layout_width="350dp"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="5dp"
+              android:hint="@string/hint_provincia"
+              android:inputType="text"
+              android:maxLength="20"
+              android:maxLines="1"
+              android:textSize="12sp" />
+
+          <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#EFEFEF" />
+
+        </LinearLayout>
+
+        <include
+          android:id="@+id/tab2Cltes"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          layout="@layout/tab_varios_clientes" />
+
+        <include
+          android:id="@+id/tab3Cltes"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          layout="@layout/tab_telefonos_clientes" />
+
+        <include
+          android:id="@+id/tab4Cltes"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          layout="@layout/tab_direcc_clientes" />
+      </FrameLayout>
+    </LinearLayout>
+  </TabHost>
+
+  <View
+      android:id="@+id/view2"
+      android:layout_width="wrap_content"
+      android:layout_height="1dp"
+      android:background="@android:color/background_dark"
+      />
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="70dp"
+      android:paddingTop="10dp">
+
+    <Button
+        android:id="@+id/btnMapaClte"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/mapa"
+        android:onClick="mapaDirPrincipal"
+        android:text="@string/mapa"
+        android:textColor="@color/texto_botones"
+        android:textSize="14sp"
+        />
+
+    <Button
+        android:id="@+id/btnCancelarClte"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/cancelar"
+        android:onClick="cancelarClte"
+        android:text="@string/cancelar"
+        android:textColor="@color/texto_botones"
+        android:textSize="14sp"
+        />
+
+    <Button
+        android:id="@+id/btnAceptarClte"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/aceptar"
+        android:onClick="salvarDatos"
+        android:text="@string/aceptar"
+        android:textColor="@color/texto_botones"
+        android:textSize="14sp"
+        />
+
+  </LinearLayout>
+</LinearLayout>

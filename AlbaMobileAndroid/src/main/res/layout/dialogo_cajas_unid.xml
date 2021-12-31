@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="400dp"
+              android:layout_height="wrap_content"
+              android:padding="5dp">
+
+  <ImageView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/imageView12"
+    android:src="@drawable/icono_cantidad"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginTop="10dp"/>
+
+  <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="INTRODUCE UNA CANTIDAD"
+    android:id="@+id/textView27"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginTop="20dp"
+    style="@style/Texto16"/>
+
+  <LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="2dp"
+    android:background="@color/gris_alba"
+    android:layout_marginTop="10dp"
+    android:layout_marginLeft="40dp"
+    android:layout_marginRight="40dp">
+  </LinearLayout>
+
+  <EditText
+    android:layout_width="140dp"
+    android:layout_height="wrap_content"
+    android:id="@+id/edtDlgCajasUnd"
+    android:layout_gravity="center_horizontal"
+    android:inputType="numberDecimal"
+    android:layout_marginTop="20dp"/>
+
+  <Button
+    android:layout_width="110dp"
+    android:layout_height="40dp"
+    android:id="@+id/btnOkDlgCjUnd"
+    android:layout_gravity="center_horizontal"
+    android:background="@color/azul_alba"
+    android:layout_marginTop="40dp"
+    android:text="Aceptar"
+    android:textColor="@android:color/white"
+    android:textSize="18sp"
+    android:layout_marginBottom="30dp"
+    />
+</LinearLayout>

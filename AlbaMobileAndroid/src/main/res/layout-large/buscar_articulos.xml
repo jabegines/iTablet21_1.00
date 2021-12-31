@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFFFF"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+
+  <include
+      layout="@layout/ly_toolbar_large"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:baselineAligned="false"
+      android:orientation="horizontal">
+
+    <ListView
+        android:id="@+id/lvArticulos"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_weight="1"
+        android:background="#FFFFFFFF"
+        android:fastScrollEnabled="true"
+        android:listSelector="@drawable/list_selector"></ListView>
+
+    <LinearLayout
+        android:id="@+id/side_index"
+        android:layout_width="35dp"
+        android:layout_height="match_parent"
+        android:background="@color/gris_alba"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+  <View
+      android:id="@+id/view2"
+      android:layout_width="wrap_content"
+      android:layout_height="1dp"
+      android:background="@android:color/background_dark" />
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="80dp"
+      android:background="#FFFFFF"
+      android:paddingTop="10dp">
+
+    <Button
+        android:id="@+id/btnBuscar"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#FFFFFF"
+        android:drawableTop="@drawable/lupa"
+        android:onClick="buscarArt"
+        android:text="@string/buscar"
+        android:textAllCaps="false"
+        android:textColor="@color/texto_botones"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/btnOrdenar"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#FFFFFF"
+        android:drawableTop="@drawable/ordenacion_alf"
+        android:onClick="ordenarArt"
+        android:text="@string/ordenacion"
+        android:textAllCaps="false"
+        android:textColor="@color/texto_botones"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/btnPromociones"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#FFFFFF"
+        android:drawableTop="@drawable/oferta"
+        android:onClick="verPromociones"
+        android:text="@string/promociones"
+        android:textAllCaps="false"
+        android:textColor="@color/texto_botones"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/btnVerGrupos"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#FFFFFF"
+        android:drawableTop="@drawable/grupos"
+        android:onClick="verGrupos"
+        android:text="@string/mni_vergruposydep"
+        android:textAllCaps="false"
+        android:textColor="@color/texto_botones"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/btnCatGrpCatalogos"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#FFFFFF"
+        android:drawableTop="@drawable/viewcompact"
+        android:onClick="verCatalogos"
+        android:text="@string/mni_vercatalogos"
+        android:textAllCaps="false"
+        android:textColor="@color/texto_botones"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/btnCatGrpHco"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#FFFFFF"
+        android:drawableTop="@drawable/historico"
+        android:onClick="verHistorico"
+        android:text="@string/mni_verhistorico"
+        android:textAllCaps="false"
+        android:textColor="@color/texto_botones"
+        android:textSize="14sp" />
+
+  </LinearLayout>
+
+
+</LinearLayout>

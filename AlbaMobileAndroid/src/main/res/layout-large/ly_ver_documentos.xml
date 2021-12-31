@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+  <TextView
+      android:id="@+id/lyvdFecha"
+      android:layout_width="0dp"
+      android:layout_height="50dp"
+      android:layout_weight="0.3"
+      android:gravity="center_vertical|center_horizontal"
+      android:text="@string/ventas"
+      android:textSize="16sp" />
+
+  <TextView
+      android:id="@+id/lyvdTipoDoc"
+      android:layout_width="0dp"
+      android:layout_height="50dp"
+      android:layout_weight="0.3"
+      android:gravity="left|center_vertical"
+      android:text="@string/ventas"
+      android:textSize="16sp" />
+
+  <TextView
+      android:id="@+id/lyvdSerie"
+      android:layout_width="0dp"
+      android:layout_height="50dp"
+      android:layout_weight="0.2"
+      android:gravity="left|center_vertical"
+      android:text="@string/ventas"
+      android:textSize="16sp" />
+
+  <TextView
+      android:id="@+id/lyvdNumero"
+      android:layout_width="0dp"
+      android:layout_height="50dp"
+      android:layout_weight="0.2"
+      android:gravity="right|center_vertical"
+      android:text="@string/ventas"
+      android:textSize="16sp" />
+
+  <TextView
+      android:id="@+id/lyvdTotal"
+      android:layout_width="0dp"
+      android:layout_height="50dp"
+      android:layout_weight="0.4"
+      android:gravity="right|center_vertical"
+      android:text="@string/ventas"
+      android:textSize="16sp" />
+
+  <ImageView
+    android:id="@+id/lyvdDocFdo"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="15dp"
+    android:layout_marginTop="12dp"
+    android:background="@drawable/firmardoc_24"
+    android:contentDescription="@string/cajas"/>
+
+  <ImageView
+    android:id="@+id/lyvdDocIncid"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginTop="13dp"
+    android:background="@drawable/incidencia_24x23"
+    android:contentDescription="@string/cajas"/>
+
+</LinearLayout>

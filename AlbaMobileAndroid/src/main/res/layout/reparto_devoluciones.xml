@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+  <ListView
+    android:id="@+id/lvHcoDev"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:background="#FFFFFF"
+    android:listSelector="@drawable/list_selector">
+  </ListView>
+
+
+  <View
+      android:id="@+id/view2"
+      android:layout_width="wrap_content"
+      android:layout_height="1dp"
+      android:background="@android:color/background_dark"
+      />
+
+
+  <LinearLayout
+      android:id="@+id/llyHco_Botones"
+      android:layout_width="match_parent"
+      android:layout_height="70dp"
+      android:padding="5dp">
+
+
+    <Button
+        android:id="@+id/btnHco_Terminar"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/cancelar"
+        android:onClick="cancelarRepDev"
+        android:text="@string/cancelar"
+        />
+
+    <Button
+        android:id="@+id/btnHco_Aceptar"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/aceptar"
+        android:onClick="salvarRepDev"
+        android:text="@string/aceptar"
+        />
+  </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal"
+              android:padding="5dp">
+
+  <TextView
+    android:id="@+id/docrpt_nombre"
+    style="@style/Texto12"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="0.4"
+    android:lines="1"
+    android:text="@string/clientes"/>
+
+  <TextView
+    android:id="@+id/docrpt_serienum"
+    style="@style/Texto12"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="0.15"
+    android:lines="1"
+    android:text="@string/clientes"/>
+
+  <ImageView
+    android:id="@+id/imvTienePend"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="5dp"
+    android:layout_marginTop="3dp"
+    android:background="@drawable/ic_euro_12dp"
+    android:contentDescription="@string/cajas"/>
+
+  <ImageView
+    android:id="@+id/docrpt_DocFdo"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="5dp"
+    android:layout_marginTop="3dp"
+    android:background="@drawable/ic_doc_firma_12dp"
+    android:contentDescription="@string/cajas"/>
+
+  <ImageView
+    android:id="@+id/docrpt_DocIncid"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="3dp"
+    android:background="@drawable/ic_warning_12dp"
+    android:contentDescription="@string/cajas"/>
+
+
+</LinearLayout>

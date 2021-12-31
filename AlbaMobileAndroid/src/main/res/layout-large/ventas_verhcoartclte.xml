@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingTop="10dp"
+              android:paddingLeft="10dp"
+              android:paddingRight="10dp"
+              android:background="#FFFFFF"
+              android:baselineAligned="false">
+
+    <include
+        layout="@layout/ly_toolbar_large"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+  <LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:layout_marginTop="10dp">
+
+    <ImageView
+      android:id="@+id/imgArticulo"
+      android:layout_width="70dp"
+      android:layout_height="70dp"
+      android:contentDescription="@string/articulos"
+      android:visibility="invisible" />
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/descr"
+      android:id="@+id/tvArticulo"
+      style="@style/Texto20.Negrita"
+      android:layout_marginLeft="10dp"
+      android:lines="2"/>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="5dp"
+      android:paddingLeft="5dp"
+      android:paddingRight="5dp">
+
+      <TextView
+        android:id="@+id/tvTipoDoc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/etq_tipodoc"
+        android:layout_weight="3"/>
+
+      <TextView
+        android:id="@+id/tvFecha"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/fecha"
+        android:layout_weight="2.5"/>
+
+      <TextView
+        android:id="@+id/tvSerie"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/etq_serienum"
+        android:layout_weight="3"/>
+
+      <TextView
+        android:id="@+id/tvCantidad"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/cantidad"
+        android:layout_weight="2"
+        android:gravity="right"/>
+
+      <TextView
+        android:id="@+id/tvPrecio"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/precio"
+        android:layout_weight="2"
+        android:gravity="right"/>
+
+      <TextView
+        android:id="@+id/tvPrecioII"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/etq_precioii"
+        android:layout_weight="2.5"
+        android:gravity="right"/>
+
+      <TextView
+        android:id="@+id/tvDto"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/dto"
+        android:layout_weight="1.5"
+        android:gravity="right"/>
+    </LinearLayout>
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:layout_marginBottom="10dp"
+      android:layout_marginTop="10dp"
+      android:background="#000000" />
+
+    <ListView
+      android:id="@+id/lvHcoArtClte"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="#FFFFFF"
+      android:listSelector="@drawable/list_selector"
+      android:headerDividersEnabled="false">
+    </ListView>
+
+</LinearLayout>

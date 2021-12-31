@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              >
+
+  <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/tvArticulo"
+        style="@style/Texto18.Negrita"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/descr"
+        android:textSize="14sp" />
+
+    <LinearLayout
+      android:orientation="horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+      <ImageView
+          android:id="@+id/imgvArtIm"
+          android:layout_width="34dp"
+          android:layout_height="70dp"
+          android:contentDescription="@string/articulos"
+          android:padding="5dp"
+          android:scaleType="fitCenter" />
+
+      <LinearLayout
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:layout_weight="0.8"
+          android:orientation="vertical"
+          android:paddingLeft="5dp">
+
+        <LinearLayout
+          android:orientation="horizontal"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          >
+
+          <TextView
+            android:id="@+id/tvCodigoArt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/codigo"
+            android:textSize="12sp" />
+
+          <TextView
+            android:id="@+id/tvDescrFto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:text="@string/formato"
+            android:textSize="12sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:paddingRight="5dp">
+
+          <LinearLayout
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+            <LinearLayout
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal">
+
+              <TextView
+                android:id="@+id/tvArtIm_CapStock"
+                style="@style/Texto16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stockclte"
+                android:textSize="12sp" />
+
+              <TextView
+                android:id="@+id/tvExistencias"
+                style="@style/Texto16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/stock"
+                android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+              <TextView
+                  android:id="@+id/tvArtIm_CapPrClte"
+                  style="@style/Texto16"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/precioclte"
+                  android:textSize="12sp" />
+
+              <TextView
+                  android:id="@+id/tvPrecio"
+                  style="@style/Texto16"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginLeft="10dp"
+                  android:text="@string/precio"
+                  android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal">
+
+              <TextView
+                android:id="@+id/tvArtIm_CapDto"
+                style="@style/Texto16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lyn_dtopie"
+                android:textSize="12sp"/>
+
+              <TextView
+                android:id="@+id/tvDescuento"
+                style="@style/Texto16"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/dto"
+                android:textSize="12sp"
+                />
+            </LinearLayout>
+
+          </LinearLayout>
+
+          <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal">
+
+              <TextView
+                android:id="@+id/tvArtIm_CapUndCaja"
+                style="@style/Texto16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/udCajaRes"
+                android:textSize="12sp" />
+
+              <TextView
+                android:id="@+id/tvUnidadesCaja"
+                style="@style/Texto16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/cajas"
+                android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal">
+
+              <TextView
+                android:id="@+id/tvArtIm_CapPrCajas"
+                style="@style/Texto16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/prCaja"
+                android:textSize="12sp"/>
+
+              <TextView
+                android:id="@+id/tvPrCajas"
+                style="@style/Texto16"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/precio"
+                android:layout_marginLeft="10dp"
+                android:textSize="12sp"
+                />
+            </LinearLayout>
+
+            <LinearLayout
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal">
+
+              <TextView
+                android:id="@+id/tvArtIm_CapDtCaja"
+                style="@style/Texto16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dtoCaja"
+                android:textSize="12sp"/>
+
+              <TextView
+                android:id="@+id/tvDtCajas"
+                style="@style/Texto16"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/dtoCaja"
+                android:layout_marginLeft="10dp"
+                android:textSize="12sp"/>
+            </LinearLayout>
+
+          </LinearLayout>
+
+        </LinearLayout>
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.2">
+
+        <ImageView
+            android:id="@+id/imgvArtImgOft"
+            android:layout_width="41dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:contentDescription="@string/articulos"
+            android:src="@drawable/oferta" />
+      </LinearLayout>
+    </LinearLayout>
+
+  </LinearLayout>
+
+</LinearLayout>

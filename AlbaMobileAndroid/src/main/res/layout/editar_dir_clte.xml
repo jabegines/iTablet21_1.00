@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:padding="20dp">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="5dp"
+    android:layout_marginTop="15dp"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="10dp"
+      android:layout_marginLeft="5dp"
+      android:layout_marginTop="10dp" >
+
+      <TextView
+          android:id="@+id/tvDirDireccion"
+          style="@style/Texto20.Negrita"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/dir_direccion"
+          android:textSize="14sp" />
+
+      <EditText
+          android:id="@+id/edtDirDireccion"
+          android:layout_width="240dp"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="30dp"
+          android:inputType="text"
+          android:maxLength="50"
+          android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="10dp"
+      android:layout_marginLeft="5dp" >
+
+      <TextView
+          android:id="@+id/tvDirPobl"
+          style="@style/Texto20.Negrita"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/dir_poblacion"
+          android:textSize="14sp" />
+
+      <EditText
+          android:id="@+id/edtDirPobl"
+          android:layout_width="240dp"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="20dp"
+          android:inputType="text"
+          android:maxLength="50"
+          android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="10dp"
+      android:layout_marginLeft="5dp" >
+
+      <TextView
+          android:id="@+id/tvDirCPostal"
+          style="@style/Texto20.Negrita"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/dir_cpostal"
+          android:textSize="14sp" />
+
+      <EditText
+          android:id="@+id/edtDirCPostal"
+          android:layout_width="150dp"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="30dp"
+          android:inputType="text"
+          android:maxLength="5"
+          android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="5dp" >
+
+      <TextView
+          android:id="@+id/tvDirProv"
+          style="@style/Texto20.Negrita"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/dir_provincia"
+          android:textSize="14sp" />
+
+      <EditText
+          android:id="@+id/edtDirProvincia"
+          android:layout_width="240dp"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="24dp"
+          android:inputType="text"
+          android:maxLength="40"
+          android:textSize="14sp" />
+    </LinearLayout>
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:background="@color/gris_alba"
+    android:paddingTop="15dp"
+    android:layout_marginTop="30dp">
+
+    <Button
+        android:id="@+id/btnHco_Terminar"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/gris_alba"
+        android:drawableTop="@drawable/cancelar"
+        android:onClick="cancelar"
+        android:text="@string/btn_cancelar" />
+
+    <Button
+        android:id="@+id/btnHco_Aceptar"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/gris_alba"
+        android:drawableTop="@drawable/aceptar"
+        android:onClick="aceptar"
+        android:text="@string/btn_aceptar" />
+  </LinearLayout>
+
+</LinearLayout>

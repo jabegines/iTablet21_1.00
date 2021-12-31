@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:layout_margin="5dp"
+    android:orientation="vertical" >
+
+  <include
+      layout="@layout/ly_toolbar_large"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"/>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_weight="1"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:paddingTop="5dp" >
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="5dp" >
+
+      <TextView
+          android:id="@+id/tvPiezPed"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:text="@string/lyn_piezped"
+          android:layout_weight="1.5"
+          android:gravity="right"/>
+      <TextView
+        android:id="@+id/textView11"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:gravity="right"
+        android:text="@string/cantped"/>
+
+      <TextView
+        android:id="@+id/tvEjer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="right"
+        android:text="@string/cantidad"/>
+
+      <TextView
+        android:id="@+id/textView7"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="right"
+        android:text="@string/precio"/>
+
+      <TextView
+        android:id="@+id/textView8"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:text="@string/dto"/>
+
+      <TextView
+        android:id="@+id/textView12"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="right"
+        android:text="@string/prneto"/>
+
+      <TextView
+        android:id="@+id/textView9"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="right"
+        android:text="@string/cajas"/>
+
+      <TextView
+        android:id="@+id/textView10"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2.5"
+        android:gravity="right"
+        android:text="@string/fecha"/>
+    </LinearLayout>
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:layout_marginBottom="10dp"
+      android:layout_marginTop="10dp"
+      android:background="#000000" />
+
+    <ListView
+      android:id="@+id/lvHcoArticulos"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="#FFFFFF"
+      android:listSelector="@drawable/list_selector" >
+    </ListView>
+
+  </LinearLayout>
+
+  <View
+      android:id="@+id/view2"
+      android:layout_width="wrap_content"
+      android:layout_height="1dp"
+      android:background="@android:color/background_dark"
+      />
+
+  <LinearLayout
+    android:id="@+id/llyHco_Botones"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:paddingTop="10dp" >
+
+    <Button
+        android:id="@+id/btnBuscar"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/lupa"
+        android:onClick="buscarEnHco"
+        android:text="@string/buscar"
+        android:textAllCaps="false"
+        android:textColor="@color/texto_botones"
+        android:textSize="14sp"
+      />
+
+    <Button
+        android:id="@+id/btnPrecEsp"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="#FFFFFF"
+        android:drawableTop="@drawable/estadisticas"
+        android:onClick="verPrecEspeciales"
+        android:text="@string/pr_esp"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        android:textColor="@color/texto_botones"
+    />
+
+    <Button
+        android:id="@+id/btnHco_Editar"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/editar"
+        android:onClick="editarHco"
+        android:text="@string/btn_modif"
+        android:textColor="@color/texto_botones"
+        android:textSize="14sp"
+        android:textAllCaps="false"
+    />
+
+    <Button
+        android:id="@+id/btnHco_Terminar"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/cancelar"
+        android:onClick="cancelarHco"
+        android:text="@string/btn_cancelar"
+        android:textColor="@color/texto_botones"
+        android:textSize="14sp"
+        android:textAllCaps="false"
+      />
+
+    <Button
+        android:id="@+id/btnHco_Acumulados"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/articulos"
+        android:onClick="verAcumulados"
+        android:text="@string/btn_veracumul"
+        android:textColor="@color/texto_botones"
+        android:textSize="14sp"
+        android:textAllCaps="false"
+      />
+
+    <Button
+        android:id="@+id/btnHco_Limpiar"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/historico"
+        android:onClick="limpiarHco"
+        android:text="@string/limpiar"
+        android:textColor="@color/texto_botones"
+        android:textSize="14sp"
+        android:textAllCaps="false"
+      />
+
+    <Button
+        android:id="@+id/btnHco_Aceptar"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/aceptar"
+        android:onClick="salvarHco"
+        android:text="@string/btn_aceptar"
+        android:textColor="@color/texto_botones"
+        android:textSize="14sp"
+        android:textAllCaps="false"
+      />
+  </LinearLayout>
+
+</LinearLayout>

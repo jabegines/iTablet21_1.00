@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:baselineAligned="false"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView61"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/formatos"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvFormatos"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView60"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4"
+                android:gravity="center_horizontal"
+                android:text="@string/unidades"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/bioLyCantidad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_weight="0.4"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/bioImgRestar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.3"
+                    android:background="#FFFFFF"
+                    android:clickable="true"
+                    android:contentDescription="@string/codigo"
+                    android:focusable="true"
+                    android:onClick="restarCantDosis"
+                    app:srcCompat="@drawable/quitar" />
+
+                <EditText
+                    android:id="@+id/edtCantDosis"
+                    style="@style/Texto24"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:background="@drawable/mi_borde"
+                    android:gravity="center_vertical|end"
+                    android:inputType="numberSigned"
+                    android:paddingRight="10dp" />
+
+                <ImageButton
+                    android:id="@+id/bioImgSumar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.3"
+                    android:background="#FFFFFF"
+                    android:clickable="true"
+                    android:contentDescription="@string/codigo"
+                    android:focusable="true"
+                    android:onClick="sumarCantDosis"
+                    app:srcCompat="@drawable/anyadir" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llyHco_Botones"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="#FFFFFF"
+        android:paddingTop="10dp" >
+
+        <Button
+            android:id="@+id/btnHco_Terminar"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/cancelar"
+            android:onClick="cancelarPedirDosis"
+            android:text="@string/btn_cancelar"
+            android:textColor="@color/texto_botones"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            />
+
+        <Button
+            android:id="@+id/btnHco_Aceptar"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/aceptar"
+            android:onClick="aceptarPedirDosis"
+            android:text="@string/btn_aceptar"
+            android:textColor="@color/texto_botones"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            />
+    </LinearLayout>
+
+</LinearLayout>

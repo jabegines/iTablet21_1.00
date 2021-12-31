@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="horizontal"
+    android:paddingLeft="20dp"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp">
+
+
+    <Button
+        android:id="@+id/btnImprDoc"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="#FFFFFF"
+        android:drawableTop="@drawable/impresion"
+        android:drawablePadding="10dp"
+        android:text="@string/imprimirDoc" />
+
+    <Button
+        android:id="@+id/btnNoImpr"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="#FFFFFF"
+        android:drawableTop="@drawable/cancelar_32"
+        android:drawablePadding="10dp"
+        android:text="@string/noImprimirDoc" />
+
+    <Button
+        android:id="@+id/btnExpPDFDoc"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="#FFFFFF"
+        android:drawableTop="@drawable/pdf"
+        android:drawablePadding="10dp"
+        android:onClick="crearPDF"
+        android:text="@string/btn_crearPDF" />
+
+    <CheckBox
+        android:id="@+id/chkSinValorar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_weight="0.45"
+        android:text="@string/imprimirSinVal"
+        android:textSize="14sp" />
+
+
+</LinearLayout>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFFFF"
+    android:orientation="horizontal"
+    android:padding="5dp"
+    tools:ignore="MissingDefaultResource">
+
+
+    <TextView
+        android:id="@+id/tvHcoArtClCodArt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:text="@string/codigo"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tvHcoArtClDescr"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.6"
+        android:text="@string/descr"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tvHcoArtClPorcDevol"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_weight="0.1"
+        android:gravity="right"
+        android:text="@string/btn_devoluciones"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tvHcoArtClCantPed"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_weight="0.1"
+        android:gravity="right"
+        android:text="@string/cantped"
+        android:textSize="16sp" />
+
+
+</LinearLayout>

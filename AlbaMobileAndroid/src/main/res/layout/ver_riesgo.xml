@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp">
+
+  <TextView
+      android:id="@+id/textView33"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/sup_riesgo"
+      android:textSize="24sp"
+      android:textStyle="bold"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintTop_toTopOf="parent"/>
+
+
+  <LinearLayout
+      android:id="@+id/lyRiesgoSaldo"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="30dp"
+      android:background="@drawable/mi_borde"
+      android:orientation="vertical"
+      android:padding="20dp"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/textView33">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+      <TextView
+          android:id="@+id/textView35"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.5"
+          android:text="Riesgo máximo autorizado:"
+          android:textSize="18sp"
+          android:textStyle="bold"/>
+
+      <TextView
+          android:id="@+id/tvRgMaxAut"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.5"
+          android:gravity="end"
+          android:text="TextView"
+          android:textSize="18sp"
+          android:textStyle="bold"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+      <TextView
+          android:id="@+id/textView37"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.5"
+          android:text="Saldo:"/>
+
+      <TextView
+          android:id="@+id/tvRgSaldo"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.5"
+          android:gravity="end"
+          android:text="TextView"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+      <TextView
+          android:id="@+id/textView43"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.5"
+          android:text="Riesgo alcanzado:"
+          android:textSize="18sp"
+          android:textStyle="bold"/>
+
+      <TextView
+          android:id="@+id/tvRgAlcanzado"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.5"
+          android:gravity="end"
+          android:text="TextView"
+          android:textSize="18sp"
+          android:textStyle="bold"/>
+    </LinearLayout>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/lyRiesgoFechas"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="30dp"
+      android:background="@drawable/mi_borde"
+      android:orientation="vertical"
+      android:padding="20dp"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/lyRiesgoSaldo">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+      <TextView
+          android:id="@+id/tvRgMovPdtes"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Movimientos pendientes superiores a 60 días:"
+          android:textSize="18sp"
+          android:textStyle="bold"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+      <TextView
+          android:id="@+id/textView49"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.5"
+          android:text="Facturas:"
+          android:textSize="18sp"
+          android:textStyle="bold"/>
+
+      <TextView
+          android:id="@+id/tvRgPdteFras"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.5"
+          android:gravity="end"
+          android:text="TextView"
+          android:textSize="18sp"
+          android:textStyle="bold"/>
+    </LinearLayout>
+
+  </LinearLayout>
+
+
+  <LinearLayout
+      android:id="@+id/lyRiesgoDocs"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="30dp"
+      android:background="@drawable/mi_borde"
+      android:orientation="vertical"
+      android:padding="20dp"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/lyRiesgoFechas">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+      <TextView
+          android:id="@+id/textView51"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.5"
+          android:text="Nº de documentos pendientes:"
+          android:textSize="18sp"
+          android:textStyle="bold"/>
+
+      <TextView
+          android:id="@+id/tvRgDocsPdtes"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.5"
+          android:gravity="end"
+          android:text="TextView"
+          android:textSize="18sp"
+          android:textStyle="bold"/>
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+
+  <LinearLayout
+      android:id="@+id/lyRiesgoAviso"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="30dp"
+      android:background="@drawable/mi_borde"
+      android:orientation="vertical"
+      android:padding="20dp"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/lyRiesgoDocs">
+
+    <TextView
+        android:id="@+id/textView41"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="El documento sólo podrá realizarse si es de contado"
+        android:textSize="18sp"/>
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="80dp"
+      android:layout_marginTop="30dp"
+      android:paddingTop="15dp"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/lyRiesgoAviso">
+
+    <Button
+        android:id="@+id/btnRiesgo_Terminar"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/cancelar"
+        android:onClick="cancelar"
+        android:text="@string/cancelar"
+        android:textColor="@color/texto_botones"
+        android:textSize="14sp"
+        />
+
+    <Button
+        android:id="@+id/btnRiesgo_Aceptar"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/aceptar"
+        android:onClick="continuar"
+        android:text="@string/continuar"
+        android:textColor="@color/texto_botones"
+        android:textSize="14sp"
+        />
+  </LinearLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

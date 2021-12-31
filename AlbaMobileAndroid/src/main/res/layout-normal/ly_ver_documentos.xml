@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal" >
+
+  <TextView
+      android:id="@+id/lyvdFecha"
+      style="@style/Texto14"
+      android:layout_width="0dp"
+      android:layout_height="30dp"
+      android:layout_weight="4"
+      android:gravity="center_vertical|center_horizontal"
+      android:text="@string/ventas"
+      android:textSize="12sp" />
+
+  <TextView
+      android:id="@+id/lyvdTipoDoc"
+      style="@style/Texto14"
+      android:layout_width="0dp"
+      android:layout_height="30dp"
+      android:layout_weight="3"
+      android:gravity="left|center_vertical"
+      android:text="@string/ventas"
+      android:textSize="12sp" />
+
+  <TextView
+      android:id="@+id/lyvdSerie"
+      style="@style/Texto14"
+      android:layout_width="0dp"
+      android:layout_height="30dp"
+      android:layout_weight="1"
+      android:gravity="left|center_vertical"
+      android:text="@string/ventas"
+      android:textSize="12sp" />
+
+  <TextView
+      android:id="@+id/lyvdNumero"
+      style="@style/Texto14"
+      android:layout_width="0dp"
+      android:layout_height="30dp"
+      android:layout_weight="2"
+      android:gravity="right|center_vertical"
+      android:text="@string/ventas"
+      android:textSize="12sp" />
+
+  <TextView
+      android:id="@+id/lyvdTotal"
+      style="@style/Texto14"
+      android:layout_width="0dp"
+      android:layout_height="30dp"
+      android:layout_weight="4"
+      android:gravity="right|center_vertical"
+      android:text="@string/ventas"
+      android:textSize="12sp" />
+
+</LinearLayout>

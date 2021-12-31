@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/rvNotasCltes"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+  />
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_marginTop="15dp"
+    android:layout_weight="0.1"
+    android:background="@color/gris_alba"
+    android:orientation="horizontal"
+    android:paddingTop="5dp">
+
+    <Button
+      android:id="@+id/btnVL_Hco"
+      style="?android:attr/buttonBarButtonStyle"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:background="@color/gris_alba"
+      android:drawableTop="@drawable/ic_action_bar_nuevo_gris"
+      android:onClick="nuevaNota"
+      android:text="@string/btn_nueva"
+      android:textColor="@color/texto_botones"
+      android:textSize="14sp"/>
+
+    <Button
+      android:id="@+id/btnVL_Editar"
+      style="?android:attr/buttonBarButtonStyle"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:background="@color/gris_alba"
+      android:drawableTop="@drawable/ic_action_bar_modificar_gris"
+      android:onClick="editarNota"
+      android:text="@string/btn_modif"
+      android:textColor="@color/texto_botones"
+      android:textSize="14sp"/>
+
+  </LinearLayout>
+
+</LinearLayout>

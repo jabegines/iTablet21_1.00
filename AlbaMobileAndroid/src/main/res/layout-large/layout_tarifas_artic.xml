@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal" >
+
+  <TextView
+    android:id="@+id/ly_tarifa"
+    android:layout_width="0dp"
+    android:layout_height="30dp"
+    android:layout_weight="1"
+    android:text="@string/tarifa"
+    android:textSize="20sp" />
+
+  <TextView
+    android:id="@+id/ly_nombretrf"
+    android:layout_width="0dp"
+    android:layout_height="30dp"
+    android:layout_weight="3"
+    android:text="@string/tarifa"
+    android:textSize="20sp" />
+
+  <TextView
+    android:id="@+id/ly_nombrefto"
+    android:layout_width="0dp"
+    android:layout_height="30dp"
+    android:layout_weight="4"
+    android:textSize="20sp" />
+
+  <TextView
+    android:id="@+id/ly_prbase"
+    android:layout_width="0dp"
+    android:layout_height="30dp"
+    android:layout_marginLeft="5dp"
+    android:layout_weight="2"
+    android:gravity="right"
+    android:text="@string/prbase"
+    android:textSize="20sp" />
+
+  <TextView
+    android:id="@+id/ly_priva"
+    android:layout_width="0dp"
+    android:layout_height="30dp"
+    android:layout_marginLeft="5dp"
+    android:layout_weight="2"
+    android:gravity="right"
+    android:text="@string/priva"
+    android:textSize="20sp" />
+
+  <TextView
+    android:id="@+id/ly_dto"
+    android:layout_width="0dp"
+    android:layout_height="30dp"
+    android:layout_marginLeft="5dp"
+    android:layout_weight="2"
+    android:gravity="right"
+    android:text="@string/dto"
+    android:textSize="20sp" />
+
+</LinearLayout>

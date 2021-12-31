@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="semitransparent_gris">#77EEEEEE</color>
+    <color name="azul_alba">#009DD2</color>
+    <color name="azul_claro">#9BD8ED</color>
+    <color name="texto_botones">#415BB6</color>
+    <color name="gris_alba">#efefef</color>
+</resources>

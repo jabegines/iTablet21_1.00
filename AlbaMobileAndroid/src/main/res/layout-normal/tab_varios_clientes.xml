@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical" >
+
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@color/gris_alba"
+    android:orientation="horizontal"
+    android:paddingTop="5dp"
+    >
+
+    <ImageView
+      android:id="@+id/imgvArtOft"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="0.1"
+      android:contentDescription="@string/aceptar"
+      android:src="@drawable/cliente_azul" />
+
+    <LinearLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="0.9"
+      android:orientation="vertical"
+      android:paddingLeft="10dp" >
+
+      <TextView
+        android:id="@+id/tvVariosNombreClte"
+        style="@style/Texto14.Negrita"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/nombrefiscal" />
+
+      <TextView
+        android:id="@+id/tvVariosNComClte"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/nombrecomercial"
+        style="@style/Texto14"/>
+    </LinearLayout>
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"
+      android:layout_weight="0.30"
+      android:orientation="horizontal"
+      android:paddingBottom="10dp"
+      android:paddingLeft="5dp"
+      android:paddingRight="5dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:orientation="horizontal">
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/tarifa"
+          android:textSize="12sp"
+          android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.3"
+        android:orientation="horizontal">
+
+      <Spinner
+          android:id="@+id/spnTarifaCltes"
+          style="@style/Texto12"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:gravity="right" />
+    </LinearLayout>
+  </LinearLayout>
+
+  <View
+    android:layout_width="wrap_content"
+    android:layout_height="1dp"
+    android:background="@color/gris_alba"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"/>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"
+      android:layout_weight="0.30"
+      android:orientation="horizontal"
+      android:paddingBottom="10dp"
+      android:paddingLeft="5dp"
+      android:paddingRight="5dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:orientation="horizontal">
+
+      <TextView
+          android:id="@+id/tvVt_Orden"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/tarifadto"
+          android:textSize="12sp"
+          android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.3"
+        android:orientation="horizontal">
+
+      <Spinner
+          android:id="@+id/spnTarifaDto"
+          style="@style/Texto12"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:gravity="right" />
+    </LinearLayout>
+  </LinearLayout>
+
+  <View
+    android:layout_width="wrap_content"
+    android:layout_height="1dp"
+    android:background="@color/gris_alba"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"/>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"
+      android:layout_weight="0.30"
+      android:orientation="horizontal"
+      android:paddingBottom="10dp"
+      android:paddingLeft="5dp"
+      android:paddingRight="5dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:orientation="horizontal">
+
+      <TextView
+          android:id="@+id/tvVt_NombreClte"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/fpago"
+          android:textSize="12sp"
+          android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.3"
+        android:orientation="horizontal">
+
+      <Spinner
+          android:id="@+id/spnFPago"
+          style="@style/Texto12"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:gravity="right" />
+    </LinearLayout>
+  </LinearLayout>
+
+  <View
+    android:layout_width="wrap_content"
+    android:layout_height="1dp"
+    android:background="@color/gris_alba"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"/>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"
+      android:layout_weight="0.30"
+      android:orientation="horizontal"
+      android:paddingBottom="10dp"
+      android:paddingLeft="5dp"
+      android:paddingRight="5dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:orientation="horizontal">
+
+      <TextView
+          android:id="@+id/ly_vl_dto"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/ruta"
+          android:textSize="12sp"
+          android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.3"
+        android:orientation="horizontal">
+
+      <Spinner
+          android:id="@+id/spnRutas"
+          style="@style/Texto12"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent" />
+    </LinearLayout>
+  </LinearLayout>
+
+  <View
+    android:layout_width="wrap_content"
+    android:layout_height="1dp"
+    android:background="@color/gris_alba"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"/>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"
+      android:layout_weight="0.30"
+      android:orientation="horizontal"
+      android:paddingBottom="10dp"
+      android:paddingLeft="5dp"
+      android:paddingRight="5dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:orientation="horizontal">
+
+      <TextView
+          android:id="@+id/TextView01"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/riesgo"
+          android:textSize="12sp"
+          android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.3"
+        android:orientation="horizontal">
+
+      <EditText
+          android:id="@+id/edtRiesgo"
+          style="@style/Texto14"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:gravity="right"
+          android:inputType="numberDecimal"
+          android:maxLength="10"
+          android:textSize="12sp" />
+    </LinearLayout>
+  </LinearLayout>
+
+  <View
+    android:layout_width="wrap_content"
+    android:layout_height="1dp"
+    android:background="@color/gris_alba"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"/>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"
+      android:layout_weight="0.30"
+      android:orientation="horizontal"
+      android:paddingBottom="10dp"
+      android:paddingLeft="5dp"
+      android:paddingRight="5dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:orientation="horizontal">
+
+      <TextView
+          android:id="@+id/tvVL_SerieNum"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="right"
+          android:layout_marginRight="5dp"
+          android:text="@string/saldo"
+          android:textSize="12sp"
+          android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.3"
+        android:orientation="horizontal">
+
+      <EditText
+          android:id="@+id/edtSaldo"
+          style="@style/Texto14"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_gravity="right"
+          android:enabled="false"
+          android:gravity="right"
+          android:inputType="numberDecimal"
+          android:maxLength="10"
+          android:textSize="12sp" />
+    </LinearLayout>
+  </LinearLayout>
+
+  <View
+    android:layout_width="wrap_content"
+    android:layout_height="1dp"
+    android:background="@color/gris_alba"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"/>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="0.2"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp">
+
+    <CheckBox
+      android:id="@+id/chkAplIva"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:checked="true"
+      android:text="@string/aplicariva"
+      android:textAlignment="textStart"
+      android:button="@drawable/checkbox_selector"
+      android:layout_gravity="center_vertical"
+      android:layout_weight="0.3"
+      style="@style/Texto14"/>
+
+    <CheckBox
+      android:id="@+id/chkAplRecargo"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/aplicarre"
+      android:button="@drawable/checkbox_selector"
+      android:layout_gravity="center_vertical"
+      android:layout_weight="0.3"
+      style="@style/Texto14"/>
+
+  </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:baselineAligned="false"
+              android:layout_margin="5dp"
+              android:background="#FFFFFF">
+
+  <include
+      layout="@layout/ly_toolbar_large"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"/>
+
+
+  <LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="20dp"
+    >
+
+    <ImageView
+      android:id="@+id/imageView2"
+      android:layout_width="wrap_content"
+      android:layout_height="50dp"
+      android:contentDescription="@string/aceptar"
+      android:src="@drawable/cliente_azul"
+      />
+
+    <TextView
+      style="@style/Texto14"
+      android:layout_width="wrap_content"
+      android:layout_height="50dp"
+      android:text="@string/cat_cliente"
+      android:id="@+id/textView"
+      android:background="@drawable/navegador1"
+      android:gravity="center_vertical"
+      android:paddingLeft="10dp"
+      android:clickable="true"
+      android:layout_marginLeft="10dp"/>
+
+    <ImageView
+      android:layout_width="50dp"
+      android:layout_height="50dp"
+      android:id="@+id/imageView1"
+      android:background="@drawable/navegador3"
+      android:contentDescription="@string/nombrecomercial"/>
+
+    <ImageView
+        android:id="@+id/imgNoVender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        app:srcCompat="@drawable/bio_restar_48" />
+
+  </LinearLayout>
+
+  <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/mi_borde"
+    android:layout_marginLeft="30dp"
+    android:layout_marginRight="30dp"
+    android:layout_marginBottom="30dp"
+    android:layout_marginTop="10dp">
+
+    <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="15dp"
+      android:paddingLeft="10dp"
+      android:paddingRight="10dp">
+
+      <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:paddingRight="350dp"
+        android:layout_marginTop="7dp">
+
+        <EditText
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:id="@+id/edtVt_CodClte"
+          android:hint="@string/codigo"
+          android:background="@drawable/mi_rectangulo"
+          style="@style/Texto18"
+          android:maxLines="1"
+          android:inputType="number"
+          />
+
+        <ImageView
+          android:layout_width="25dp"
+          android:layout_height="25dp"
+          android:layout_alignRight="@+id/edtVt_CodClte"
+          android:id="@+id/imvLyClasific"
+          android:background="@drawable/lupa"
+          android:contentDescription="@string/buscar"
+          android:onClick="buscarCliente"
+          android:layout_marginTop="7dp"
+          android:layout_marginRight="5dp"/>
+
+      </RelativeLayout>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/nombrefiscal"
+        android:id="@+id/edtVt_NFiscal"
+        android:layout_marginTop="20dp"
+        style="@style/Texto18"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/nombrecomercial"
+        android:id="@+id/edtVt_NComercial"
+        style="@style/Texto18"/>
+
+    </LinearLayout>
+  </LinearLayout>
+
+  <LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:layout_marginTop="30dp"
+    android:id="@+id/lyDocMov"
+    android:focusableInTouchMode="false">
+
+    <ImageView
+      android:id="@+id/imageView4"
+      android:layout_width="wrap_content"
+      android:layout_height="50dp"
+      android:contentDescription="@string/aceptar"
+      android:src="@drawable/documento_azul28x35"
+      />
+
+    <TextView
+      style="@style/Texto14"
+      android:layout_width="wrap_content"
+      android:layout_height="50dp"
+      android:text="@string/cat_tipodoc"
+      android:id="@+id/textView2"
+      android:background="@drawable/navegador1"
+      android:gravity="center_vertical"
+      android:paddingLeft="10dp"
+      android:clickable="true"
+      android:layout_marginLeft="10dp"/>
+
+    <ImageView
+      android:layout_width="50dp"
+      android:layout_height="50dp"
+      android:id="@+id/imageView3"
+      android:background="@drawable/navegador3"
+      android:contentDescription="@string/nombrecomercial"/>
+
+  </LinearLayout>
+
+  <LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:id="@+id/lyVtCpTipoDoc"
+    android:focusableInTouchMode="false"
+    android:layout_marginLeft="30dp"
+    android:layout_marginRight="30dp">
+
+    <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:background="@drawable/mi_borde"
+      android:layout_marginTop="10dp"
+      android:layout_weight="0.6">
+
+        <TextView
+            android:id="@+id/tvVtTipoDoc"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/etq_tipodoc"
+            android:textStyle="bold" />
+
+      <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:layout_marginTop="10dp">
+
+        <RadioButton
+          android:id="@+id/rdbVt_Fra"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/rdb_factura"
+          android:button="@drawable/radiobutton_selector"
+          android:paddingLeft="7dp"
+          />
+
+        <RadioButton
+          android:id="@+id/rdbVt_Alb"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/rdb_albaran"
+          android:button="@drawable/radiobutton_selector"
+          android:layout_marginTop="15dp"
+          android:paddingLeft="7dp"
+          />
+
+        <RadioButton
+          android:id="@+id/rdbVt_Ped"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/rdb_pedido"
+          android:button="@drawable/radiobutton_selector"
+          android:layout_marginTop="15dp"
+          android:paddingLeft="7dp"
+          />
+
+        <RadioButton
+          android:id="@+id/rdbVt_Presp"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/rdb_presup"
+          android:button="@drawable/radiobutton_selector"
+          android:layout_marginTop="15dp"
+          android:paddingLeft="7dp"/>
+      </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_weight="0.3"
+        android:background="@drawable/mi_borde"
+        android:orientation="vertical">
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.15"
+          android:clickable="true"
+          android:focusable="true"
+          android:onClick="cambiarSerie"
+          android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvVtCapSerie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/serie"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/edtVtSerie"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="@string/serie" />
+      </LinearLayout>
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+
+  <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1">
+
+  </LinearLayout>
+
+  <View
+      android:id="@+id/view2"
+      android:layout_width="wrap_content"
+      android:layout_height="1dp"
+      android:background="@android:color/background_dark"
+      />
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="95dp"
+    android:baselineAligned="false"
+    >
+
+    <LinearLayout
+      android:orientation="horizontal"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="0.15"
+      android:background="@color/azul_alba"
+      android:onClick="lanzarLineas"
+      android:clickable="true">
+
+      <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView8"
+        android:src="@drawable/mas_blanco"
+        android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_marginTop="10dp"
+      android:layout_weight="0.85"
+      android:orientation="horizontal"
+      android:paddingTop="10dp">
+
+      <Button
+        android:id="@+id/btnVtDocumentos"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/documentos"
+        android:onClick="verDocumentos"
+        android:text="@string/btn_documentos_full"
+        android:textColor="@color/texto_botones"
+        android:textSize="14sp"
+          android:textAllCaps="false"
+        />
+
+      <Button
+        android:id="@+id/btnVtPdte"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/pendiente"
+        android:onClick="pendienteClte"
+        android:text="@string/btn_pendiente"
+          android:textColor="@color/texto_botones"
+        android:textSize="14sp"
+          android:textAllCaps="false"
+        />
+
+      <Button
+        android:id="@+id/btnVtNotas"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/notas"
+        android:onClick="notasClte"
+        android:text="@string/btn_notas"
+        android:textColor="@color/texto_botones"
+        android:textSize="14sp"
+          android:textAllCaps="false"
+        />
+
+      <Button
+        android:id="@+id/btnCancelarClte"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/cancelar"
+        android:onClick="finalizar"
+        android:text="@string/cancelar"
+        android:textColor="@color/texto_botones"
+        android:textSize="14sp"
+          android:textAllCaps="false"
+        />
+    </LinearLayout>
+  </LinearLayout>
+
+
+</LinearLayout>

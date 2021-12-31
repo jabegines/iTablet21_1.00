@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="5dp"
+>
+
+    <include
+        layout="@layout/ly_toolbar_large"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imvLyClasific"
+            android:layout_width="500dp"
+            android:layout_height="250dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="#B6B6B6"
+            android:contentDescription="@string/cajas" />
+    </LinearLayout>
+
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_marginTop="30dp"
+        android:background="@android:color/background_dark" />
+
+    <LinearLayout
+        android:id="@+id/lyMenuFirmarDoc"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_gravity="fill_vertical"
+        android:paddingTop="10dp">
+
+        <Button
+            android:id="@+id/btnCancelar"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/cancelar"
+            android:onClick="cancelarFirma"
+            android:text="@string/cancelar"
+            android:textAllCaps="false"
+            android:textColor="@color/texto_botones" />
+
+        <Button
+            android:id="@+id/btnLimpiar"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/borrar"
+            android:onClick="limpiarFirma"
+            android:text="@string/limpiar"
+            android:textAllCaps="false"
+            android:textColor="@color/texto_botones" />
+
+
+        <Button
+            android:id="@+id/btnGuardar"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/aceptar"
+            android:onClick="firmaABitmap"
+            android:text="@string/btn_guardar"
+            android:textAllCaps="false"
+            android:textColor="@color/texto_botones" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

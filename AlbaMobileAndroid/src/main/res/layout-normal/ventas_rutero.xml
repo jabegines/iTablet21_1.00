@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:baselineAligned="false"
+              android:padding="5dp"
+              android:background="#FFFFFF">
+
+  <include
+      layout="@layout/ly_toolbar_normal"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"/>
+
+  <LinearLayout
+      android:id="@+id/linearLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="5dp"
+      android:layout_marginTop="5dp"
+      android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.9"
+        android:background="@drawable/mi_borde"
+        android:orientation="horizontal">
+
+      <ImageView
+          android:id="@+id/imageView7"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:layout_marginLeft="5dp"
+          android:layout_weight="0.1"
+          android:contentDescription="@string/aceptar"
+          android:src="@drawable/lista_articulos" />
+
+      <TextView
+          android:id="@+id/tvVtRutaAct"
+          style="@style/Texto14.Negrita"
+          android:layout_width="0dp"
+          android:layout_height="30dp"
+          android:layout_gravity="center_vertical"
+          android:layout_marginLeft="10dp"
+          android:layout_weight="0.9"
+          android:gravity="center_vertical"
+          android:text="@string/ruta"
+          android:textColor="#006EAF" />
+    </LinearLayout>
+
+    <Spinner
+        android:id="@+id/spnVt_Ruta"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_weight="0.1"
+        android:background="@drawable/mi_borde" />
+
+  </LinearLayout>
+
+  <ListView
+    android:id="@+id/lvClientes"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:fastScrollEnabled="true"
+    android:layout_weight="1" />
+  <!-- android:listSelector="@drawable/list_selector" -->
+
+
+  <LinearLayout
+    android:id="@+id/lyVtCpTipoDoc"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:layout_marginTop="10dp"
+    android:baselineAligned="false"
+    android:focusableInTouchMode="false"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_weight="0.85"
+        android:background="@drawable/mi_borde"
+        android:orientation="vertical">
+
+      <RadioGroup
+          android:id="@+id/radioGroup"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:clickable="true"
+          android:orientation="horizontal"
+          android:paddingLeft="5dp">
+
+        <RadioButton
+            android:id="@+id/rdbVt_Fra"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@drawable/rb_selector_layout_normal"
+            android:paddingLeft="5dp"
+            android:text="@string/lyn_rdb_factura"
+            android:textSize="12sp" />
+
+        <RadioButton
+            android:id="@+id/rdbVt_Alb"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@drawable/rb_selector_layout_normal"
+            android:paddingLeft="5dp"
+            android:text="@string/lyn_rdb_albaran"
+            android:textSize="12sp" />
+
+        <RadioButton
+            android:id="@+id/rdbVt_Ped"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@drawable/rb_selector_layout_normal"
+            android:paddingLeft="5dp"
+            android:text="@string/lyn_rdb_pedido"
+            android:textSize="12sp" />
+
+        <RadioButton
+            android:id="@+id/rdbVt_Presp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.4"
+            android:button="@drawable/rb_selector_layout_normal"
+            android:paddingLeft="5dp"
+            android:text="@string/lyn_rdb_presup"
+            android:textSize="12sp" />
+      </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.15"
+        android:background="@drawable/mi_borde"
+        android:clickable="true"
+        android:onClick="cambiarSerie"
+        android:orientation="vertical">
+
+      <TextView
+          android:id="@+id/edtVtSerie"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_gravity="center"
+          android:gravity="center"
+          android:text="@string/serie" />
+    </LinearLayout>
+
+  </LinearLayout>
+
+  <View
+      android:id="@+id/view2"
+      android:layout_width="wrap_content"
+      android:layout_height="1dp"
+      android:background="@android:color/background_dark"
+      />
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="70dp"
+      android:baselineAligned="false">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.15"
+        android:background="@color/azul_alba"
+        android:onClick="lanzarLineas"
+        android:clickable="true">
+
+      <ImageView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:id="@+id/imageView8"
+          android:src="@drawable/mas_blanco"
+          android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.85"
+        android:paddingTop="3dp"
+        >
+
+      <Button
+          android:id="@+id/btnVtDocumentos"
+          style="?android:attr/buttonBarButtonStyle"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:drawableTop="@drawable/documentos"
+          android:onClick="verDocumentos"
+          android:text="@string/docum_resum"
+          android:textColor="@color/texto_botones"
+          android:textSize="14sp"
+          android:textAllCaps="false" />
+
+      <Button
+          android:id="@+id/btnVtPdte"
+          style="?android:attr/buttonBarButtonStyle"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:drawableTop="@drawable/pendiente"
+          android:onClick="pendienteClte"
+          android:text="@string/btn_pendiente_corto"
+          android:textColor="@color/texto_botones"
+          android:textSize="14sp"
+          android:textAllCaps="false" />
+
+      <Button
+          android:id="@+id/btnVtNotas"
+          style="?android:attr/buttonBarButtonStyle"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:drawableTop="@drawable/notas"
+          android:onClick="notasClte"
+          android:text="@string/btn_notas"
+          android:textColor="@color/texto_botones"
+          android:textSize="14sp"
+          android:textAllCaps="false"
+          />
+
+      <Button
+          android:id="@+id/btnSeleccClte"
+          style="?android:attr/buttonBarButtonStyle"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:drawableTop="@drawable/lupa"
+          android:onClick="buscarCliente"
+          android:text="@string/cliente_resum"
+          android:textColor="@color/texto_botones"
+          android:textSize="14sp"
+          android:textAllCaps="false"
+          />
+
+      <Button
+          android:id="@+id/btnVtTodosDoc"
+          style="?android:attr/buttonBarButtonStyle"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:drawableTop="@drawable/todos"
+          android:onClick="verTodosDoc"
+          android:text="@string/btn_todosdoc"
+          android:textColor="@color/texto_botones"
+          android:textSize="14sp"
+          android:textAllCaps="false"
+          />
+    </LinearLayout>
+
+
+  </LinearLayout>
+</LinearLayout>

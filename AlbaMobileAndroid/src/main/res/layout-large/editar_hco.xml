@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    android:layout_margin="5dp"
+>
+
+    <include
+        layout="@layout/ly_toolbar_large"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:padding="5dp" >
+
+        <TextView
+            android:id="@+id/tvHco_Articulo"
+            style="@style/Texto18.Negrita"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:enabled="true"
+            android:maxLines="2"
+            android:text="@string/descr" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="#FFFFFF"
+        android:orientation="vertical"
+        android:paddingBottom="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="20dp" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/tvHco_Lote"
+                style="@style/Texto18"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:text="@string/lote" />
+
+            <EditText
+                android:id="@+id/edtHco_Lote"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="text"
+                android:maxLength="20"
+                android:maxLines="1"
+                android:selectAllOnFocus="true" />
+
+            <ImageView
+                android:id="@+id/imgHco_Lote"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:contentDescription="@string/buscar"
+                android:onClick="buscarLote"
+                android:background="@drawable/lupa"
+                android:layout_marginTop="5dp"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/lyHco_Almacen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/tvHco_Almacen"
+                style="@style/Texto18"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/almacen"
+                />
+
+            <EditText
+                android:id="@+id/edtHco_Almacen"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:inputType="number"
+                android:maxLength="3"
+                android:selectAllOnFocus="true"
+                android:imeOptions="actionNone"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView1"
+                style="@style/Texto18"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/cajas" />
+
+            <EditText
+                android:id="@+id/edtHco_Cajas"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:inputType="numberDecimal"
+                android:nextFocusDown="@+id/edtHco_Piezas"
+                android:selectAllOnFocus="true" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/edtHco_tvPiezas"
+                style="@style/Texto18"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:text="@string/piezas"
+                android:clickable="true"
+                android:onClick="setTarifaPiezas"
+                />
+
+            <EditText
+                android:id="@+id/edtHco_Piezas"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:inputType="numberDecimal"
+                android:nextFocusDown="@+id/edtHco_Cant"
+                android:selectAllOnFocus="true" />
+
+            <ImageView
+                android:id="@+id/imgTarifaPiezas"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/piezas"
+                android:onClick="aceptarLinea"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView3"
+                style="@style/Texto18"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/cantidad" />
+
+            <EditText
+                android:id="@+id/edtHco_Cant"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:inputType="numberDecimal"
+                android:nextFocusDown="@+id/edtHco_Precio"
+                android:selectAllOnFocus="true" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView4"
+                style="@style/Texto18"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/precio" />
+
+            <EditText
+                android:id="@+id/edtHco_Precio"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:inputType="numberSigned|numberDecimal"
+                android:maxLength="@string/ml_precio"
+                android:nextFocusDown="@+id/edtHco_Dto"
+                android:selectAllOnFocus="true" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView5"
+                style="@style/Texto18"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/dto" />
+
+            <EditText
+                android:id="@+id/edtHco_Dto"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:inputType="numberDecimal"
+                android:nextFocusDown="@+id/edtHco_DtoEur"
+                android:selectAllOnFocus="true" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/tvHco_CapDtEur"
+                style="@style/Texto18"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/dtoeur"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/edtHco_DtoEur"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:inputType="numberDecimal"
+                android:selectAllOnFocus="true"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tvHco_PrNeto"
+                style="@style/Texto18"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:gravity="right"
+                android:text="@string/precio"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/gris_alba"
+        android:paddingTop="15dp" >
+
+        <Button
+            android:id="@+id/btnVDL_TextoLin"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/gris_alba"
+            android:drawableTop="@drawable/mensaje"
+            android:onClick="textoLinea"
+            android:text="@string/btn_textolin"
+            android:textColor="@color/texto_botones"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+        />
+
+        <Button
+            android:id="@+id/btnEdtHco_Dosis"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/gris_alba"
+            android:drawableTop="@drawable/dosis"
+            android:onClick="pedirDosis"
+            android:text="@string/btn_dosis"
+            android:textColor="@color/texto_botones"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            />
+
+        <Button
+            android:id="@+id/btnHco_Terminar"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/gris_alba"
+            android:drawableTop="@drawable/cancelar"
+            android:onClick="cancelarHco"
+            android:text="@string/btn_cancelar"
+            android:textColor="@color/texto_botones"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            />
+
+        <Button
+            android:id="@+id/btnHco_Aceptar"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/gris_alba"
+            android:drawableTop="@drawable/aceptar"
+            android:onClick="salvarHco"
+            android:text="@string/btn_aceptar"
+            android:textColor="@color/texto_botones"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/edtHco_txtarthabit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:text="TextView"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/edtHco_TitCantAnt"
+                style="@style/Texto16"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/cantidad"/>
+
+            <TextView
+                android:id="@+id/edtHco_TitCant"
+                style="@style/Texto16"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/cantidad"/>
+
+            <TextView
+                android:id="@+id/eddtHco_TitDiferencia"
+                style="@style/Texto16"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/diferencia"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/edtHco_AcumCantAnt"
+                style="@style/Texto16"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/cantidad"/>
+
+            <TextView
+                android:id="@+id/edtHco_AcumCant"
+                style="@style/Texto16"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/cantidad"/>
+
+            <TextView
+                android:id="@+id/edtHco_AcumDiferencia"
+                style="@style/Texto16"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/diferencia"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical" >
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:paddingRight="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:id="@+id/ly_vl_descr"
+            style="@style/Texto14.Negrita"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:lines="1"
+            android:text="@string/descr" />
+
+      <TextView
+          android:id="@+id/ly_vl_cant"
+          style="@style/Texto14.Negrita"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="5dp"
+          android:layout_weight="1"
+          android:gravity="right"
+          android:text="@string/cantidad" />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/ly_vl_descrfto"
+        style="@style/Texto14"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/formato" />
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/datosDetalleLinea"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:visibility="visible">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+      <TextView
+          android:id="@+id/tvExento"
+          style="@style/Texto12"
+          android:layout_width="40dp"
+          android:layout_height="wrap_content"
+          android:text="@string/codigo" />
+
+      <TextView
+          android:id="@+id/ly_vl_codart"
+          style="@style/Texto12"
+          android:layout_width="60dp"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="10dp"
+          android:text="@string/codigo" />
+
+      <TextView
+          android:id="@+id/tvRec_Datos"
+          style="@style/Texto12"
+          android:layout_width="60dp"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="10dp"
+          android:text="@string/codigo" />
+
+      <TextView
+          android:id="@+id/textView3"
+          style="@style/Texto12"
+          android:layout_width="40dp"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="10dp"
+          android:text="@string/tarifa" />
+
+      <TextView
+          android:id="@+id/ly_vl_tarifa"
+          style="@style/Texto12"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="10dp"
+          android:text="@string/tarifa" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+      <TextView
+          android:id="@+id/textView4"
+          style="@style/Texto12"
+          android:layout_width="40dp"
+          android:layout_height="wrap_content"
+          android:text="@string/cajas" />
+
+      <TextView
+          android:id="@+id/ly_vl_cajas"
+          style="@style/Texto12"
+          android:layout_width="60dp"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="10dp"
+          android:text="@string/cajas" />
+
+      <TextView
+          android:id="@+id/textView5"
+          style="@style/Texto12"
+          android:layout_width="60dp"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="10dp"
+          android:text="@string/cantidad" />
+
+      <TextView
+          android:id="@+id/ly_vl_piezas"
+          style="@style/Texto12"
+          android:layout_width="120dp"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="10dp"
+          android:text="@string/piezas" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp">
+
+      <TextView
+          android:id="@+id/textView6"
+          style="@style/Texto12"
+          android:layout_width="40dp"
+          android:layout_height="wrap_content"
+          android:text="@string/precio" />
+
+      <TextView
+          android:id="@+id/ly_vl_precio"
+          style="@style/Texto12"
+          android:layout_width="60dp"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="10dp"
+          android:text="@string/precio" />
+
+      <TextView
+          android:id="@+id/textView7"
+          style="@style/Texto12"
+          android:layout_width="60dp"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="10dp"
+          android:text="@string/dto" />
+
+      <TextView
+          android:id="@+id/ly_vl_dto"
+          style="@style/Texto12"
+          android:layout_width="50dp"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="10dp"
+          android:text="@string/dto" />
+
+      <TextView
+          android:id="@+id/ly_vl_impte"
+          style="@style/Texto14.Negrita"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="5dp"
+          android:layout_weight="1"
+          android:gravity="right"
+          android:text="@string/importe" />
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+</LinearLayout>

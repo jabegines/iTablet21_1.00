@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:layout_margin="5dp"
+    android:orientation="vertical">
+
+    <include
+        layout="@layout/ly_toolbar_large"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="20"
+        android:orientation="vertical"
+        android:paddingBottom="5dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp" >
+
+        <TextView
+            android:id="@+id/tvEjer"
+            style="@style/Texto20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/estadocom" />
+
+        <TextView
+            android:id="@+id/tvEnv_Datos"
+            style="@style/Texto18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/estadocom" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@android:color/background_dark" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:paddingTop="10dp" >
+
+        <Button
+            android:id="@+id/btnPrepDatos"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/base_datos"
+            android:onClick="prepararDatos"
+            android:textColor="@color/texto_botones"
+            android:text="@string/preparardatos"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            />
+
+        <Button
+            android:id="@+id/btnEnvWifi"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/wifi"
+            android:onClick="enviarWifi"
+            android:textColor="@color/texto_botones"
+            android:text="@string/enviarwifi"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            />
+
+        <Button
+            android:id="@+id/btnEnvFTP"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/subir"
+            android:onClick="enviarFTP"
+            android:textColor="@color/texto_botones"
+            android:text="@string/enviarftp"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            />
+
+
+        <Button
+            android:id="@+id/btnEnvSalir"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/cancelar"
+            android:onClick="salir"
+            android:textColor="@color/texto_botones"
+            android:text="@string/salir"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

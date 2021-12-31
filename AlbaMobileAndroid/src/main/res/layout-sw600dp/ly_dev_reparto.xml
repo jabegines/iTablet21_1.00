@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="5dp">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+      android:id="@+id/lyDevRepCodigo"
+      style="@style/Texto20.Negrita"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="0.25"
+      android:text="@string/codigo"/>
+
+    <TextView
+      android:id="@+id/lyDevRepDescr"
+      style="@style/Texto20.Negrita"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="10dp"
+      android:layout_weight="1"
+      android:text="@string/descr"/>
+
+  </LinearLayout>
+
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp">
+
+    <TextView
+      android:id="@+id/lyDevRepCant"
+      style="@style/Texto16"
+      android:layout_width="0dp"
+      android:layout_height="30dp"
+      android:layout_weight="1"
+      android:gravity="right"
+      android:text="@string/cantidad"/>
+
+    <TextView
+      android:id="@+id/lyDevRepCajas"
+      style="@style/Texto16"
+      android:layout_width="0dp"
+      android:layout_height="30dp"
+      android:layout_weight="1"
+      android:gravity="right"
+      android:text="@string/cajas"/>
+
+    <TextView
+      android:id="@+id/lyhcoFecha"
+      style="@style/Texto16"
+      android:layout_width="0dp"
+      android:layout_height="30dp"
+      android:layout_weight="1"
+      android:gravity="right"
+      android:text="@string/fecha"/>
+
+
+    <TextView
+      android:id="@+id/lyDevRepCantPedida"
+      style="@style/Texto16"
+      android:layout_width="0dp"
+      android:layout_height="30dp"
+      android:layout_weight="0.75"
+      android:gravity="right"
+      android:text="@string/ventas"
+      android:textColor="@android:color/holo_orange_dark"/>
+
+
+  </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/lyvdFecha"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight="0.3"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/ventas"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/lyvdTipoDoc"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight="0.3"
+        android:gravity="left|center_vertical"
+        android:text="@string/ventas"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/lyvdSerie"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight="0.2"
+        android:gravity="left|center_vertical"
+        android:text="@string/ventas"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/lyvdNumero"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight="0.2"
+        android:gravity="right|center_vertical"
+        android:text="@string/ventas"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/lyvdTotal"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight="0.4"
+        android:gravity="right|center_vertical"
+        android:text="@string/ventas"
+        android:textSize="16sp" />
+
+</LinearLayout>

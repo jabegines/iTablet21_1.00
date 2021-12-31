@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#FFFFFF"
+    android:layout_margin="5dp"
+              android:orientation="vertical" >
+
+  <include
+      layout="@layout/ly_toolbar_large"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"/>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_weight="7"
+    android:background="#FFFFFF"
+    android:orientation="vertical">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="#FFFFFF"
+      android:orientation="horizontal">
+
+      <TextView
+        android:id="@+id/textView1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0.2"
+        android:gravity="center_horizontal"
+        android:text="@string/fecha"
+        android:textStyle="bold"/>
+
+      <TextView
+        android:id="@+id/textView2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0.5"
+        android:gravity="center_horizontal"
+        android:text="@string/documento"
+        android:textStyle="bold"/>
+
+      <TextView
+        android:id="@+id/textView3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0.3"
+        android:gravity="center_horizontal"
+        android:text="@string/importe"
+        android:textStyle="bold"/>
+
+      <ImageView
+          android:id="@+id/imageView13"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:background="@drawable/ctlg_menos"
+          android:onClick="filtrarDocs" />
+    </LinearLayout>
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:layout_marginBottom="5dp"
+      android:layout_marginLeft="5dp"
+      android:layout_marginRight="5dp"
+      android:layout_marginTop="5dp"
+      android:background="#000000"/>
+
+    <ListView
+      android:id="@+id/lvVerDoc"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="5dp"
+      android:layout_marginRight="5dp"
+      android:fastScrollEnabled="true"
+      android:focusable="true"
+      android:focusableInTouchMode="true"
+      android:listSelector="@drawable/list_selector">
+
+    </ListView>
+
+  </LinearLayout>
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:background="#000000"/>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginTop="10dp"
+    android:layout_weight="1.5"
+    android:background="#FFFFFF"
+    android:orientation="horizontal">
+
+    <LinearLayout
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:orientation="vertical"
+      >
+
+      <TextView
+        android:id="@+id/tvVD_Estado"
+        style="@style/Texto18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textIsSelectable="false"/>
+
+      <TextView
+        android:id="@+id/tvVD_Clte"
+        style="@style/Texto18"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textIsSelectable="false"/>
+
+      <TextView
+        android:id="@+id/tvVD_NComClte"
+        style="@style/Texto18"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textIsSelectable="false"/>
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="0.7"
+      android:orientation="vertical">
+
+      <TextView
+        android:id="@+id/tvVD_incidencia"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="TextView"/>
+
+      <ImageView
+        android:id="@+id/imvVD_firma"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:src="@drawable/firmardoc"/>
+    </LinearLayout>
+
+  </LinearLayout>
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:layout_marginLeft="5dp"
+      android:layout_marginRight="5dp"
+      android:background="#000000"/>
+
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:paddingTop="10dp" >
+
+    <Button
+      android:id="@+id/btnVDVer"
+      style="?android:attr/buttonBarButtonStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:drawableTop="@drawable/ver"
+      android:onClick="verDoc"
+      android:text="@string/btn_ver"
+        android:textColor="@color/texto_botones"
+      android:textSize="14sp"
+        android:textAllCaps="false"
+      />
+
+
+    <Button
+      android:id="@+id/btnVDEditar"
+      style="?android:attr/buttonBarButtonStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:drawableTop="@drawable/editar"
+      android:onClick="modificarDoc"
+      android:text="@string/btn_modif"
+      android:textColor="@color/texto_botones"
+      android:textSize="14sp"
+        android:textAllCaps="false"
+      />
+
+<!--
+    <Button
+      android:id="@+id/btnVDBorrar"
+      style="?android:attr/buttonBarButtonStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:drawableTop="@drawable/borrar"
+      android:onClick="borrarDoc"
+      android:text="@string/btn_borrar"
+      android:textColor="@color/texto_botones"
+      android:textSize="14sp"
+        android:textAllCaps="false"
+      />
+-->
+
+    <Button
+      android:id="@+id/btnVDReenviar"
+      style="?android:attr/buttonBarButtonStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:drawableTop="@drawable/reenviar"
+      android:onClick="reenviarDoc"
+      android:text="@string/btn_reenv"
+      android:textColor="@color/texto_botones"
+      android:textSize="14sp"
+        android:textAllCaps="false"
+      />
+
+    <Button
+      android:id="@+id/btnVDExpPDF"
+      style="?android:attr/buttonBarButtonStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:drawableTop="@drawable/pdf"
+      android:onClick="crearPDF"
+      android:text="@string/btn_crearPDF"
+      android:textColor="@color/texto_botones"
+      android:textSize="14sp"
+        android:textAllCaps="false"
+      />
+
+    <Button
+      android:id="@+id/btnVDImpr"
+      style="?android:attr/buttonBarButtonStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:drawableTop="@drawable/impresion"
+      android:onClick="imprimirDoc"
+      android:text="@string/btn_imprimir"
+      android:textColor="@color/texto_botones"
+      android:textSize="14sp"
+        android:textAllCaps="false"
+      />
+
+    <Button
+      android:id="@+id/btnVDFirmar"
+      style="?android:attr/buttonBarButtonStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:drawableTop="@drawable/firmardoc"
+      android:onClick="firmarDoc"
+      android:text="@string/btn_firmar"
+      android:textColor="@color/texto_botones"
+      android:textSize="14sp"
+        android:textAllCaps="false"
+      />
+
+    <Button
+      android:id="@+id/btnVDIncidencia"
+      style="?android:attr/buttonBarButtonStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:drawableTop="@drawable/incidencia"
+      android:onClick="incidenciaDoc"
+      android:text="@string/btn_incid_full"
+      android:textColor="@color/texto_botones"
+      android:textSize="14sp"
+        android:textAllCaps="false"
+    />
+
+  </LinearLayout>
+</LinearLayout>
+

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="C:\Perforce\Android\albaMobileAndroid_1.05\AlbaMobileAndroid\libs\commons-net-3.3.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="cd0d5510908225f76c5fe5a3f1df4fa44866f81e">
+        <dex dex="C:\Perforce\Android\albaMobileAndroid_1.05\AlbaMobileAndroid\build\intermediates\transforms\preDex\release\11.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Perforce\Android\albaMobileAndroid_1.05\AlbaMobileAndroid\libs\jcifs-1.3.17.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="1a2f0e28cc9497fb4927ea2422605fb8023969b6">
+        <dex dex="C:\Perforce\Android\albaMobileAndroid_1.05\AlbaMobileAndroid\build\intermediates\transforms\preDex\release\12.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Perforce\Android\albaMobileAndroid_1.05\AlbaMobileAndroid\libs\droidText.0.5.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="07b558272013be275e7071969127c87eaf44bde8">
+        <dex dex="C:\Perforce\Android\albaMobileAndroid_1.05\AlbaMobileAndroid\build\intermediates\transforms\preDex\release\13.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Perforce\Android\albaMobileAndroid_1.04\AlbaMobileAndroid\libs\do_androidsdk.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="c0f3d2a4e8618ef9901978075f915084183da5ca">
+        <dex dex="C:\Perforce\Android\albaMobileAndroid_1.04\AlbaMobileAndroid\build\intermediates\transforms\preDex\release\5.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Perforce\Android\albaMobileAndroid_1.04\AlbaMobileAndroid\libs\mysql-connector-java-3.0.17-ga-bin.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="3d8b493d12562fc904a947ea7b84394fe67e8a55">
+        <dex dex="C:\Perforce\Android\albaMobileAndroid_1.04\AlbaMobileAndroid\build\intermediates\transforms\preDex\release\4.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Perforce\Android\albaMobileAndroid_1.05\AlbaMobileAndroid\libs\do_androidsdk.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="c0f3d2a4e8618ef9901978075f915084183da5ca">
+        <dex dex="C:\Perforce\Android\albaMobileAndroid_1.05\AlbaMobileAndroid\build\intermediates\transforms\preDex\release\15.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Perforce\Android\albaMobileAndroid_1.04\AlbaMobileAndroid\libs\commons-net-3.3.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="cd0d5510908225f76c5fe5a3f1df4fa44866f81e">
+        <dex dex="C:\Perforce\Android\albaMobileAndroid_1.04\AlbaMobileAndroid\build\intermediates\transforms\preDex\release\1.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Perforce\Android\albaMobileAndroid_1.04\AlbaMobileAndroid\libs\droidText.0.5.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="07b558272013be275e7071969127c87eaf44bde8">
+        <dex dex="C:\Perforce\Android\albaMobileAndroid_1.04\AlbaMobileAndroid\build\intermediates\transforms\preDex\release\3.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Perforce\Android\albaMobileAndroid_1.05\AlbaMobileAndroid\libs\mysql-connector-java-3.0.17-ga-bin.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="3d8b493d12562fc904a947ea7b84394fe67e8a55">
+        <dex dex="C:\Perforce\Android\albaMobileAndroid_1.05\AlbaMobileAndroid\build\intermediates\transforms\preDex\release\14.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Perforce\Android\albaMobileAndroid_1.04\AlbaMobileAndroid\libs\jcifs-1.3.17.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="1a2f0e28cc9497fb4927ea2422605fb8023969b6">
+        <dex dex="C:\Perforce\Android\albaMobileAndroid_1.04\AlbaMobileAndroid\build\intermediates\transforms\preDex\release\2.jar" />
+    </item>
+
+</items>

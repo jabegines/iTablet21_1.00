@@ -1,0 +1,121 @@
+buildscript {
+    repositories {
+        jcenter()
+        // You need to add the following repository to download the new plugin.
+        maven { url 'https://maven.google.com' }
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.0.4'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects {
+    repositories {
+        google()  // add google() before jcenter()
+        jcenter()
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+
+android {
+    signingConfigs {
+    }
+    compileSdkVersion 31
+    useLibrary 'org.apache.http.legacy'         // Descomentar esta linea si diera el error al compilar que no encuentra la libreria apache
+
+    defaultConfig {
+        minSdkVersion 16
+        //targetSdkVersion 18
+        targetSdkVersion 31
+
+        // Enabling multidex support.
+        multiDexEnabled true
+
+        vectorDrawables.useSupportLibrary = true
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+    }
+    lintOptions {
+        disable "ResourceType"
+        checkReleaseBuilds false
+    }
+
+    compileOptions {
+        targetCompatibility = "8"
+        sourceCompatibility = "8"
+    }
+
+    //flavorDimensions 'default'
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'com.google.android.gms:play-services:12.0.1'
+
+    // zxing: librería para leer códigos de barras junto con Barcode
+    implementation 'com.google.zxing:core:3.1.0'
+    implementation 'com.google.zxing:android-integration:3.1.0'
+    // commons-net: para comunicar mediante ftp (en realidad sirve para muchos protocolos básicos de Internet)
+    implementation files('libs/commons-net-3.6.jar')
+    // jcifs: para usar el protocolo samba y poder enviar y recibir archivos a/de un PC
+    implementation files('libs/jcifs-1.3.17.jar')
+    // droidText: para poder crear archivos pdf
+    implementation files('libs/droidText.0.5.jar')
+    // mysql-connector-java: para poder conectar con bases de datos MySql
+    implementation files('libs/mysql-connector-java-3.0.17-ga-bin.jar')
+    // do_androidsdk.jar: para poder imprimir con las impresoras Datamax
+    implementation files('libs/do_androidsdk.jar')
+
+    // Room
+    def room_version = "2.3.0"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:$room_version"
+    // optional - RxJava support for Room
+    implementation "androidx.room:room-rxjava2:$room_version"
+    // optional - Guava support for Room, including Optional and ListenableFuture
+    implementation "androidx.room:room-guava:$room_version"
+
+
+    // Anko
+    implementation 'org.jetbrains.anko:anko-common:0.10.1'
+    implementation 'org.jetbrains.anko:anko-appcompat-v7:0.10.1'
+    implementation 'org.jetbrains.anko:anko-sdk25:0.10.1'
+    implementation "org.jetbrains.anko:anko-coroutines:$anko_version"
+
+    // MPAndroidchar: para poder mostrar gráficos
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+
+    // okhttp: para poder usar el protocolo http de una forma fácil. La usamos en los servicios de enviar y recibir.
+    //implementation 'com.squareup.okhttp3:okhttp:3.14.1'   // Con la versión 3.14.1 necesitariamos Android 5.0 o superior
+    implementation 'com.squareup.okhttp3:okhttp:3.12.0'
+}
+
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'ISO-8859-15'
+}
+
+

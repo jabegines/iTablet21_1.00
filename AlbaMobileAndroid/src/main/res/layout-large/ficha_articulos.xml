@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFFFF"
+    android:layout_margin="5dp"
+    android:orientation="vertical"
+  >
+
+
+  <include
+      layout="@layout/ly_toolbar_large"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"/>
+
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:background="@color/gris_alba"
+    android:orientation="horizontal"
+    android:paddingTop="5dp" >
+
+    <ImageView
+      android:id="@+id/imgvArtOft"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:contentDescription="@string/aceptar"
+      android:src="@drawable/articulo_azul"
+      android:layout_marginTop="5dp"/>
+
+    <LinearLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="7"
+      android:orientation="vertical"
+      android:paddingLeft="10dp" >
+
+      <TextView
+        android:id="@+id/tvDescrArt"
+        style="@style/Texto20.Negrita"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/descr" />
+
+      <TextView
+        android:id="@+id/tvCodArt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/codigo" />
+    </LinearLayout>
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingRight="5dp">
+
+    <LinearLayout
+      android:layout_width="0dp"
+      android:layout_height="340dp"
+      android:layout_weight="1"
+      android:orientation="vertical"
+      android:paddingLeft="10dp">
+
+      <TextView
+        android:id="@+id/tvCBarrasArt"
+        style="@style/Texto20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/codbarras" />
+
+      <EditText
+        android:id="@+id/edtCBarrasArt"
+        style="@style/Texto20.Negrita"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+
+      <TextView
+        android:id="@+id/tvExistencias"
+        style="@style/Texto20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/existencias" />
+
+      <EditText
+        android:id="@+id/edtExistArt"
+        style="@style/Texto20.Negrita"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:gravity="right" />
+
+      <TextView
+        android:id="@+id/tvCajas"
+        style="@style/Texto20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/cajas" />
+
+      <EditText
+        android:id="@+id/edtCajasArt"
+        style="@style/Texto20.Negrita"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:gravity="right" />
+
+      <TextView
+        android:id="@+id/tvTipoIva"
+        style="@style/Texto20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/tipoiva" />
+
+      <EditText
+        android:id="@+id/edtTipoIvaArt"
+        style="@style/Texto20.Negrita"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:gravity="right" />
+    </LinearLayout>
+
+    <ImageView
+      android:id="@+id/imgArticulo"
+      android:layout_width="0dp"
+      android:layout_height="340dp"
+      android:layout_marginRight="5dp"
+      android:layout_weight="1"
+      android:contentDescription="@string/articulos"
+      android:paddingTop="15dp"/>
+  </LinearLayout>
+
+  <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:layout_marginTop="15dp">
+
+    <TextView
+      android:id="@+id/tvProveedor"
+      style="@style/Texto20"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/proveedor"
+      />
+
+    <EditText
+      android:id="@+id/edtProvArt"
+      style="@style/Texto20.Negrita"
+      android:layout_width="560dp"
+      android:layout_height="wrap_content"
+      android:focusable="false"
+      android:focusableInTouchMode="false" />
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="15dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:layout_marginTop="5dp">
+
+    <TextView
+      android:id="@+id/tvCostoArt"
+      style="@style/Texto20"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/costo"
+      android:layout_weight="1"/>
+
+    <TextView
+      android:id="@+id/tvPeso"
+      style="@style/Texto20"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/peso"
+      android:layout_weight="1"/>
+
+    <TextView
+      android:id="@+id/tvUndCaja"
+      style="@style/Texto20"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/ett_undcaja"
+      android:layout_weight="1"/>
+
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+
+    <EditText
+      android:id="@+id/edtCostoArt"
+      style="@style/Texto20.Negrita"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:focusable="false"
+      android:focusableInTouchMode="false"
+      android:gravity="right" />
+
+    <EditText
+      android:id="@+id/edtPesoArt"
+      style="@style/Texto20.Negrita"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:focusable="false"
+      android:focusableInTouchMode="false"
+      android:gravity="right" />
+
+    <EditText
+      android:id="@+id/edtUndCaja"
+      style="@style/Texto20.Negrita"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:focusable="false"
+      android:focusableInTouchMode="false"
+      android:gravity="right" />
+
+  </LinearLayout>
+
+  <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Tarifas"
+    android:id="@+id/textView20"
+    style="@style/Texto24.Negrita"
+    android:layout_marginLeft="10dp"
+    android:layout_marginTop="10dp"/>
+
+  <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/mi_borde_sombra"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="5dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp">
+
+    <LinearLayout
+      android:id="@+id/lyTarifas"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingLeft="10dp"
+      android:paddingRight="10dp"
+      android:layout_marginTop="5dp">
+
+      <TextView
+        android:id="@+id/textView1"
+        style="@style/Texto20.Negrita"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2.5"
+        android:text="@string/tarifa" />
+
+      <TextView
+        android:id="@+id/textView2"
+        style="@style/Texto20.Negrita"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/prbase" />
+
+      <TextView
+        android:id="@+id/textView3"
+        style="@style/Texto20.Negrita"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/priva"
+        android:gravity="left"/>
+
+      <TextView
+        android:id="@+id/textView4"
+        style="@style/Texto20.Negrita"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:gravity="right"
+        android:text="@string/dto" />
+    </LinearLayout>
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:layout_marginTop="5dp"
+      android:background="#000000"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"/>
+
+    <ListView
+      android:id="@+id/lvTarifArt"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_marginTop="10dp"
+      android:fastScrollEnabled="true"
+      android:listSelector="@drawable/list_selector"
+      android:paddingLeft="10dp"
+      android:paddingRight="10dp"
+      >
+    </ListView>
+  </LinearLayout>
+
+
+</LinearLayout>

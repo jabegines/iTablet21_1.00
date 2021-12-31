@@ -1,0 +1,111 @@
+<resources>
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+
+
+    <!-- <style name="TemaAlba" parent="@android:style/Theme.DeviceDefault.Light"> -->
+    <style name="TemaAlba" parent="@android:style/Theme.Holo.Light">
+      <item name="android:tabWidgetStyle">@style/CustomTabWidget</item>
+      <item name="android:popupMenuStyle">@style/MyPopupMenu</item>     <!-- Estilo para los menús -->
+      <!-- Para quitar el MenuItem Divider de los ActionBar -->
+      <item name="android:actionBarDivider">@null</item>
+      <item name="android:actionBarSize">40dp</item>
+    </style>
+
+    <style name="TemaAppCompat" parent="@style/Theme.AppCompat.Light">
+        <item name="android:actionBarSize">30dp</item>
+    </style>
+
+
+  <!-- Estilo para los menús -->
+  <style name="MyPopupMenu" parent="@android:style/Widget.DeviceDefault.ListPopupWindow">
+    <item name="android:popupBackground">@drawable/mi_borde</item>
+  </style>
+
+    <!-- Texto que aplicaremos en las pantallas del layout-large -->
+    <style name="Texto12">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="Texto14">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+  <style name="Texto14.Negrita">
+    <item name="android:textStyle">bold</item>
+  </style>
+
+    <style name="Texto16">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+  <style name="Texto16.Negrita">
+    <item name="android:textStyle">bold</item>
+  </style>
+
+    <style name="Texto18">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="Texto18.Negrita">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Texto20">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="Texto20.Negrita">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Texto18.Cursiva">
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <style name="Texto24">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="Texto24.Negrita">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
+    <!-- Para los TabHost  -->
+    <style name="TextoNormal">
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="TextoNegrita">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
+    <style name="CustomTabWidget" parent="@android:style/Widget.TabWidget">
+        <item name="android:textAppearance">@style/CustomTabWidgetText</item>
+        <item name="android:textColor">@drawable/tab_textcolor_selector</item>
+    </style>
+
+    <style name="CustomTabWidgetText" parent="@android:style/TextAppearance.Widget.TabWidget">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+
+</resources>

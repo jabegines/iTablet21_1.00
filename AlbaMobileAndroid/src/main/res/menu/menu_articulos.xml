@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <item android:id="@+id/mni_modolista"
+      android:title="@string/mni_modolista"
+      android:icon="@android:drawable/ic_menu_agenda" />
+
+  <item android:id="@+id/mni_vergruposydep"
+      android:title="@string/mni_vergruposydep"
+      android:icon="@android:drawable/ic_menu_gallery" />
+
+  <item android:id="@+id/mni_vercatalogos"
+      android:title="@string/mni_vercatalogos"
+      android:icon="@android:drawable/ic_menu_today" />
+
+  <item android:id="@+id/mni_verhistorico"
+      android:title="@string/mni_verhistorico"
+      android:icon="@android:drawable/ic_menu_recent_history" />
+
+</menu>
