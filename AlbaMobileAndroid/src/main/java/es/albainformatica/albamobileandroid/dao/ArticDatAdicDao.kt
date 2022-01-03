@@ -16,6 +16,6 @@ interface ArticDatAdicDao {
     @Query("DELETE FROM ArticDatAdic")
     fun vaciar()
 
-    @Insert()
+    @Insert
     fun insertar(datAdic: ArticDatAdicEnt)
 }

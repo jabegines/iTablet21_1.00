@@ -27,6 +27,6 @@ interface ConfiguracionDao {
     fun actualizar(valor: String, grupo: Int)
 
 
-    @Insert()
+    @Insert
     fun insertar(configuracionEnt: ConfiguracionEnt)
 }

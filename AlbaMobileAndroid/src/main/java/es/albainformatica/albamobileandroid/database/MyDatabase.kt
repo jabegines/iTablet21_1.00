@@ -12,18 +12,19 @@ import es.albainformatica.albamobileandroid.entity.*
 
 
 
-
-
-@Database(entities=[AlmacenesEnt::class, ArtHabitualesEnt::class, ArticDatAdicEnt::class, ArticulosEnt::class,
-    BusquedasEnt::class, CabDiferidasEnt::class, ClasificadoresEnt::class, CargasEnt::class, CargasLineasEnt::class,
-    CatalogoLineasEnt::class, CobrosEnt::class, ConfiguracionEnt::class, ContactosCltesEnt::class,
-    CostosArticulosEnt::class, DepartamentosEnt::class, DivisasEnt::class, DocsCabPiesEnt::class,
-    EjerciciosEnt::class, EmpresasEnt::class, FormasPagoEnt::class, FormatosEnt::class, GruposEnt::class,
-    HistRepreEnt::class, IvasEnt::class, LineasDifEnt::class, LotesEnt::class, NotasCltesEnt::class,
-    NumExportEnt::class, OfertasEnt::class, OftCantRangosEnt::class, OftVolRangosEnt::class, OftVolumenEnt::class,
-    PendienteEnt::class, ProveedoresEnt::class, RatingArtEnt::class, RatingGruposEnt::class, RatingProvEnt::class,
-    RutasEnt::class, RuterosEnt::class, SaldosEnt::class, SeriesEnt::class, StockEnt::class, TarifasEnt::class,
-    TempCltesEnt::class, TiposIncEnt::class, TrfFormatosEnt::class],
+@Database(entities=[AlmacenesEnt::class, ArtHabitualesEnt::class, ArticClasifEnt::class, ArticDatAdicEnt::class,
+    ArticulosEnt::class, BusquedasEnt::class, CabDiferidasEnt::class, CabecerasEnt::class, ClasificadoresEnt::class,
+    CargasEnt::class, CargasLineasEnt::class, CatalogoLineasEnt::class, ClientesEnt::class, CnfTarifasEnt::class,
+    CobrosEnt::class, ConfiguracionEnt::class, ContactosCltesEnt::class, CostosArticulosEnt::class,
+    DepartamentosEnt::class, DireccCltesEnt::class, DivisasEnt::class, DocsCabPiesEnt::class, DtosCltesEnt::class,
+    DtosLineasEnt::class, EjerciciosEnt::class, EmpresasEnt::class, EstadDevolucEnt::class, FormasPagoEnt::class,
+    FormatosEnt::class, FtosLineasEnt::class, GruposEnt::class, HcoCompSemMesEnt::class, HcoPorArticClteEnt::class,
+    HistMesEnt::class, HistoricoEnt::class, HistRepreEnt::class, IvasEnt::class, LineasDifEnt::class, LineasEnt::class,
+    LotesEnt::class, NotasCltesEnt::class, NumExportEnt::class, OfertasEnt::class, OftCantRangosEnt::class,
+    OftVolRangosEnt::class, OftVolumenEnt::class, PendienteEnt::class, ProveedoresEnt::class, RatingArtEnt::class,
+    RatingGruposEnt::class, RatingProvEnt::class, RutasEnt::class, RuterosEnt::class, SaldosEnt::class,
+    SeriesEnt::class, StockEnt::class, TarifasEnt::class, TempCltesEnt::class, TiposIncEnt::class, TmpHcoEnt::class,
+    TrfFormatosEnt::class],
     version = VERSION_BD_ROOM,
     exportSchema = true
 )
@@ -31,29 +32,43 @@ abstract class MyDatabase: RoomDatabase() {
 
     abstract fun almacenesDao(): AlmacenDao
     abstract fun artHabitualesDao(): ArtHabitualesDao
+    abstract fun articClasifDao(): ArticClasifDao
     abstract fun articDatAdicDao(): ArticDatAdicDao
     abstract fun articulosDao(): ArticulosDao
     abstract fun busquedasDao(): BusquedasDao
     abstract fun cabDiferidasDao(): CabDiferidasDao
+    abstract fun cabecerasDao(): CabecerasDao
     abstract fun cargasDao(): CargasDao
     abstract fun cargasLineas(): CargasLineasDao
     abstract fun catalogoLineasDao(): CatalogoLineasDao
     abstract fun clasificadoresDao(): ClasificadoresDao
+    abstract fun clientesDao(): ClientesDao
+    abstract fun cnfTarifasDao(): CnfTarifasDao
     abstract fun cobrosDao(): CobrosDao
     abstract fun configuracionDao(): ConfiguracionDao
     abstract fun contactosCltesDao(): ContactosCltesDao
     abstract fun costosArticulosDao(): CostosArticulosDao
     abstract fun departamentosDao(): DepartamentosDao
+    abstract fun direccCltesDao(): DireccCltesDao
     abstract fun divisasDao(): DivisasDao
     abstract fun docsCabPiesDao(): DocsCabPiesDao
+    abstract fun dtosCltesDao(): DtosCltesDao
+    abstract fun dtosLineasDao(): DtosLineasDao
     abstract fun ejerciciosDao(): EjerciciosDao
     abstract fun empresasDao(): EmpresasDao
+    abstract fun estadDevolucDao(): EstadDevolucDao
     abstract fun formasPagoDao(): FormasPagoDao
     abstract fun formatosDao(): FormatosDao
+    abstract fun ftosLineasDao(): FtosLineasDao
     abstract fun gruposDao(): GruposDao
+    abstract fun hcoCompSemMesDao(): HcoCompSemMesDao
+    abstract fun hcoPorArticClteDao(): HcoPorArticClteDao
+    abstract fun histMesDao(): HistMesDao
+    abstract fun historicoDao(): HistoricoDao
     abstract fun histRepreDao(): HistRepreDao
     abstract fun ivasDao(): IvasDao
     abstract fun lineasDifDao(): LineasDifDao
+    abstract fun lineasDao(): LineasDao
     abstract fun lotesDao(): LotesDao
     abstract fun notasCltesDao(): NotasCltesDao
     abstract fun numExportDao(): NumExportDao
@@ -74,6 +89,7 @@ abstract class MyDatabase: RoomDatabase() {
     abstract fun tarifasDao(): TarifasDao
     abstract fun  tempCltesDao(): TempCltesDao
     abstract fun tiposIncDao(): TiposIncDao
+    abstract fun tmpHcoDao(): TmpHcoDao
     abstract fun trfFormatosDao(): TrfFormatosDao
 
 
