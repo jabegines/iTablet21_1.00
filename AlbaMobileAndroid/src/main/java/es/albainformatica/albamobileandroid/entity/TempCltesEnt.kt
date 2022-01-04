@@ -25,6 +25,7 @@ data class TempCltesEnt(
     var tipoIva: Short = 0,
     var tarifaId: Short = 0,
     var tarifaDtoId: Short = 0,
+    var tarifaPiezas: Short = 0,
     var fPago: String = "",
     var rutaId: Short = 0,
     var riesgo: String = "",

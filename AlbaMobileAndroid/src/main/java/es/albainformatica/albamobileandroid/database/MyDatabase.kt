@@ -3,9 +3,7 @@ package es.albainformatica.albamobileandroid.database
 import android.content.Context
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
-import es.albainformatica.albamobileandroid.VERSION_BD_ROOM
+import es.albainformatica.albamobileandroid.VERSION_BD
 import es.albainformatica.albamobileandroid.dao.*
 import es.albainformatica.albamobileandroid.dao.DocsCabPiesDao
 import es.albainformatica.albamobileandroid.entity.*
@@ -25,7 +23,7 @@ import es.albainformatica.albamobileandroid.entity.*
     RatingGruposEnt::class, RatingProvEnt::class, RutasEnt::class, RuterosEnt::class, SaldosEnt::class,
     SeriesEnt::class, StockEnt::class, TarifasEnt::class, TempCltesEnt::class, TiposIncEnt::class, TmpHcoEnt::class,
     TrfFormatosEnt::class],
-    version = VERSION_BD_ROOM,
+    version = VERSION_BD,
     exportSchema = true
 )
 abstract class MyDatabase: RoomDatabase() {
@@ -39,7 +37,7 @@ abstract class MyDatabase: RoomDatabase() {
     abstract fun cabDiferidasDao(): CabDiferidasDao
     abstract fun cabecerasDao(): CabecerasDao
     abstract fun cargasDao(): CargasDao
-    abstract fun cargasLineas(): CargasLineasDao
+    abstract fun cargasLineasDao(): CargasLineasDao
     abstract fun catalogoLineasDao(): CatalogoLineasDao
     abstract fun clasificadoresDao(): ClasificadoresDao
     abstract fun clientesDao(): ClientesDao

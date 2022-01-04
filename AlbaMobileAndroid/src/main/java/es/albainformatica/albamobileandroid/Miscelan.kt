@@ -18,9 +18,12 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
+import es.albainformatica.albamobileandroid.dao.CabecerasDao
+import es.albainformatica.albamobileandroid.dao.CargasDao
 import es.albainformatica.albamobileandroid.dao.CobrosDao
 import es.albainformatica.albamobileandroid.dao.SaldosDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
+import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.queBDRoom
 import java.io.File
 import java.lang.Exception
 import java.lang.NumberFormatException
@@ -37,10 +40,10 @@ import java.util.*
         val usarMultisistema = pref.getBoolean("usar_multisistema", false)
         val rutaImagenes = pref.getString("rutacomunicacion", "") ?: ""
         val carpetaImagenes: String = if (rutaImagenes == "") {
-            if (usarMultisistema) "/storage/sdcard0/alba/imagenes/" + BaseDatos.queBaseDatos + "/"
+            if (usarMultisistema) "/storage/sdcard0/alba/imagenes/$queBDRoom/"
             else "/storage/sdcard0/alba/imagenes/"
         } else {
-            if (usarMultisistema) rutaImagenes + "/imagenes/" + BaseDatos.queBaseDatos + "/" else "$rutaImagenes/imagenes/"
+            if (usarMultisistema) "$rutaImagenes/imagenes/$queBDRoom/" else "$rutaImagenes/imagenes/"
         }
         return carpetaImagenes
     }
@@ -51,9 +54,9 @@ import java.util.*
         val usarMultisistema = pref.getBoolean("usar_multisistema", false)
         val rutaDocAsoc = pref.getString("rutacomunicacion", "") ?: ""
         val carpetaDocAsoc: String = if (rutaDocAsoc == "") {
-            if (usarMultisistema) "/storage/sdcard0/alba/docasociados/" + BaseDatos.queBaseDatos + "/" else "/storage/sdcard0/alba/docasociados/"
+            if (usarMultisistema) "/storage/sdcard0/alba/docasociados/$queBDRoom/" else "/storage/sdcard0/alba/docasociados/"
         } else {
-            if (usarMultisistema) rutaDocAsoc + "/docasociados/" + BaseDatos.queBaseDatos + "/" else "$rutaDocAsoc/docasociados/"
+            if (usarMultisistema) "$rutaDocAsoc/docasociados/$queBDRoom/" else "$rutaDocAsoc/docasociados/"
         }
         return carpetaDocAsoc
     }
@@ -422,25 +425,21 @@ import java.util.*
     }
 
     // No podremos recibir siempre que comuniquemos vía wifi o ftp y:
-// - tengamos documentos o cobros pendientes de enviar
-// - tengamos cargas pendientes de enviar
-// - la fecha del último envío desde el terminal sea mayor que la de la última preparación desde el PC. Esto se comprueba
-// en MiscComunicaciones.xmlABaseDatos()
+    // - tengamos documentos o cobros pendientes de enviar
+    // - tengamos cargas pendientes de enviar
+    // - la fecha del último envío desde el terminal sea mayor que la de la última preparación desde el PC. Esto se comprueba
+    // en MiscComunicaciones.xmlABaseDatos()
     fun puedoRecibir(activity: Activity): Boolean {
-        val bd = BaseDatos(activity)
 
         // Puede ocurrir que no tengamos aún la base de datos creada, por eso tenemos que controlar la excepción.
         try {
-            bd.writableDatabase.use { dbAlba ->
-                var cCursor = dbAlba.rawQuery(
-                    "SELECT _id FROM cabeceras WHERE estado = 'N' OR estado = 'R' OR estado = 'P'",
-                    null
-                )
-                return if (cCursor.moveToFirst()) {
+            val cabecerasDao: CabecerasDao? = MyDatabase.getInstance(activity)?.cabecerasDao()
+            val lCabeceras = cabecerasDao?.getPdtesEnviar() ?: emptyList<Int>().toMutableList()
+
+                return if (lCabeceras.isNotEmpty()) {
                     false
                 } else {
                     // Comprobamos que no tenemos cobros realizados
-                    cCursor.close()
                     val cobrosDao: CobrosDao? = MyDatabase.getInstance(activity)?.cobrosDao()
                     val queId = cobrosDao?.hayCobros() ?: 0
                     val hayCobros = (queId > 0)
@@ -448,17 +447,16 @@ import java.util.*
                     if (hayCobros) {
                         false
                     } else {
-                        cCursor = dbAlba.rawQuery("SELECT cargaId FROM cargas WHERE estado = 'N' OR estado = 'R'", null)
-                        val hayCargas = cCursor.moveToFirst()
-                        cCursor.close()
+                        val cargasDao: CargasDao? = MyDatabase.getInstance(activity)?.cargasDao()
+                        val lCargas = cargasDao?.getPdtesEnviar() ?: emptyList<Int>().toMutableList()
+
+                        val hayCargas = lCargas.isNotEmpty()
                         !hayCargas
                     }
                 }
-            }
+
         } catch (e: Exception) {
             return true
-        } finally {
-            bd.close()
         }
     }
 

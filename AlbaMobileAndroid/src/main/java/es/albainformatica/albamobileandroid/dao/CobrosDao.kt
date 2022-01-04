@@ -60,10 +60,9 @@ interface CobrosDao {
     fun marcarComoExportados(queExportacion: Int)
 
 
-    @Query("SELECT A.* FROM cobros A" +
-            " WHERE A.estado = 'N'")
-            //" LEFT JOIN cabeceras B ON B.tipodoc = A.tipodoc AND B.alm = A.alm AND B.serie = A.serie AND B.numero = A.numero AND B.ejer = A.ejer" +
-            //" WHERE A.estado = 'N' AND (B.estado <> 'P' OR B.estado IS NULL")
+    @Query("SELECT A.* FROM Cobros A" +
+            " LEFT JOIN Cabeceras B ON B.tipoDoc = A.tipoDoc AND B.almacen = A.almacen AND B.serie = A.serie AND B.numero = A.numero AND B.ejercicio = A.ejercicio" +
+            " WHERE A.estado = 'N' AND (B.estado <> 'P' OR B.estado IS NULL)")
     fun abrirParaExportar(): MutableList<CobrosEnt>
 
 
@@ -85,7 +84,7 @@ interface CobrosDao {
     fun abrirResDivisas(queDesdeFecha: String, queHastaFecha: String): MutableList<DatosResCobros>
 
 
-    @Query("SELECT * FROM cobros WHERE numExport = :queNumExportacion")
+    @Query("SELECT * FROM Cobros WHERE numExport = :queNumExportacion")
     fun abrirExportacion(queNumExportacion: Int): MutableList<CobrosEnt>
 
 

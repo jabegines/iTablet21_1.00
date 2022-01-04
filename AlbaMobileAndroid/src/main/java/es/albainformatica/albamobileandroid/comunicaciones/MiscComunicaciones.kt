@@ -1,11 +1,9 @@
 package es.albainformatica.albamobileandroid.comunicaciones
 
 import android.annotation.SuppressLint
-import android.content.ContentValues
 import android.content.Context
 import android.content.SharedPreferences
 import android.database.Cursor
-import android.database.sqlite.SQLiteDatabase
 import android.os.Environment
 import android.os.Handler
 import android.os.Message
@@ -31,10 +29,14 @@ import java.util.zip.ZipOutputStream
 import kotlin.collections.ArrayList
 
 class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
-    private var fTerminar: Boolean = false
+    private var cabecerasDao: CabecerasDao? = MyDatabase.getInstance(context)?.cabecerasDao()
+    private val lineasDao: LineasDao? = MyDatabase.getInstance(context)?.lineasDao()
+    private val cargasLineasDao: CargasLineasDao? = MyDatabase.getInstance(context)?.cargasLineasDao()
+    private var prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+
     private val fContext: Context = context
+    private var fTerminar: Boolean = false
     private val fDesdeServicio: Boolean = desdeServicio
-    private var prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(fContext)
     private var rutaLocal: String
     var rutaLocalEnvio: String
     private var fCodTerminal: String = prefs.getString("terminal", "") ?: ""
@@ -116,127 +118,115 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
                 // Volvemos a crear todas las tablas si no estamos usando el servicio
                 if (!fDesdeServicio) {
-                    CrearBD(fContext)
+                    fContext.deleteDatabase(queBDRoom)
+                    //CrearBD(fContext)
                 }
 
-                bd = BaseDatos(fContext)
-                dbAlba = bd.writableDatabase
-                dbAlba.beginTransaction()
-                try {
-                    val numArchivos = xmlFiles.size
-                    var i = 1
+                val numArchivos = xmlFiles.size
+                var i = 1
 
-                    // Borraremos aquí los documentos enviados porque puede darse el caso de que hayamos enviado documentos pero
-                    // no recibimos desde la central, en cuyo caso no se llamará a importarCabeceras(). Idem con el pendiente.
-                    if (fDesdeServicio) {
-                        try {
-                            dbAlba.execSQL("DELETE FROM lineas WHERE _id IN" +
-                                    " (SELECT a._id FROM lineas A" +
-                                    " LEFT JOIN cabeceras B ON B._id = A.cabeceraId" +
-                                    " WHERE B.estado <> 'N' AND B.estado <> 'P')")
+                // Borraremos aquí los documentos enviados porque puede darse el caso de que hayamos enviado documentos pero
+                // no recibimos desde la central, en cuyo caso no se llamará a importarCabeceras(). Idem con el pendiente.
+                if (fDesdeServicio) {
+                    try {
+                        lineasDao?.borrarEnviadas()
+                        cabecerasDao?.borrarEnviadas()
 
-                            dbAlba.delete("cabeceras", "estado<>'N' and estado<>'P'", null)
-                            // Dejamos sin borrar aquellos vencimientos que tengamos que enviar (porque los hayamos creado en la tablet)
-                            // y aquellos que hemos recibido de la gestión pero hemos cobrado en la tablet y aún no los hemos enviado.
-                            val pendienteDao: PendienteDao? = MyDatabase.getInstance(fContext)?.pendienteDao()
+                        // Dejamos sin borrar aquellos vencimientos que tengamos que enviar (porque los hayamos creado en la tablet)
+                        // y aquellos que hemos recibido de la gestión pero hemos cobrado en la tablet y aún no los hemos enviado.
+                        val pendienteDao: PendienteDao? = MyDatabase.getInstance(fContext)?.pendienteDao()
+                        pendienteDao?.borrarEnviados()
 
-                            pendienteDao?.borrarEnviados()
+                        // Borramos histRepre porque si no lo recibimos tendremos el histórico anterior
+                        val histRepreDao: HistRepreDao? = MyDatabase.getInstance(fContext)?.histRepreDao()
+                        histRepreDao?.vaciar()
 
-                            // Borramos histRepre porque si no lo recibimos tendremos el histórico anterior
-                            val histRepreDao: HistRepreDao? = MyDatabase.getInstance(fContext)?.histRepreDao()
-                            histRepreDao?.vaciar()
+                        // Idem con proveedores
+                        val proveedoresDao: ProveedoresDao? = MyDatabase.getInstance(fContext)?.proveedoresDao()
+                        proveedoresDao?.vaciar()
 
-                            // Idem con proveedores
-                            val proveedoresDao: ProveedoresDao? = MyDatabase.getInstance(fContext)?.proveedoresDao()
-                            proveedoresDao?.vaciar()
+                        // Idem con ofertas
+                        val ofertasDao: OfertasDao? = MyDatabase.getInstance(fContext)?.ofertasDao()
+                        ofertasDao?.vaciar()
 
-                            // Idem con ofertas
-                            val ofertasDao: OfertasDao? = MyDatabase.getInstance(fContext)?.ofertasDao()
-                            ofertasDao?.vaciar()
-
-                        } catch (e: Exception) {
-                            mostrarExcepcion(e)
-                        }
+                    } catch (e: Exception) {
+                        mostrarExcepcion(e)
                     }
-
-                    // Bucle que recorre la lista de ficheros.
-                    for (file in xmlFiles) {
-                        nombreFich = file.name
-                        if ((nombreFich != "Clientes.xml") && (nombreFich != "ConClientes.xml") &&
-                                (nombreFich != "DirClientes.xml") && (nombreFich != "DtosClientes.xml") &&
-                                (nombreFich != "NotasClientes.xml") && (nombreFich != "Proveedores.xml")) {
-                            mensajeAActivity(file.name, numArchivos, i)
-                            i++
-                        }
-
-                        when {
-                            nombreFich.equals("Articulos.xml", true) -> importarArticulos()
-                            nombreFich.equals("ArticulosHabituales.xml", true) -> importarArtHabituales()
-                            nombreFich.equals("Busquedas.xml", true) -> importarBusquedas()
-                            // Estos tres archivos no los vaciamos totalmente
-                            nombreFich.equals("Facturas.xml", true) -> importarCabeceras("Facturas.xml", TIPODOC_FACTURA.toByte())
-                            nombreFich.equals("Albaranes.xml", true) -> importarCabeceras("Albaranes.xml", TIPODOC_ALBARAN.toByte())
-                            nombreFich.equals("Pedidos.xml", true) -> importarCabeceras("Pedidos.xml", TIPODOC_PEDIDO.toByte())
-                            nombreFich.equals("Presupuestos.xml", true) -> importarCabeceras("Presupuestos.xml", TIPODOC_PRESUPUESTO.toByte())
-                            nombreFich.equals("Pendiente.xml", true) -> importarPendiente()
-                            nombreFich.equals("FrasDiferidas.xml", true) -> importarFrasDiferidas()
-
-                            nombreFich.equals("CnfTarifas.xml", true) -> importarCnfTarifas()
-                            nombreFich.equals("Configuracion.xml", true) -> importarConfiguracion()
-                            nombreFich.equals("Divisas.xml", true) -> importarDivisas()
-                            nombreFich.equals("FormasPago.xml", true) -> importarFPago()
-
-                            nombreFich.equals("Historico.xml", true) -> importarHco()
-                            nombreFich.equals("HistMes.xml", true) -> importarHcoMes()
-                            nombreFich.equals("HistRep.xml", true) -> importarHcoRepre()
-                            nombreFich.equals("HcoCompSemMes.xml", true) -> importarHcoCompSemMes()
-                            nombreFich.equals("HcoPorArticClte.xml", true) -> importarHcoArticClte()
-                            nombreFich.equals("EstadDevoluc.xml", true) -> importarEstadDevoluc()
-
-                            nombreFich.equals("Series.xml", true) -> importarSeries(ejercActual)
-                            nombreFich.equals("Ejercicios.xml", true) -> importarEjercicios()
-                            nombreFich.equals("Ivas.xml", true) -> importarIvas()
-                            nombreFich.equals("Ofertas.xml", true) -> importarOfertas()
-                            nombreFich.equals("OfertasVol.xml", true) -> importarOfVolumen()
-                            nombreFich.equals("OfVolRangos.xml", true) -> importarOfVolRangos()
-                            nombreFich.equals("CantOfertas.xml", true) -> importarOfCantRangos()
-                            nombreFich.equals("RatingArt.xml", true) -> importarRatingArt()
-                            nombreFich.equals("RatingGru.xml", true) -> importarRatingGrupos()
-                            nombreFich.equals("RatingPro.xml", true) -> importarRatingProv()
-                            nombreFich.equals("Rutas.xml", true) -> importarRutas()
-                            nombreFich.equals("Rutero.xml", true) -> importarRutero()
-                            nombreFich.equals("Saldos.xml", true) -> importarSaldos()
-                            nombreFich.equals("Stock.xml", true) -> importarStock()
-                            nombreFich.equals("Tarifas.xml", true) -> importarTarifas()
-                            nombreFich.equals("Lotes.xml", true) -> importarLotes()
-                            nombreFich.equals("Grupos.xml", true) -> importarGrupos()
-                            nombreFich.equals("Departamentos.xml", true) -> importarDepartamentos()
-                            nombreFich.equals("Clasificadores.xml", true) -> importarClasificadores()
-                            nombreFich.equals("ArticClasif.xml", true) -> importarArticClasif()
-                            nombreFich.equals("DatAdicArticulos.xml", true) -> importarDatAdicArtic()
-                            nombreFich.equals("Formatos.xml", true) -> importarFormatos()
-                            nombreFich.equals("TarifasFormatos.xml", true) -> importarTrfFormatos()
-                            nombreFich.equals("TiposInc.xml", true) -> importarTiposIncidencia()
-                            nombreFich.equals("Almacenes.xml", true) -> importarAlmacenes()
-                            nombreFich.equals("Empresas.xml", true) -> importarEmpresas()
-                            nombreFich.equals("Costos.xml", true) -> importarCostos()
-                            nombreFich.equals("DocsCabPies.xml", true) -> importarDocsCabPies()
-                        }
-                        if ((nombreFich != "Clientes.xml") && (nombreFich != "ConClientes.xml") &&
-                                (nombreFich != "DirClientes.xml") && (nombreFich != "DtosClientes.xml") &&
-                                (nombreFich != "NotasClientes.xml") && (nombreFich != "Proveedores.xml")) {
-                            // Borramos el fichero XML de la carpeta de recepción.
-                            file.delete()
-                        }
-                    }
-
-                    // Importamos ahora los clientes y los proveedores
-                    clientesABaseDatos(xmlFiles, i)
-
-                } finally {
-                    dbAlba.setTransactionSuccessful()
-                    dbAlba.endTransaction()
                 }
+
+                // Bucle que recorre la lista de ficheros.
+                for (file in xmlFiles) {
+                    nombreFich = file.name
+                    if ((nombreFich != "Clientes.xml") && (nombreFich != "ConClientes.xml") &&
+                            (nombreFich != "DirClientes.xml") && (nombreFich != "DtosClientes.xml") &&
+                            (nombreFich != "NotasClientes.xml") && (nombreFich != "Proveedores.xml")) {
+                        mensajeAActivity(file.name, numArchivos, i)
+                        i++
+                    }
+
+                    when {
+                        nombreFich.equals("Articulos.xml", true) -> importarArticulos()
+                        nombreFich.equals("ArticulosHabituales.xml", true) -> importarArtHabituales()
+                        nombreFich.equals("Busquedas.xml", true) -> importarBusquedas()
+                        // Estos tres archivos no los vaciamos totalmente
+                        nombreFich.equals("Facturas.xml", true) -> importarCabeceras("Facturas.xml", TIPODOC_FACTURA)
+                        nombreFich.equals("Albaranes.xml", true) -> importarCabeceras("Albaranes.xml", TIPODOC_ALBARAN)
+                        nombreFich.equals("Pedidos.xml", true) -> importarCabeceras("Pedidos.xml", TIPODOC_PEDIDO)
+                        nombreFich.equals("Presupuestos.xml", true) -> importarCabeceras("Presupuestos.xml", TIPODOC_PRESUPUESTO)
+                        nombreFich.equals("Pendiente.xml", true) -> importarPendiente()
+                        nombreFich.equals("FrasDiferidas.xml", true) -> importarFrasDiferidas()
+
+                        nombreFich.equals("CnfTarifas.xml", true) -> importarCnfTarifas()
+                        nombreFich.equals("Configuracion.xml", true) -> importarConfiguracion()
+                        nombreFich.equals("Divisas.xml", true) -> importarDivisas()
+                        nombreFich.equals("FormasPago.xml", true) -> importarFPago()
+
+                        nombreFich.equals("Historico.xml", true) -> importarHco()
+                        nombreFich.equals("HistMes.xml", true) -> importarHcoMes()
+                        nombreFich.equals("HistRep.xml", true) -> importarHcoRepre()
+                        nombreFich.equals("HcoCompSemMes.xml", true) -> importarHcoCompSemMes()
+                        nombreFich.equals("HcoPorArticClte.xml", true) -> importarHcoArticClte()
+                        nombreFich.equals("EstadDevoluc.xml", true) -> importarEstadDevoluc()
+
+                        nombreFich.equals("Series.xml", true) -> importarSeries(ejercActual)
+                        nombreFich.equals("Ejercicios.xml", true) -> importarEjercicios()
+                        nombreFich.equals("Ivas.xml", true) -> importarIvas()
+                        nombreFich.equals("Ofertas.xml", true) -> importarOfertas()
+                        nombreFich.equals("OfertasVol.xml", true) -> importarOfVolumen()
+                        nombreFich.equals("OfVolRangos.xml", true) -> importarOfVolRangos()
+                        nombreFich.equals("CantOfertas.xml", true) -> importarOfCantRangos()
+                        nombreFich.equals("RatingArt.xml", true) -> importarRatingArt()
+                        nombreFich.equals("RatingGru.xml", true) -> importarRatingGrupos()
+                        nombreFich.equals("RatingPro.xml", true) -> importarRatingProv()
+                        nombreFich.equals("Rutas.xml", true) -> importarRutas()
+                        nombreFich.equals("Rutero.xml", true) -> importarRutero()
+                        nombreFich.equals("Saldos.xml", true) -> importarSaldos()
+                        nombreFich.equals("Stock.xml", true) -> importarStock()
+                        nombreFich.equals("Tarifas.xml", true) -> importarTarifas()
+                        nombreFich.equals("Lotes.xml", true) -> importarLotes()
+                        nombreFich.equals("Grupos.xml", true) -> importarGrupos()
+                        nombreFich.equals("Departamentos.xml", true) -> importarDepartamentos()
+                        nombreFich.equals("Clasificadores.xml", true) -> importarClasificadores()
+                        nombreFich.equals("ArticClasif.xml", true) -> importarArticClasif()
+                        nombreFich.equals("DatAdicArticulos.xml", true) -> importarDatAdicArtic()
+                        nombreFich.equals("Formatos.xml", true) -> importarFormatos()
+                        nombreFich.equals("TarifasFormatos.xml", true) -> importarTrfFormatos()
+                        nombreFich.equals("TiposInc.xml", true) -> importarTiposIncidencia()
+                        nombreFich.equals("Almacenes.xml", true) -> importarAlmacenes()
+                        nombreFich.equals("Empresas.xml", true) -> importarEmpresas()
+                        nombreFich.equals("Costos.xml", true) -> importarCostos()
+                        nombreFich.equals("DocsCabPies.xml", true) -> importarDocsCabPies()
+                    }
+                    if ((nombreFich != "Clientes.xml") && (nombreFich != "ConClientes.xml") &&
+                            (nombreFich != "DirClientes.xml") && (nombreFich != "DtosClientes.xml") &&
+                            (nombreFich != "NotasClientes.xml") && (nombreFich != "Proveedores.xml")) {
+                        // Borramos el fichero XML de la carpeta de recepción.
+                        file.delete()
+                    }
+                }
+
+                // Importamos ahora los clientes y los proveedores
+                clientesABaseDatos(xmlFiles, i)
 
                 // Recalculamos stocks
                 // Estas llamadas a fConfiguracion.loquesea no pueden estar dentro del bloque beginTransaction - endTransaction, porque
@@ -273,7 +263,6 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
 
     private fun clientesABaseDatos(xmlFiles: Array<File>, i: Int) {
-
         val numArchivos = xmlFiles.size
         var x = i
 
@@ -560,103 +549,75 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
         val fArticulos = ArticulosClase(fContext)
 
         // Sumamos al stock las líneas de los documentos no enviados
-        val cCabeceras = dbAlba.rawQuery("SELECT A.articulo, A.cajas, A.cantidad, B.empresa FROM lineas A" +
-                " LEFT JOIN cabeceras B ON B._id = A.cabeceraId" +
-                " WHERE (B.estado = 'N' OR B.estado = 'P') AND B.tipodoc <> " + TIPODOC_PEDIDO, null)
+        val lLineas = lineasDao?.getNoEnviadas() ?: emptyList<DatosLinRecStock>().toMutableList()
 
-        cCabeceras.use {
-            it.moveToFirst()
-            while (!it.isAfterLast) {
-                val queArticulo = it.getInt(it.getColumnIndex("articulo"))
-                val queEmpresa = it.getShort(it.getColumnIndex("empresa"))
-                val sCajas = it.getString(it.getColumnIndex("cajas")) ?: "0.0"
-                val dCajas: Double = if (sCajas == "") 0.0
-                else sCajas.toDouble()
+        for (linea in lLineas) {
+            val queArticulo = linea.articuloId
+            val queEmpresa = linea.empresa
+            val sCajas = linea.cajas
+            val dCajas: Double = if (sCajas == "") 0.0
+            else sCajas.toDouble()
 
-                val sCantidad = it.getString(it.getColumnIndex("cantidad")) ?: "0.0"
-                val dCantidad: Double = if (sCantidad == "") 0.0
-                else sCantidad.toDouble()
+            val sCantidad = linea.cantidad
+            val dCantidad: Double = if (sCantidad == "") 0.0
+            else sCantidad.toDouble()
 
-                fArticulos.actualizarStock(queArticulo, queEmpresa, dCantidad, dCajas, false)
-                it.moveToNext()
-            }
+            fArticulos.actualizarStock(queArticulo, queEmpresa, dCantidad, dCajas, false)
         }
 
         // Sumamos ahora al stock las cargas no enviadas. También aprovechamos y borramos las cargas que estén enviadas.
-        dbAlba.execSQL("DELETE FROM cargasLineas WHERE _id IN" +
-                " (SELECT a._id FROM cargasLineas A" +
-                " LEFT JOIN cargas B ON B.cargaId = A.cargaId" +
-                " WHERE B.estado <> 'N')")
-        dbAlba.delete("cargas", "estado<>'N'", null)
+        val cargasDao: CargasDao? = MyDatabase.getInstance(fContext)?.cargasDao()
+        cargasLineasDao?.borrarEnviadas()
+        cargasDao?.borrarEnviadas()
 
-        val cCargas = dbAlba.rawQuery("SELECT A.articulo, A.cajas, A.cantidad, B.empresa FROM cargasLineas A" +
-                " LEFT JOIN cargas B ON B.cargaId = A.cargaId" +
-                " WHERE B.estado = 'N'", null)
+        val lCargas = cargasLineasDao?.getNoEnviadas() ?: emptyList<DatosLinRecStock>().toMutableList()
 
-        cCargas.use {
-            it.moveToFirst()
-            while (!it.isAfterLast) {
-                val queArticulo = it.getInt(it.getColumnIndex("articulo"))
-                val queEmpresa = it.getShort(it.getColumnIndex("empresa"))
-                val sCajas = it.getString(it.getColumnIndex("cajas")) ?: "0.0"
-                val dCajas: Double = if (sCajas == "") 0.0
-                else sCajas.toDouble() * -1
+        for (linea in lCargas) {
+            val queArticulo = linea.articuloId
+            val queEmpresa = linea.empresa
+            val sCajas = linea.cajas
+            val dCajas: Double = if (sCajas == "") 0.0
+            else sCajas.toDouble() * -1
 
-                val sCantidad = it.getString(it.getColumnIndex("cantidad")) ?: "0.0"
-                val dCantidad: Double = if (sCantidad == "") 0.0
-                else sCantidad.toDouble() * -1
+            val sCantidad = linea.cantidad
+            val dCantidad: Double = if (sCantidad == "") 0.0
+            else sCantidad.toDouble() * -1
 
-                fArticulos.actualizarStock(queArticulo, queEmpresa, dCantidad, dCajas, false)
-                it.moveToNext()
-            }
+            fArticulos.actualizarStock(queArticulo, queEmpresa, dCantidad, dCajas, false)
         }
-
-        fArticulos.close()
     }
 
     private fun recalcularLotes() {
         val fLotes = LotesClase(fContext)
 
         // Recalculamos los lotes de las líneas de venta no enviadas
-        val cCabeceras = dbAlba.rawQuery("SELECT A.articulo, A.cantidad, A.lote, B.empresa FROM lineas A" +
-                " LEFT JOIN cabeceras B ON B._id = A.cabeceraId" +
-                " WHERE (B.estado = 'N' OR B.estado = 'P') AND B.tipodoc <> " + TIPODOC_PEDIDO, null)
+        val lLineas = lineasDao?.getNoEnviadas() ?: emptyList<DatosLinRecStock>().toMutableList()
 
-        cCabeceras.use {
-            it.moveToFirst()
-            while (!it.isAfterLast) {
-                val queArticulo = it.getInt(it.getColumnIndex("articulo"))
-                val sCantidad = it.getString(it.getColumnIndex("cantidad"))
-                val dCantidad: Double = if (sCantidad == "") 0.0
-                else sCantidad.toDouble()
+        for (linea in lLineas) {
+            val queArticulo = linea.articuloId
+            val sCantidad = linea.cantidad
+            val dCantidad: Double = if (sCantidad == "") 0.0
+            else sCantidad.toDouble()
 
-                val queLote = it.getString(it.getColumnIndex("lote"))
-                val queEmpresa = it.getShort(it.getColumnIndex("empresa"))
+            val queLote = linea.lote
+            val queEmpresa = linea.empresa
 
-                fLotes.actStockLote(queArticulo, dCantidad, queLote, queEmpresa)
-                it.moveToNext()
-            }
+            fLotes.actStockLote(queArticulo, dCantidad, queLote, queEmpresa)
         }
 
         // Recalculamos los lotes de las cargas no enviadas
-        val cCargas = dbAlba.rawQuery("SELECT A.articulo, A.cantidad, A.lote, B.empresa FROM cargasLineas A" +
-                " LEFT JOIN cargas B ON B.cargaId = A.cargaId" +
-                " WHERE B.estado = 'N'", null)
+        val lCargas = cargasLineasDao?.getNoEnviadas() ?: emptyList<DatosLinRecStock>().toMutableList()
 
-        cCargas.use {
-            it.moveToFirst()
-            while (!it.isAfterLast) {
-                val queArticulo = it.getInt(it.getColumnIndex("articulo"))
-                val sCantidad = it.getString(it.getColumnIndex("cantidad"))
-                val dCantidad: Double = if (sCantidad == "") 0.0
-                else sCantidad.toDouble() * -1
+        for (linea in lCargas) {
+            val queArticulo = linea.articuloId
+            val sCantidad = linea.cantidad
+            val dCantidad: Double = if (sCantidad == "") 0.0
+            else sCantidad.toDouble() * -1
 
-                val queLote = it.getString(it.getColumnIndex("lote"))
-                val queEmpresa = it.getShort(it.getColumnIndex("empresa"))
+            val queLote = linea.lote
+            val queEmpresa = linea.empresa
 
-                fLotes.actStockLote(queArticulo, dCantidad, queLote, queEmpresa)
-                it.moveToNext()
-            }
+            fLotes.actStockLote(queArticulo, dCantidad, queLote, queEmpresa)
         }
     }
 
@@ -915,94 +876,92 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
     // P -> guardado
     // R -> reenviar (no se usa con servicio)
     // X -> enviado
-    private fun importarCabeceras(nombreFichXMl: String, queTipoDoc: Byte) {
+    private fun importarCabeceras(nombreFichXMl: String, queTipoDoc: Short) {
         val f = File(rutaLocal, nombreFichXMl)
         val fin = FileInputStream(f)
         var sCampo: String
 
         try {
-            val values = ContentValues()
             val parser = Xml.newPullParser()
             try {
                 parser.setInput(fin, "UTF-8")
                 var event = parser.next()
-                var cabeceraId: Long = 0
+                val cabeceraId: Long = 0
 
                 while (event != XmlPullParser.END_DOCUMENT && !fTerminar) {
                     if (event == XmlPullParser.START_TAG) {
                         if (parser.name == "registro") {
+                            val cabeceraEnt = CabecerasEnt()
                             // Hay tablas donde el camo Facturado no viene, por eso lo inicializamos a "F".
-                            values.put("facturado", "F")
-                            values.put("tipodoc", queTipoDoc)
+                            cabeceraEnt.facturado = "F"
+                            cabeceraEnt.tipoDoc = queTipoDoc
 
                             for (i in 0 until parser.attributeCount) {
                                 sCampo = parser.getAttributeName(i)
 
                                 when {
-                                    sCampo.equals("Facturado", ignoreCase = true) -> values.put("facturado", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Almacen", ignoreCase = true) -> values.put("alm", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Serie", ignoreCase = true) -> values.put("serie", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Numero", ignoreCase = true) -> values.put("numero", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Ejercicio", ignoreCase = true) -> values.put("ejer", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Empresa", ignoreCase = true) -> values.put("empresa", parser.getAttributeValue("", sCampo))
+                                    sCampo.equals("Facturado", ignoreCase = true) -> cabeceraEnt.facturado = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Almacen", ignoreCase = true) -> cabeceraEnt.almacen = parser.getAttributeValue("", sCampo).toShort()
+                                    sCampo.equals("Serie", ignoreCase = true) -> cabeceraEnt.serie = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Numero", ignoreCase = true) -> cabeceraEnt.numero = parser.getAttributeValue("", sCampo).toInt()
+                                    sCampo.equals("Ejercicio", ignoreCase = true) -> cabeceraEnt.ejercicio = parser.getAttributeValue("", sCampo).toShort()
+                                    sCampo.equals("Empresa", ignoreCase = true) -> cabeceraEnt.empresa = parser.getAttributeValue("", sCampo).toShort()
                                     sCampo.equals("Fecha", ignoreCase = true) -> {
                                         val sFecha = parser.getAttributeValue("", sCampo)
-                                        val sFecha2 = (sFecha.substring(8, 10) + "/"
-                                                + sFecha.substring(5, 7) + "/" + sFecha.substring(0, 4))
-                                        values.put("fecha", sFecha2)
+                                        val sFecha2 = (sFecha.substring(8, 10) + "/" + sFecha.substring(5, 7) + "/" + sFecha.substring(0, 4))
+                                        cabeceraEnt.fecha = sFecha2
                                     }
-                                    sCampo.equals("Cliente", ignoreCase = true) -> values.put("cliente", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("AplicarIva", ignoreCase = true) -> values.put("apliva", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("AplicarRecargo", ignoreCase = true) -> values.put("aplrec", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Bruto", ignoreCase = true) -> values.put("bruto", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Base", ignoreCase = true) -> values.put("base", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Dto", ignoreCase = true) -> values.put("dto", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Iva", ignoreCase = true) -> values.put("iva", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Recargo", ignoreCase = true) -> values.put("recargo", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Total", ignoreCase = true) -> values.put("total", parser.getAttributeValue("", sCampo))
+                                    sCampo.equals("Cliente", ignoreCase = true) -> cabeceraEnt.clienteId = parser.getAttributeValue("", sCampo).toInt()
+                                    sCampo.equals("AplicarIva", ignoreCase = true) -> cabeceraEnt.aplicarIva = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("AplicarRecargo", ignoreCase = true) -> cabeceraEnt.aplicarRe = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Bruto", ignoreCase = true) -> cabeceraEnt.bruto = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Base", ignoreCase = true) -> cabeceraEnt.base = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Dto", ignoreCase = true) -> cabeceraEnt.dto = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Iva", ignoreCase = true) -> cabeceraEnt.iva = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Recargo", ignoreCase = true) -> cabeceraEnt.recargo = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Total", ignoreCase = true) -> cabeceraEnt.total = parser.getAttributeValue("", sCampo)
                                     sCampo.equals("Estado", ignoreCase = true) -> {
-                                        values.put("estado", parser.getAttributeValue("", sCampo))
-                                        values.put("estadoinicial", parser.getAttributeValue("", sCampo))
+                                        cabeceraEnt.estado = parser.getAttributeValue("", sCampo)
+                                        cabeceraEnt.estadoInicial = parser.getAttributeValue("", sCampo)
                                     }
-                                    sCampo.equals("Flag", ignoreCase = true) -> values.put("flag", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Observ1", ignoreCase = true) -> values.put("obs1", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Observ2", ignoreCase = true) -> values.put("obs2", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Hoja", ignoreCase = true) -> values.put("hoja", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Orden", ignoreCase = true) -> values.put("orden", parser.getAttributeValue("", sCampo))
+                                    sCampo.equals("Flag", ignoreCase = true) -> cabeceraEnt.flag = parser.getAttributeValue("", sCampo).toInt()
+                                    sCampo.equals("Observ1", ignoreCase = true) -> cabeceraEnt.observ1 = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Observ2", ignoreCase = true) -> cabeceraEnt.observ2 = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Hoja", ignoreCase = true) -> cabeceraEnt.hojaReparto = parser.getAttributeValue("", sCampo).toInt()
+                                    sCampo.equals("Orden", ignoreCase = true) -> cabeceraEnt.ordenReparto = parser.getAttributeValue("", sCampo).toInt()
                                 }
                             }
                             // Llenamos el campo "firmado" a falso.
-                            values.put("firmado", "F")
+                            cabeceraEnt.firmado = "F"
 
-                            cabeceraId = dbAlba.insertWithOnConflict("cabeceras", null, values, SQLiteDatabase.CONFLICT_IGNORE)
-                            values.clear()
+                            cabecerasDao?.insertar(cabeceraEnt)
 
                         } else if (parser.name == "linea") {
+                            val lineaEnt = LineasEnt()
                             for (i in 0 until parser.attributeCount) {
                                 sCampo = parser.getAttributeName(i)
 
                                 when {
-                                    sCampo.equals("Linea", ignoreCase = true) -> values.put("linea", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Articulo", ignoreCase = true) -> values.put("articulo", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Codigo", ignoreCase = true) -> values.put("codigo", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Descripcion", ignoreCase = true) -> values.put("descr", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Tarifa", ignoreCase = true) -> values.put("tarifa", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Precio", ignoreCase = true) -> values.put("precio", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Importe", ignoreCase = true) -> values.put("importe", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Cajas", ignoreCase = true) -> values.put("cajas", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Cantidad", ignoreCase = true) -> values.put("cantidad", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Piezas", ignoreCase = true) -> values.put("piezas", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Dto", ignoreCase = true) -> values.put("dto", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("TipoIva", ignoreCase = true) -> values.put("codigoiva", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Flag", ignoreCase = true) -> values.put("flag", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Flag3", ignoreCase = true) -> values.put("flag3", parser.getAttributeValue("", sCampo))
-                                    sCampo.equals("Formato", ignoreCase = true) -> values.put("formato", parser.getAttributeValue("", sCampo))
+                                    sCampo.equals("Linea", ignoreCase = true) -> lineaEnt.lineaId = parser.getAttributeValue("", sCampo).toInt()
+                                    sCampo.equals("Articulo", ignoreCase = true) -> lineaEnt.articuloId = parser.getAttributeValue("", sCampo).toInt()
+                                    sCampo.equals("Codigo", ignoreCase = true) -> lineaEnt.codArticulo = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Descripcion", ignoreCase = true) -> lineaEnt.descripcion = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Tarifa", ignoreCase = true) -> lineaEnt.tarifaId = parser.getAttributeValue("", sCampo).toShort()
+                                    sCampo.equals("Precio", ignoreCase = true) -> lineaEnt.precio = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Importe", ignoreCase = true) -> lineaEnt.importe = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Cajas", ignoreCase = true) -> lineaEnt.cajas = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Cantidad", ignoreCase = true) -> lineaEnt.cantidad = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Piezas", ignoreCase = true) -> lineaEnt.piezas = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Dto", ignoreCase = true) -> lineaEnt.dto = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("TipoIva", ignoreCase = true) -> lineaEnt.codigoIva = parser.getAttributeValue("", sCampo).toShort()
+                                    sCampo.equals("Flag", ignoreCase = true) -> lineaEnt.flag = parser.getAttributeValue("", sCampo).toInt()
+                                    sCampo.equals("Flag3", ignoreCase = true) -> lineaEnt.flag3 = parser.getAttributeValue("", sCampo).toInt()
+                                    sCampo.equals("Formato", ignoreCase = true) -> lineaEnt.formatoId = parser.getAttributeValue("", sCampo).toShort()
                                 }
                             }
-                            values.put("cabeceraId", cabeceraId)
+                            lineaEnt.cabeceraId = cabeceraId.toInt()
 
-                            dbAlba.insertWithOnConflict("lineas", null, values, SQLiteDatabase.CONFLICT_IGNORE)
-                            values.clear()
+                            lineasDao?.insertar(lineaEnt)
                         }
                     }
                     event = parser.next()
@@ -3479,7 +3438,6 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                 }
 
                 if (queNumExportacion == 0) fNotas.marcarComoExportadas(iSigExportacion)
-                fNotas.close()
 
                 if (enviarCargas(queNumExportacion, iSigExportacion)) hayCargas = true
                 if (enviarCabeceras(queNumExportacion, iSigExportacion)) hayDocumentos = true
@@ -3539,7 +3497,6 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             }
         } finally {
             fClientes.close()
-            fNotas.close()
         }
 
         return resultado
@@ -3555,59 +3512,40 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
         val fNotas = NotasClientes(fContext)
         fNotas.marcarNumExport(fNumPaquete)
 
-        // Hacemos esto para poder trabajar con las cabeceras
-        val dbAlba = BaseDatos(fContext).writableDatabase
-        dbAlba.beginTransaction()
+        cabecerasDao?.actualizarNumPaquete(fNumPaquete)
 
-        try {
-            val values = ContentValues()
-            values.put("numexport", fNumPaquete)
-            dbAlba.update("cabeceras", values, "numexport=-1", null)
+        val pendienteDao: PendienteDao? = MyDatabase.getInstance(fContext)?.pendienteDao()
+        pendienteDao?.actualizarNumExport(fNumPaquete)
 
-            val pendienteDao: PendienteDao? = MyDatabase.getInstance(fContext)?.pendienteDao()
-            pendienteDao?.actualizarNumExport(fNumPaquete)
+        val cobrosDao: CobrosDao? = MyDatabase.getInstance(fContext)?.cobrosDao()
+        cobrosDao?.actualizarNumPaquete(fNumPaquete)
 
-            val cobrosDao: CobrosDao? = MyDatabase.getInstance(fContext)?.cobrosDao()
-            cobrosDao?.actualizarNumPaquete(fNumPaquete)
+        // Insertamos en numexport el número de paquete junto con la fecha y hora actuales
+        val tim = System.currentTimeMillis()
+        val df = SimpleDateFormat("dd/mm/yyyy")
+        val fFecha = df.format(tim)
+        val dfHora = SimpleDateFormat("hh:mm")
+        val fHora = dfHora.format(tim)
 
-            // Insertamos en numexport el número de paquete junto con la fecha y hora actuales
-            val tim = System.currentTimeMillis()
-            val df = SimpleDateFormat("dd/MM/yyyy")
-            val fFecha = df.format(tim)
-            val dfHora = SimpleDateFormat("HH:mm")
-            val fHora = dfHora.format(tim)
-            values.put("fecha", fFecha)
-            values.put("hora", fHora)
-            dbAlba.insert("numexport", null, values)
-
-        } finally {
-            dbAlba.setTransactionSuccessful()
-            dbAlba.endTransaction()
-        }
+        val numExportDao: NumExportDao? = MyDatabase.getInstance(fContext)?.numExportDao()
+        val numExportEnt = NumExportEnt()
+        numExportEnt.numExport = fNumPaquete
+        numExportEnt.fecha = fFecha
+        numExportEnt.hora = fHora
+        numExportDao?.insertar(numExportEnt)
     }
 
+
     fun revertirEstado() {
-        val dbAlba = BaseDatos(fContext).writableDatabase
-        dbAlba.beginTransaction()
-
         // Volvemos a establecer el estado 'N' para que los registros sean enviados la próxima vez
-        try {
-            val values = ContentValues()
-            values.put("estado", "N")
-            dbAlba.update("cabeceras", values, "numexport=-1", null)
-            dbAlba.update("cargas", values, "numexport=-1", null)
+        val cargasDao: CargasDao? = MyDatabase.getInstance(fContext)?.cargasDao()
+        val pendienteDao: PendienteDao? = MyDatabase.getInstance(fContext)?.pendienteDao()
+        val cobrosDao: CobrosDao? = MyDatabase.getInstance(fContext)?.cobrosDao()
 
-            val pendienteDao: PendienteDao? = MyDatabase.getInstance(fContext)?.pendienteDao()
-            pendienteDao?.revertirEstado()
-
-            val cobrosDao: CobrosDao? = MyDatabase.getInstance(fContext)?.cobrosDao()
-            cobrosDao?.revertirEstado()
-
-
-        } finally {
-            dbAlba.setTransactionSuccessful()
-            dbAlba.endTransaction()
-        }
+        cabecerasDao?.revertirEstado()
+        cargasDao?.revertirEstado()
+        pendienteDao?.revertirEstado()
+        cobrosDao?.revertirEstado()
     }
 
 
@@ -3885,38 +3823,33 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
 
     private fun enviarCargas(queNumExportacion: Int, iSigExportacion: Int): Boolean {
-        // Para obtener el cursor con los documentos creo sobre la marcha un objeto de tipo BaseDatos.
-        val dbAlba = BaseDatos(fContext).writableDatabase
-        var sCondicion: String = if (queNumExportacion == 0) {
-            " WHERE estado = 'N' OR estado = 'R'"
-        } else
-            " WHERE numexport = $queNumExportacion"
+        val cargasDao: CargasDao? = MyDatabase.getInstance(fContext)?.cargasDao()
 
-        val cCargas = dbAlba.rawQuery("SELECT * FROM cargas $sCondicion", null)
+        val lCargas: MutableList<CargasEnt> = if (queNumExportacion == 0) {
+            cargasDao?.abrirParaEnviar() ?: emptyList<CargasEnt>().toMutableList()
+        } else {
+            cargasDao?.abrirExportacion(queNumExportacion) ?: emptyList<CargasEnt>().toMutableList()
+        }
 
-        if (cCargas.moveToFirst()) {
+        if (lCargas.isNotEmpty()) {
             val msg = Message()
             msg.obj = "Preparando cargas"
             puente.sendMessage(msg)
 
-            cargasAXML(cCargas)
-            cCargas.close()
+            cargasAXML(lCargas)
 
-            sCondicion = if (queNumExportacion == 0) " WHERE B.estado = 'N' OR B.estado = 'R'"
-            else " WHERE B.numexport = $queNumExportacion"
 
-            val cLineas = dbAlba.rawQuery("SELECT A.* FROM cargasLineas A"
-                    + " LEFT JOIN cargas B ON B.cargaId = A.cargaId" + sCondicion, null)
+            val lLineas: MutableList<CargasLineasEnt> = if (queNumExportacion == 0) {
+                cargasLineasDao?.abrirParaEnviar() ?: emptyList<CargasLineasEnt>().toMutableList()
+            } else {
+                cargasLineasDao?.abrirExportacion(queNumExportacion) ?: emptyList<CargasLineasEnt>().toMutableList()
+            }
 
-            cargasLineasAXML(cLineas)
-            cLineas.close()
+            cargasLineasAXML(lLineas)
 
             // Marcamos las cargas como exportadas.
             if (queNumExportacion == 0) {
-                val values = ContentValues()
-                values.put("estado", "X")
-                values.put("numexport", iSigExportacion)
-                dbAlba.update("cargas", values, "estado='N' OR estado='R'", null)
+                cargasDao?.marcarComoExportadas(iSigExportacion)
             }
 
             return true
@@ -3927,50 +3860,47 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
     }
 
     private fun enviarCabeceras(queNumExportacion: Int, iSigExportacion: Int): Boolean {
-        // Para obtener el cursor con los documentos creo sobre la marcha un objeto de tipo BaseDatos.
-        val dbAlba = BaseDatos(fContext).writableDatabase
-        var sCondicion: String
         val fConfiguracion = Comunicador.fConfiguracion
 
-        sCondicion = if (queNumExportacion == 0) {
-            // Si tenemos rutero_reparto mandaremos también las cabeceras de los documentos que estén firmados o tengan alguna incidencia (sólo las cabeceras).
-            if (fConfiguracion.hayReparto())
-                " WHERE estado = 'N' OR estado = 'R' OR " + "((firmado = 'T' OR tipoincidencia IS NOT NULL) AND estado <> 'X')"
-            else
-                " WHERE estado = 'N' OR estado = 'R'"
-        } else
-            " WHERE numexport = $queNumExportacion"
+        val dtosLineasDao: DtosLineasDao? = MyDatabase.getInstance(fContext)?.dtosLineasDao()
 
-        val cCabeceras = dbAlba.rawQuery("SELECT * FROM cabeceras $sCondicion", null)
+        val lCabeceras: MutableList<CabecerasEnt> = if (queNumExportacion == 0) {
+            // Si tenemos rutero_reparto mandaremos también las cabeceras de los documentos
+            // que estén firmados o tengan alguna incidencia (sólo las cabeceras).
+            if (fConfiguracion.hayReparto()) {
+                cabecerasDao?.abrirParaEnvReparto() ?: emptyList<CabecerasEnt>().toMutableList()
+            } else {
+                cabecerasDao?.abrirParaEnviar() ?: emptyList<CabecerasEnt>().toMutableList()
+            }
+        } else {
+            cabecerasDao?.abrirParaEnvExp(queNumExportacion) ?: emptyList<CabecerasEnt>().toMutableList()
+        }
 
-        if (cCabeceras.moveToFirst()) {
+        if (lCabeceras.isNotEmpty()) {
             val msg = Message()
             msg.obj = "Preparando documentos"
             puente.sendMessage(msg)
 
-            cabecerasAXML(cCabeceras)
-            cCabeceras.close()
+            cabecerasAXML(lCabeceras)
 
             // No enviaremos las líneas de documentos importados que han sido firmados o marcados con alguna incidencia
             // (desde el módulo de repartos).
-            sCondicion = if (queNumExportacion == 0) " WHERE B.estado = 'N' OR B.estado = 'R'"
-            else " WHERE B.numexport = $queNumExportacion AND B.estadoinicial IS NULL"
+            val lLineas: MutableList<LineasEnt> = if (queNumExportacion == 0) {
+                lineasDao?.abrirParaEnviar() ?: emptyList<LineasEnt>().toMutableList()
+            } else {
+                lineasDao?.abrirParaEnvExp(queNumExportacion) ?: emptyList<LineasEnt>().toMutableList()
+            }
 
-            val cLineas = dbAlba.rawQuery("SELECT A.* FROM lineas A" +
-                    " LEFT OUTER JOIN cabeceras B ON B._id = A.cabeceraId" +
-                    sCondicion, null)
-
-            lineasAXML(cLineas)
-            cLineas.close()
+            lineasAXML(lLineas)
 
             // Exportamos los descuentos en cascada.
-            val cLineasDt = dbAlba.rawQuery("SELECT A.* FROM desctoslineas A" +
-                    " LEFT JOIN lineas C ON C._id = A.linea" +
-                    " LEFT JOIN cabeceras B ON B._id = C.cabeceraId" +
-                    sCondicion, null)
+            val lDtos: MutableList<DtosLineasEnt> = if (queNumExportacion == 0) {
+                dtosLineasDao?.abrirParaEnviar() ?: emptyList<DtosLineasEnt>().toMutableList()
+            } else {
+                dtosLineasDao?.abrirParaEnvExp(queNumExportacion) ?: emptyList<DtosLineasEnt>().toMutableList()
+            }
 
-            lineasDtoAXML(cLineasDt)
-            cLineasDt.close()
+            lineasDtoAXML(lDtos)
 
             // Si hemos ido guardando las imágenes con las firmas digitales, las enviamos.
             if (fDesdeServicio) {
@@ -3981,14 +3911,10 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
             // Marcamos las cabeceras como exportadas.
             if (queNumExportacion == 0) {
-                val values = ContentValues()
-                values.put("estado", "X")
-                values.put("numexport", iSigExportacion)
                 if (fConfiguracion.hayReparto())
-                    dbAlba.update("cabeceras", values,
-                            "estado='N' OR estado='R' OR ((firmado = 'T' OR tipoincidencia IS NOT NULL) AND estado <> 'X')", null)
+                    cabecerasDao?.marcarComoExpReparto(iSigExportacion)
                 else
-                    dbAlba.update("cabeceras", values, "estado='N' OR estado='R'", null)
+                    cabecerasDao?.marcarComoExportadas(iSigExportacion)
             }
 
             return true
@@ -4039,17 +3965,17 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
         // Vemos la carpeta de envio que tenemos en preferencias.
         val directorioLocal = prefs.getString("rutacomunicacion", "") ?: ""
         result = if (directorioLocal == "") {
-            if (fUsarMultisistema) "/storage/sdcard0/alba/firmas/" + BaseDatos.queBaseDatos
+            if (fUsarMultisistema) "/storage/sdcard0/alba/firmas/$queBDRoom"
             else "/storage/sdcard0/alba/firmas/"
         } else {
-            if (fUsarMultisistema) "$directorioLocal/firmas/${BaseDatos.queBaseDatos}"
+            if (fUsarMultisistema) "$directorioLocal/firmas/$queBDRoom"
             else "$directorioLocal/firmas/"
         }
         return result
     }
 
 
-    private fun cargasAXML(cCargas: Cursor) {
+    private fun cargasAXML(lCargas: MutableList<CargasEnt>) {
         try {
             val outputFile = File(rutaLocalEnvio, "Cargas.xml")
             val fout = FileOutputStream(outputFile, false)
@@ -4060,16 +3986,14 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true)
 
             serializer.startTag("", "consulta")
-            cCargas.moveToFirst()
-            while (!cCargas.isAfterLast) {
+            for (cargaEnt in lCargas) {
                 serializer.startTag("", "record")
-                serializer.attribute(null, "CARGAID", cCargas.getString(cCargas.getColumnIndex("cargaId")))
-                serializer.attribute(null, "EMPRESA", cCargas.getInt(cCargas.getColumnIndex("empresa")).toString())
-                serializer.attribute(null, "FECHA", cCargas.getString(cCargas.getColumnIndex("fecha")))
-                serializer.attribute(null, "HORA", cCargas.getString(cCargas.getColumnIndex("hora")))
-                serializer.attribute(null, "ESFINDEDIA", cCargas.getString(cCargas.getColumnIndex("esFinDeDia")))
+                serializer.attribute(null, "CargaId", cargaEnt.cargaId.toString())
+                serializer.attribute(null, "Empresa", cargaEnt.empresa.toString())
+                serializer.attribute(null, "Fecha", cargaEnt.fecha)
+                serializer.attribute(null, "Hora", cargaEnt.hora)
+                serializer.attribute(null, "EsFinDeDia", cargaEnt.esFinDeDia)
                 serializer.endTag("", "record")
-                cCargas.moveToNext()
             }
             serializer.endTag("", "consulta")
 
@@ -4085,7 +4009,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
         }
     }
 
-    private fun cargasLineasAXML(cLineas: Cursor) {
+    private fun cargasLineasAXML(lLineas: MutableList<CargasLineasEnt>) {
         try {
             val outputFile = File(rutaLocalEnvio, "CargasLineas.xml")
             val fout = FileOutputStream(outputFile, false)
@@ -4096,16 +4020,14 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true)
 
             serializer.startTag("", "consulta")
-            cLineas.moveToFirst()
-            while (!cLineas.isAfterLast) {
+            for (lineaEnt in lLineas) {
                 serializer.startTag("", "record")
-                serializer.attribute(null, "CARGAID", cLineas.getString(cLineas.getColumnIndex("cargaId")))
-                serializer.attribute(null, "ARTICULO", cLineas.getString(cLineas.getColumnIndex("articulo")))
-                serializer.attribute(null, "LOTE", cLineas.getString(cLineas.getColumnIndex("lote")))
-                serializer.attribute(null, "CAJAS", cLineas.getString(cLineas.getColumnIndex("cajas")).replace('.', ','))
-                serializer.attribute(null, "CANTIDAD", cLineas.getString(cLineas.getColumnIndex("cantidad")).replace('.', ','))
+                serializer.attribute(null, "CargaId", lineaEnt.cargaId.toString())
+                serializer.attribute(null, "Articulo", lineaEnt.articuloId.toString())
+                serializer.attribute(null, "Lote", lineaEnt.lote)
+                serializer.attribute(null, "Cajas", lineaEnt.cajas.replace('.', ','))
+                serializer.attribute(null, "Cantidad", lineaEnt.cantidad.replace('.', ','))
                 serializer.endTag("", "record")
-                cLineas.moveToNext()
             }
             serializer.endTag("", "consulta")
 
@@ -4122,7 +4044,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
     }
 
 
-    private fun cabecerasAXML(cCabeceras: Cursor) {
+    private fun cabecerasAXML(lCabeceras: MutableList<CabecerasEnt>) {
         try {
             val outputFile = File(rutaLocalEnvio, "Cabeceras.xml")
             val fout = FileOutputStream(outputFile, false)
@@ -4133,115 +4055,65 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true)
 
             serializer.startTag("", "consulta")
-            cCabeceras.moveToFirst()
-            while (!cCabeceras.isAfterLast) {
+            for (cabeceraEnt in lCabeceras) {
                 // Añadimos el id del documento al array aCabeceras
-                aCabeceras.add(cCabeceras.getInt(cCabeceras.getColumnIndex("_id")))
+                aCabeceras.add(cabeceraEnt.cabeceraId)
 
                 serializer.startTag("", "record")
-                serializer.attribute(null, "IdDoc", cCabeceras.getString(cCabeceras.getColumnIndex("_id")))
-                serializer.attribute(null, "TIPODOC", cCabeceras.getString(cCabeceras.getColumnIndex("tipodoc")))
-                if (cCabeceras.getString(cCabeceras.getColumnIndex("tipoPedido")) != null)
-                    serializer.attribute(null, "TIPOPEDIDO", cCabeceras.getString(cCabeceras.getColumnIndex("tipoPedido")))
-                else
-                    serializer.attribute(null, "TIPOPEDIDO", "")
-                serializer.attribute(null, "ALM", cCabeceras.getString(cCabeceras.getColumnIndex("alm")))
-                serializer.attribute(null, "SERIE", cCabeceras.getString(cCabeceras.getColumnIndex("serie")))
-                serializer.attribute(null, "NUMERO", cCabeceras.getString(cCabeceras.getColumnIndex("numero")))
-                serializer.attribute(null, "EJER", cCabeceras.getString(cCabeceras.getColumnIndex("ejer")))
-                serializer.attribute(null, "EMPRESA", cCabeceras.getString(cCabeceras.getColumnIndex("empresa")))
-                serializer.attribute(null, "FECHA", cCabeceras.getString(cCabeceras.getColumnIndex("fecha")))
-                if (cCabeceras.getString(cCabeceras.getColumnIndex("hora")) != null)
-                    serializer.attribute(null, "HORA", cCabeceras.getString(cCabeceras.getColumnIndex("hora")))
-                else
-                    serializer.attribute(null, "HORA", "")
-                if (cCabeceras.getString(cCabeceras.getColumnIndex("fechaentrega")) != null)
-                    serializer.attribute(null, "FECHAENTREGA", cCabeceras.getString(cCabeceras.getColumnIndex("fechaentrega")))
-                else
-                    serializer.attribute(null, "FECHAENTREGA", "")
-                serializer.attribute(null, "CLIENTE", cCabeceras.getString(cCabeceras.getColumnIndex("cliente")))
-                if (cCabeceras.getString(cCabeceras.getColumnIndex("ruta")) != null)
-                    serializer.attribute(null, "RUTA", cCabeceras.getString(cCabeceras.getColumnIndex("ruta")))
-                else
-                    serializer.attribute(null, "RUTA", "")
-                serializer.attribute(null, "APLIVA", cCabeceras.getString(cCabeceras.getColumnIndex("apliva")))
-                serializer.attribute(null, "APLREC", cCabeceras.getString(cCabeceras.getColumnIndex("aplrec")))
-                serializer.attribute(null, "BRUTO", cCabeceras.getString(cCabeceras.getColumnIndex("bruto")).replace('.', ','))
-                serializer.attribute(null, "DTO", cCabeceras.getString(cCabeceras.getColumnIndex("dto")).replace('.', ','))
-                if (cCabeceras.getString(cCabeceras.getColumnIndex("dto2")) != null)
-                    serializer.attribute(null, "DTO2", cCabeceras.getString(cCabeceras.getColumnIndex("dto2")).replace('.', ','))
-                else
-                    serializer.attribute(null, "DTO2", "")
-                if (cCabeceras.getString(cCabeceras.getColumnIndex("dto3")) != null)
-                    serializer.attribute(null, "DTO3", cCabeceras.getString(cCabeceras.getColumnIndex("dto3")).replace('.', ','))
-                else
-                    serializer.attribute(null, "DTO3", "")
-                if (cCabeceras.getString(cCabeceras.getColumnIndex("dto4")) != null)
-                    serializer.attribute(null, "DTO4", cCabeceras.getString(cCabeceras.getColumnIndex("dto4")).replace('.', ','))
-                else
-                    serializer.attribute(null, "DTO4", "")
-                serializer.attribute(null, "BASE", cCabeceras.getString(cCabeceras.getColumnIndex("base")).replace('.', ','))
-                serializer.attribute(null, "IVA", cCabeceras.getString(cCabeceras.getColumnIndex("iva")).replace('.', ','))
-                serializer.attribute(null, "RECARGO", cCabeceras.getString(cCabeceras.getColumnIndex("recargo")).replace('.', ','))
-                serializer.attribute(null, "TOTAL", cCabeceras.getString(cCabeceras.getColumnIndex("total")).replace('.', ','))
-                serializer.attribute(null, "FLAG", cCabeceras.getString(cCabeceras.getColumnIndex("flag")))
-                serializer.attribute(null, "OBS1", cCabeceras.getString(cCabeceras.getColumnIndex("obs1")))
-                serializer.attribute(null, "OBS2", cCabeceras.getString(cCabeceras.getColumnIndex("obs2")))
-                if (cCabeceras.getString(cCabeceras.getColumnIndex("fpago")) != null)
-                    serializer.attribute(null, "FPAGO", cCabeceras.getString(cCabeceras.getColumnIndex("fpago")))
-                else
-                    serializer.attribute(null, "FPAGO", "")
-                if (cCabeceras.getString(cCabeceras.getColumnIndex("tipoincidencia")) != null)
-                    serializer.attribute(null, "TIPOINCIDENCIA", cCabeceras.getString(cCabeceras.getColumnIndex("tipoincidencia")))
-                else
-                    serializer.attribute(null, "TIPOINCIDENCIA", "")
-                if (cCabeceras.getString(cCabeceras.getColumnIndex("textoincidencia")) != null)
-                    serializer.attribute(null, "TEXTOINCIDENCIA", cCabeceras.getString(cCabeceras.getColumnIndex("textoincidencia")))
-                else
-                    serializer.attribute(null, "TEXTOINCIDENCIA", "")
-                if (cCabeceras.getString(cCabeceras.getColumnIndex("firmado")) != null)
-                    serializer.attribute(null, "ENTREGADO", cCabeceras.getString(cCabeceras.getColumnIndex("firmado")))
-                else
-                    serializer.attribute(null, "ENTREGADO", "")
-                if (cCabeceras.getString(cCabeceras.getColumnIndex("fechafirma")) != null)
-                    serializer.attribute(null, "FECHAFIRMA", cCabeceras.getString(cCabeceras.getColumnIndex("fechafirma")))
-                else
-                    serializer.attribute(null, "FECHAFIRMA", "")
-                if (cCabeceras.getString(cCabeceras.getColumnIndex("horafirma")) != null)
-                    serializer.attribute(null, "HORAFIRMA", cCabeceras.getString(cCabeceras.getColumnIndex("horafirma")))
-                else
-                    serializer.attribute(null, "HORAFIRMA", "")
+                serializer.attribute(null, "IdDoc", cabeceraEnt.cabeceraId.toString())
+                serializer.attribute(null, "TipoDoc", cabeceraEnt.tipoDoc.toString())
+                serializer.attribute(null, "TipoPedido", cabeceraEnt.tipoPedido.toString())
+                serializer.attribute(null, "Alm", cabeceraEnt.almacen.toString())
+                serializer.attribute(null, "Serie", cabeceraEnt.serie)
+                serializer.attribute(null, "Numero", cabeceraEnt.numero.toString())
+                serializer.attribute(null, "Ejer", cabeceraEnt.ejercicio.toString())
+                serializer.attribute(null, "Empresa", cabeceraEnt.empresa.toString())
+                serializer.attribute(null, "Fecha", cabeceraEnt.fecha)
+                serializer.attribute(null, "Hora", cabeceraEnt.hora)
+                serializer.attribute(null, "FechaEntrega", cabeceraEnt.fechaEntrega)
+                serializer.attribute(null, "Cliente", cabeceraEnt.clienteId.toString())
+                serializer.attribute(null, "Ruta", cabeceraEnt.ruta.toString())
+                serializer.attribute(null, "AplIva", cabeceraEnt.aplicarIva)
+                serializer.attribute(null, "AplRec", cabeceraEnt.aplicarRe)
+                serializer.attribute(null, "Bruto", cabeceraEnt.bruto.replace('.', ','))
+                serializer.attribute(null, "Dto", cabeceraEnt.dto.replace('.', ','))
+                serializer.attribute(null, "Dto2", cabeceraEnt.dto2.replace('.', ','))
+                serializer.attribute(null, "Dto3", cabeceraEnt.dto3.replace('.', ','))
+                serializer.attribute(null, "Dto4", cabeceraEnt.dto4.replace('.', ','))
+                serializer.attribute(null, "Base", cabeceraEnt.base.replace('.', ','))
+                serializer.attribute(null, "Iva", cabeceraEnt.iva.replace('.', ','))
+                serializer.attribute(null, "Recargo", cabeceraEnt.recargo.replace('.', ','))
+                serializer.attribute(null, "Total", cabeceraEnt.total.replace('.', ','))
+                serializer.attribute(null, "Flag", cabeceraEnt.flag.toString())
+                serializer.attribute(null, "Obs1", cabeceraEnt.observ1)
+                serializer.attribute(null, "Obs2", cabeceraEnt.observ2)
+                serializer.attribute(null, "FPago", cabeceraEnt.fPago)
+                serializer.attribute(null, "TipoIncidencia", cabeceraEnt.tipoIncidencia.toString())
+                serializer.attribute(null, "TextoIncidencia", cabeceraEnt.textoIncidencia)
+                serializer.attribute(null, "Entregado", cabeceraEnt.firmado)
+                serializer.attribute(null, "FechaFirma", cabeceraEnt.fechaFirma)
+                serializer.attribute(null, "HoraFirma", cabeceraEnt.horaFirma)
 
                 val df = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                 val fFecha = df.format(System.currentTimeMillis())
-                serializer.attribute(null, "FECHAENVIO", fFecha)
+                serializer.attribute(null, "FechaEnvio", fFecha)
                 val dfHora = SimpleDateFormat("HH:mm", Locale.getDefault())
                 val fHora = dfHora.format(System.currentTimeMillis())
-                serializer.attribute(null, "HORAENVIO", fHora)
+                serializer.attribute(null, "HoraEnvio", fHora)
 
-                if (cCabeceras.getString(cCabeceras.getColumnIndex("estadoinicial")) != null)
-                    if (cCabeceras.getString(cCabeceras.getColumnIndex("estadoinicial")) == "0")
-                        serializer.attribute(null, "ESTADO", "E")
+                if (cabeceraEnt.estadoInicial != "")
+                    if (cabeceraEnt.estadoInicial == "0")
+                        serializer.attribute(null, "Estado", "E")
                     else
-                        serializer.attribute(null, "ESTADO", "N")
+                        serializer.attribute(null, "Estado", "N")
                 else
-                    serializer.attribute(null, "ESTADO", "N")
+                    serializer.attribute(null, "Estado", "N")
 
-                if (cCabeceras.getString(cCabeceras.getColumnIndex("almDireccion")) != null)
-                    //serializer.attribute(null, "ALMDIRECCIONCLTE", cCabeceras.getString(cCabeceras.getColumnIndex("almDireccion")))
-                    // Si damos de alta una dirección en la tablet, la gestión la asigna siempre al almacén 0, por eso indicamos
-                    // aquí siempre el almacén 0.
-                    serializer.attribute(null, "ALMDIRECCIONCLTE", "000")
-                else
-                    serializer.attribute(null, "ALMDIRECCIONCLTE", "")
-
-                if (cCabeceras.getString(cCabeceras.getColumnIndex("ordenDireccion")) != null)
-                    serializer.attribute(null, "ORDENDIRECCIONCLTE", cCabeceras.getString(cCabeceras.getColumnIndex("ordenDireccion")))
-                else
-                    serializer.attribute(null, "ORDENDIRECCIONCLTE", "")
-
+                // Si damos de alta una dirección en la tablet, la gestión la asigna siempre al almacén 0, por eso indicamos
+                // aquí siempre el almacén 0.
+                serializer.attribute(null, "AlmDireccionClte", "000")
+                serializer.attribute(null, "OrdenDireccionClte", cabeceraEnt.ordenDireccion)
                 serializer.endTag("", "record")
-                cCabeceras.moveToNext()
             }
             serializer.endTag("", "consulta")
 
@@ -4258,7 +4130,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
     }
 
 
-    private fun lineasAXML(cLineas: Cursor) {
+    private fun lineasAXML(lLineas: MutableList<LineasEnt>) {
 
         try {
             val outputFile = File(rutaLocalEnvio, "Lineas.xml")
@@ -4270,93 +4142,36 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true)
 
             serializer.startTag("", "consulta")
-            cLineas.moveToFirst()
-            while (!cLineas.isAfterLast) {
+            for (lineaEnt in lLineas) {
                 serializer.startTag("", "record")
                 // Enviamos el id de la linea para poder enlazar con los descuentos en cascada.
-                serializer.attribute(null, "Id", cLineas.getString(cLineas.getColumnIndex("_id")))
-                serializer.attribute(null, "CabeceraId", cLineas.getInt(cLineas.getColumnIndex("cabeceraId")).toString())
-                //serializer.attribute(null, "TipoDoc", cLineas.getString(cLineas.getColumnIndex("tipodoc")))
-                //serializer.attribute(null, "ALM", cLineas.getString(cLineas.getColumnIndex("alm")))
-                //serializer.attribute(null, "SERIE", cLineas.getString(cLineas.getColumnIndex("serie")))
-                //serializer.attribute(null, "EJER", cLineas.getString(cLineas.getColumnIndex("ejer")))
-                //serializer.attribute(null, "NUMERO", cLineas.getString(cLineas.getColumnIndex("numero")))
-                serializer.attribute(null, "ARTICULO", cLineas.getString(cLineas.getColumnIndex("articulo")))
-                serializer.attribute(null, "CODIGO", cLineas.getString(cLineas.getColumnIndex("codigo")))
-                serializer.attribute(null, "DESCR", cLineas.getString(cLineas.getColumnIndex("descr")))
-                if (cLineas.getString(cLineas.getColumnIndex("tarifa")) != null)
-                    serializer.attribute(null, "TARIFA", cLineas.getString(cLineas.getColumnIndex("tarifa")))
-                else
-                    serializer.attribute(null, "TARIFA", "0")
-                serializer.attribute(null, "PRECIO", cLineas.getString(cLineas.getColumnIndex("precio")).replace('.', ','))
-                serializer.attribute(null, "TIPOIVA", cLineas.getString(cLineas.getColumnIndex("codigoiva")))
-                serializer.attribute(null, "CAJAS", cLineas.getString(cLineas.getColumnIndex("cajas")).replace('.', ','))
-                serializer.attribute(null, "CANTIDAD", cLineas.getString(cLineas.getColumnIndex("cantidad")).replace('.', ','))
-
-                if (cLineas.getString(cLineas.getColumnIndex("piezas")) == null)
-                    serializer.attribute(null, "PIEZAS", "NULL")
-                else
-                    serializer.attribute(null, "PIEZAS", cLineas.getString(cLineas.getColumnIndex("piezas")).replace('.', ','))
-                serializer.attribute(null, "DTO", cLineas.getString(cLineas.getColumnIndex("dto")).replace('.', ','))
-                if (cLineas.getString(cLineas.getColumnIndex("dtoi")) != null)
-                    serializer.attribute(null, "DTOI", cLineas.getString(cLineas.getColumnIndex("dtoi")).replace('.', ','))
-                else
-                    serializer.attribute(null, "DTOI", "NULL")
-                if (cLineas.getString(cLineas.getColumnIndex("lote")) == null) serializer.attribute(null, "LOTE", "NULL")
-                else serializer.attribute(null, "LOTE", cLineas.getString(cLineas.getColumnIndex("lote")))
-
-                serializer.attribute(null, "FLAG", cLineas.getString(cLineas.getColumnIndex("flag")))
-
-                if (cLineas.getString(cLineas.getColumnIndex("flag3")) == null)
-                    serializer.attribute(null, "FLAG3", "0")
-                else
-                    serializer.attribute(null, "FLAG3", cLineas.getString(cLineas.getColumnIndex("flag3")))
-
-                if (cLineas.getString(cLineas.getColumnIndex("flag5")) == null)
-                    serializer.attribute(null, "FLAG5", "0")
-                else
-                    serializer.attribute(null, "FLAG5", cLineas.getString(cLineas.getColumnIndex("flag5")))
-
-                if (cLineas.getString(cLineas.getColumnIndex("tasa1")) == null)
-                    serializer.attribute(null, "TASA1", "0")
-                else
-                    serializer.attribute(null, "TASA1", cLineas.getString(cLineas.getColumnIndex("tasa1")).replace('.', ','))
-                if (cLineas.getString(cLineas.getColumnIndex("tasa2")) == null)
-                    serializer.attribute(null, "TASA2", "0")
-                else
-                    serializer.attribute(null, "TASA2", cLineas.getString(cLineas.getColumnIndex("tasa2")).replace('.', ','))
-
-                if (cLineas.getString(cLineas.getColumnIndex("formato")) == null)
-                    serializer.attribute(null, "FORMATO", "0")
-                else
-                    serializer.attribute(null, "FORMATO", cLineas.getString(cLineas.getColumnIndex("formato")))
-
-                if (cLineas.getString(cLineas.getColumnIndex("incidencia")) == null)
-                    serializer.attribute(null, "INC", "0")
-                else
-                    serializer.attribute(null, "INC", cLineas.getString(cLineas.getColumnIndex("incidencia")))
-
-                if (cLineas.getString(cLineas.getColumnIndex("textolinea")) == null)
-                    serializer.attribute(null, "TEXTOLINEA", "")
-                else
-                    serializer.attribute(null, "TEXTOLINEA", cLineas.getString(cLineas.getColumnIndex("textolinea")))
-
-                if (cLineas.getString(cLineas.getColumnIndex("almacenPedido")) == null)
-                    serializer.attribute(null, "ALMACENPEDIDO", "")
-                else
-                    serializer.attribute(null, "ALMACENPEDIDO", cLineas.getString(cLineas.getColumnIndex("almacenPedido")))
-
-                if (cLineas.getString(cLineas.getColumnIndex("idOferta")) == null)
-                    serializer.attribute(null, "IDOFERTA", "")
-                else
-                    serializer.attribute(null, "IDOFERTA", cLineas.getString(cLineas.getColumnIndex("idOferta")))
-                if (cLineas.getString(cLineas.getColumnIndex("dtoOftVol")) == null)
-                    serializer.attribute(null, "DTOOFTVOL", "")
-                else
-                    serializer.attribute(null, "DTOOFTVOL", cLineas.getString(cLineas.getColumnIndex("dtoOftVol")))
+                serializer.attribute(null, "Id", lineaEnt.lineaId.toString())
+                serializer.attribute(null, "CabeceraId", lineaEnt.cabeceraId.toString())
+                serializer.attribute(null, "Articulo", lineaEnt.articuloId.toString())
+                serializer.attribute(null, "Codigo", lineaEnt.codArticulo)
+                serializer.attribute(null, "Descr", lineaEnt.descripcion)
+                serializer.attribute(null, "Tarifa", lineaEnt.tarifaId.toString())
+                serializer.attribute(null, "Precio", lineaEnt.precio.replace('.', ','))
+                serializer.attribute(null, "TipoIva", lineaEnt.codigoIva.toString())
+                serializer.attribute(null, "Cajas", lineaEnt.cajas.replace('.', ','))
+                serializer.attribute(null, "Cantidad", lineaEnt.cantidad.replace('.', ','))
+                serializer.attribute(null, "Piezas", lineaEnt.piezas.replace('.', ','))
+                serializer.attribute(null, "Dto", lineaEnt.dto.replace('.', ','))
+                serializer.attribute(null, "DtoI", lineaEnt.dtoImpte.replace('.', ','))
+                serializer.attribute(null, "Lote", lineaEnt.lote)
+                serializer.attribute(null, "Flag", lineaEnt.flag.toString())
+                serializer.attribute(null, "Flag3", lineaEnt.flag3.toString())
+                serializer.attribute(null, "Flag5", lineaEnt.flag5.toString())
+                serializer.attribute(null, "Tasa1", lineaEnt.tasa1.replace('.', ','))
+                serializer.attribute(null, "Tasa2", lineaEnt.tasa2.replace('.', ','))
+                serializer.attribute(null, "Formato", lineaEnt.formatoId.toString())
+                serializer.attribute(null, "Inc", lineaEnt.tipoIncId.toString())
+                serializer.attribute(null, "TextoLinea", lineaEnt.textoLinea)
+                serializer.attribute(null, "AlmacenPedido", lineaEnt.almacenPedido)
+                serializer.attribute(null, "IdOferta", lineaEnt.ofertaId.toString())
+                serializer.attribute(null, "DtoOftVol", lineaEnt.dtoOftVol)
 
                 serializer.endTag("", "record")
-                cLineas.moveToNext()
             }
             serializer.endTag("", "consulta")
 
@@ -4366,16 +4181,14 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             fTamLineas = outputFile.length()
 
         } catch (e: FileNotFoundException) {
-            //if (!fDesdeServicio) mostrarExcepcion(e)
             mostrarExcepcion(e)
         } catch (e: Exception) {
-            //if (!fDesdeServicio) mostrarExcepcion(e)
             mostrarExcepcion(e)
         }
     }
 
 
-    private fun lineasDtoAXML(cLineasDt: Cursor) {
+    private fun lineasDtoAXML(lDtos: MutableList<DtosLineasEnt>) {
 
         try {
             val outputFile = File(rutaLocalEnvio, "DesctosLineas.xml")
@@ -4387,17 +4200,15 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true)
 
             serializer.startTag("", "consulta")
-            cLineasDt.moveToFirst()
-            while (!cLineasDt.isAfterLast) {
+            for (dtoEnt in lDtos) {
                 serializer.startTag("", "record")
-                serializer.attribute(null, "LINEA", cLineasDt.getString(cLineasDt.getColumnIndex("linea")))
-                serializer.attribute(null, "ORDEN", cLineasDt.getString(cLineasDt.getColumnIndex("orden")))
-                serializer.attribute(null, "DESCUENTO", cLineasDt.getString(cLineasDt.getColumnIndex("descuento")).replace('.', ','))
-                serializer.attribute(null, "IMPORTE", cLineasDt.getString(cLineasDt.getColumnIndex("importe")).replace('.', ','))
-                serializer.attribute(null, "CANTIDAD1", cLineasDt.getString(cLineasDt.getColumnIndex("cantidad1")).replace('.', ','))
-                serializer.attribute(null, "CANTIDAD2", cLineasDt.getString(cLineasDt.getColumnIndex("cantidad2")).replace('.', ','))
+                serializer.attribute(null, "Linea", dtoEnt.lineaId.toString())
+                serializer.attribute(null, "Orden", dtoEnt.orden.toString())
+                serializer.attribute(null, "Descuento", dtoEnt.descuento.replace('.', ','))
+                serializer.attribute(null, "Importe", dtoEnt.importe.replace('.', ','))
+                serializer.attribute(null, "Cantidad1", dtoEnt.cantidad1.replace('.', ','))
+                serializer.attribute(null, "Cantidad2", dtoEnt.cantidad2.replace('.', ','))
                 serializer.endTag("", "record")
-                cLineasDt.moveToNext()
             }
             serializer.endTag("", "consulta")
 
@@ -4406,83 +4217,45 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             fout.close()
 
         } catch (e: FileNotFoundException) {
-            //if (!fDesdeServicio) mostrarExcepcion(e)
             mostrarExcepcion(e)
         } catch (e: Exception) {
-            //if (!fDesdeServicio) mostrarExcepcion(e)
             mostrarExcepcion(e)
         }
     }
 
 
     private fun enviarCobros(queNumExportacion: Int, iSigExportacion: Int): Boolean {
-        // Para obtener el cursor con las cabeceras creo sobre la marcha un objeto de tipo BaseDatos.
-        val dbAlba = BaseDatos(fContext).writableDatabase
         val cobrosDao: CobrosDao? = MyDatabase.getInstance(fContext)?.cobrosDao()
-        val numCobros: Int =
-            if (queNumExportacion == 0) cobrosDao?.hayCobrosParaEnviar() ?: 0
-            else cobrosDao?.hayCobrosEnExport(queNumExportacion) ?: 0
+        //val numCobros: Int = if (queNumExportacion == 0) cobrosDao?.hayCobrosParaEnviar() ?: 0
+        //    else cobrosDao?.hayCobrosEnExport(queNumExportacion) ?: 0
 
-        if (queNumExportacion > 0) {
-            return if (numCobros > 0) {
-                val msg = Message()
-                msg.obj = "Preparando cobros"
-                puente.sendMessage(msg)
-
-                cobrosExpAXML(queNumExportacion)
-                true
-
-            } else {
-                false
-            }
+        val lCobros: List<CobrosEnt>
+        lCobros = if (queNumExportacion == 0) {
+            cobrosDao?.abrirParaExportar() ?: emptyList<CobrosEnt>().toMutableList()
         } else {
+            cobrosDao?.abrirExportacion(queNumExportacion) ?: emptyList<CobrosEnt>().toMutableList()
+        }
 
-            if (numCobros > 0) {
+        if (lCobros.isNotEmpty()) {
+            val msg = Message()
+            msg.obj = "Preparando cobros"
+            puente.sendMessage(msg)
 
-                // Tenemos que recorrer este bucle porque la tabla Cabeceras está en otra base de datos y
-                // no podemos incluirla en la misma consulta que Cobros.
-                var hayCobros = false
-                val lCobros = cobrosDao?.abrirParaExportar() ?: emptyList<CobrosEnt>().toMutableList()
+            cobrosAXML(lCobros)
 
-                for (cobro in lCobros) {
-                    val cCabeceras = dbAlba.rawQuery("SELECT estado FROM cabeceras" +
-                            " WHERE tipodoc = " + cobro.tipoDoc + " AND alm = " + cobro.almacen +
-                            " AND serie = '" + cobro.serie + "' AND numero = " + cobro. numero +
-                            " AND ejer = " + cobro.ejercicio, null)
-
-                    if (cCabeceras.moveToFirst()) {
-                        if (cCabeceras.getString(0) != "P" || cCabeceras.getString(0) == null) {
-                            hayCobros = true
-                            break
-                        }
-                    }
-                    cCabeceras.close()
-                }
-
-                return if (hayCobros || lCobros.isNotEmpty()) {
-                    val msg = Message()
-                    msg.obj = "Preparando cobros"
-                    puente.sendMessage(msg)
-
-                    cobrosAXML()
-
-                    // Marcamos los cobros como exportados.
-                    if (queNumExportacion == 0) {
-                        cobrosDao?.marcarComoExportados(iSigExportacion)
-                    }
-
-                    true
-                } else false
-            } else {
-                return false
+            // Marcamos los cobros como exportados.
+            if (queNumExportacion == 0) {
+                cobrosDao?.marcarComoExportados(iSigExportacion)
             }
+
+            return true
+
+        } else {
+            return false
         }
     }
 
-    private fun cobrosAXML() {
-        val cobrosDao: CobrosDao? = MyDatabase.getInstance(fContext)?.cobrosDao()
-        val dbAlba = BaseDatos(fContext).readableDatabase
-
+    private fun cobrosAXML(lCobros: List<CobrosEnt>) {
         try {
             val outputFile = File(rutaLocalEnvio, "Cobros.xml")
             val fout = FileOutputStream(outputFile, false)
@@ -4491,102 +4264,32 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             serializer.setOutput(fout, "UTF-8")
             serializer.startDocument(null, true)
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true)
-
             serializer.startTag("", "consulta")
-            val lCobros = cobrosDao?.abrirParaExportar() ?: emptyList<CobrosEnt>().toMutableList()
-
-            for (cobro in lCobros) {
-                val cCabeceras = dbAlba.rawQuery("SELECT estado FROM cabeceras" +
-                        " WHERE tipodoc = " + cobro.tipoDoc + " AND alm = " + cobro.almacen +
-                        " AND serie = '" + cobro.serie + "' AND numero = " + cobro. numero +
-                        " AND ejer = " + cobro.ejercicio, null)
-
-                var continuar = true
-                if (cCabeceras.moveToFirst()) {
-                    continuar = cCabeceras.getString(0) != "P" || cCabeceras.getString(0) == null
-                }
-                cCabeceras.close()
-
-                if (continuar) {
-                    serializer.startTag("", "record")
-                    serializer.attribute(null, "APUNTE", cobro.cobroId.toString())
-                    serializer.attribute(null, "CLIENTE", cobro.clienteId.toString())
-                    if (cobro.tipoDoc == 33.toShort())
-                        serializer.attribute(null, "TIPODOC", 0.toString())
-                    else
-                        serializer.attribute(null, "TIPODOC", cobro.tipoDoc.toString())
-                    serializer.attribute(null, "ALM", cobro.almacen.toString())
-                    serializer.attribute(null, "SERIE", cobro.serie)
-                    serializer.attribute(null, "NUMERO", cobro.numero.toString())
-                    serializer.attribute(null, "EJER", cobro.ejercicio.toString())
-                    serializer.attribute(null, "EMPRESA", cobro.empresa.toString())
-                    serializer.attribute(null, "FECHACOBRO", cobro.fechaCobro)
-                    serializer.attribute(null, "COBRO", cobro.cobro.replace('.', ','))
-                    serializer.attribute(null, "FPAGO", cobro.fPago)
-                    serializer.attribute(null, "DIVISA", cobro.divisa)
-                    serializer.attribute(null, "ANOTACION", cobro.anotacion)
-                    serializer.attribute(null, "CODIGO", cobro.codigo)
-                    serializer.attribute(null, "ESTADO", "N")
-                    serializer.attribute(null, "VALMACEN", cobro.vAlmacen)
-                    serializer.attribute(null, "VPUESTO", cobro.vPuesto)
-                    serializer.attribute(null, "VAPUNTE", cobro.vApunte)
-                    serializer.attribute(null, "VEJER", cobro.vEjercicio)
-                    serializer.attribute(null, "Matricula", cobro.matricula)
-
-                    serializer.endTag("", "record")
-                }
-            }
-            serializer.endTag("", "consulta")
-
-            serializer.endDocument()
-            serializer.flush()
-            fout.close()
-            fTamCobros = outputFile.length()
-
-        } catch (e: FileNotFoundException) {
-            mostrarExcepcion(e)
-        } catch (e: Exception) {
-            mostrarExcepcion(e)
-        }
-    }
-
-
-    private fun cobrosExpAXML(queNumExportacion: Int) {
-        val cobrosDao: CobrosDao? = MyDatabase.getInstance(fContext)?.cobrosDao()
-
-        try {
-            val outputFile = File(rutaLocalEnvio, "Cobros.xml")
-            val fout = FileOutputStream(outputFile, false)
-
-            val serializer = Xml.newSerializer()
-            serializer.setOutput(fout, "UTF-8")
-            serializer.startDocument(null, true)
-            serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true)
-
-            serializer.startTag("", "consulta")
-            val lCobros = cobrosDao?.abrirExportacion(queNumExportacion) ?: emptyList<CobrosEnt>().toMutableList()
 
             for (cobro in lCobros) {
                 serializer.startTag("", "record")
-                serializer.attribute(null, "APUNTE", cobro.cobroId.toString())
-                serializer.attribute(null, "CLIENTE", cobro.clienteId.toString())
-                serializer.attribute(null, "TIPODOC", cobro.tipoDoc.toString())
-                serializer.attribute(null, "ALM", cobro.almacen.toString())
-                serializer.attribute(null, "SERIE", cobro.serie)
-                serializer.attribute(null, "NUMERO", cobro.numero.toString())
-                serializer.attribute(null, "EJER", cobro.ejercicio.toString())
-                serializer.attribute(null, "EMPRESA", cobro.empresa.toString())
-                serializer.attribute(null, "FECHACOBRO", cobro.fechaCobro)
-                serializer.attribute(null, "COBRO", cobro.cobro.replace('.', ','))
-                serializer.attribute(null, "FPAGO", cobro.fPago)
-                serializer.attribute(null, "DIVISA", cobro.divisa)
-                serializer.attribute(null, "ANOTACION", cobro.anotacion)
-                serializer.attribute(null, "CODIGO", cobro.codigo)
-                serializer.attribute(null, "ESTADO", "N")
-                serializer.attribute(null, "VALMACEN", cobro.vAlmacen)
-                serializer.attribute(null, "VPUESTO", cobro.vPuesto)
-                serializer.attribute(null, "VAPUNTE", cobro.vApunte)
-                serializer.attribute(null, "VEJER", cobro.vEjercicio)
+                serializer.attribute(null, "Apunte", cobro.cobroId.toString())
+                serializer.attribute(null, "Cliente", cobro.clienteId.toString())
+                if (cobro.tipoDoc == 33.toShort())
+                    serializer.attribute(null, "TipoDoc", 0.toString())
+                else
+                    serializer.attribute(null, "TipoDoc", cobro.tipoDoc.toString())
+                serializer.attribute(null, "Alm", cobro.almacen.toString())
+                serializer.attribute(null, "Serie", cobro.serie)
+                serializer.attribute(null, "Numero", cobro.numero.toString())
+                serializer.attribute(null, "Ejer", cobro.ejercicio.toString())
+                serializer.attribute(null, "Empresa", cobro.empresa.toString())
+                serializer.attribute(null, "FechaCbro", cobro.fechaCobro)
+                serializer.attribute(null, "Cobro", cobro.cobro.replace('.', ','))
+                serializer.attribute(null, "FPago", cobro.fPago)
+                serializer.attribute(null, "Divisa", cobro.divisa)
+                serializer.attribute(null, "Anotacion", cobro.anotacion)
+                serializer.attribute(null, "Codigo", cobro.codigo)
+                serializer.attribute(null, "Estado", "N")
+                serializer.attribute(null, "VAlmacen", cobro.vAlmacen)
+                serializer.attribute(null, "VPuesto", cobro.vPuesto)
+                serializer.attribute(null, "VApunte", cobro.vApunte)
+                serializer.attribute(null, "VEjer", cobro.vEjercicio)
                 serializer.attribute(null, "Matricula", cobro.matricula)
 
                 serializer.endTag("", "record")
@@ -4606,6 +4309,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
     }
 
 
+
     private fun enviarPendiente(queNumExportacion: Int, iSigExportacion: Int): Boolean {
         val pendienteDao: PendienteDao? = MyDatabase.getInstance(fContext)?.pendienteDao()
 
@@ -4615,19 +4319,18 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             pendienteDao?.numExp2VtosLiquidados(iSigExportacion)
         }
 
-        val cPdte: Cursor? = if (queNumExportacion == 0) {
-            pendienteDao?.abrirParaEnviar()
+        val lPendiente = if (queNumExportacion == 0) {
+            pendienteDao?.abrirParaEnviar() ?: emptyList<PendienteEnt>().toMutableList()
         } else {
-            pendienteDao?.abrirPorNumExport(queNumExportacion)
+            pendienteDao?.abrirPorNumExport(queNumExportacion) ?: emptyList<PendienteEnt>().toMutableList()
         }
 
-        if (cPdte?.moveToFirst() == true) {
+        if (lPendiente.isNotEmpty()) {
             val msg = Message()
             msg.obj = "Preparando pendiente"
             puente.sendMessage(msg)
 
-            pendienteAXML(cPdte)
-            cPdte.close()
+            pendienteAXML(lPendiente)
 
             // Marcamos los pendiente como no enviar.
             if (queNumExportacion == 0) {
@@ -4642,8 +4345,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
     }
 
 
-    private fun pendienteAXML(cPdte: Cursor) {
-
+    private fun pendienteAXML(lPendiente: List<PendienteEnt>) {
         try {
             val outputFile = File(rutaLocalEnvio, "Pendiente.xml")
             val fout = FileOutputStream(outputFile, false)
@@ -4652,37 +4354,32 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             serializer.setOutput(fout, "UTF-8")
             serializer.startDocument(null, true)
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true)
-
             serializer.startTag("", "consulta")
-            cPdte.moveToFirst()
-            while (!cPdte.isAfterLast) {
+
+            for (pendiente in lPendiente) {
                 serializer.startTag("", "record")
-                serializer.attribute(null, "CLIENTE", cPdte.getString(cPdte.getColumnIndex("clienteId")))
-                serializer.attribute(null, "EJER", cPdte.getString(cPdte.getColumnIndex("ejercicio")))
-                serializer.attribute(null, "EMPRESA", cPdte.getString(cPdte.getColumnIndex("empresa")))
-                serializer.attribute(null, "ALM", cPdte.getString(cPdte.getColumnIndex("almacen")))
-                serializer.attribute(null, "TIPODOC", cPdte.getString(cPdte.getColumnIndex("tipoDoc")))
-                if (cPdte.getString(cPdte.getColumnIndex("fPago")) == null) serializer.attribute(null, "FPAGO", "")
-                else serializer.attribute(null, "FPAGO", cPdte.getString(cPdte.getColumnIndex("fPago")))
-                serializer.attribute(null, "FECHADOC", cPdte.getString(cPdte.getColumnIndex("fechaDoc")))
-                serializer.attribute(null, "SERIE", cPdte.getString(cPdte.getColumnIndex("serie")))
-                serializer.attribute(null, "NUMERO", cPdte.getString(cPdte.getColumnIndex("numero")))
-                serializer.attribute(null, "IMPORTE", cPdte.getString(cPdte.getColumnIndex("importe")).replace('.', ','))
-                serializer.attribute(null, "COBRADO", cPdte.getString(cPdte.getColumnIndex("cobrado")).replace('.', ','))
-                serializer.attribute(null, "FECHAVTO", cPdte.getString(cPdte.getColumnIndex("fechaVto")))
-                serializer.attribute(null, "ESTADO", cPdte.getString(cPdte.getColumnIndex("estado")))
-                serializer.attribute(null, "ENVIAR", cPdte.getString(cPdte.getColumnIndex("enviar")))
-                serializer.attribute(null, "CALMACEN", cPdte.getString(cPdte.getColumnIndex("cAlmacen")))
-                serializer.attribute(null, "CPUESTO", cPdte.getString(cPdte.getColumnIndex("cPuesto")))
-                serializer.attribute(null, "CAPUNTE", cPdte.getString(cPdte.getColumnIndex("cApunte")))
-                serializer.attribute(null, "CEJER", cPdte.getString(cPdte.getColumnIndex("cEjercicio")))
-                if (cPdte.getString(cPdte.getColumnIndex("flag")) == null) serializer.attribute(null, "FLAG", "0")
-                else serializer.attribute(null, "FLAG", cPdte.getString(cPdte.getColumnIndex("flag")))
-                if (cPdte.getString(cPdte.getColumnIndex("anotacion")) == null) serializer.attribute(null, "ANOTACION", "")
-                else serializer.attribute(null, "ANOTACION", cPdte.getString(cPdte.getColumnIndex("anotacion")))
+                serializer.attribute(null, "Cliente", pendiente.clienteId.toString())
+                serializer.attribute(null, "Ejer", pendiente.ejercicio.toString())
+                serializer.attribute(null, "Empresa", pendiente.empresa.toString())
+                serializer.attribute(null, "Alm", pendiente.almacen.toString())
+                serializer.attribute(null, "TipoDoc", pendiente.tipoDoc.toString())
+                serializer.attribute(null, "FPago", pendiente.fPago)
+                serializer.attribute(null, "FechaDoc", pendiente.fechaDoc)
+                serializer.attribute(null, "Serie", pendiente.serie)
+                serializer.attribute(null, "Numero", pendiente.numero.toString())
+                serializer.attribute(null, "Importe", pendiente.importe.replace('.', ','))
+                serializer.attribute(null, "Cobrado", pendiente.cobrado.replace('.', ','))
+                serializer.attribute(null, "FechaVto", pendiente.fechaVto)
+                serializer.attribute(null, "Estado", pendiente.estado)
+                serializer.attribute(null, "Enviar", pendiente.enviar)
+                serializer.attribute(null, "CAlmacen", pendiente.cAlmacen)
+                serializer.attribute(null, "CPuesto", pendiente.cPuesto)
+                serializer.attribute(null, "CApunte", pendiente.cApunte)
+                serializer.attribute(null, "CEjer", pendiente.cEjercicio)
+                serializer.attribute(null, "Flag", pendiente.flag.toString())
+                serializer.attribute(null, "Anotacion", pendiente.anotacion)
 
                 serializer.endTag("", "record")
-                cPdte.moveToNext()
             }
             serializer.endTag("", "consulta")
 
@@ -4692,13 +4389,12 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             fTamPdte = outputFile.length()
 
         } catch (e: FileNotFoundException) {
-            //if (!fDesdeServicio) mostrarExcepcion(e)
             mostrarExcepcion(e)
         } catch (e: Exception) {
-            //if (!fDesdeServicio) mostrarExcepcion(e)
             mostrarExcepcion(e)
         }
     }
+
 
     private fun crearCadenaResumen(hayClientes: Boolean, hayDirecc: Boolean, hayContactos: Boolean, hayNotas: Boolean,
                                    hayDocumentos: Boolean, hayCobros: Boolean, hayPendiente: Boolean, hayCargas: Boolean) {

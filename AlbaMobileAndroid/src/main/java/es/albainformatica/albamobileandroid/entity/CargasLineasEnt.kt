@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class CargasLineasEnt (
 
     @PrimaryKey(autoGenerate = true)
-    val cargaLineaId: Int = 0,
+    var cargaLineaId: Int = 0,
 
     var cargaId: Int = 0,
     var articuloId: Int = 0,

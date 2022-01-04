@@ -4,8 +4,7 @@ package es.albainformatica.albamobileandroid
 
 const val VERSION_PROGRAMA = "1.00"
 const val COMPILACION_PROGRAMA = ".1"
-const val VERSION_BD = 4
-const val VERSION_BD_ROOM = 1
+const val VERSION_BD = 1
 
 
 const val est_Telef_Browse: Byte = 1
@@ -211,6 +210,14 @@ class DatosCarga {
     var finDeDia: String = ""
 }
 
+
+class DatosLinRecStock {
+    var articuloId: Int = 0
+    var cajas: String = "0.0"
+    var cantidad: String = "0.0"
+    var lote: String = ""
+    var empresa: Short = 0
+}
 
 
 

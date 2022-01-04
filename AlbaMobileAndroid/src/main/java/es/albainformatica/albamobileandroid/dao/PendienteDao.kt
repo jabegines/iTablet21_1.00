@@ -105,10 +105,10 @@ interface PendienteDao {
     fun numExp2VtosLiquidados(iSigExportacion: Int)
 
     @Query("SELECT * FROM Pendiente WHERE enviar = 'T'")
-    fun abrirParaEnviar(): Cursor
+    fun abrirParaEnviar(): List<PendienteEnt>
 
     @Query("SELECT * FROM Pendiente WHERE numExport = :queNumExportacion")
-    fun abrirPorNumExport(queNumExportacion: Int): Cursor
+    fun abrirPorNumExport(queNumExportacion: Int): List<PendienteEnt>
 
     @Query("UPDATE Pendiente SET enviar = 'F', numExport = :iSigExportacion WHERE enviar = 'T'")
     fun marcarNoEnviar(iSigExportacion: Int)

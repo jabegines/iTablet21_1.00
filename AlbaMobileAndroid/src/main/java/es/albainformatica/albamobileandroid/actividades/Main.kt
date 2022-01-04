@@ -34,6 +34,7 @@ import es.albainformatica.albamobileandroid.cobros.CobrosActivity
 import es.albainformatica.albamobileandroid.comunicaciones.*
 import es.albainformatica.albamobileandroid.dao.EmpresasDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
+import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.queBDRoom
 import es.albainformatica.albamobileandroid.impresion_informes.*
 import es.albainformatica.albamobileandroid.maestros.ArticulosActivity
 import es.albainformatica.albamobileandroid.maestros.ClientesActivity
@@ -84,7 +85,7 @@ class Main: AppCompatActivity() {
         comprobarMultisistema()
 
         fSistemaId = if (fUsarMultisistema) {
-            val queBD = BaseDatos.queBaseDatos
+            val queBD = queBDRoom
             queBD.substring(queBD.length - 2, queBD.length)
         }
         else {
