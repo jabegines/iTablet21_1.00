@@ -1,0 +1,4382 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "09aa09dd3275c5dbce441ba1921f8814",
+    "entities": [
+      {
+        "tableName": "Almacenes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`codigo` INTEGER NOT NULL, `descripcion` TEXT NOT NULL, PRIMARY KEY(`codigo`))",
+        "fields": [
+          {
+            "fieldPath": "codigo",
+            "columnName": "codigo",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descripcion",
+            "columnName": "descripcion",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "codigo"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "ArtHabituales",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`articuloId` INTEGER NOT NULL, `clienteId` INTEGER NOT NULL, `formatoId` INTEGER NOT NULL, `flag` INTEGER NOT NULL, `texto` TEXT NOT NULL, PRIMARY KEY(`articuloId`, `clienteId`, `formatoId`))",
+        "fields": [
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clienteId",
+            "columnName": "clienteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formatoId",
+            "columnName": "formatoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag",
+            "columnName": "flag",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "texto",
+            "columnName": "texto",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "articuloId",
+            "clienteId",
+            "formatoId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "ArticClasif",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`articuloId` INTEGER NOT NULL, `clasificadorId` INTEGER NOT NULL, `orden` INTEGER NOT NULL, PRIMARY KEY(`articuloId`, `clasificadorId`))",
+        "fields": [
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clasificadorId",
+            "columnName": "clasificadorId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "orden",
+            "columnName": "orden",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "articuloId",
+            "clasificadorId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "ArticDatAdic",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`articuloId` INTEGER NOT NULL, `valor` INTEGER NOT NULL, `cadena` TEXT NOT NULL, PRIMARY KEY(`articuloId`, `valor`))",
+        "fields": [
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "valor",
+            "columnName": "valor",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cadena",
+            "columnName": "cadena",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "articuloId",
+            "valor"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Articulos",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`articuloId` INTEGER NOT NULL, `codigo` TEXT NOT NULL, `descripcion` TEXT NOT NULL COLLATE NOCASE, `tipoiva` INTEGER NOT NULL, `grupoId` INTEGER NOT NULL, `departamentoId` INTEGER NOT NULL, `proveedorId` INTEGER NOT NULL, `costo` TEXT NOT NULL, `uCaja` TEXT NOT NULL, `medida` TEXT NOT NULL, `flag1` INTEGER NOT NULL, `flag2` INTEGER NOT NULL, `peso` TEXT NOT NULL, `tasa1` TEXT NOT NULL, `tasa2` TEXT NOT NULL, `enlace` INTEGER NOT NULL, PRIMARY KEY(`articuloId`))",
+        "fields": [
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "codigo",
+            "columnName": "codigo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descripcion",
+            "columnName": "descripcion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoiva",
+            "columnName": "tipoiva",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "grupoId",
+            "columnName": "grupoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "departamentoId",
+            "columnName": "departamentoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "proveedorId",
+            "columnName": "proveedorId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "costo",
+            "columnName": "costo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uCaja",
+            "columnName": "uCaja",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "medida",
+            "columnName": "medida",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag1",
+            "columnName": "flag1",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag2",
+            "columnName": "flag2",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "peso",
+            "columnName": "peso",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tasa1",
+            "columnName": "tasa1",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tasa2",
+            "columnName": "tasa2",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "enlace",
+            "columnName": "enlace",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "articuloId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Busquedas",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`clave` TEXT NOT NULL, `articuloId` INTEGER NOT NULL, `tipo` INTEGER NOT NULL, `tcaja` TEXT NOT NULL, `ucaja` TEXT NOT NULL, PRIMARY KEY(`clave`))",
+        "fields": [
+          {
+            "fieldPath": "clave",
+            "columnName": "clave",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipo",
+            "columnName": "tipo",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tcaja",
+            "columnName": "tcaja",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ucaja",
+            "columnName": "ucaja",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "clave"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "CabDiferidas",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`cabDiferidaId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `serie` TEXT NOT NULL, `numero` INTEGER NOT NULL, `ejercicio` INTEGER NOT NULL, `empresa` INTEGER NOT NULL, `fecha` TEXT NOT NULL, `clienteId` INTEGER NOT NULL, `aplIva` TEXT NOT NULL, `aplRec` TEXT NOT NULL, `bruto` TEXT NOT NULL, `dto` TEXT NOT NULL, `base` TEXT NOT NULL, `iva` TEXT NOT NULL, `recargo` TEXT NOT NULL, `total` TEXT NOT NULL, `flag` INTEGER NOT NULL, `obs1` TEXT NOT NULL, `obs2` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "cabDiferidaId",
+            "columnName": "cabDiferidaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "serie",
+            "columnName": "serie",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numero",
+            "columnName": "numero",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ejercicio",
+            "columnName": "ejercicio",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "empresa",
+            "columnName": "empresa",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clienteId",
+            "columnName": "clienteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "aplIva",
+            "columnName": "aplIva",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "aplRec",
+            "columnName": "aplRec",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bruto",
+            "columnName": "bruto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dto",
+            "columnName": "dto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "base",
+            "columnName": "base",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "iva",
+            "columnName": "iva",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recargo",
+            "columnName": "recargo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "total",
+            "columnName": "total",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag",
+            "columnName": "flag",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "obs1",
+            "columnName": "obs1",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "obs2",
+            "columnName": "obs2",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "cabDiferidaId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Cabeceras",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`cabeceraId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `tipoDoc` INTEGER NOT NULL, `empresa` INTEGER NOT NULL, `ejercicio` INTEGER NOT NULL, `almacen` INTEGER NOT NULL, `serie` TEXT NOT NULL, `numero` INTEGER NOT NULL, `fecha` TEXT NOT NULL, `fechaEntrega` TEXT NOT NULL, `hora` TEXT NOT NULL, `clienteId` INTEGER NOT NULL, `aplicarIva` TEXT NOT NULL, `aplicarRe` TEXT NOT NULL, `bruto` TEXT NOT NULL, `dto` TEXT NOT NULL, `dto2` TEXT NOT NULL, `dto3` TEXT NOT NULL, `dto4` TEXT NOT NULL, `base` TEXT NOT NULL, `iva` TEXT NOT NULL, `recargo` TEXT NOT NULL, `total` TEXT NOT NULL, `dirEnv` TEXT NOT NULL, `ruta` INTEGER NOT NULL, `estado` TEXT NOT NULL, `estadoInicial` TEXT NOT NULL, `flag` INTEGER NOT NULL, `observ1` TEXT NOT NULL, `observ2` TEXT NOT NULL, `facturado` TEXT NOT NULL, `numExport` INTEGER NOT NULL, `fPago` TEXT NOT NULL, `tipoIncidencia` INTEGER NOT NULL, `textoIncidencia` TEXT NOT NULL, `firmado` TEXT NOT NULL, `fechaFirma` TEXT NOT NULL, `horaFirma` TEXT NOT NULL, `hojaReparto` INTEGER NOT NULL, `ordenReparto` INTEGER NOT NULL, `tipoPedido` INTEGER NOT NULL, `almDireccion` TEXT NOT NULL, `ordenDireccion` TEXT NOT NULL, `imprimido` TEXT NOT NULL, `matricula` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "cabeceraId",
+            "columnName": "cabeceraId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoDoc",
+            "columnName": "tipoDoc",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "empresa",
+            "columnName": "empresa",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ejercicio",
+            "columnName": "ejercicio",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "almacen",
+            "columnName": "almacen",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "serie",
+            "columnName": "serie",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numero",
+            "columnName": "numero",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fechaEntrega",
+            "columnName": "fechaEntrega",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hora",
+            "columnName": "hora",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clienteId",
+            "columnName": "clienteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "aplicarIva",
+            "columnName": "aplicarIva",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "aplicarRe",
+            "columnName": "aplicarRe",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bruto",
+            "columnName": "bruto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dto",
+            "columnName": "dto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dto2",
+            "columnName": "dto2",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dto3",
+            "columnName": "dto3",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dto4",
+            "columnName": "dto4",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "base",
+            "columnName": "base",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "iva",
+            "columnName": "iva",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recargo",
+            "columnName": "recargo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "total",
+            "columnName": "total",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dirEnv",
+            "columnName": "dirEnv",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ruta",
+            "columnName": "ruta",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "estado",
+            "columnName": "estado",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "estadoInicial",
+            "columnName": "estadoInicial",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag",
+            "columnName": "flag",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "observ1",
+            "columnName": "observ1",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "observ2",
+            "columnName": "observ2",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "facturado",
+            "columnName": "facturado",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numExport",
+            "columnName": "numExport",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fPago",
+            "columnName": "fPago",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoIncidencia",
+            "columnName": "tipoIncidencia",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "textoIncidencia",
+            "columnName": "textoIncidencia",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "firmado",
+            "columnName": "firmado",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fechaFirma",
+            "columnName": "fechaFirma",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "horaFirma",
+            "columnName": "horaFirma",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hojaReparto",
+            "columnName": "hojaReparto",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ordenReparto",
+            "columnName": "ordenReparto",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoPedido",
+            "columnName": "tipoPedido",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "almDireccion",
+            "columnName": "almDireccion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ordenDireccion",
+            "columnName": "ordenDireccion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imprimido",
+            "columnName": "imprimido",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "matricula",
+            "columnName": "matricula",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "cabeceraId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Clasificadores",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`clasificadorId` INTEGER NOT NULL, `descripcion` TEXT NOT NULL, `padre` INTEGER NOT NULL, `nivel` INTEGER NOT NULL, `orden` INTEGER NOT NULL, `flag` INTEGER NOT NULL, PRIMARY KEY(`clasificadorId`))",
+        "fields": [
+          {
+            "fieldPath": "clasificadorId",
+            "columnName": "clasificadorId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descripcion",
+            "columnName": "descripcion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "padre",
+            "columnName": "padre",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nivel",
+            "columnName": "nivel",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "orden",
+            "columnName": "orden",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag",
+            "columnName": "flag",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "clasificadorId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Cargas",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`cargaId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `empresa` INTEGER NOT NULL, `fecha` TEXT NOT NULL, `hora` TEXT NOT NULL, `esFinDeDia` TEXT NOT NULL, `estado` TEXT NOT NULL, `numExport` INTEGER NOT NULL, `matricula` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "cargaId",
+            "columnName": "cargaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "empresa",
+            "columnName": "empresa",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hora",
+            "columnName": "hora",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "esFinDeDia",
+            "columnName": "esFinDeDia",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "estado",
+            "columnName": "estado",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numExport",
+            "columnName": "numExport",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "matricula",
+            "columnName": "matricula",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "cargaId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "CargasLineas",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`cargaLineaId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `cargaId` INTEGER NOT NULL, `articuloId` INTEGER NOT NULL, `lote` TEXT NOT NULL, `cajas` TEXT NOT NULL, `cantidad` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "cargaLineaId",
+            "columnName": "cargaLineaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cargaId",
+            "columnName": "cargaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lote",
+            "columnName": "lote",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cajas",
+            "columnName": "cajas",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cantidad",
+            "columnName": "cantidad",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "cargaLineaId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "CatalogoLineas",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`catLineasId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `linea` INTEGER NOT NULL, `articuloId` INTEGER NOT NULL, `cajas` TEXT NOT NULL, `cantidad` TEXT NOT NULL, `piezas` TEXT NOT NULL, `precio` TEXT NOT NULL, `precioII` TEXT NOT NULL, `dto` TEXT NOT NULL, `importe` TEXT NOT NULL, `importeII` TEXT NOT NULL, `textoLinea` TEXT NOT NULL, `flag` INTEGER NOT NULL, `flag5` INTEGER NOT NULL, `lote` TEXT NOT NULL, `esEnlace` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "catLineasId",
+            "columnName": "catLineasId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "linea",
+            "columnName": "linea",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cajas",
+            "columnName": "cajas",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cantidad",
+            "columnName": "cantidad",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "piezas",
+            "columnName": "piezas",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precio",
+            "columnName": "precio",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precioII",
+            "columnName": "precioII",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dto",
+            "columnName": "dto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "importe",
+            "columnName": "importe",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "importeII",
+            "columnName": "importeII",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "textoLinea",
+            "columnName": "textoLinea",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag",
+            "columnName": "flag",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag5",
+            "columnName": "flag5",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lote",
+            "columnName": "lote",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "esEnlace",
+            "columnName": "esEnlace",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "catLineasId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Clientes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`clienteId` INTEGER NOT NULL, `codigo` INTEGER NOT NULL, `nombre` TEXT NOT NULL COLLATE NOCASE, `nombreComercial` TEXT NOT NULL COLLATE NOCASE, `cif` TEXT NOT NULL, `direccion` TEXT NOT NULL, `localidad` TEXT NOT NULL, `cPostal` TEXT NOT NULL, `provincia` TEXT NOT NULL, `aplIva` TEXT NOT NULL, `aplRec` TEXT NOT NULL, `tipoIva` INTEGER NOT NULL, `tarifaId` INTEGER NOT NULL, `tarifaDtoId` INTEGER NOT NULL, `tarifaPiezas` INTEGER NOT NULL, `fPago` TEXT NOT NULL, `rutaId` INTEGER NOT NULL, `riesgo` TEXT NOT NULL, `pendiente` TEXT NOT NULL, `flag` INTEGER NOT NULL, `flag2` INTEGER NOT NULL, `estado` TEXT NOT NULL, `ramo` INTEGER NOT NULL, `numExport` INTEGER NOT NULL, `tieneIncid` TEXT NOT NULL, `maxDias` INTEGER NOT NULL, `maxFrasPdtes` INTEGER NOT NULL, `matricula` TEXT NOT NULL, PRIMARY KEY(`clienteId`))",
+        "fields": [
+          {
+            "fieldPath": "clienteId",
+            "columnName": "clienteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "codigo",
+            "columnName": "codigo",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombre",
+            "columnName": "nombre",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombreComercial",
+            "columnName": "nombreComercial",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cif",
+            "columnName": "cif",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "direccion",
+            "columnName": "direccion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localidad",
+            "columnName": "localidad",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cPostal",
+            "columnName": "cPostal",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "provincia",
+            "columnName": "provincia",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "aplIva",
+            "columnName": "aplIva",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "aplRec",
+            "columnName": "aplRec",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoIva",
+            "columnName": "tipoIva",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tarifaId",
+            "columnName": "tarifaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tarifaDtoId",
+            "columnName": "tarifaDtoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tarifaPiezas",
+            "columnName": "tarifaPiezas",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fPago",
+            "columnName": "fPago",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rutaId",
+            "columnName": "rutaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "riesgo",
+            "columnName": "riesgo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pendiente",
+            "columnName": "pendiente",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag",
+            "columnName": "flag",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag2",
+            "columnName": "flag2",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "estado",
+            "columnName": "estado",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ramo",
+            "columnName": "ramo",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numExport",
+            "columnName": "numExport",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tieneIncid",
+            "columnName": "tieneIncid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "maxDias",
+            "columnName": "maxDias",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "maxFrasPdtes",
+            "columnName": "maxFrasPdtes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "matricula",
+            "columnName": "matricula",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "clienteId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "CnfTarifas",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`codigo` INTEGER NOT NULL, `descrTarifa` TEXT NOT NULL, `precios` TEXT NOT NULL, `flag` INTEGER NOT NULL, PRIMARY KEY(`codigo`))",
+        "fields": [
+          {
+            "fieldPath": "codigo",
+            "columnName": "codigo",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descrTarifa",
+            "columnName": "descrTarifa",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precios",
+            "columnName": "precios",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag",
+            "columnName": "flag",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "codigo"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Cobros",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`cobroId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `clienteId` INTEGER NOT NULL, `tipoDoc` INTEGER NOT NULL, `almacen` INTEGER NOT NULL, `serie` TEXT NOT NULL, `numero` INTEGER NOT NULL, `ejercicio` INTEGER NOT NULL, `empresa` INTEGER NOT NULL, `fechaCobro` TEXT NOT NULL, `cobro` TEXT NOT NULL, `fPago` TEXT NOT NULL, `divisa` TEXT NOT NULL, `anotacion` TEXT NOT NULL, `codigo` TEXT NOT NULL, `estado` TEXT NOT NULL, `vAlmacen` TEXT NOT NULL, `vPuesto` TEXT NOT NULL, `vApunte` TEXT NOT NULL, `vEjercicio` TEXT NOT NULL, `numExport` INTEGER NOT NULL, `matricula` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "cobroId",
+            "columnName": "cobroId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clienteId",
+            "columnName": "clienteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoDoc",
+            "columnName": "tipoDoc",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "almacen",
+            "columnName": "almacen",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "serie",
+            "columnName": "serie",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numero",
+            "columnName": "numero",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ejercicio",
+            "columnName": "ejercicio",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "empresa",
+            "columnName": "empresa",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fechaCobro",
+            "columnName": "fechaCobro",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cobro",
+            "columnName": "cobro",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fPago",
+            "columnName": "fPago",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "divisa",
+            "columnName": "divisa",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "anotacion",
+            "columnName": "anotacion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "codigo",
+            "columnName": "codigo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "estado",
+            "columnName": "estado",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "vAlmacen",
+            "columnName": "vAlmacen",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "vPuesto",
+            "columnName": "vPuesto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "vApunte",
+            "columnName": "vApunte",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "vEjercicio",
+            "columnName": "vEjercicio",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numExport",
+            "columnName": "numExport",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "matricula",
+            "columnName": "matricula",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "cobroId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Configuracion",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`configuracionId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `grupo` INTEGER NOT NULL, `descripcion` TEXT NOT NULL, `valor` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "configuracionId",
+            "columnName": "configuracionId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "grupo",
+            "columnName": "grupo",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descripcion",
+            "columnName": "descripcion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "valor",
+            "columnName": "valor",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "configuracionId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "ContactosCltes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`contactoClteId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `clienteId` INTEGER NOT NULL, `almacen` INTEGER NOT NULL, `orden` INTEGER NOT NULL, `sucursal` INTEGER NOT NULL, `nombre` TEXT NOT NULL, `telefono1` TEXT NOT NULL, `telefono2` TEXT NOT NULL, `obs1` TEXT NOT NULL, `eMail` TEXT NOT NULL, `flag` INTEGER NOT NULL, `estado` TEXT NOT NULL, `numExport` INTEGER NOT NULL, `matricula` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "contactoClteId",
+            "columnName": "contactoClteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clienteId",
+            "columnName": "clienteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "almacen",
+            "columnName": "almacen",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "orden",
+            "columnName": "orden",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sucursal",
+            "columnName": "sucursal",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombre",
+            "columnName": "nombre",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "telefono1",
+            "columnName": "telefono1",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "telefono2",
+            "columnName": "telefono2",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "obs1",
+            "columnName": "obs1",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "eMail",
+            "columnName": "eMail",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag",
+            "columnName": "flag",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "estado",
+            "columnName": "estado",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numExport",
+            "columnName": "numExport",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "matricula",
+            "columnName": "matricula",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "contactoClteId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "CostosArticulos",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`articuloId` INTEGER NOT NULL, `empresa` INTEGER NOT NULL, `costo` TEXT NOT NULL, PRIMARY KEY(`articuloId`, `empresa`))",
+        "fields": [
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "empresa",
+            "columnName": "empresa",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "costo",
+            "columnName": "costo",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "articuloId",
+            "empresa"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Departamentos",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`grupoId` INTEGER NOT NULL, `departamentoId` INTEGER NOT NULL, `descripcion` TEXT NOT NULL, PRIMARY KEY(`grupoId`, `departamentoId`))",
+        "fields": [
+          {
+            "fieldPath": "grupoId",
+            "columnName": "grupoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "departamentoId",
+            "columnName": "departamentoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descripcion",
+            "columnName": "descripcion",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "grupoId",
+            "departamentoId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "DireccionesCltes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`direccionId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `clienteId` INTEGER NOT NULL, `almacen` INTEGER NOT NULL, `orden` INTEGER NOT NULL, `sucursal` INTEGER NOT NULL, `direccion` TEXT NOT NULL, `localidad` TEXT NOT NULL, `provincia` TEXT NOT NULL, `cPostal` TEXT NOT NULL, `pais` TEXT NOT NULL, `direccionDoc` TEXT NOT NULL, `direccionMerc` TEXT NOT NULL, `estado` TEXT NOT NULL, `numExport` INTEGER NOT NULL, `matricula` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "direccionId",
+            "columnName": "direccionId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clienteId",
+            "columnName": "clienteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "almacen",
+            "columnName": "almacen",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "orden",
+            "columnName": "orden",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sucursal",
+            "columnName": "sucursal",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "direccion",
+            "columnName": "direccion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localidad",
+            "columnName": "localidad",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "provincia",
+            "columnName": "provincia",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cPostal",
+            "columnName": "cPostal",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pais",
+            "columnName": "pais",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "direccionDoc",
+            "columnName": "direccionDoc",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "direccionMerc",
+            "columnName": "direccionMerc",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "estado",
+            "columnName": "estado",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numExport",
+            "columnName": "numExport",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "matricula",
+            "columnName": "matricula",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "direccionId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Divisas",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`codigo` TEXT NOT NULL, `clave` TEXT NOT NULL, `orden` INTEGER NOT NULL, `descripcion` TEXT NOT NULL, `pideAnotacion` TEXT NOT NULL, `anotacion` TEXT NOT NULL, PRIMARY KEY(`codigo`))",
+        "fields": [
+          {
+            "fieldPath": "codigo",
+            "columnName": "codigo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clave",
+            "columnName": "clave",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "orden",
+            "columnName": "orden",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descripcion",
+            "columnName": "descripcion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pideAnotacion",
+            "columnName": "pideAnotacion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "anotacion",
+            "columnName": "anotacion",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "codigo"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "DocsCabPies",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`empresa` INTEGER NOT NULL, `valor` TEXT NOT NULL, `cadena` TEXT NOT NULL, `entero` INTEGER NOT NULL, PRIMARY KEY(`empresa`, `valor`))",
+        "fields": [
+          {
+            "fieldPath": "empresa",
+            "columnName": "empresa",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "valor",
+            "columnName": "valor",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cadena",
+            "columnName": "cadena",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "entero",
+            "columnName": "entero",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "empresa",
+            "valor"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "DtosCltes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`clienteId` INTEGER NOT NULL, `idDescuento` INTEGER NOT NULL, `dto` TEXT NOT NULL, PRIMARY KEY(`clienteId`, `idDescuento`))",
+        "fields": [
+          {
+            "fieldPath": "clienteId",
+            "columnName": "clienteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idDescuento",
+            "columnName": "idDescuento",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dto",
+            "columnName": "dto",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "clienteId",
+            "idDescuento"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "DtosLineas",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`descuentoId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `lineaId` INTEGER NOT NULL, `orden` INTEGER NOT NULL, `descuento` TEXT NOT NULL, `importe` TEXT NOT NULL, `cantidad1` TEXT NOT NULL, `cantidad2` TEXT NOT NULL, `desdeRating` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "descuentoId",
+            "columnName": "descuentoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lineaId",
+            "columnName": "lineaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "orden",
+            "columnName": "orden",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descuento",
+            "columnName": "descuento",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "importe",
+            "columnName": "importe",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cantidad1",
+            "columnName": "cantidad1",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cantidad2",
+            "columnName": "cantidad2",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "desdeRating",
+            "columnName": "desdeRating",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "descuentoId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Ejercicios",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ejercicio` INTEGER NOT NULL, `descripcion` TEXT NOT NULL, `fechaInicio` TEXT NOT NULL, `fechaFin` TEXT NOT NULL, PRIMARY KEY(`ejercicio`))",
+        "fields": [
+          {
+            "fieldPath": "ejercicio",
+            "columnName": "ejercicio",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descripcion",
+            "columnName": "descripcion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fechaInicio",
+            "columnName": "fechaInicio",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fechaFin",
+            "columnName": "fechaFin",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "ejercicio"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Empresas",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`codigo` INTEGER NOT NULL, `nombreFiscal` TEXT NOT NULL, `nombrecomercial` TEXT NOT NULL, `serie` TEXT NOT NULL, `venderIvaIncl` TEXT NOT NULL, PRIMARY KEY(`codigo`))",
+        "fields": [
+          {
+            "fieldPath": "codigo",
+            "columnName": "codigo",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombreFiscal",
+            "columnName": "nombreFiscal",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombrecomercial",
+            "columnName": "nombrecomercial",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "serie",
+            "columnName": "serie",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "venderIvaIncl",
+            "columnName": "venderIvaIncl",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "codigo"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "EstadDevoluc",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`estadDevolucId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `clienteId` INTEGER NOT NULL, `articuloId` INTEGER NOT NULL, `porcDevol` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "estadDevolucId",
+            "columnName": "estadDevolucId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clienteId",
+            "columnName": "clienteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "porcDevol",
+            "columnName": "porcDevol",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "estadDevolucId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "FormasPago",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`codigo` TEXT NOT NULL, `clave` TEXT NOT NULL, `orden` INTEGER NOT NULL, `descripcion` TEXT NOT NULL, `generaCobro` TEXT NOT NULL, `generaVtos` TEXT NOT NULL, `numVtos` INTEGER NOT NULL, `primerVto` INTEGER NOT NULL, `entrePagos` INTEGER NOT NULL, `pideDivisas` TEXT NOT NULL, `pideAnotacion` TEXT NOT NULL, `anotacion` TEXT NOT NULL, PRIMARY KEY(`codigo`))",
+        "fields": [
+          {
+            "fieldPath": "codigo",
+            "columnName": "codigo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clave",
+            "columnName": "clave",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "orden",
+            "columnName": "orden",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descripcion",
+            "columnName": "descripcion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "generaCobro",
+            "columnName": "generaCobro",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "generaVtos",
+            "columnName": "generaVtos",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numVtos",
+            "columnName": "numVtos",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "primerVto",
+            "columnName": "primerVto",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "entrePagos",
+            "columnName": "entrePagos",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pideDivisas",
+            "columnName": "pideDivisas",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pideAnotacion",
+            "columnName": "pideAnotacion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "anotacion",
+            "columnName": "anotacion",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "codigo"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Formatos",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`formatoId` INTEGER NOT NULL, `descripcion` TEXT NOT NULL, `flag` INTEGER NOT NULL, `dosis1` TEXT NOT NULL, PRIMARY KEY(`formatoId`))",
+        "fields": [
+          {
+            "fieldPath": "formatoId",
+            "columnName": "formatoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descripcion",
+            "columnName": "descripcion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag",
+            "columnName": "flag",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dosis1",
+            "columnName": "dosis1",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "formatoId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "FtosLineas",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ftoLineaId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `lineaId` INTEGER NOT NULL, `articuloId` INTEGER NOT NULL, `formatoId` INTEGER NOT NULL, `cajas` TEXT NOT NULL, `cantidad` TEXT NOT NULL, `piezas` TEXT NOT NULL, `precio` TEXT NOT NULL, `dto` TEXT NOT NULL, `textoLinea` TEXT NOT NULL, `flag` INTEGER NOT NULL, `flag5` INTEGER NOT NULL, `borrar` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "ftoLineaId",
+            "columnName": "ftoLineaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lineaId",
+            "columnName": "lineaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formatoId",
+            "columnName": "formatoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cajas",
+            "columnName": "cajas",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cantidad",
+            "columnName": "cantidad",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "piezas",
+            "columnName": "piezas",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precio",
+            "columnName": "precio",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dto",
+            "columnName": "dto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "textoLinea",
+            "columnName": "textoLinea",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag",
+            "columnName": "flag",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag5",
+            "columnName": "flag5",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "borrar",
+            "columnName": "borrar",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "ftoLineaId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Grupos",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`codigo` INTEGER NOT NULL, `descripcion` TEXT NOT NULL, PRIMARY KEY(`codigo`))",
+        "fields": [
+          {
+            "fieldPath": "codigo",
+            "columnName": "codigo",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descripcion",
+            "columnName": "descripcion",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "codigo"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "HcoCompSemMes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hcoCompSemMesId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `fecha` TEXT NOT NULL, `clienteId` INTEGER NOT NULL, `articuloId` INTEGER NOT NULL, `cantidad` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "hcoCompSemMesId",
+            "columnName": "hcoCompSemMesId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clienteId",
+            "columnName": "clienteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cantidad",
+            "columnName": "cantidad",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "hcoCompSemMesId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "HcoPorArticClte",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hcoPorcArticClteId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `articuloId` INTEGER NOT NULL, `clienteId` INTEGER NOT NULL, `tipoDoc` TEXT NOT NULL, `serie` TEXT NOT NULL, `numero` INTEGER NOT NULL, `ejercicio` INTEGER NOT NULL, `fecha` TEXT NOT NULL, `ventas` TEXT NOT NULL, `devoluciones` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "hcoPorcArticClteId",
+            "columnName": "hcoPorcArticClteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clienteId",
+            "columnName": "clienteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoDoc",
+            "columnName": "tipoDoc",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "serie",
+            "columnName": "serie",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numero",
+            "columnName": "numero",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ejercicio",
+            "columnName": "ejercicio",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ventas",
+            "columnName": "ventas",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "devoluciones",
+            "columnName": "devoluciones",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "hcoPorcArticClteId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "HistMes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`histMesId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `clienteId` INTEGER NOT NULL, `articuloId` INTEGER NOT NULL, `mes` INTEGER NOT NULL, `cantidad` TEXT NOT NULL, `cantidadAnt` TEXT NOT NULL, `importe` TEXT NOT NULL, `importeAnt` TEXT NOT NULL, `cajas` TEXT NOT NULL, `cajasAnt` TEXT NOT NULL, `piezas` TEXT NOT NULL, `piezasAnt` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "histMesId",
+            "columnName": "histMesId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clienteId",
+            "columnName": "clienteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mes",
+            "columnName": "mes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cantidad",
+            "columnName": "cantidad",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cantidadAnt",
+            "columnName": "cantidadAnt",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "importe",
+            "columnName": "importe",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "importeAnt",
+            "columnName": "importeAnt",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cajas",
+            "columnName": "cajas",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cajasAnt",
+            "columnName": "cajasAnt",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "piezas",
+            "columnName": "piezas",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "piezasAnt",
+            "columnName": "piezasAnt",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "histMesId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Historico",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`historicoId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `clienteId` INTEGER NOT NULL, `articuloId` INTEGER NOT NULL, `cajas` TEXT NOT NULL, `cantidad` TEXT NOT NULL, `piezas` TEXT NOT NULL, `precio` TEXT NOT NULL, `dto` TEXT NOT NULL, `formatoId` INTEGER NOT NULL, `fecha` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "historicoId",
+            "columnName": "historicoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clienteId",
+            "columnName": "clienteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cajas",
+            "columnName": "cajas",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cantidad",
+            "columnName": "cantidad",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "piezas",
+            "columnName": "piezas",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precio",
+            "columnName": "precio",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dto",
+            "columnName": "dto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formatoId",
+            "columnName": "formatoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "historicoId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "HistRepre",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`histRepreId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `representanteId` INTEGER NOT NULL, `importe` TEXT NOT NULL, `mes` INTEGER NOT NULL, `anyo` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "histRepreId",
+            "columnName": "histRepreId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "representanteId",
+            "columnName": "representanteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "importe",
+            "columnName": "importe",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mes",
+            "columnName": "mes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "anyo",
+            "columnName": "anyo",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "histRepreId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Ivas",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`codigo` INTEGER NOT NULL, `tipo` INTEGER NOT NULL, `porcIva` TEXT NOT NULL, `porcRe` TEXT NOT NULL, PRIMARY KEY(`codigo`))",
+        "fields": [
+          {
+            "fieldPath": "codigo",
+            "columnName": "codigo",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipo",
+            "columnName": "tipo",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "porcIva",
+            "columnName": "porcIva",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "porcRe",
+            "columnName": "porcRe",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "codigo"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "LineasDiferidas",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`lineaDiferidaId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `cabeceraId` INTEGER NOT NULL, `serie` TEXT NOT NULL, `numero` INTEGER NOT NULL, `fecha` TEXT NOT NULL, `linea` INTEGER NOT NULL, `articuloId` INTEGER NOT NULL, `codigo` TEXT NOT NULL, `descripcion` TEXT NOT NULL, `precio` TEXT NOT NULL, `cajas` TEXT NOT NULL, `cantidad` TEXT NOT NULL, `piezas` TEXT NOT NULL, `importe` TEXT NOT NULL, `dto` TEXT NOT NULL, `codigoIva` INTEGER NOT NULL, `flag` INTEGER NOT NULL, `flag3` INTEGER NOT NULL, `formatoId` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "lineaDiferidaId",
+            "columnName": "lineaDiferidaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cabeceraId",
+            "columnName": "cabeceraId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "serie",
+            "columnName": "serie",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numero",
+            "columnName": "numero",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "linea",
+            "columnName": "linea",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "codigo",
+            "columnName": "codigo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descripcion",
+            "columnName": "descripcion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precio",
+            "columnName": "precio",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cajas",
+            "columnName": "cajas",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cantidad",
+            "columnName": "cantidad",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "piezas",
+            "columnName": "piezas",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "importe",
+            "columnName": "importe",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dto",
+            "columnName": "dto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "codigoIva",
+            "columnName": "codigoIva",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag",
+            "columnName": "flag",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag3",
+            "columnName": "flag3",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formatoId",
+            "columnName": "formatoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "lineaDiferidaId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Lineas",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`lineaId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `cabeceraId` INTEGER NOT NULL, `articuloId` INTEGER NOT NULL, `codArticulo` TEXT NOT NULL, `descripcion` TEXT NOT NULL, `tarifaId` INTEGER NOT NULL, `precio` TEXT NOT NULL, `precioII` TEXT NOT NULL, `codigoIva` INTEGER NOT NULL, `cajas` TEXT NOT NULL, `cajasOrg` TEXT NOT NULL, `cantidad` TEXT NOT NULL, `cantidadOrg` TEXT NOT NULL, `piezas` TEXT NOT NULL, `piezasOrg` TEXT NOT NULL, `formatoId` INTEGER NOT NULL, `importe` TEXT NOT NULL, `importeII` TEXT NOT NULL, `dto` TEXT NOT NULL, `dtoImpte` TEXT NOT NULL, `dtoImpteII` TEXT NOT NULL, `lote` TEXT NOT NULL, `flag` INTEGER NOT NULL, `flag3` INTEGER NOT NULL, `flag5` INTEGER NOT NULL, `tasa1` TEXT NOT NULL, `tasa2` TEXT NOT NULL, `tipoIncId` INTEGER NOT NULL, `textoLinea` TEXT NOT NULL, `modif_nueva` TEXT NOT NULL, `precioTarifa` TEXT NOT NULL, `dtoTarifa` TEXT NOT NULL, `almacenPedido` TEXT NOT NULL, `ofertaId` INTEGER NOT NULL, `dtoOftVol` TEXT NOT NULL, `esEnlace` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "lineaId",
+            "columnName": "lineaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cabeceraId",
+            "columnName": "cabeceraId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "codArticulo",
+            "columnName": "codArticulo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descripcion",
+            "columnName": "descripcion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tarifaId",
+            "columnName": "tarifaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precio",
+            "columnName": "precio",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precioII",
+            "columnName": "precioII",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "codigoIva",
+            "columnName": "codigoIva",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cajas",
+            "columnName": "cajas",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cajasOrg",
+            "columnName": "cajasOrg",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cantidad",
+            "columnName": "cantidad",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cantidadOrg",
+            "columnName": "cantidadOrg",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "piezas",
+            "columnName": "piezas",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "piezasOrg",
+            "columnName": "piezasOrg",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formatoId",
+            "columnName": "formatoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "importe",
+            "columnName": "importe",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "importeII",
+            "columnName": "importeII",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dto",
+            "columnName": "dto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dtoImpte",
+            "columnName": "dtoImpte",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dtoImpteII",
+            "columnName": "dtoImpteII",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lote",
+            "columnName": "lote",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag",
+            "columnName": "flag",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag3",
+            "columnName": "flag3",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag5",
+            "columnName": "flag5",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tasa1",
+            "columnName": "tasa1",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tasa2",
+            "columnName": "tasa2",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoIncId",
+            "columnName": "tipoIncId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "textoLinea",
+            "columnName": "textoLinea",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "modif_nueva",
+            "columnName": "modif_nueva",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precioTarifa",
+            "columnName": "precioTarifa",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dtoTarifa",
+            "columnName": "dtoTarifa",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "almacenPedido",
+            "columnName": "almacenPedido",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ofertaId",
+            "columnName": "ofertaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dtoOftVol",
+            "columnName": "dtoOftVol",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "esEnlace",
+            "columnName": "esEnlace",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "lineaId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Lotes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`loteId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `empresa` INTEGER NOT NULL, `articuloId` INTEGER NOT NULL, `lote` TEXT NOT NULL, `stock` TEXT NOT NULL, `stockPiezas` TEXT NOT NULL, `flag` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "loteId",
+            "columnName": "loteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "empresa",
+            "columnName": "empresa",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lote",
+            "columnName": "lote",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stock",
+            "columnName": "stock",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stockPiezas",
+            "columnName": "stockPiezas",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag",
+            "columnName": "flag",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "loteId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "NotasCltes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`notaId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `clienteId` INTEGER NOT NULL, `nota` TEXT NOT NULL, `fecha` TEXT NOT NULL, `estado` TEXT NOT NULL, `numExport` INTEGER NOT NULL, `matricula` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "notaId",
+            "columnName": "notaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clienteId",
+            "columnName": "clienteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nota",
+            "columnName": "nota",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "estado",
+            "columnName": "estado",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numExport",
+            "columnName": "numExport",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "matricula",
+            "columnName": "matricula",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "notaId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "NumExport",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`numExport` INTEGER NOT NULL, `fecha` TEXT NOT NULL, `hora` TEXT NOT NULL, PRIMARY KEY(`numExport`))",
+        "fields": [
+          {
+            "fieldPath": "numExport",
+            "columnName": "numExport",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hora",
+            "columnName": "hora",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "numExport"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Ofertas",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`articuloId` INTEGER NOT NULL, `empresa` INTEGER NOT NULL, `tarifa` INTEGER NOT NULL, `precio` TEXT NOT NULL, `dto` TEXT NOT NULL, `formato` INTEGER NOT NULL, `tipoOferta` INTEGER NOT NULL, `idOferta` INTEGER NOT NULL, `fFinal` TEXT NOT NULL, PRIMARY KEY(`articuloId`, `empresa`, `tarifa`))",
+        "fields": [
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "empresa",
+            "columnName": "empresa",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tarifa",
+            "columnName": "tarifa",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precio",
+            "columnName": "precio",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dto",
+            "columnName": "dto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formato",
+            "columnName": "formato",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoOferta",
+            "columnName": "tipoOferta",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idOferta",
+            "columnName": "idOferta",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fFinal",
+            "columnName": "fFinal",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "articuloId",
+            "empresa",
+            "tarifa"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "OftCantRangos",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`oftCantRangosId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `idOferta` INTEGER NOT NULL, `articuloId` INTEGER NOT NULL, `desdeCantidad` TEXT NOT NULL, `hastaCantidad` TEXT NOT NULL, `precioBase` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "oftCantRangosId",
+            "columnName": "oftCantRangosId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idOferta",
+            "columnName": "idOferta",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "desdeCantidad",
+            "columnName": "desdeCantidad",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hastaCantidad",
+            "columnName": "hastaCantidad",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precioBase",
+            "columnName": "precioBase",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "oftCantRangosId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "OftVolRangos",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`oftVolRangosId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `idOferta` INTEGER NOT NULL, `desdeImpte` INTEGER NOT NULL, `hastaImpte` INTEGER NOT NULL, `descuento` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "oftVolRangosId",
+            "columnName": "oftVolRangosId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idOferta",
+            "columnName": "idOferta",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "desdeImpte",
+            "columnName": "desdeImpte",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hastaImpte",
+            "columnName": "hastaImpte",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descuento",
+            "columnName": "descuento",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "oftVolRangosId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "OftVolumen",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`oftVolumenId` INTEGER NOT NULL, `almacen` INTEGER NOT NULL, `articuloDesct` INTEGER NOT NULL, `tarifa` INTEGER NOT NULL, PRIMARY KEY(`oftVolumenId`))",
+        "fields": [
+          {
+            "fieldPath": "oftVolumenId",
+            "columnName": "oftVolumenId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "almacen",
+            "columnName": "almacen",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "articuloDesct",
+            "columnName": "articuloDesct",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tarifa",
+            "columnName": "tarifa",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "oftVolumenId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Pendiente",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pendienteId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `clienteId` INTEGER NOT NULL, `ejercicio` INTEGER NOT NULL, `empresa` INTEGER NOT NULL, `almacen` INTEGER NOT NULL, `tipoDoc` INTEGER NOT NULL, `fPago` TEXT NOT NULL, `fechaDoc` TEXT NOT NULL, `serie` TEXT NOT NULL, `numero` INTEGER NOT NULL, `importe` TEXT NOT NULL, `cobrado` TEXT NOT NULL, `fechaVto` TEXT NOT NULL, `estado` TEXT NOT NULL, `enviar` TEXT NOT NULL, `cAlmacen` TEXT NOT NULL, `cPuesto` TEXT NOT NULL, `cApunte` TEXT NOT NULL, `cEjercicio` TEXT NOT NULL, `numExport` INTEGER NOT NULL, `flag` INTEGER NOT NULL, `anotacion` TEXT NOT NULL, `hoja` INTEGER NOT NULL, `orden` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "pendienteId",
+            "columnName": "pendienteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clienteId",
+            "columnName": "clienteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ejercicio",
+            "columnName": "ejercicio",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "empresa",
+            "columnName": "empresa",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "almacen",
+            "columnName": "almacen",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoDoc",
+            "columnName": "tipoDoc",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fPago",
+            "columnName": "fPago",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fechaDoc",
+            "columnName": "fechaDoc",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "serie",
+            "columnName": "serie",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numero",
+            "columnName": "numero",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "importe",
+            "columnName": "importe",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cobrado",
+            "columnName": "cobrado",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fechaVto",
+            "columnName": "fechaVto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "estado",
+            "columnName": "estado",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "enviar",
+            "columnName": "enviar",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cAlmacen",
+            "columnName": "cAlmacen",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cPuesto",
+            "columnName": "cPuesto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cApunte",
+            "columnName": "cApunte",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cEjercicio",
+            "columnName": "cEjercicio",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numExport",
+            "columnName": "numExport",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag",
+            "columnName": "flag",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "anotacion",
+            "columnName": "anotacion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hoja",
+            "columnName": "hoja",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "orden",
+            "columnName": "orden",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "pendienteId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Proveedores",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`proveedorId` INTEGER NOT NULL, `nombre` TEXT NOT NULL, `cif` TEXT NOT NULL, PRIMARY KEY(`proveedorId`))",
+        "fields": [
+          {
+            "fieldPath": "proveedorId",
+            "columnName": "proveedorId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombre",
+            "columnName": "nombre",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cif",
+            "columnName": "cif",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "proveedorId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "RatingArt",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ratingArtId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `articuloId` INTEGER NOT NULL, `almacen` INTEGER NOT NULL, `clienteId` INTEGER NOT NULL, `ramoId` INTEGER NOT NULL, `tarifaId` INTEGER NOT NULL, `inicio` TEXT NOT NULL, `fin` TEXT NOT NULL, `formatoId` INTEGER NOT NULL, `precio` TEXT NOT NULL, `dto` TEXT NOT NULL, `flag` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "ratingArtId",
+            "columnName": "ratingArtId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "almacen",
+            "columnName": "almacen",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clienteId",
+            "columnName": "clienteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ramoId",
+            "columnName": "ramoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tarifaId",
+            "columnName": "tarifaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "inicio",
+            "columnName": "inicio",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fin",
+            "columnName": "fin",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formatoId",
+            "columnName": "formatoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precio",
+            "columnName": "precio",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dto",
+            "columnName": "dto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag",
+            "columnName": "flag",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "ratingArtId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "RatingGrupos",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ratingGruposId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `grupo` INTEGER NOT NULL, `departamento` INTEGER NOT NULL, `almacen` INTEGER NOT NULL, `clienteId` INTEGER NOT NULL, `ramo` INTEGER NOT NULL, `tarifaId` INTEGER NOT NULL, `inicio` TEXT NOT NULL, `fin` TEXT NOT NULL, `dto` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "ratingGruposId",
+            "columnName": "ratingGruposId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "grupo",
+            "columnName": "grupo",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "departamento",
+            "columnName": "departamento",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "almacen",
+            "columnName": "almacen",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clienteId",
+            "columnName": "clienteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ramo",
+            "columnName": "ramo",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tarifaId",
+            "columnName": "tarifaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "inicio",
+            "columnName": "inicio",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fin",
+            "columnName": "fin",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dto",
+            "columnName": "dto",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "ratingGruposId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "RatingProv",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ratingProvId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `proveedorId` INTEGER NOT NULL, `almacen` INTEGER NOT NULL, `clienteId` INTEGER NOT NULL, `ramoId` INTEGER NOT NULL, `tarifa` INTEGER NOT NULL, `inicio` TEXT NOT NULL, `fin` TEXT NOT NULL, `dto` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "ratingProvId",
+            "columnName": "ratingProvId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "proveedorId",
+            "columnName": "proveedorId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "almacen",
+            "columnName": "almacen",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clienteId",
+            "columnName": "clienteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ramoId",
+            "columnName": "ramoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tarifa",
+            "columnName": "tarifa",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "inicio",
+            "columnName": "inicio",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fin",
+            "columnName": "fin",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dto",
+            "columnName": "dto",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "ratingProvId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Rutas",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rutaId` INTEGER NOT NULL, `descripcion` TEXT NOT NULL, PRIMARY KEY(`rutaId`))",
+        "fields": [
+          {
+            "fieldPath": "rutaId",
+            "columnName": "rutaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descripcion",
+            "columnName": "descripcion",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "rutaId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Rutero",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ruteroId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `rutaId` INTEGER NOT NULL, `orden` INTEGER NOT NULL, `clienteId` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "ruteroId",
+            "columnName": "ruteroId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rutaId",
+            "columnName": "rutaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "orden",
+            "columnName": "orden",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clienteId",
+            "columnName": "clienteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "ruteroId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Saldos",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`clienteId` INTEGER NOT NULL, `empresa` INTEGER NOT NULL, `saldo` TEXT NOT NULL, `pendiente` TEXT NOT NULL, `facturasPtes` INTEGER NOT NULL, `albaranesPtes` INTEGER NOT NULL, `pedidosPtes` INTEGER NOT NULL, PRIMARY KEY(`clienteId`, `empresa`))",
+        "fields": [
+          {
+            "fieldPath": "clienteId",
+            "columnName": "clienteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "empresa",
+            "columnName": "empresa",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "saldo",
+            "columnName": "saldo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pendiente",
+            "columnName": "pendiente",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "facturasPtes",
+            "columnName": "facturasPtes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "albaranesPtes",
+            "columnName": "albaranesPtes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pedidosPtes",
+            "columnName": "pedidosPtes",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "clienteId",
+            "empresa"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Series",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`serie` TEXT NOT NULL, `ejercicio` INTEGER NOT NULL, `empresa` INTEGER NOT NULL, `factura` INTEGER NOT NULL, `albaran` INTEGER NOT NULL, `pedido` INTEGER NOT NULL, `presupuesto` INTEGER NOT NULL, `flag` INTEGER NOT NULL, PRIMARY KEY(`serie`, `ejercicio`))",
+        "fields": [
+          {
+            "fieldPath": "serie",
+            "columnName": "serie",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ejercicio",
+            "columnName": "ejercicio",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "empresa",
+            "columnName": "empresa",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "factura",
+            "columnName": "factura",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "albaran",
+            "columnName": "albaran",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pedido",
+            "columnName": "pedido",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "presupuesto",
+            "columnName": "presupuesto",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag",
+            "columnName": "flag",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "serie",
+            "ejercicio"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Stock",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`articuloId` INTEGER NOT NULL, `empresa` INTEGER NOT NULL, `ent` TEXT NOT NULL, `entc` TEXT NOT NULL, `entp` TEXT NOT NULL, `sal` TEXT NOT NULL, `salc` TEXT NOT NULL, `salp` TEXT NOT NULL, PRIMARY KEY(`articuloId`, `empresa`))",
+        "fields": [
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "empresa",
+            "columnName": "empresa",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ent",
+            "columnName": "ent",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "entc",
+            "columnName": "entc",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "entp",
+            "columnName": "entp",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sal",
+            "columnName": "sal",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "salc",
+            "columnName": "salc",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "salp",
+            "columnName": "salp",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "articuloId",
+            "empresa"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Tarifas",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`articuloId` INTEGER NOT NULL, `tarifaId` INTEGER NOT NULL, `precio` TEXT NOT NULL, `dto` TEXT NOT NULL, `flag` INTEGER NOT NULL, PRIMARY KEY(`articuloId`, `tarifaId`))",
+        "fields": [
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tarifaId",
+            "columnName": "tarifaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precio",
+            "columnName": "precio",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dto",
+            "columnName": "dto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag",
+            "columnName": "flag",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "articuloId",
+            "tarifaId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "TempCltes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`clienteId` INTEGER NOT NULL, `codigo` INTEGER NOT NULL, `nombre` TEXT NOT NULL COLLATE NOCASE, `nombreComercial` TEXT NOT NULL COLLATE NOCASE, `cif` TEXT NOT NULL, `direccion` TEXT NOT NULL, `localidad` TEXT NOT NULL, `cPostal` TEXT NOT NULL, `provincia` TEXT NOT NULL, `aplIva` TEXT NOT NULL, `aplRec` TEXT NOT NULL, `tipoIva` INTEGER NOT NULL, `tarifaId` INTEGER NOT NULL, `tarifaDtoId` INTEGER NOT NULL, `tarifaPiezas` INTEGER NOT NULL, `fPago` TEXT NOT NULL, `rutaId` INTEGER NOT NULL, `riesgo` TEXT NOT NULL, `pendiente` TEXT NOT NULL, `flag` INTEGER NOT NULL, `flag2` INTEGER NOT NULL, `estado` TEXT NOT NULL, `ramo` INTEGER NOT NULL, `numExport` INTEGER NOT NULL, `tieneIncid` TEXT NOT NULL, `maxDias` INTEGER NOT NULL, `maxFrasPdtes` INTEGER NOT NULL, `matricula` TEXT NOT NULL, PRIMARY KEY(`clienteId`))",
+        "fields": [
+          {
+            "fieldPath": "clienteId",
+            "columnName": "clienteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "codigo",
+            "columnName": "codigo",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombre",
+            "columnName": "nombre",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombreComercial",
+            "columnName": "nombreComercial",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cif",
+            "columnName": "cif",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "direccion",
+            "columnName": "direccion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localidad",
+            "columnName": "localidad",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cPostal",
+            "columnName": "cPostal",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "provincia",
+            "columnName": "provincia",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "aplIva",
+            "columnName": "aplIva",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "aplRec",
+            "columnName": "aplRec",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoIva",
+            "columnName": "tipoIva",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tarifaId",
+            "columnName": "tarifaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tarifaDtoId",
+            "columnName": "tarifaDtoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tarifaPiezas",
+            "columnName": "tarifaPiezas",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fPago",
+            "columnName": "fPago",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rutaId",
+            "columnName": "rutaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "riesgo",
+            "columnName": "riesgo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pendiente",
+            "columnName": "pendiente",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag",
+            "columnName": "flag",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag2",
+            "columnName": "flag2",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "estado",
+            "columnName": "estado",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ramo",
+            "columnName": "ramo",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numExport",
+            "columnName": "numExport",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tieneIncid",
+            "columnName": "tieneIncid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "maxDias",
+            "columnName": "maxDias",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "maxFrasPdtes",
+            "columnName": "maxFrasPdtes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "matricula",
+            "columnName": "matricula",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "clienteId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "TiposInc",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tipoIncId` INTEGER NOT NULL, `descripcion` TEXT NOT NULL, PRIMARY KEY(`tipoIncId`))",
+        "fields": [
+          {
+            "fieldPath": "tipoIncId",
+            "columnName": "tipoIncId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descripcion",
+            "columnName": "descripcion",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "tipoIncId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "TmpHco",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tmpHcoId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `linea` INTEGER NOT NULL, `articuloId` INTEGER NOT NULL, `codigo` TEXT NOT NULL, `descripcion` TEXT NOT NULL, `cajas` TEXT NOT NULL, `cantidad` TEXT NOT NULL, `piezas` TEXT NOT NULL, `precio` TEXT NOT NULL, `precioII` TEXT NOT NULL, `dto` TEXT NOT NULL, `dtoImpte` TEXT NOT NULL, `dtoImpteII` TEXT NOT NULL, `codigoIva` INTEGER NOT NULL, `tasa1` TEXT NOT NULL, `tasa2` TEXT NOT NULL, `formatoId` INTEGER NOT NULL, `flag` INTEGER NOT NULL, `flag3` INTEGER NOT NULL, `flag5` INTEGER NOT NULL, `textoLinea` TEXT NOT NULL, `lote` TEXT NOT NULL, `almacenPedido` INTEGER NOT NULL, `incidenciaId` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "tmpHcoId",
+            "columnName": "tmpHcoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "linea",
+            "columnName": "linea",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "codigo",
+            "columnName": "codigo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descripcion",
+            "columnName": "descripcion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cajas",
+            "columnName": "cajas",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cantidad",
+            "columnName": "cantidad",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "piezas",
+            "columnName": "piezas",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precio",
+            "columnName": "precio",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precioII",
+            "columnName": "precioII",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dto",
+            "columnName": "dto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dtoImpte",
+            "columnName": "dtoImpte",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dtoImpteII",
+            "columnName": "dtoImpteII",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "codigoIva",
+            "columnName": "codigoIva",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tasa1",
+            "columnName": "tasa1",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tasa2",
+            "columnName": "tasa2",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formatoId",
+            "columnName": "formatoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag",
+            "columnName": "flag",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag3",
+            "columnName": "flag3",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag5",
+            "columnName": "flag5",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "textoLinea",
+            "columnName": "textoLinea",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lote",
+            "columnName": "lote",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "almacenPedido",
+            "columnName": "almacenPedido",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "incidenciaId",
+            "columnName": "incidenciaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "tmpHcoId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "TrfFormatos",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`articuloId` INTEGER NOT NULL, `tarifaId` INTEGER NOT NULL, `formatoId` INTEGER NOT NULL, `precio` TEXT NOT NULL, `dto` TEXT NOT NULL, `flag` INTEGER NOT NULL, PRIMARY KEY(`articuloId`, `tarifaId`, `formatoId`))",
+        "fields": [
+          {
+            "fieldPath": "articuloId",
+            "columnName": "articuloId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tarifaId",
+            "columnName": "tarifaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formatoId",
+            "columnName": "formatoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precio",
+            "columnName": "precio",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dto",
+            "columnName": "dto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flag",
+            "columnName": "flag",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "articuloId",
+            "tarifaId",
+            "formatoId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '09aa09dd3275c5dbce441ba1921f8814')"
+    ]
+  }
+}
