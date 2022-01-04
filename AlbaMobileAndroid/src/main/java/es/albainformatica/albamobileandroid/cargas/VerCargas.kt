@@ -27,13 +27,12 @@ import java.text.SimpleDateFormat
 
 
 class VerCargas: AppCompatActivity() {
+    private lateinit var fConfiguracion: Configuracion
     private lateinit var fLotes: LotesClase
     private lateinit var fArticulos: ArticulosClase
+
     private lateinit var fRecyclerView: RecyclerView
     private lateinit var fAdapter: RecAdapCargas
-    private lateinit var db: BaseDatos
-    private lateinit var dbAlba: SQLiteDatabase
-    private lateinit var fConfiguracion: Configuracion
 
     private lateinit var adapterLineas: SimpleCursorAdapter
     private lateinit var fCursor: Cursor
@@ -48,8 +47,6 @@ class VerCargas: AppCompatActivity() {
         super.onCreate(savedInstance)
         setContentView(R.layout.cargas)
 
-        db = BaseDatos(this)
-        dbAlba = db.writableDatabase
         fLotes = LotesClase(this)
         fArticulos = ArticulosClase(this)
         fConfiguracion = Comunicador.fConfiguracion
@@ -59,8 +56,6 @@ class VerCargas: AppCompatActivity() {
 
     override fun onDestroy() {
         fArticulos.close()
-        dbAlba.close()
-        db.close()
 
         super.onDestroy()
     }
@@ -101,18 +96,19 @@ class VerCargas: AppCompatActivity() {
         fRecyclerView = rvCargas
         fRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        fAdapter = RecAdapCargas(getCargas(), this, object : RecAdapCargas.OnItemClickListener {
-            override fun onClick(view: View, data: DatosCarga) {
-                verCarga()
-            }
-        })
+        // TODO
+        //fAdapter = RecAdapCargas(getCargas(), this, object : RecAdapCargas.OnItemClickListener {
+        //    override fun onClick(view: View, data: DatosCarga) {
+        //        verCarga()
+        //    }
+        //})
 
         fRecyclerView.adapter = fAdapter
     }
 
-
+    // TODO: terminar esto
+    /*
     private fun getCargas(): MutableList<DatosCarga> {
-        val dbAlba = BaseDatos(this).writableDatabase
         val cCargas = dbAlba.rawQuery("SELECT * FROM cargas", null)
         val lCargas: MutableList<DatosCarga> = arrayListOf()
 
@@ -132,11 +128,12 @@ class VerCargas: AppCompatActivity() {
 
         return lCargas
     }
-
+    */
 
     private fun verCarga() {
         // Refrescamos el cursor de las cargas y mostramos los artículos de la que hemos seleccionado
-        cargarCursor()
+        // TODO
+        //cargarCursor()
         adapterLineas.changeCursor(fCursor)
     }
 
@@ -145,15 +142,15 @@ class VerCargas: AppCompatActivity() {
         val columnas: Array<String> = arrayOf("codigo", "descr", "lote", "cajas", "cantidad")
         val to: IntArray = intArrayOf(R.id.tvLNCCodigo, R.id.tvLNCDescr, R.id.tvLNCLote, R.id.tvLNCCajas, R.id.tvLNCCantidad)
 
-        cargarCursor()
+        //cargarCursor()
 
         adapterLineas = SimpleCursorAdapter(this, R.layout.ly_ver_carga, fCursor, columnas, to, 0)
-        // Formateamos las columnas.
-        //formatearColumnas()
 
         lvCargas.adapter = adapterLineas
     }
 
+    // TODO
+    /*
     private fun cargarCursor() {
 
         fCursor = dbAlba.rawQuery("SELECT A.*, B.codigo, B.descr FROM cargasLineas A " +
@@ -162,18 +159,7 @@ class VerCargas: AppCompatActivity() {
 
         fCursor.moveToFirst()
     }
-
-/*
-    private fun puedoHacerFinDeDia(): Boolean {
-        val dbAlba = BaseDatos(this).writableDatabase
-        val cFinDia = dbAlba.rawQuery("SELECT * FROM cargas WHERE esFinDeDia='T'", null)
-
-        val fResultado = !cFinDia.moveToFirst()
-        cFinDia.close()
-
-        return fResultado
-    }
-*/
+    */
 
     fun nuevaCarga(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
@@ -182,7 +168,8 @@ class VerCargas: AppCompatActivity() {
         startActivityForResult(i, fRequestNuevaCarga)
     }
 
-
+    // TODO
+    /*
     fun puestaACero(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
@@ -192,7 +179,7 @@ class VerCargas: AppCompatActivity() {
             negativeButton("NO") { }
         }.show()
     }
-
+    */
 
     fun imprimirCarga(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
@@ -214,6 +201,8 @@ class VerCargas: AppCompatActivity() {
         }
     }
 
+    // TODO
+    /*
     private fun hacerPuestaACero() {
         var fHayFinDeDia = false
         var fCargaId = 0
@@ -308,8 +297,10 @@ class VerCargas: AppCompatActivity() {
             }.show()
         }
     }
+    */
 
-
+    // TODO
+    /*
     @SuppressLint("SimpleDateFormat")
     private fun anyadirCarga(queEmpresa: Short): Int {
         // Obtenemos la fecha y hora actuales
@@ -328,7 +319,7 @@ class VerCargas: AppCompatActivity() {
 
         return dbAlba.insert("cargas", null, valuesCarga).toInt()
     }
-
+    */
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -336,7 +327,8 @@ class VerCargas: AppCompatActivity() {
         if (requestCode == fRequestNuevaCarga) {
             if (resultCode == Activity.RESULT_OK) {
                 // Refrescamos el adaptador del recyclerView si hemos añadido alguna carga
-                fAdapter.cargas = getCargas()
+                // TODO
+                //fAdapter.cargas = getCargas()
                 fAdapter.notifyDataSetChanged()
             }
         }

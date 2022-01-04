@@ -33,8 +33,6 @@ class ResumenPedidos(private val fContexto: Context) {
     private lateinit var documPDF: Document
     private var nombrePDF: String = "" // Me servirá para el envio por email.
 
-    private var db: BaseDatos = BaseDatos(fContexto)
-    private var dbAlba: SQLiteDatabase = db.readableDatabase
     private lateinit var fCursor: Cursor
     private lateinit var cLineas: Cursor
 
@@ -48,8 +46,6 @@ class ResumenPedidos(private val fContexto: Context) {
     protected fun onDestroy() {
         cLineas.close()
         fCursor.close()
-        dbAlba.close()
-        db.close()
     }
 
     fun crearResumen() {
@@ -391,6 +387,8 @@ class ResumenPedidos(private val fContexto: Context) {
     }
 
     private fun obtenerCabeceras(): Boolean {
+        // TODO
+        /*
         fCursor = dbAlba.rawQuery(
             "SELECT A.tipodoc, A.alm, A.serie, A.numero, A.ejer, A.fecha, A.fechaentrega, A.obs1, A.obs2," +
                     " B.codigo, B.nomfi FROM cabeceras A" +
@@ -398,10 +396,14 @@ class ResumenPedidos(private val fContexto: Context) {
                     " WHERE A.tipodoc = " + TIPODOC_PEDIDO, null
         )
         return fCursor.moveToFirst()
+         */
+        return true
     }
 
     private fun obtenerCobros(): Boolean {
         fCursor.close()
+        // TODO
+        /*
         fCursor = dbAlba.rawQuery(
             "SELECT A.*, B.codigo, B.nomfi, C.divisa, D.formadepago, E.fecha fechadoc FROM cobros A"
                     + " LEFT JOIN clientes B ON B.cliente = A.cliente"
@@ -411,9 +413,13 @@ class ResumenPedidos(private val fContexto: Context) {
             null
         )
         return fCursor.moveToFirst()
+         */
+        return true
     }
 
     private fun obtenerLineas(): Boolean {
+        // TODO
+        /*
         cLineas = dbAlba.rawQuery(
             "SELECT A.*, C.descr descrfto FROM lineas A"
                     + " LEFT OUTER JOIN formatos C ON C.codigo = A.formato"
@@ -424,6 +430,8 @@ class ResumenPedidos(private val fContexto: Context) {
                     + " AND A.ejer = " + fCursor.getString(fCursor.getColumnIndex("ejer")), null
         )
         return cLineas.moveToFirst()
+         */
+        return true
     }
 
     private fun mostrarChunk(

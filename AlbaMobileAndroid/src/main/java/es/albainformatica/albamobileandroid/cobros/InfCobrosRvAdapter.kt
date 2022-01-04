@@ -44,9 +44,6 @@ class InfCobrosRvAdapter(
 
 
         class ViewHolder(itemView: View, context: Context): RecyclerView.ViewHolder(itemView) {
-            val db = BaseDatos(context)
-            val dbAlba: SQLiteDatabase = db.readableDatabase
-
             private val nombreClte = itemView.findViewById(R.id.lyicCliente) as TextView
             private val fecha = itemView.findViewById(R.id.lyicFecha) as TextView
             private val tipoDoc = itemView.findViewById(R.id.lyicTipoDoc) as TextView
@@ -55,6 +52,8 @@ class InfCobrosRvAdapter(
             private val impCobro = itemView.findViewById(R.id.lyicTotal) as TextView
 
             fun bind(cobro: DatosInfCobros) {
+                // TODO
+                /*
                 val cursor = dbAlba.rawQuery("SELECT nomfi FROM clientes WHERE cliente = " + cobro.clienteId, null)
                 if (cursor.moveToFirst()) {
                     nombreClte.text = cursor.getString(cursor.getColumnIndex("nomfi"))
@@ -66,6 +65,7 @@ class InfCobrosRvAdapter(
                 serie.text = cobro.serie
                 numero.text = cobro.numero
                 impCobro.text = cobro.cobro
+                */
             }
         }
 

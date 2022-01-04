@@ -146,8 +146,8 @@ class DatosDevolucion: Activity() {
         fDocumento.fPorcIva = fArticulos.getPorcIva()
 
         // Si la línea del histórico tiene formato, mantenemos el mismo.
-        if (fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("formato")) != null) fHistorico.fFormatoLin =
-            fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("formato")).toByte()
+        if (fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("formato")) != null)
+            fHistorico.fFormatoLin = fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("formato")).toShort()
         fDocumento.fFormatoLin = fHistorico.fFormatoLin
         var queTexto = "$fCodigo - $fDescr"
         tvArticulo.text = queTexto
@@ -168,7 +168,7 @@ class DatosDevolucion: Activity() {
 
         // Si la línea del histórico tiene formato, mantenemos el mismo.
         if (fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("formato")) != null)
-            fHistorico.fFormatoLin = fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("formato")).toByte()
+            fHistorico.fFormatoLin = fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("formato")).toShort()
         fHistorico.fDtoLin = fHistorico.cHco.getDouble(fHistorico.cHco.getColumnIndex("dto"))
         fHistorico.fDtoImp = 0.0
         fHistorico.fDtoImpII = 0.0

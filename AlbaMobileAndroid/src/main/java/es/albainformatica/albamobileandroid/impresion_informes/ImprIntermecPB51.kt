@@ -36,8 +36,7 @@ class ImprIntermecPB51(contexto: Context): Runnable {
     private var fFormasPago: FormasPagoClase = FormasPagoClase(contexto)
     private var fPendiente: PendienteClase = PendienteClase(contexto)
     private lateinit var prefs: SharedPreferences
-    private var db: BaseDatos = BaseDatos(contexto)
-    private var dbAlba: SQLiteDatabase = db.readableDatabase
+
     private var myBD: MyDatabase? = getInstance(contexto)
 
     private var fFtoCant: String = ""
@@ -76,8 +75,6 @@ class ImprIntermecPB51(contexto: Context): Runnable {
     }
 
     private fun destruir() {
-        dbAlba.close()
-        db.close()
         try {
             mBluetoothSocket.close()
         } catch (e: Exception) {
@@ -752,6 +749,8 @@ class ImprIntermecPB51(contexto: Context): Runnable {
         var result = ""
         val lineasDobles = StringBuilder()
         val lineaSimple = StringBuilder()
+        // TODO
+        /*
         val cursor = dbAlba.rawQuery("SELECT * FROM cargas WHERE cargaId = $fCargaId", null)
         if (cursor.moveToFirst()) {
             for (x in 0..62) {
@@ -775,6 +774,7 @@ class ImprIntermecPB51(contexto: Context): Runnable {
             result = result + fMargenIzq + lineaSimple + ccSaltoLinea
         }
         cursor.close()
+        */
         return result
     }
 
@@ -791,6 +791,8 @@ class ImprIntermecPB51(contexto: Context): Runnable {
         val lCant = 9
         var sumaCajas = 0.0
         var sumaCant = 0.0
+        // TODO
+        /*
         val cursor = dbAlba.rawQuery(
             "SELECT A.*, B.codigo, B.descr FROM cargasLineas A" +
                     " LEFT JOIN articulos B ON B.articulo = A.articulo" +
@@ -820,6 +822,7 @@ class ImprIntermecPB51(contexto: Context): Runnable {
             }
         }
         cursor.close()
+        */
         sCajas = String.format(fFtoCant, sumaCajas)
         sCant = String.format(fFtoCant, sumaCant)
         result.append(ccSaltoLinea)

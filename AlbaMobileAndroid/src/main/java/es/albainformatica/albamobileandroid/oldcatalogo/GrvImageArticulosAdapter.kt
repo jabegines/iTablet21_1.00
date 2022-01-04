@@ -38,14 +38,14 @@ class GrvImageArticulosAdapter: BaseAdapter {
     private var fIvaIncluido: Boolean = false
     private var fEnHistorico: Boolean = false
     private var fDecPrBase: Int = 2
-    private var fTarifa: Byte = 0
+    private var fTarifa: Short = 0
     private var inflater: LayoutInflater
     private var fEmpresaActual = 0
     private lateinit var prefs: SharedPreferences
 
     // El constructor necesita el contexto de la actividad donde se utiliza el adapter
     constructor(activity: Activity, fGrupo: Int, fDepartam: Int, queBuscar: String, dondeBuscar: Short,
-        queOrdenacion: Short, fSoloOftas: Boolean, queTarifa: Byte, vendiendo: Boolean) {
+        queOrdenacion: Short, fSoloOftas: Boolean, queTarifa: Short, vendiendo: Boolean) {
         this.activity = activity
         carpetaImagenes = dimeRutaImagenes(activity)
         fVendiendo = vendiendo
@@ -100,7 +100,7 @@ class GrvImageArticulosAdapter: BaseAdapter {
     // Tendremos tres constructores para la clase, dependiendo de si usamos grupos, clasificadores/catalogos o histórico.
     constructor(
         activity: Activity, fClasificador: Int, queBuscar: String, dondeBuscar: Short,
-        queOrdenacion: Short, fSoloOftas: Boolean, queTarifa: Byte, vendiendo: Boolean
+        queOrdenacion: Short, fSoloOftas: Boolean, queTarifa: Short, vendiendo: Boolean
     ) {
         this.activity = activity
         carpetaImagenes = dimeRutaImagenes(activity)
@@ -157,7 +157,7 @@ class GrvImageArticulosAdapter: BaseAdapter {
     // Constructor para cargar el histórico.
     constructor(
         activity: Activity, queBuscar: String, dondeBuscar: Short, queOrdenacion: Short,
-        fSoloOftas: Boolean, queTarifa: Byte, vendiendo: Boolean
+        fSoloOftas: Boolean, queTarifa: Short, vendiendo: Boolean
     ) {
         this.activity = activity
         carpetaImagenes = dimeRutaImagenes(activity)

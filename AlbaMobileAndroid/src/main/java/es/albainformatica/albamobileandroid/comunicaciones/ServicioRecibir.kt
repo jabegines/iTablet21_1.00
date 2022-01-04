@@ -22,6 +22,7 @@ import es.albainformatica.albamobileandroid.R
 import es.albainformatica.albamobileandroid.actividades.Main
 import es.albainformatica.albamobileandroid.dao.ArticDatAdicDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
+import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.queBDRoom
 import es.albainformatica.albamobileandroid.maestros.ArticulosClase
 import es.albainformatica.albamobileandroid.sha1
 import kotlinx.android.synthetic.main.com_servicio_recibir.*
@@ -94,7 +95,7 @@ class ServicioRecibir: AppCompatActivity() {
 
         val usarMultisistema = prefs.getBoolean("usar_multisistema", false)
         fSistemaId = if (usarMultisistema) {
-            val queBD = BaseDatos.queBaseDatos
+            val queBD = queBDRoom
             queBD.substring(queBD.length - 2, queBD.length)
         }
         else {
@@ -152,11 +153,11 @@ class ServicioRecibir: AppCompatActivity() {
         if (!rutarecepcion.exists()) rutarecepcion.mkdirs()
 
         localDirImagenes = if (localDirImagenes == "") {
-            if (usarMultisistema) "/storage/sdcard0/alba/imagenes/" + BaseDatos.queBaseDatos
+            if (usarMultisistema) "/storage/sdcard0/alba/imagenes/" + queBDRoom
             else "/storage/sdcard0/alba/imagenes"
         }
         else {
-            if (usarMultisistema) "$localDirImagenes/imagenes/" + BaseDatos.queBaseDatos
+            if (usarMultisistema) "$localDirImagenes/imagenes/" + queBDRoom
             else "$localDirImagenes/imagenes"
         }
         // Nos aseguramos de que la carpeta de imágenes existe y, si no, la creamos
@@ -164,10 +165,10 @@ class ServicioRecibir: AppCompatActivity() {
         if (!rutaRecepImag.exists()) rutaRecepImag.mkdirs()
 
         localDirDocAsoc = if (localDirDocAsoc == "") {
-            if (usarMultisistema) "/storage/sdcard'/alba/docasociados/" + BaseDatos.queBaseDatos
+            if (usarMultisistema) "/storage/sdcard'/alba/docasociados/" + queBDRoom
             else "/storage/sdcard0/alba/docasociados"
         } else {
-            if (usarMultisistema) "$localDirDocAsoc/docasociados/" + BaseDatos.queBaseDatos
+            if (usarMultisistema) "$localDirDocAsoc/docasociados/" + queBDRoom
             else "$localDirDocAsoc/docasociados"
         }
         // Nos aseguramos de que la carpeta de documentos asociados existe y, si no, la creamos
@@ -488,10 +489,8 @@ class ServicioRecibir: AppCompatActivity() {
 
 
     private fun borrarDocAsociados(queArticulo: Int) {
-
-        val bd = BaseDatos(this)
-        val dbAlba = bd.writableDatabase
-
+        // TODO
+        /*
         dbAlba.use {
             val articDatAdicDao: ArticDatAdicDao? = MyDatabase.getInstance(this)?.articDatAdicDao()
             val lDatAdic = articDatAdicDao?.getDatosArticulo(queArticulo) ?: emptyList<String>().toMutableList()
@@ -501,6 +500,7 @@ class ServicioRecibir: AppCompatActivity() {
                 fichero.delete()
             }
         }
+        */
     }
 
 

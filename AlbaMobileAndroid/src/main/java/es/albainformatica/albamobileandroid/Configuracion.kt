@@ -129,14 +129,14 @@ class Configuracion(queContexto: Context) {
         return sDecimales.toInt()
     }
 
-    fun tarifaVentas(): Byte {
+    fun tarifaVentas(): Short {
         val queTarifa = configuracionDao?.getValor(112) ?: "1"
-        return queTarifa.toByte()
+        return queTarifa.toShort()
     }
 
-    fun tarifaDto(): Byte {
+    fun tarifaDto(): Short {
         val queTarifa = configuracionDao?.getValor(113) ?: "0"
-        return queTarifa.toByte()
+        return queTarifa.toShort()
     }
 
     fun enterosCajas(): Int {
@@ -659,9 +659,9 @@ class Configuracion(queContexto: Context) {
         return (queValor == "T")
     }
 
-    fun tarifaCajas(): Byte {
+    fun tarifaCajas(): Short {
         val queTarifa = configuracionDao?.getValor(925) ?: "1"
-        return queTarifa.toByte()
+        return queTarifa.toShort()
     }
 
     fun getSiguCodClte(): String {

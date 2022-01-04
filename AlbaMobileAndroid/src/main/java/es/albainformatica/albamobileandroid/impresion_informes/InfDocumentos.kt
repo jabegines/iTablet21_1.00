@@ -30,8 +30,6 @@ import java.util.*
  * Created by jabegines on 11/05/2016.
  */
 class InfDocumentos(contexto: Context): Runnable {
-    private var db: BaseDatos = BaseDatos(contexto)
-    private var dbAlba: SQLiteDatabase = db.readableDatabase
     private var fConfiguracion: Configuracion = Comunicador.fConfiguracion
     private var fCobros: CobrosClase = CobrosClase(contexto)
     private var fContexto: Context = contexto
@@ -56,8 +54,6 @@ class InfDocumentos(contexto: Context): Runnable {
 
 
     private fun destruir() {
-        dbAlba.close()
-        db.close()
         try {
             mBluetoothSocket.close()
         } catch (e: Exception) {
@@ -233,6 +229,8 @@ class InfDocumentos(contexto: Context): Runnable {
                 fHastaFecha
             ) + "'))"
         sQuery = "$sQuery ORDER BY A.tipodoc, A.serie, A.numero"
+        // TODO
+        /*
         dbAlba.rawQuery(sQuery, null).use { cursor ->
             cursor.moveToFirst()
             while (!cursor.isAfterLast) {
@@ -281,6 +279,7 @@ class InfDocumentos(contexto: Context): Runnable {
                 cursor.moveToNext()
             }
         }
+        */
     }
 
     @SuppressLint("Range")
@@ -307,6 +306,8 @@ class InfDocumentos(contexto: Context): Runnable {
             "$sQuery AND (julianday(substr(A.fechacobro, 7, 4) || '-' || substr(A.fechacobro, 4, 2) || '-' || substr(A.fechacobro, 1, 2)) <= julianday('" + fechaEnJulian(
                 fHastaFecha
             ) + "'))"
+        // TODO
+        /*
         dbAlba.rawQuery(sQuery, null).use { cCobros ->
             cCobros.moveToFirst()
             while (!cCobros.isAfterLast) {
@@ -359,6 +360,7 @@ class InfDocumentos(contexto: Context): Runnable {
                 )
             result.append(lineaSimple).append(StringOfChar(ccSaltoLinea, 3))
         }
+        */
         return result.toString()
     }
 
@@ -382,6 +384,8 @@ class InfDocumentos(contexto: Context): Runnable {
         ) + "'))" +
                 " ORDER BY A.tipodoc, A.serie, A.numero"
         try {
+            // TODO
+            /*
             val cursor = dbAlba.rawQuery(sQuery, null)
             cursor.moveToFirst()
             while (!cursor.isAfterLast) {
@@ -435,6 +439,7 @@ class InfDocumentos(contexto: Context): Runnable {
                 cursor.moveToNext()
             }
             cursor.close()
+            */
 
             //llenarArrayConCobros(documentos);
         } catch (e: Exception) {
@@ -549,7 +554,9 @@ class InfDocumentos(contexto: Context): Runnable {
                 " AND (julianday(substr(fecha, 7, 4) || '-' || substr(fecha, 4, 2) || '-' || substr(fecha, 1, 2)) <= julianday('" + fechaEnJulian(
             fHastaFecha
         ) + "'))"
-        dbAlba.rawQuery(sQuery, null).use { cursor -> return cursor.moveToFirst() }
+        // TODO
+        //dbAlba.rawQuery(sQuery, null).use { cursor -> return cursor.moveToFirst() }
+        return true
     }
 
 }

@@ -58,11 +58,6 @@ class Graf_Vtas_Art: AppCompatActivity() {
     }
 
 
-    override fun onDestroy() {
-        fHcoMes.close()
-        super.onDestroy()
-    }
-
 
     fun inicializarControles() {
         val tvDescr = findViewById<TextView>(R.id.tvVtasArtDescr)

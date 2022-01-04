@@ -7,6 +7,7 @@ import android.os.Environment
 import android.preference.PreferenceManager
 import android.provider.Settings
 import android.util.Log
+import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.queBDRoom
 import es.albainformatica.albamobileandroid.maestros.ArticulosClase
 import es.albainformatica.albamobileandroid.sha1
 import okhttp3.OkHttpClient
@@ -47,7 +48,7 @@ class MiscServicio(context: Context) {
 
         val usarMultisistema = prefs.getBoolean("usar_multisistema", false)
         fSistemaId = if (usarMultisistema) {
-            val queBD = BaseDatos.queBaseDatos
+            val queBD = queBDRoom
             queBD.substring(queBD.length-2, queBD.length)
         }
         else {

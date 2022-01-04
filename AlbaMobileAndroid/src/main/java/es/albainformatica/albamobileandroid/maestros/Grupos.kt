@@ -7,21 +7,24 @@ import android.database.sqlite.SQLiteDatabase
 /**
  * Created by jabegines on 05/05/2014.
  */
-class Grupos(contexto: Context) : BaseDatos(contexto) {
-    private var dbAlba: SQLiteDatabase = writableDatabase
+class Grupos(contexto: Context) {
+
     lateinit var cursor: Cursor
 
-    override fun close() {
+    fun close() {
         cursor.close()
-        dbAlba.close()
     }
 
     fun abrir(): Boolean {
-        cursor = dbAlba.rawQuery("SELECT * FROM grupos", null)
-        return cursor.moveToFirst()
+        // TODO
+        //cursor = dbAlba.rawQuery("SELECT * FROM grupos", null)
+        //return cursor.moveToFirst()
+        return true
     }
 
     fun abrirParaCatalogo(): Boolean {
+        // TODO
+        /*
         cursor = dbAlba.rawQuery(
             "SELECT A.codigo _id, A.descr," +
                     " (SELECT COUNT(*) FROM departamentos WHERE grupo = A.codigo) numdepartamentos" +
@@ -29,6 +32,8 @@ class Grupos(contexto: Context) : BaseDatos(contexto) {
                     " WHERE numdepartamentos > 0", null
         )
         return cursor.moveToFirst()
+        */
+        return true
     }
 
     val codigo: Int

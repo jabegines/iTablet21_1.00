@@ -107,10 +107,9 @@ class VentasLineas : Activity() {
 
 
 
-
     public override fun onCreate(savedInstance: Bundle?) {
         super.onCreate(savedInstance)
-        setContentView(es.albainformatica.albamobileandroid.R.layout.ventas_lineas)
+        setContentView(R.layout.ventas_lineas)
 
         fDocumento = Documento(this)
         fConfiguracion = Comunicador.fConfiguracion
@@ -128,7 +127,6 @@ class VentasLineas : Activity() {
 
     override fun onDestroy() {
         fDocumento.close()
-        fHistorico.close()
         super.onDestroy()
     }
 

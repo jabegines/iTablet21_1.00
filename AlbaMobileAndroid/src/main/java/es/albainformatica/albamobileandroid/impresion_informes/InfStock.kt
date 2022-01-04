@@ -29,10 +29,9 @@ import java.util.*
  * Created by jabegines on 09/05/2016.
  */
 class InfStock : Runnable {
-    private var db: BaseDatos? = null
-    private var dbAlba: SQLiteDatabase? = null
     private var fContexto: Context? = null
     private var pref: SharedPreferences? = null
+
     private var fFtoDecCant: String? = null
     private var fElementosImpresos = 0
     private var fAnchoPapel: Short = 0
@@ -48,8 +47,6 @@ class InfStock : Runnable {
 
     constructor(contexto: Context) {
         fContexto = contexto
-        db = BaseDatos(contexto)
-        dbAlba = db!!.readableDatabase
         val fConfiguracion = Comunicador.fConfiguracion
         fFtoDecCant = fConfiguracion.formatoDecCantidad()
         fImpresora = fConfiguracion.impresora()
@@ -60,8 +57,6 @@ class InfStock : Runnable {
     }
 
     private fun destruir() {
-        if (dbAlba != null) dbAlba!!.close()
-        if (db != null) db!!.close()
         try {
             mBluetoothSocket.close()
         } catch (e: Exception) {
@@ -189,6 +184,8 @@ class InfStock : Runnable {
                 " LEFT JOIN articulos B ON B.articulo = A.articulo" +
                 " WHERE CAST(A.ent AS REAL) <> 0 OR CAST(A.sal AS REAL) <> 0" +
                 " ORDER BY B.codigo"
+        // TODO
+        /*
         dbAlba!!.rawQuery(sQuery, null).use { cursor ->
             cursor.moveToFirst()
             while (!cursor.isAfterLast) {
@@ -241,6 +238,7 @@ class InfStock : Runnable {
                 cursor.moveToNext()
             }
         }
+        */
     }
 
     private fun lineasInforme(os: OutputStream) {
@@ -252,6 +250,8 @@ class InfStock : Runnable {
                 " LEFT JOIN articulos B ON B.articulo = A.articulo" +
                 " WHERE CAST(A.ent AS REAL) <> 0 OR CAST(A.sal AS REAL) <> 0" +
                 " ORDER BY B.codigo"
+        // TODO
+        /*
         dbAlba!!.rawQuery(sQuery, null).use { cursor ->
             cursor.moveToFirst()
             while (!cursor.isAfterLast) {
@@ -313,6 +313,7 @@ class InfStock : Runnable {
                 cursor.moveToNext()
             }
         }
+        */
     }
 
     private fun cabeceraInfDatamaxApex2(docExPCL_LP: DocumentExPCL_LP) {

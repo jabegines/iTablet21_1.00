@@ -7,15 +7,13 @@ import es.albainformatica.albamobileandroid.database.MyDatabase
 /**
  * Created by jabegines on 11/10/13.
  */
-class Rutas(contexto: Context): BaseDatos(contexto) {
+class Rutas(contexto: Context)  {
     private val rutasDao: RutasDao? = MyDatabase.getInstance(contexto)?.rutasDao()
-
 
 
     fun abrir(): Array<String> {
         return rutasDao?.abrir() ?: emptyList<String>().toTypedArray()
     }
-
 
 
     fun dimeNombre(queRuta: String): String {

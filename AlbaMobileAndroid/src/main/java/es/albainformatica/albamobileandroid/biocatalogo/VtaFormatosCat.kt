@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.database.sqlite.SQLiteDatabase
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
@@ -16,6 +15,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.*
+import es.albainformatica.albamobileandroid.dao.FtosLineasDao
+import es.albainformatica.albamobileandroid.database.MyDatabase
+import es.albainformatica.albamobileandroid.entity.FtosLineasEnt
 import es.albainformatica.albamobileandroid.maestros.ArticulosClase
 import es.albainformatica.albamobileandroid.maestros.Formatos
 import es.albainformatica.albamobileandroid.ventas.Documento
@@ -25,18 +27,18 @@ import kotlinx.android.synthetic.main.bio_vtaformatoscat.*
 
 
 class VtaFormatosCat: AppCompatActivity() {
+    private val ftosLineasDao: FtosLineasDao? = MyDatabase.getInstance(this)?.ftosLineasDao()
     private lateinit var fArticulos: ArticulosClase
     private lateinit var fFormatos: Formatos
     private lateinit var fConfiguracion: Configuracion
     private lateinit var fDocumento: Documento
     private lateinit var fDtosCascada: DtosCascada
+
     private var fArticulo = 0
-    private var fFormato = 0
+    private var fFormato: Short = 0
     private var fLineaDoc: Int = 0
     private var fTextoLinea: String = ""
     private var fFlag5: Int = 0
-    private lateinit var db: BaseDatos
-    private lateinit var dbAlba: SQLiteDatabase
 
     private lateinit var fRecyclerView: RecyclerView
     private lateinit var fAdapter: RecAdapVtasFtos
@@ -65,8 +67,6 @@ class VtaFormatosCat: AppCompatActivity() {
 
         fContexto = this
 
-        db = BaseDatos(this)
-        dbAlba = db.writableDatabase
         fArticulos = Comunicador.fArticulos
         fConfiguracion = Comunicador.fConfiguracion
         fDocumento = Comunicador.fDocumento
@@ -84,10 +84,7 @@ class VtaFormatosCat: AppCompatActivity() {
 
 
     public override fun onDestroy() {
-        fFormatos.close()
         fDtosCascada.close()
-        dbAlba.close()
-        db.close()
 
         super.onDestroy()
     }
@@ -137,7 +134,7 @@ class VtaFormatosCat: AppCompatActivity() {
                 //val quevista = view as LinearLayout
                 //val tv = view.findViewById<TextView>(R.id.tvDescrFto)
 
-                if (fFormato == 0) {
+                if (fFormato == 0.toShort()) {
                     fFormato = data.codigo
                     activarDesactivarEdits(true)
                     actualizarEdits()
@@ -164,7 +161,7 @@ class VtaFormatosCat: AppCompatActivity() {
         if (fFormatos.abrirFormatos(fArticulo, fDocumento.fCliente)) {
             do {
                 val dVtasFtos = DatosVtaFtos()
-                dVtasFtos.codigo = fFormatos.cursor.getInt(fFormatos.cursor.getColumnIndex("codigo"))
+                dVtasFtos.codigo = fFormatos.cursor.getShort(fFormatos.cursor.getColumnIndex("codigo"))
                 dVtasFtos.descripcion = fFormatos.cursor.getString(fFormatos.cursor.getColumnIndex("descr"))
                 dVtasFtos.idFtosLineas = fFormatos.cursor.getInt(fFormatos.cursor.getColumnIndex("linFtoLin"))
                 dVtasFtos.borrar = fFormatos.cursor.getString(fFormatos.cursor.getColumnIndex("borrar"))
@@ -328,20 +325,20 @@ class VtaFormatosCat: AppCompatActivity() {
         fTextoLinea = ""
         fFlag5 = 0
 
-        val cFtosLinea = dbAlba.rawQuery("SELECT * FROM ftosLineas WHERE articulo = $fArticulo AND formato = $fFormato", null)
+        val lFtosLineas = ftosLineasDao?.getArtYFto(fArticulo, fFormato) ?: emptyList<FtosLineasEnt>().toMutableList()
 
-        if (cFtosLinea.moveToFirst()) {
+        if (lFtosLineas.isNotEmpty()) {
             // Si hemos encontrado el formato entendemos que estamos editando.
             fEstado = est_Vl_Editar
-            fLineaDoc = cFtosLinea.getInt(cFtosLinea.getColumnIndex("linea"))
-            fTextoLinea = cFtosLinea.getString(cFtosLinea.getColumnIndex("textolinea")) ?: ""
-            fFlag5 = cFtosLinea.getInt(cFtosLinea.getColumnIndex("flag5"))
+            fLineaDoc = lFtosLineas[0].lineaId
+            fTextoLinea = lFtosLineas[0].textoLinea
+            fFlag5 = lFtosLineas[0].flag5
 
-            val sCajas = cFtosLinea.getString(cFtosLinea.getColumnIndex("cajas")).replace(',', '.')
-            val sPiezas = cFtosLinea.getString(cFtosLinea.getColumnIndex("piezas")).replace(',', '.')
-            val sCantidad = cFtosLinea.getString(cFtosLinea.getColumnIndex("cantidad")).replace(',', '.')
-            val sPrecio = cFtosLinea.getString(cFtosLinea.getColumnIndex("precio")).replace(',', '.')
-            val sDto = cFtosLinea.getString(cFtosLinea.getColumnIndex("dto")).replace(',', '.')
+            val sCajas = lFtosLineas[0].cajas.replace(',', '.')
+            val sPiezas = lFtosLineas[0].piezas.replace(',', '.')
+            val sCantidad = lFtosLineas[0].cantidad.replace(',', '.')
+            val sPrecio = lFtosLineas[0].precio.replace(',', '.')
+            val sDto = lFtosLineas[0].dto.replace(',', '.')
             val queCajas = if (sCajas != "") sCajas.toDouble() else 0.0
             val quePiezas = if (sPiezas != "") sPiezas.toDouble() else 0.0
             val queCantidad = if (sCantidad != "") sCantidad.toDouble() else 0.0
@@ -355,8 +352,6 @@ class VtaFormatosCat: AppCompatActivity() {
 
         } else fEstado = est_Vl_Nueva
 
-        cFtosLinea.close()
-
         // Si el artículo y formato están asociados a una línea del documento la cargamos.
         if (fLineaDoc > 0)
             fDocumento.cargarLinea(fLineaDoc)
@@ -365,7 +360,7 @@ class VtaFormatosCat: AppCompatActivity() {
         if (fEstado == est_Vl_Nueva) {
             fDocumento.inicializarLinea()
             fDocumento.fArticulo = fArticulo
-            fDocumento.fFormatoLin = fFormato.toByte()
+            fDocumento.fFormatoLin = fFormato
             // Ahora que le hemos asignado al documento el formato de la línea, tomamos el texto de artículo habitual
             fTextoLinea = fDocumento.textoArtHabitual
             // Si la línea es nueva calculamos el precio y dto. para el artículo y formato
@@ -411,31 +406,32 @@ class VtaFormatosCat: AppCompatActivity() {
                 MsjAlerta(this).alerta(resources.getString(R.string.msj_NoVenderNeg))
 
             } else {
-                val values = ContentValues()
-                values.put("cajas", edtFtCatCajas.text.toString())
-                values.put("piezas", edtFtCatPiezas.text.toString())
-                values.put("cantidad", edtFtCatCantidad.text.toString())
-                values.put("precio", edtFtCatPrecio.text.toString())
-                values.put("dto", edtFtCatDto.text.toString())
-                values.put("textolinea", fTextoLinea)
-                values.put("flag5", fFlag5)
-                values.put("borrar", "F")
+                val ftoLineaEnt = FtosLineasEnt()
+                ftoLineaEnt.cajas = edtFtCatCajas.text.toString()
+                ftoLineaEnt.piezas = edtFtCatPiezas.text.toString()
+                ftoLineaEnt.cantidad = edtFtCatCantidad.text.toString()
+                ftoLineaEnt.precio = edtFtCatPrecio.text.toString()
+                ftoLineaEnt.dto = edtFtCatDto.text.toString()
+                ftoLineaEnt.textoLinea = fTextoLinea
+                ftoLineaEnt.flag5 = fFlag5
+                ftoLineaEnt.borrar = "F"
 
                 // Por ahora al editar mantenemos el flag que teniamos, no me he querido complicar más.
                 if (fEstado == est_Vl_Editar) {
-                    dbAlba.update("ftosLineas ", values, "articulo=$fArticulo AND formato=$fFormato", null)
-
+                    ftosLineasDao?.actualizar(ftoLineaEnt.cajas, ftoLineaEnt.piezas, ftoLineaEnt.cantidad,
+                            ftoLineaEnt.precio, ftoLineaEnt.dto, ftoLineaEnt.textoLinea, ftoLineaEnt.flag5,
+                            ftoLineaEnt.borrar, fArticulo, fFormato)
                 } else {
-                    values.put("articulo", fArticulo)
-                    values.put("formato", fFormato)
+                    ftoLineaEnt.articuloId = fArticulo
+                    ftoLineaEnt.formatoId = fFormato
 
                     var queFlag = 0
                     if (fDocumento.fPrecioRating) queFlag = queFlag or FLAGLINEAVENTA_PRECIO_RATING
                     if (fDocumento.fHayCambPrecio) queFlag = queFlag or FLAGLINEAVENTA_CAMBIAR_PRECIO
                     if (fDocumento.fArtEnOferta) queFlag = FLAGLINEAVENTA_ARTICULO_EN_OFERTA
-                    values.put("flag", queFlag)
+                    ftoLineaEnt.flag = queFlag
 
-                    dbAlba.insert("ftosLineas", null, values)
+                    ftosLineasDao?.insertar(ftoLineaEnt)
                 }
 
                 // Si no tenemos ningún formato para el artículo o sólo uno, salimos al pulsar en el botón
@@ -464,19 +460,7 @@ class VtaFormatosCat: AppCompatActivity() {
 
         if (fFormato > 0) {
             if (fEstado == est_Vl_Editar) {
-                val values = ContentValues()
-                values.put("cajas", "")
-                values.put("piezas", "")
-                values.put("cantidad", "")
-                // Mantenemos el precio y el descuento porque si nos da por vender otra vez el formato
-                // entraremos en estado est_Vl_Editar y buscaremos el precio y el descuento en la tabla ftosLineas. Idem con textolinea.
-                //values.put("precio", "")
-                //values.put("dto", "")
-                //values.put("textolinea", "")
-                values.put("flag5", 0)
-                values.put("borrar", "T")
-
-                dbAlba.update("ftosLineas", values, "articulo=$fArticulo AND formato=$fFormato", null)
+                ftosLineasDao?.inicializarFormato(fArticulo, fFormato)
             }
 
             // Desmarcamos el formato que acabamos de borrar

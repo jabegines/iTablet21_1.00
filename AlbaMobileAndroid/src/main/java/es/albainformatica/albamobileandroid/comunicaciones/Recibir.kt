@@ -18,6 +18,7 @@ import android.view.View
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import es.albainformatica.albamobileandroid.*
+import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.queBDRoom
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.util.Base64
 import java.io.*
@@ -58,8 +59,7 @@ class Recibir : Activity() {
     public override fun onCreate(savedInstance: Bundle?) {
         super.onCreate(savedInstance)
         setContentView(R.layout.recibir)
-        val bd = BaseDatos(this)
-        dbAlba = bd.writableDatabase
+
         fConfiguracion = Comunicador.fConfiguracion
 
         // Leemos las preferencias de la aplicación;
@@ -154,9 +154,11 @@ class Recibir : Activity() {
     private fun hayFichPreparados(): Boolean {
         var queRutaEnv = prefs.getString("rutacomunicacion", "") ?: ""
         queRutaEnv = if (queRutaEnv == "") {
-            if (usarMultisistema) "/storage/sdcard0/alba/envio/" + fCodTerminal + "/" + BaseDatos.queBaseDatos else "/storage/sdcard0/alba/envio/$fCodTerminal"
+            if (usarMultisistema) "/storage/sdcard0/alba/envio/$fCodTerminal/$queBDRoom"
+            else "/storage/sdcard0/alba/envio/$fCodTerminal"
         } else {
-            if (usarMultisistema) queRutaEnv + "/envio/" + fCodTerminal + "/" + BaseDatos.queBaseDatos else "$queRutaEnv/envio/$fCodTerminal"
+            if (usarMultisistema) "$queRutaEnv/envio/$fCodTerminal/$queBDRoom"
+            else "$queRutaEnv/envio/$fCodTerminal"
         }
         val sFichero = queRutaEnv
         val fichero = File(sFichero)
@@ -352,9 +354,11 @@ class Recibir : Activity() {
         }
         var localDirectory = prefs.getString("rutacomunicacion", "") ?: ""
         localDirectory = if (localDirectory == "") {
-            if (usarMultisistema) "/storage/sdcard0/alba/docasociados/" + BaseDatos.queBaseDatos else "/storage/sdcard0/alba/docasociados"
+            if (usarMultisistema) "/storage/sdcard0/alba/docasociados/$queBDRoom"
+            else "/storage/sdcard0/alba/docasociados"
         } else {
-            if (usarMultisistema) localDirectory + "/docasociados/" + BaseDatos.queBaseDatos else "$localDirectory/docasociados"
+            if (usarMultisistema) "$localDirectory/docasociados/$queBDRoom"
+            else "$localDirectory/docasociados"
         }
         val rutaLocalDocAs = File(localDirectory)
         // Vaciamos la carpeta de documentos asociados antes de recibir. Así nos aseguramos de que no tenemos
@@ -386,9 +390,11 @@ class Recibir : Activity() {
             if (rWifi.hayImagenes(rutaWifiImag)) {
                 var localDirectory = prefs.getString("rutacomunicacion", "") ?: ""
                 localDirectory = if (localDirectory == "") {
-                    if (usarMultisistema) "/storage/sdcard0/alba/imagenes/" + BaseDatos.queBaseDatos else "/storage/sdcard0/alba/imagenes"
+                    if (usarMultisistema) "/storage/sdcard0/alba/imagenes/$queBDRoom"
+                    else "/storage/sdcard0/alba/imagenes"
                 } else {
-                    if (usarMultisistema) localDirectory + "/imagenes/" + BaseDatos.queBaseDatos else "$localDirectory/imagenes"
+                    if (usarMultisistema) "$localDirectory/imagenes/$queBDRoom"
+                    else "$localDirectory/imagenes"
                 }
 
                 // Nos aseguramos de que la carpeta existe y, si no, la creamos.
@@ -538,9 +544,11 @@ class Recibir : Activity() {
         val fCarpetaImpDocAsoc: String
         var carpetaDocAsoc = prefs.getString("rutacomunicacion", "") ?: ""
         carpetaDocAsoc = if (carpetaDocAsoc == "") {
-            if (usarMultisistema) "/storage/sdcard0/alba/docasociados" + BaseDatos.queBaseDatos else "/storage/sdcard0/alba/docasociados"
+            if (usarMultisistema) "/storage/sdcard0/alba/docasociados$queBDRoom"
+            else "/storage/sdcard0/alba/docasociados"
         } else {
-            if (usarMultisistema) carpetaDocAsoc + "/docasociados/" + BaseDatos.queBaseDatos else "$carpetaDocAsoc/docasociados"
+            if (usarMultisistema) "$carpetaDocAsoc/docasociados/$queBDRoom"
+            else "$carpetaDocAsoc/docasociados"
         }
 
         // Nos aseguramos de que la carpeta existe y, si no, la creamos.
@@ -592,9 +600,11 @@ class Recibir : Activity() {
         val fCarpetaImpImag: String
         var carpetaImagenes = prefs.getString("rutacomunicacion", "") ?: ""
         carpetaImagenes = if (carpetaImagenes == "") {
-            if (usarMultisistema) "/storage/sdcard0/alba/imagenes/" + BaseDatos.queBaseDatos else "/storage/sdcard0/alba/imagenes"
+            if (usarMultisistema) "/storage/sdcard0/alba/imagenes/$queBDRoom"
+            else "/storage/sdcard0/alba/imagenes"
         } else {
-            if (usarMultisistema) carpetaImagenes + "/imagenes/" + BaseDatos.queBaseDatos else "$carpetaImagenes/imagenes"
+            if (usarMultisistema) "$carpetaImagenes/imagenes/$queBDRoom"
+            else "$carpetaImagenes/imagenes"
         }
         try {
             // Intentamos cambiar a la carpeta de imagenes.
@@ -700,7 +710,7 @@ class Recibir : Activity() {
     }
 
     private fun dimeRutaEnvSistema(): String {
-        return when (BaseDatos.queBaseDatos) {
+        return when (queBDRoom) {
             "DBAlba00" -> "/ALBADB00"
             "DBAlba10" -> "/ALBADB10"
             "DBAlba20" -> "/ALBADB20"

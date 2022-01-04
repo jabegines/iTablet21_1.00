@@ -6,8 +6,8 @@ import android.database.sqlite.SQLiteDatabase
 import java.util.*
 
 
-class HistoricoMes(val contexto: Context): BaseDatos(contexto) {
-    private var dbAlba: SQLiteDatabase = writableDatabase
+class HistoricoMes(val contexto: Context) {
+
     lateinit var cCursorHco: Cursor
 
 
@@ -21,23 +21,30 @@ class HistoricoMes(val contexto: Context): BaseDatos(contexto) {
                     " LEFT JOIN articulos B ON B.articulo = A.articulo" +
                     " WHERE A.cliente = " + queCliente + " AND mes = " + month +
                     " ORDER BY B.codigo"
-        cCursorHco = dbAlba.rawQuery(sql, null)
-        cCursorHco.moveToFirst()
+        // TODO
+        //cCursorHco = dbAlba.rawQuery(sql, null)
+        //cCursorHco.moveToFirst()
     }
 
 
     fun abrirArticulo(queArticulo: Int, queCliente: Int): Boolean {
+        // TODO
+        /*
         cCursorHco = dbAlba.rawQuery(
             "SELECT * FROM histmes WHERE articulo = $queArticulo AND cliente = $queCliente",
             null
         )
         return cCursorHco.moveToFirst()
+         */
+        return true
     }
 
 
     fun abrirCliente(queCliente: Int): Boolean {
-        cCursorHco = dbAlba.rawQuery("SELECT * FROM histmes WHERE cliente = $queCliente", null)
-        return cCursorHco.moveToFirst()
+        // TODO
+        //cCursorHco = dbAlba.rawQuery("SELECT * FROM histmes WHERE cliente = $queCliente", null)
+        //return cCursorHco.moveToFirst()
+        return true
     }
 
 
@@ -45,11 +52,11 @@ class HistoricoMes(val contexto: Context): BaseDatos(contexto) {
         // Obtenemos el mes de la fecha actual.
         val calendarNow: Calendar = GregorianCalendar()
         val month = calendarNow[Calendar.MONTH] + 1
-        val sql =
-            "SELECT cantidadant, cantidad, (cantidad - cantidadant) diferencia, mes FROM histmes" +
+        val sql = "SELECT cantidadant, cantidad, (cantidad - cantidadant) diferencia, mes FROM histmes" +
                     " WHERE cliente = " + queCliente + " AND mes = " + month + " AND articulo = " + queArticulo
-        cCursorHco = dbAlba.rawQuery(sql, null)
-        cCursorHco.moveToFirst()
+        // TODO
+        //cCursorHco = dbAlba.rawQuery(sql, null)
+        //cCursorHco.moveToFirst()
     }
 
 
@@ -58,8 +65,9 @@ class HistoricoMes(val contexto: Context): BaseDatos(contexto) {
                 " LEFT JOIN articulos B ON B.articulo = A.articulo" +
                 " WHERE A.cliente = " + queCliente + " AND A.articulo = " + queArticulo +
                 " ORDER BY A.mes"
-        cCursorHco = dbAlba.rawQuery(sql, null)
-        cCursorHco.moveToFirst()
+        // TODO
+        //cCursorHco = dbAlba.rawQuery(sql, null)
+        //cCursorHco.moveToFirst()
     }
 
 
@@ -71,8 +79,9 @@ class HistoricoMes(val contexto: Context): BaseDatos(contexto) {
                     " WHERE A.cliente = " + queCliente +
                     " GROUP BY A.cliente, A.articulo" +
                     " ORDER BY B.codigo"
-        cCursorHco = dbAlba.rawQuery(sql, null)
-        cCursorHco.moveToFirst()
+        // TODO
+        //cCursorHco = dbAlba.rawQuery(sql, null)
+        //cCursorHco.moveToFirst()
     }
 
 
@@ -81,15 +90,16 @@ class HistoricoMes(val contexto: Context): BaseDatos(contexto) {
                 " SUM(A.importe) sumImpte, SUM(A.importeant) sumImpteAnt FROM histmes A" +
                 " WHERE A.cliente = " + queCliente +
                 " GROUP BY A.cliente"
-        cCursorHco = dbAlba.rawQuery(sql, null)
-        return cCursorHco.moveToFirst()
+        // TODO
+        //cCursorHco = dbAlba.rawQuery(sql, null)
+        //return cCursorHco.moveToFirst()
+        return true
     }
 
 
     fun getCantidad2Int(): Int {
         return if (cCursorHco.count > 0) {
-            val sCantidad =
-                cCursorHco.getString(cCursorHco.getColumnIndex("cantidad")).replace(',', '.')
+            val sCantidad = cCursorHco.getString(cCursorHco.getColumnIndex("cantidad")).replace(',', '.')
             val dCantidad = sCantidad.toDouble()
             val L = Math.round(dCantidad)
             Integer.valueOf(L.toInt())

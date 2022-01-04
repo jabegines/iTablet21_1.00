@@ -4,8 +4,7 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 
-class HcoComSemMes(contexto: Context) : BaseDatos(contexto) {
-    private val dbAlba: SQLiteDatabase = writableDatabase
+class HcoComSemMes(contexto: Context) {
     lateinit var cCursorHco: Cursor
 
 
@@ -26,8 +25,9 @@ class HcoComSemMes(contexto: Context) : BaseDatos(contexto) {
                     " AND julianday(A.fecha) <= julianday('" + fechaEnJulian(sHoyMenos7) + "')" +
                     " GROUP BY B.codigo, B.descr" +
                     " ) AS consulta GROUP BY codigo"
-        cCursorHco = dbAlba.rawQuery(sql, null)
-        cCursorHco.moveToFirst()
+        // TODO
+        //cCursorHco = dbAlba.rawQuery(sql, null)
+        //cCursorHco.moveToFirst()
     }
 
     private fun fechaEnJulian(queFecha: String): String {

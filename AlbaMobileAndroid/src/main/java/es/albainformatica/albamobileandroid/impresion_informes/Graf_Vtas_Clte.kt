@@ -49,20 +49,15 @@ class Graf_Vtas_Clte: AppCompatActivity() {
     }
 
 
-    override fun onDestroy() {
-        fHcoMes.close()
-        super.onDestroy()
-    }
-
 
     fun inicializarControles() {
-        var tvNombre = findViewById<TextView>(R.id.tvVtasClte)
-        tvNombre.setText(fNombre)
+        val tvNombre = findViewById<TextView>(R.id.tvVtasClte)
+        tvNombre.text = fNombre
 
         fFtoImpteII = fConfiguracion.formatoDecImptesIva()
     }
 
-    fun graficoBarras() {
+    private fun graficoBarras() {
         val chart = findViewById<BarChart>(R.id.barchartClte)
         labels = arrayOf("", "", "", "", "", "", "", "", "", "", "", "", "")
 

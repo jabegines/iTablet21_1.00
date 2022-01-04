@@ -14,6 +14,7 @@ import android.widget.Toast
 import android.view.View
 import android.widget.ImageView
 import es.albainformatica.albamobileandroid.R
+import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.queBDRoom
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -98,9 +99,11 @@ class FirmarDoc : Activity() {
         var fOut: OutputStream
         var rutaLocal = prefs.getString("rutacomunicacion", "") ?: ""
         rutaLocal = if (rutaLocal == "") {
-            if (usarMultisistema) "/storage/sdcard0/alba/firmas/" + BaseDatos.queBaseDatos else "/storage/sdcard0/alba/firmas/"
+            if (usarMultisistema) "/storage/sdcard0/alba/firmas/$queBDRoom"
+            else "/storage/sdcard0/alba/firmas/"
         } else {
-            if (usarMultisistema) rutaLocal + "/firmas/" + BaseDatos.queBaseDatos else "$rutaLocal/firmas/"
+            if (usarMultisistema) "$rutaLocal/firmas/$queBDRoom"
+            else "$rutaLocal/firmas/"
         }
         try {
             val rutaFichFirma = File(rutaLocal)

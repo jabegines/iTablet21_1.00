@@ -40,10 +40,6 @@ class AcumuladosMes: Activity() {
         inicializarControles()
     }
 
-    override fun onDestroy() {
-        fHistorico.close()
-        super.onDestroy()
-    }
 
     private fun inicializarControles() {
         lvLineas = findViewById(R.id.lvAcumuladosMes)

@@ -8,14 +8,15 @@ import java.util.ArrayList
 /**
  * Created by jabegines on 11/10/13.
  */
-class Tarifas(contexto: Context): BaseDatos(contexto) {
-    private lateinit var dbAlba: SQLiteDatabase
+class Tarifas(contexto: Context) {
+
     private lateinit var cursor: Cursor
 
     fun abrir(): Boolean {
-        dbAlba = readableDatabase
-        cursor = dbAlba.rawQuery("SELECT * FROM cnftarifas ORDER by codigo", null)
-        return cursor.moveToFirst()
+        // TODO
+        //cursor = dbAlba.rawQuery("SELECT * FROM cnftarifas ORDER by codigo", null)
+        //return cursor.moveToFirst()
+        return true
     }
 
     private val codigo: String

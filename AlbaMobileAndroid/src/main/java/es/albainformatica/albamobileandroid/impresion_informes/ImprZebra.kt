@@ -32,8 +32,6 @@ import java.util.*
      private var fPendiente: PendienteClase = PendienteClase(context)
      private val docsCabPiesDao: DocsCabPiesDao? = MyDatabase.getInstance(context)?.docsCabPiesDao()
      private lateinit var prefs: SharedPreferences
-     private var db: BaseDatos = BaseDatos(context)
-     private var dbAlba: SQLiteDatabase = db.readableDatabase
 
      private lateinit var fFtoCant: String
      private lateinit var fFtoPrBase: String
@@ -71,9 +69,6 @@ import java.util.*
 
 
      private fun destruir() {
-         dbAlba.close()
-         db.close()
-
          try {
              mBluetoothSocket.close()
          } catch (e: Exception) {

@@ -10,13 +10,14 @@ import java.lang.Exception
 /**
  * Created by jabegines on 14/10/13.
  */
-class Rutero(contexto: Context): BaseDatos(contexto) {
+class Rutero(contexto: Context) {
     var cursor: Cursor? = null
     private val fConfiguracion: Configuracion = Comunicador.fConfiguracion
 
 
     fun abrirRuta(fRuta: String): Boolean {
-        val dbAlba = readableDatabase
+        // TODO
+        /*
         cursor = dbAlba.rawQuery(
             "SELECT A._id, A.orden, A.cliente, B.codigo, B.nomfi, B.nomco, B.tieneincid FROM rutero A" +
                     " JOIN clientes B ON B.cliente = A.cliente" +
@@ -24,10 +25,13 @@ class Rutero(contexto: Context): BaseDatos(contexto) {
                     " ORDER BY A.orden", null
         )
         return cursor?.moveToFirst() ?: false
+        */
+        return true
     }
 
     fun abrirParaReparto(fRuta: String): Boolean {
-        val dbAlba = readableDatabase
+        // TODO
+        /*
         cursor = dbAlba.rawQuery(
             "SELECT DISTINCT A._id, A.orden, A.cliente, B.codigo, B.nomfi, B.nomco, B.tieneincid," +
                     " ifnull(C.cliente, 0) tienedocumentos, FROM rutero A" +  //" ifnull(C.cliente, 0) tienedocumentos, ifnull(D.cliente, 0) tienepend FROM rutero A" +
@@ -37,17 +41,20 @@ class Rutero(contexto: Context): BaseDatos(contexto) {
                     " ORDER BY A.orden", null
         )
         return cursor?.moveToFirst() ?: false
+        */
+        return true
     }
 
     fun abrirCodPostal(queCodPostal: String): Boolean {
-        val dbAlba = readableDatabase
         val consulta: String = if (fConfiguracion.aconsNomComercial()) "SELECT cliente _id, 1 orden, cliente, codigo," +
                     " nomfi, nomco, tieneincid FROM clientes WHERE cpostal = '" + queCodPostal + "'" +
                     " ORDER BY nomco" else "SELECT cliente _id, 1 orden, cliente, codigo," +
                     " nomfi, nomco, tieneincid FROM clientes WHERE cpostal = '" + queCodPostal + "'" +
                     " ORDER BY nomfi"
-        cursor = dbAlba.rawQuery(consulta, null)
-        return cursor?.moveToFirst() ?: false
+        // TODO
+        //cursor = dbAlba.rawQuery(consulta, null)
+        //return cursor?.moveToFirst() ?: false
+        return true
     }
 
     fun situarEnCliente(anteriorClte: Int, irASiguClte: Boolean): Boolean {

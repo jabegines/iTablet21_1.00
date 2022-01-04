@@ -9,16 +9,13 @@ import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
-class Reparto(contexto: Context): BaseDatos(contexto) {
-    private var dbAlba: SQLiteDatabase = writableDatabase
+class Reparto(contexto: Context) {
+
     lateinit var cursorDocs: Cursor
     val idDocumento: Int
         get() = cursorDocs.getInt(cursorDocs.getColumnIndex("_id"))
 
 
-    override fun close() {
-        dbAlba.close()
-    }
 
     fun abrir(fRuta: String): Boolean {
         val cCadena: String = if (fRuta != "")
@@ -37,8 +34,10 @@ class Reparto(contexto: Context): BaseDatos(contexto) {
                     //" WHERE B.hoja = " + fRuta + " OR C.hoja = " + fRuta +
                     " ORDER BY B.orden"
 
-        cursorDocs = dbAlba.rawQuery(cCadena, null)
-        return cursorDocs.moveToFirst()
+        // TODO
+        //cursorDocs = dbAlba.rawQuery(cCadena, null)
+        //return cursorDocs.moveToFirst()
+        return true
     }
 
     fun situarEnDocumento(anteriorDoc: Int, irASiguDoc: Boolean): Boolean {
@@ -65,7 +64,8 @@ class Reparto(contexto: Context): BaseDatos(contexto) {
         values.put("firmado", "T")
         values.put("fechafirma", df.format(tim))
         values.put("horafirma", dfHora.format(tim))
-        dbAlba.update("cabeceras", values, "_id=$queIdDocumento", null)
+        // TODO
+        //dbAlba.update("cabeceras", values, "_id=$queIdDocumento", null)
 
         // Refresco el cursor cerrándolo y volviéndolo a abrir.
         cursorDocs.close()
@@ -76,7 +76,8 @@ class Reparto(contexto: Context): BaseDatos(contexto) {
         val values = ContentValues()
         values.put("tipoincidencia", queTipoIncid)
         values.put("textoincidencia", queTexto)
-        dbAlba.update("cabeceras", values, "_id=$queIdDocumento", null)
+        // TODO
+        //dbAlba.update("cabeceras", values, "_id=$queIdDocumento", null)
 
         // Refresco el cursor cerrándolo y volviéndolo a abrir.
         cursorDocs.close()

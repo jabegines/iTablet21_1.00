@@ -99,7 +99,6 @@ class FichaClteActivity: AppCompatActivity() {
 
 
     override fun onDestroy() {
-        fTarifas.close()
         fClientes.close()
         super.onDestroy()
     }

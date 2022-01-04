@@ -19,6 +19,7 @@ import es.albainformatica.albamobileandroid.ListaPaquetes
 import es.albainformatica.albamobileandroid.R
 import es.albainformatica.albamobileandroid.dao.NumExportDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
+import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.queBDRoom
 import es.albainformatica.albamobileandroid.entity.NumExportEnt
 import es.albainformatica.albamobileandroid.sha1
 import kotlinx.android.synthetic.main.com_servicio_enviar.*
@@ -75,7 +76,7 @@ class ServicioEnviar: AppCompatActivity() {
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val usarMultisistema = prefs.getBoolean("usar_multisistema", false)
         fSistemaId = if (usarMultisistema) {
-            val queBD = BaseDatos.queBaseDatos
+            val queBD = queBDRoom
             queBD.substring(queBD.length-2, queBD.length)
         }
         else {

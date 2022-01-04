@@ -7,12 +7,13 @@ import android.database.sqlite.SQLiteDatabase
 /**
  * Created by jabegines on 26/11/13.
  */
-class HcoArtCliente(contexto: Context?) : BaseDatos(contexto!!) {
-    private val dbAlba: SQLiteDatabase = writableDatabase
+class HcoArtCliente(contexto: Context) {
     lateinit var cHcoArtClte: Cursor
 
 
     fun abrir(QueCliente: Int, QueArticulo: Int) {
+        // TODO
+        /*
         cHcoArtClte = dbAlba.rawQuery(
             "SELECT A._id, A.precio, A.precioii, A.cantidad, A.dto,"
                     + " B.tipodoc, B.serie, B.numero, B.fecha, C.iva porciva FROM Lineas A"
@@ -23,6 +24,7 @@ class HcoArtCliente(contexto: Context?) : BaseDatos(contexto!!) {
             null
         )
         cHcoArtClte.moveToFirst()
+        */
     }
 
 }

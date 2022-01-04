@@ -294,8 +294,6 @@ class Main: AppCompatActivity() {
         if (fUsarMultisistema)
             elegirBaseDatos()
         else {
-            BaseDatos.queBaseDatos = "DBAlba"
-            //BaseDatos.queBaseDatos = Environment.getExternalStorageDirectory().path + "/alba/DBAlba"
             iniciarAplicacion()
         }
     }
@@ -305,20 +303,11 @@ class Main: AppCompatActivity() {
         try {
             if (fUsarServicio) {
                 // Comprobamos si existe la base de datos
-                val bd = BaseDatos(this)
-                val dbAlba = bd.writableDatabase
-                var existeBaseDatos = true
-
-                val cursor = dbAlba.rawQuery("SELECT count(*) FROM sqlite_master WHERE type='table'" +
-                            " AND name='cabeceras'", null)
-                if (cursor.moveToFirst()) {
-                    if (cursor.getInt(0) == 0)
-                        existeBaseDatos = false
-                } else existeBaseDatos = false
-                cursor.close()
+                val existeBaseDatos = (MyDatabase.getInstance(this) != null)
 
                 if (!existeBaseDatos)
-                    CrearBD(this)
+                    MyDatabase.getInstance(this)
+                    //CrearBD(this)
             }
 
             fConfiguracion = Configuracion(this)
@@ -338,7 +327,8 @@ class Main: AppCompatActivity() {
 
             // Si llegamos hasta aquí es que no existe la base de datos, por eso la creamos (si usamos el servicio)
             if (fUsarServicio)
-                CrearBD(this)
+                MyDatabase.getInstance(this)
+                //CrearBD(this)
 
             Toast.makeText(this, resources.getString(R.string.msj_AlgunProblema), Toast.LENGTH_LONG).show()
         }
@@ -347,8 +337,7 @@ class Main: AppCompatActivity() {
 
     private fun elegirBaseDatos() {
         // Nos aseguramos de que tendremos un nombre de base de datos válido, por si cancelamos el diálogo.
-        BaseDatos.queBaseDatos = "DBAlba00"
-        MyDatabase.queBDRoom = "ibsTablet00.db"
+        queBDRoom = "ibsTablet00.db"
 
         val listItems = ArrayList<String>()
         bdALista(listItems)
@@ -359,15 +348,13 @@ class Main: AppCompatActivity() {
 
         // Si sólo tenemos una base de datos seleccionada no hace falta que preguntemos.
         if (listItems.size == 1) {
-            BaseDatos.queBaseDatos = dimeNombreBD(chsBBDD[0].toString())
-            MyDatabase.queBDRoom = dimeNombreBDRoom(chsBBDD[0].toString())
+            queBDRoom = dimeNombreBDRoom(chsBBDD[0].toString())
             iniciarAplicacion()
 
         } else {
             altBld.setSingleChoiceItems(chsBBDD, 0) { dialog, item ->
-                BaseDatos.queBaseDatos = dimeNombreBD(chsBBDD[item].toString())
                 MyDatabase.INSTANCE = null
-                MyDatabase.queBDRoom = dimeNombreBDRoom(chsBBDD[item].toString())
+                queBDRoom = dimeNombreBDRoom(chsBBDD[item].toString())
                 dialog.dismiss()
                 iniciarAplicacion()
             }
@@ -394,21 +381,6 @@ class Main: AppCompatActivity() {
         }
     }
 
-    private fun dimeNombreBD(queItem: String): String {
-        return when (queItem) {
-            getString(R.string.TituloBD_0) -> getString(R.string.BD_0)
-            getString(R.string.TituloBD_1) -> getString(R.string.BD_1)
-            getString(R.string.TituloBD_2) -> getString(R.string.BD_2)
-            getString(R.string.TituloBD_3) -> getString(R.string.BD_3)
-            getString(R.string.TituloBD_4) -> getString(R.string.BD_4)
-            getString(R.string.TituloBD_5) -> getString(R.string.BD_5)
-            getString(R.string.TituloBD_6) -> getString(R.string.BD_6)
-            getString(R.string.TituloBD_7) -> getString(R.string.BD_7)
-            getString(R.string.TituloBD_8) -> getString(R.string.BD_8)
-            getString(R.string.TituloBD_9) -> getString(R.string.BD_9)
-            else -> "DBAlba00"
-        }
-    }
 
     private fun bdALista(listItems: MutableList<String>) {
         // Vemos en preferencias los sistemas que queremos usar.

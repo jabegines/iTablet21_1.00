@@ -1,23 +1,20 @@
 package es.albainformatica.albamobileandroid.maestros
 
-import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
-import android.database.sqlite.SQLiteDatabase
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.dao.ArticDatAdicDao
 import es.albainformatica.albamobileandroid.dao.CostosArticulosDao
 import es.albainformatica.albamobileandroid.dao.OfertasDao
-import es.albainformatica.albamobileandroid.dao.ProveedoresDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import java.lang.Exception
 
 
-class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
+class ArticulosClase(val contexto: Context) {
     private val ofertasDao: OfertasDao? = MyDatabase.getInstance(contexto)?.ofertasDao()
     private val articDatAdicDao: ArticDatAdicDao? = MyDatabase.getInstance(contexto)?.articDatAdicDao()
     private var fLotes: LotesClase = LotesClase(contexto)
-    private val dbAlba: SQLiteDatabase = writableDatabase
+
     lateinit var cursor: Cursor
     lateinit var cTarifas: Cursor
     var cDatAdicionales: Cursor? = null
@@ -30,18 +27,18 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
 
     var fCodProv: String = ""
 
-    override fun close() {
+    fun close() {
         cDatAdicionales?.close()
         if (this::cTarifas.isInitialized)
             cTarifas.close()
         if (this::cursor.isInitialized)
             cursor.close()
-        dbAlba.close()
-        super.close()
     }
 
 
     fun abrirUnArticulo(queArticulo: Int, queEmpresa: Int): Boolean {
+        // TODO
+        /*
         cursor = dbAlba.rawQuery(
             "SELECT A.*, B.clave, D.iva porciva, E.ent, E.sal, E.entc, E.salc"
                     + " FROM articulos A"
@@ -62,11 +59,15 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
 
             return true
         } else return false
+        */
+        return true
     }
 
 
     private fun abrirTarifas(queArticulo: Int) {
         // Si el artículo tiene formatos el cursor cTarifas saldrá de la tabla "trfformatos".
+        // TODO
+        /*
         if (usarFormatos()) {
             // En la consulta repetimos el campo precio porque nos hará falta en FichaArticuloActivity.setViewBinder.
             cTarifas = dbAlba.rawQuery(
@@ -85,32 +86,40 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
                         + " WHERE A.articulo =" + queArticulo), null
             )
         }
+        */
     }
 
 
     fun abrir(): Boolean {
-        cursor = dbAlba.rawQuery("SELECT * FROM articulos", null)
-        return cursor.moveToFirst()
+        // TODO
+        //cursor = dbAlba.rawQuery("SELECT * FROM articulos", null)
+        //return cursor.moveToFirst()
+        return true
     }
 
 
     // Catálogos Bionat
     fun abrirBioCatalogo(queCatalogo: Int, fOrdenacion: Int): Boolean {
+        // TODO
+        /*
         var consulta = "SELECT A.articulo FROM articclasif A" +
                 " LEFT JOIN articulos B ON B.articulo = A.articulo" +
                 " WHERE A.clasificador = " + queCatalogo
         if (fOrdenacion == 1) consulta += " ORDER BY A.orden" else if (fOrdenacion == 2) consulta += " ORDER BY B.codigo" else if (fOrdenacion == 3) consulta += " ORDER BY B.descr"
         cursor = dbAlba.rawQuery(consulta, null)
         return cursor.moveToFirst()
+        */
+        return true
     }
 
 
     fun abrirBioDepartamento(queGrupo: Int, queDepartamento: Int, fOrdenacion: Int): Boolean {
-        var consulta =
-            "SELECT articulo FROM articulos WHERE grupo = $queGrupo AND dpto = $queDepartamento"
+        var consulta = "SELECT articulo FROM articulos WHERE grupo = $queGrupo AND dpto = $queDepartamento"
         if (fOrdenacion == 2) consulta += " ORDER BY codigo" else if (fOrdenacion == 3) consulta += " ORDER BY descr"
-        cursor = dbAlba.rawQuery(consulta, null)
-        return cursor.moveToFirst()
+        // TODO
+        //cursor = dbAlba.rawQuery(consulta, null)
+        //return cursor.moveToFirst()
+        return true
     }
 
 
@@ -119,8 +128,10 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
                 " LEFT JOIN articulos B ON B.articulo = A.articulo" +
                 " WHERE A.cliente = " + queCliente
         if (fOrdenacion == 2) consulta += " ORDER BY B.codigo" else if (fOrdenacion == 3) consulta += " ORDER BY B.descr"
-        cursor = dbAlba.rawQuery(consulta, null)
-        return cursor.moveToFirst()
+        // TODO
+        //cursor = dbAlba.rawQuery(consulta, null)
+        //return cursor.moveToFirst()
+        return true
     }
 
 
@@ -130,18 +141,19 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
                 + " LEFT JOIN busquedas B ON B.articulo = A.articulo AND B.tipo = 6")
 
         // Buscaremos tanto por descripción como por código
-        consulta =
-            "$consulta WHERE A.descr $cadenaLike OR A.codigo $cadenaLike OR B.clave $cadenaLike"
-        cursor = dbAlba.rawQuery(consulta, null)
-        return cursor.moveToFirst()
+        consulta = "$consulta WHERE A.descr $cadenaLike OR A.codigo $cadenaLike OR B.clave $cadenaLike"
+        // TODO
+        //cursor = dbAlba.rawQuery(consulta, null)
+        //return cursor.moveToFirst()
+        return true
     }
 
 
     fun abrirParaGridView(
         queGrupo: Int,
         queDepartam: Int,
-        queTarifa: Byte,
-        queTrfCajas: Byte,
+        queTarifa: Short,
+        queTrfCajas: Short,
         queCliente: Int,
         queOrdenacion: Short
     ) {
@@ -161,8 +173,9 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
         consulta = "$consulta WHERE A.grupo = $queGrupo AND A.dpto = $queDepartam"
         consulta =
             if (queOrdenacion.toInt() == 0) "$consulta ORDER BY A.descr" else "$consulta ORDER BY A.codigo"
-        cursor = dbAlba.rawQuery(consulta, null)
-        cursor.moveToFirst()
+        // TODO
+        //cursor = dbAlba.rawQuery(consulta, null)
+        //cursor.moveToFirst()
     }
 
 
@@ -171,8 +184,8 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
         queBuscar: String,
         queGrupo: Int,
         queDepartam: Int,
-        queTarifa: Byte,
-        queTrfCajas: Byte,
+        queTarifa: Short,
+        queTrfCajas: Short,
         queCliente: Int,
         queOrdenacion: Short
     ) {
@@ -193,14 +206,15 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
             "$consulta WHERE (A.descr $cadenaLike OR A.codigo $cadenaLike) AND A.grupo = $queGrupo AND A.dpto = $queDepartam"
         consulta =
             if (queOrdenacion.toInt() == 0) "$consulta ORDER BY A.descr" else "$consulta ORDER BY A.codigo"
-        cursor = dbAlba.rawQuery(consulta, null)
-        cursor.moveToFirst()
+        // TODO
+        //cursor = dbAlba.rawQuery(consulta, null)
+        //cursor.moveToFirst()
     }
 
     fun abrirBusqParaGridView(
         queBuscar: String,
-        queTarifa: Byte,
-        queTrfCajas: Byte,
+        queTarifa: Short,
+        queTrfCajas: Short,
         queCliente: Int,
         queOrdenacion: Short
     ) {
@@ -222,16 +236,17 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
         consulta = "$consulta WHERE A.descr $cadenaLike OR A.codigo $cadenaLike"
         consulta =
             if (queOrdenacion.toInt() == 0) "$consulta ORDER BY A.descr" else "$consulta ORDER BY A.codigo"
-        cursor = dbAlba.rawQuery(consulta, null)
-        cursor.moveToFirst()
+        // TODO
+        //cursor = dbAlba.rawQuery(consulta, null)
+        //cursor.moveToFirst()
     }
 
     // Buscamos una cadena dentro de un catálogo concreto.
     fun abrirBusqEnClasifParaGridView(
         queBuscar: String,
         queClasificador: Int,
-        queTarifa: Byte,
-        queTrfCajas: Byte,
+        queTarifa: Short,
+        queTrfCajas: Short,
         queCliente: Int,
         queOrdenacion: Short
     ) {
@@ -253,20 +268,20 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
             "$consulta WHERE A.clasificador = $queClasificador AND (B.descr $cadenaLike OR B.codigo $cadenaLike)"
         consulta =
             if (queOrdenacion.toInt() == 0) "$consulta ORDER BY B.descr" else "$consulta ORDER BY B.codigo"
-        cursor = dbAlba.rawQuery(consulta, null)
-        cursor.moveToFirst()
+        // TODO
+        //cursor = dbAlba.rawQuery(consulta, null)
+        //cursor.moveToFirst()
     }
 
 
     fun abrirClasifParaGrView(
         queClasificador: Int,
-        queTarifa: Byte,
-        queTrfCajas: Byte,
+        queTarifa: Short,
+        queTrfCajas: Short,
         queCliente: Int,
         queOrdenacion: Short
     ) {
-        var consulta =
-            "SELECT DISTINCT A.articulo, B.codigo, B.descr, B.ucaja," +
+        var consulta = "SELECT DISTINCT A.articulo, B.codigo, B.descr, B.ucaja," +
                     " D.precio, D.dto, E.precio prCajas, E.dto dtCajas, G.iva porciva, F.ent, F.sal, F.entc, F.salc, "
         consulta = if (queCliente > 0) consulta + "H._id idHco" else consulta + "0 idHco"
         consulta = consulta + " FROM articclasif A" +
@@ -284,11 +299,12 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
         consulta = "$consulta WHERE A.clasificador = $queClasificador AND B.articulo IS NOT NULL"
         consulta =
             if (queOrdenacion.toInt() == 0) "$consulta ORDER BY B.descr" else "$consulta ORDER BY B.codigo"
-        cursor = dbAlba.rawQuery(consulta, null)
-        cursor.moveToFirst()
+        // TODO
+        //cursor = dbAlba.rawQuery(consulta, null)
+        //cursor.moveToFirst()
     }
 
-    fun abrirHistorico(queCliente: Int, queOrdenacion: Short, queTarifa: Byte) {
+    fun abrirHistorico(queCliente: Int, queOrdenacion: Short, queTarifa: Short) {
         // Pondremos a cero el campo idHco porque cuando estemos vendiendo en modo histórico no queremos que aparezca el icono
         // indicando que el artículo tiene histórico. Si ya estamos vendiendo desde el histórico no nos hace falta ver
         // dicho icono, sería muy redundante, porque aparecería en todos los artículos.
@@ -305,8 +321,9 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
                     " WHERE A.cliente = " + queCliente
         consulta =
             if (queOrdenacion.toInt() == 0) "$consulta ORDER BY B.descr" else "$consulta ORDER BY B.codigo"
-        cursor = dbAlba.rawQuery(consulta, null)
-        cursor.moveToFirst()
+        // TODO
+        //cursor = dbAlba.rawQuery(consulta, null)
+        //cursor.moveToFirst()
     }
 
 
@@ -315,7 +332,7 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
         queBuscar: String,
         queCliente: Int,
         queOrdenacion: Short,
-        queTarifa: Byte
+        queTarifa: Short
     ) {
         val cadenaLike = "LIKE('%$queBuscar%')"
         var consulta =
@@ -331,12 +348,13 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
                     " WHERE A.cliente = " + queCliente + " AND (B.descr " + cadenaLike + " OR B.codigo " + cadenaLike + ")"
         consulta =
             if (queOrdenacion.toInt() == 0) "$consulta ORDER BY B.descr" else "$consulta ORDER BY B.codigo"
-        cursor = dbAlba.rawQuery(consulta, null)
-        cursor.moveToFirst()
+        // TODO
+        //cursor = dbAlba.rawQuery(consulta, null)
+        //cursor.moveToFirst()
     }
 
 
-    fun abrirSoloOftas(queTarifa: Byte, queCliente: Int, queOrdenacion: Short) {
+    fun abrirSoloOftas(queTarifa: Short, queCliente: Int, queOrdenacion: Short) {
         // Aunque mostremos los precios en oferta, tomamos también los precios normales para mostrarlos tachados.
         var consulta =
             "SELECT DISTINCT A.articulo, A.codigo, A.descr, A.ucaja," +
@@ -352,15 +370,17 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
         //consulta = "$consulta WHERE B.articulo = A.articulo"
         consulta =
             if (queOrdenacion.toInt() == 0) "$consulta ORDER BY A.descr" else "$consulta ORDER BY A.codigo"
-        cursor = dbAlba.rawQuery(consulta, null)
-        cursor.moveToFirst()
+        // TODO
+        //cursor = dbAlba.rawQuery(consulta, null)
+        //cursor.moveToFirst()
     }
 
     fun abrirParaFinDeDia(): Boolean {
-        cursor = dbAlba.rawQuery("SELECT * FROM stock ORDER BY empresa", null)
-
+        // TODO
+        //cursor = dbAlba.rawQuery("SELECT * FROM stock ORDER BY empresa", null)
         // Tenemos que hacer moveToFirst, ya que la posición inicial de los cursores es -1.
-        return cursor.moveToFirst()
+        //return cursor.moveToFirst()
+        return true
     }
 
 
@@ -381,6 +401,8 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
     }
 
     fun existeArticulo(QueArticulo: Int): Boolean {
+        // TODO
+        /*
         cursor = dbAlba.rawQuery(
             "SELECT A.*, B.Clave, C.Clave codalternativo, I.codigo codiva, I.iva porciva,"
                     + " S.ent, S.sal, S.entc, S.salc"
@@ -399,24 +421,28 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
 
             return true
         } else return false
+        */
+        return true
     }
 
     fun articuloEnTablet(queArticulo: Int): Boolean {
-        cursor =
-            dbAlba.rawQuery("SELECT articulo FROM articulos WHERE articulo = $queArticulo", null)
+        // TODO
+        /*
+        cursor = dbAlba.rawQuery("SELECT articulo FROM articulos WHERE articulo = $queArticulo", null)
         return try {
             cursor.moveToFirst()
         } finally {
             cursor.close()
         }
+        */
+        return true
     }
 
 
     fun existeCodigo(QueCodigo: String): Boolean {
-        cursor = dbAlba.rawQuery(
-            "SELECT articulo, tipo, tcaja, ucaja FROM busquedas WHERE clave = '$QueCodigo'",
-            null
-        )
+        // TODO
+        /*
+        cursor = dbAlba.rawQuery("SELECT articulo, tipo, tcaja, ucaja FROM busquedas WHERE clave = '$QueCodigo'", null)
         return if (cursor.moveToFirst()) {
             val QueArticulo = cursor.getInt(0)
             val tipoCodigo = cursor.getInt(1)
@@ -436,6 +462,8 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
             cursor.close()
             false
         }
+        */
+        return true
     }
 
     fun getArticulo(): Int {
@@ -467,10 +495,10 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
 
     fun getCBarras(): String {
         val colCBarras = cursor.getColumnIndex("clave")
-        if (cursor.getString(colCBarras) != null)
-            return cursor.getString(colCBarras)
+        return if (cursor.getString(colCBarras) != null)
+            cursor.getString(colCBarras)
         else
-            return ""
+            ""
     }
 
 
@@ -504,19 +532,6 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
         } else 0.0
     }
 
-    /*
-    fun getCosto(): Double {
-        // Al parecer, en SQLITE los campos tipo REAL son almacenados (y leídos)
-        // como de tipo STRING, de forma que tenemos que hacer cursor.getString
-        // para leerlos correctamente y, a continuación, hacer la conversión a Double.
-        val colCosto = cursor.getColumnIndex("costo")
-        var sCosto = cursor.getString(colCosto)
-        return if (sCosto != null) {
-            sCosto = sCosto.replace(',', '.')
-            java.lang.Double.valueOf(sCosto)
-        } else 0.0
-    }
-    */
 
     fun getCosto(): Double {
         val costosDao: CostosArticulosDao? = MyDatabase.getInstance(contexto)?.costosArticulosDao()
@@ -683,15 +698,21 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
 
     fun codArtEnlazado(): String {
         val queArticulo = cursor.getInt(cursor.getColumnIndex("enlace"))
+        // TODO
+        /*
         dbAlba.rawQuery("SELECT codigo FROM articulos WHERE articulo = $queArticulo", null)
             .use { cArtEnlazado ->
                 return if (cArtEnlazado.moveToFirst()) {
                     cArtEnlazado.getString(cArtEnlazado.getColumnIndex("codigo"))
                 } else ""
             }
+         */
+        return ""
     }
 
     fun formatosALista(listItems: MutableList<String>) {
+        // TODO
+        /*
         dbAlba.rawQuery("SELECT DISTINCT A.codigo, A.descr FROM formatos A" +
                     " JOIN trfformatos B ON B.formato = A.codigo AND B.articulo = " + getArticulo() +
                     " ORDER BY A.codigo", null
@@ -704,10 +725,13 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
                 cFormatos.moveToNext()
             }
         }
+        */
     }
 
 
     fun cargarHcoArtClte(queArticulo: Int, queCliente: Int, listItems: MutableList<String>) {
+        // TODO
+        /*
         dbAlba.rawQuery(
             "SELECT cajas, cantidad, precio, dto, fecha FROM historico" +
                     " WHERE articulo = " + queArticulo + " AND cliente = " + queCliente, null
@@ -720,19 +744,25 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
                 listItems.add(cHco.getString(4))
             }
         }
+        */
     }
 
     fun artEnHistorico(queCliente: Int, queArticulo: Int): Boolean {
+        // TODO
+        /*
         dbAlba.rawQuery(
             "SELECT articulo FROM historico WHERE articulo = $queArticulo AND cliente = $queCliente",
             null
         ).use { cHco -> return cHco.moveToFirst() }
+        */
+        return true
     }
 
     fun artEnFtosLineas(queArticulo: Int): Boolean {
-        dbAlba.rawQuery("SELECT * FROM ftosLineas WHERE articulo = $queArticulo AND borrar <> 'T'",
-            null
-        ).use { cFtosLinea -> return cFtosLinea.moveToFirst() }
+        // TODO
+        //dbAlba.rawQuery("SELECT * FROM ftosLineas WHERE articulo = $queArticulo AND borrar <> 'T'", null
+        //).use { cFtosLinea -> return cFtosLinea.moveToFirst() }
+        return true
     }
 
 
@@ -750,6 +780,8 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
             val sQuery = "SELECT ent entradas, entc entcajas FROM stock" +
                     " WHERE articulo = $queArticulo AND empresa = $queEmpresa"
 
+            // TODO
+            /*
             dbAlba.rawQuery(sQuery, null).use { cStock ->
                 if (cStock.moveToFirst()) {
                     sEntradas = if (cStock.getString(cStock.getColumnIndex("entradas")) != null) {
@@ -785,6 +817,7 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
                 if (bInsertar) dbAlba.insert("stock", null, values)
                 else dbAlba.update("stock", values, "articulo=$queArticulo and empresa=$queEmpresa", null)
             }
+            */
         } else {
             var sSalidas: String
             var sSalCajas: String
@@ -794,6 +827,8 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
             val sQuery = "SELECT sal salidas, salc salcajas FROM stock" +
                     " WHERE articulo = $queArticulo AND empresa = $queEmpresa"
 
+            // TODO
+            /*
             dbAlba.rawQuery(sQuery, null).use { cStock ->
                 if (cStock.moveToFirst()) {
                     sSalidas = if (cStock.getString(cStock.getColumnIndex("salidas")) != null) {
@@ -829,6 +864,7 @@ class ArticulosClase(val contexto: Context): BaseDatos(contexto) {
                 if (bInsertar) dbAlba.insert("stock", null, values)
                 else dbAlba.update("stock", values, "articulo=$queArticulo and empresa=$queEmpresa", null)
             }
+            */
         }
     }
 

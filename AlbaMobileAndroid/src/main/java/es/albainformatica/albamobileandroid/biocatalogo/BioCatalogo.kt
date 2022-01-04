@@ -3,11 +3,9 @@ package es.albainformatica.albamobileandroid.biocatalogo
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ContentValues
 import android.content.Intent
 import android.content.SharedPreferences
 import android.database.Cursor
-import android.database.sqlite.SQLiteDatabase
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.media.AudioManager
@@ -28,8 +26,11 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationView
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.dao.CatalogoLineasDao
+import es.albainformatica.albamobileandroid.dao.FtosLineasDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
+import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.queBDRoom
 import es.albainformatica.albamobileandroid.entity.CatalogoLineasEnt
+import es.albainformatica.albamobileandroid.entity.FtosLineasEnt
 import es.albainformatica.albamobileandroid.impresion_informes.Graf_Hco_Clte
 import es.albainformatica.albamobileandroid.impresion_informes.Graf_Vtas_Art
 import es.albainformatica.albamobileandroid.impresion_informes.Graf_Vtas_Clte
@@ -50,12 +51,11 @@ import java.util.*
 
 class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var catLineasDao: CatalogoLineasDao? = MyDatabase.getInstance(this)?.catalogoLineasDao()
+    private var ftosLineasDao: FtosLineasDao? = MyDatabase.getInstance(this)?.ftosLineasDao()
 
     private lateinit var viewPager: ViewPager2
     private lateinit var adapter: ViewPagerAdapter
     private lateinit var aImages: ArrayList<Int>
-    private lateinit var db: BaseDatos
-    private lateinit var dbAlba: SQLiteDatabase
 
     private lateinit var fArticulos: ArticulosClase
     private lateinit var fDocumento: Documento
@@ -109,9 +109,6 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         super.onCreate(savedInstance)
         setContentView(R.layout.bio_catalogo)
 
-        db = BaseDatos(this)
-        dbAlba = db.writableDatabase
-
         // Creamos el objeto fArticulos y lo pasamos al comunicador para que PageFragment pueda hacer uso de él
         fArticulos = ArticulosClase(this)
         fCatalogos = Clasificadores(this)
@@ -129,7 +126,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         // Establecemos la ruta de imágenes
         val usarMultisistema = prefs.getBoolean("usar_multisistema", false)
         val localDirectory = prefs.getString("rutacomunicacion", "") ?: ""
-        fRutaImagenes = if (usarMultisistema) localDirectory + "/imagenes/" + BaseDatos.queBaseDatos
+        fRutaImagenes = if (usarMultisistema) "$localDirectory/imagenes/$queBDRoom"
         else "$localDirectory/imagenes"
 
         fModoVtaCat = prefs.getInt("modo_vta_cat", 1)
@@ -149,8 +146,6 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
     override fun onDestroy() {
         fArticulos.close()
-        dbAlba.close()
-        db.close()
 
         prefs.edit().putInt("modo_vta_cat", fModoVtaCat).apply()
         super.onDestroy()
@@ -747,7 +742,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         catLineasDao?.vaciar()
 
         if (fUsarFormatos)
-            dbAlba.execSQL("DELETE FROM ftosLineas")
+            ftosLineasDao?.vaciar()
 
         var continuar = false
         when (fModoVtaCat) {
@@ -771,22 +766,22 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
                 do {
                     if (fUsarFormatos) {
-                        val values = ContentValues()
-                        values.put("linea", fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("_id")))
-                        values.put("articulo", fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("articulo")))
-                        values.put("cajas", fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cajas")))
-                        values.put("piezas", fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("piezas")))
-                        values.put("cantidad", fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cantidad")))
-                        values.put("precio", fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("precio")))
+                        val ftosLineasEnt = FtosLineasEnt()
 
-                        values.put("dto", fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("dto")))
-                        values.put("textolinea", fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("textolinea")))
-                        values.put("flag5", fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("flag5")))
-                        values.put("flag", fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("flag")))
-                        values.put("borrar", "F")
-                        values.put("formato", fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("formato")))
+                        ftosLineasEnt.lineaId = fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("_id"))
+                        ftosLineasEnt.articuloId = fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("articulo"))
+                        ftosLineasEnt.cajas = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cajas"))
+                        ftosLineasEnt.piezas = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("piezas"))
+                        ftosLineasEnt.cantidad = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cantidad"))
+                        ftosLineasEnt.precio = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("precio"))
+                        ftosLineasEnt.dto = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("dto"))
+                        ftosLineasEnt.textoLinea = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("textolinea"))
+                        ftosLineasEnt.flag5 = fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("flag5"))
+                        ftosLineasEnt.flag = fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("flag"))
+                        ftosLineasEnt.borrar = "F"
+                        ftosLineasEnt.formatoId = fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("formato")).toShort()
 
-                        dbAlba.insertWithOnConflict("ftosLineas", null, values, SQLiteDatabase.CONFLICT_IGNORE)
+                        ftosLineasDao?.insertar(ftosLineasEnt)
 
                     } else {
                         val catLineasEnt = CatalogoLineasEnt()
@@ -1383,51 +1378,50 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
     private fun bioCat2DocFtos() {
 
-        val cFtosLinea = dbAlba.rawQuery("SELECT * FROM ftosLineas", null)
-        if (cFtosLinea.moveToFirst()) {
+        val lFtosLinea = ftosLineasDao?.getAllFtos() ?: emptyList<FtosLineasEnt>().toMutableList()
+
+        if (lFtosLinea.isNotEmpty()) {
             // Primero borramos los artículos del documento
-            do {
-                val idArticulo = cFtosLinea.getInt(cFtosLinea.getColumnIndex("articulo"))
+            for (ftoLineaEnt in lFtosLinea) {
+                val idArticulo = ftoLineaEnt.articuloId
                 fDocumento.borrarArticuloDeDoc(idArticulo)
-            } while (cFtosLinea.moveToNext())
+            }
 
             // A continuación insertamos
-            cFtosLinea.moveToFirst()
-            do {
-                if (cFtosLinea.getString(cFtosLinea.getColumnIndex("cantidad")) != ""
-                    && cFtosLinea.getString(cFtosLinea.getColumnIndex("borrar")) != "T") {
+            for (ftoLineaEnt in lFtosLinea) {
+                if (ftoLineaEnt.cantidad != "" && ftoLineaEnt.borrar != "T") {
 
-                    val idArticulo = cFtosLinea.getInt(cFtosLinea.getColumnIndex("articulo"))
+                    val idArticulo = ftoLineaEnt.articuloId
                     fArticulos.existeArticulo(idArticulo)
 
                     fDocumento.inicializarLinea()
-                    fDocumento.fArticulo = cFtosLinea.getInt(cFtosLinea.getColumnIndex("articulo"))
+                    fDocumento.fArticulo = ftoLineaEnt.articuloId
                     fDocumento.fAlmacen = fConfiguracion.almacen()
-                    fDocumento.fCantidad = cFtosLinea.getString(cFtosLinea.getColumnIndex("cantidad")).replace(',', '.').toDouble()
-                    val sCajas = cFtosLinea.getString(cFtosLinea.getColumnIndex("cajas")).replace(',', '.')
-                    val sPiezas = cFtosLinea.getString(cFtosLinea.getColumnIndex("piezas")).replace(',', '.')
+                    fDocumento.fCantidad = ftoLineaEnt.cantidad.replace(',', '.').toDouble()
+                    val sCajas = ftoLineaEnt.cajas.replace(',', '.')
+                    val sPiezas = ftoLineaEnt.piezas.replace(',', '.')
                     fDocumento.fCajas = if (sCajas != "") sCajas.toDouble() else 0.0
                     fDocumento.fPiezas = if (sPiezas != "") sPiezas.toDouble() else 0.0
-                    fDocumento.fTextoLinea = cFtosLinea.getString(cFtosLinea.getColumnIndex("textolinea"))
-                    fDocumento.fFlag5 = cFtosLinea.getInt(cFtosLinea.getColumnIndex("flag5"))
+                    fDocumento.fTextoLinea = ftoLineaEnt.textoLinea
+                    fDocumento.fFlag5 = ftoLineaEnt.flag5
 
-                    val queFlag = cFtosLinea.getInt(cFtosLinea.getColumnIndex("flag"))
+                    val queFlag = ftoLineaEnt.flag
                     fDocumento.fArtEnOferta = queFlag and FLAGLINEAVENTA_ARTICULO_EN_OFERTA > 0
                     fDocumento.fPrecioRating = queFlag and FLAGLINEAVENTA_PRECIO_RATING > 0
                     fDocumento.fHayCambPrecio = queFlag and FLAGLINEAVENTA_CAMBIAR_PRECIO > 0
 
                     fDocumento.fTasa1 = 0.0
                     fDocumento.fTasa2 = 0.0
-                    fDocumento.fFormatoLin = cFtosLinea.getInt(cFtosLinea.getColumnIndex("formato")).toByte()
+                    fDocumento.fFormatoLin = ftoLineaEnt.formatoId
                     fDocumento.fCodArt = fArticulos.getCodigo()
                     fDocumento.fDescr = fArticulos.getDescripcion()
                     fDocumento.fCodigoIva = fArticulos.getCodigoIva()
                     fDocumento.fPorcIva = fArticulos.getPorcIva()
-                    val sDtoLin = cFtosLinea.getString(cFtosLinea.getColumnIndex("dto")).replace(',', '.')
+                    val sDtoLin = ftoLineaEnt.dto.replace(',', '.')
                     fDocumento.fDtoLin = if (sDtoLin != "") sDtoLin.toDouble() else 0.0
 
                     // Calculamos precios e importes
-                    val sPrecio = cFtosLinea.getString(cFtosLinea.getColumnIndex("precio")).replace(',', '.')
+                    val sPrecio = ftoLineaEnt.precio.replace(',', '.')
                     if ((fIvaIncluido) && fAplicarIva) {
                         fDocumento.fPrecioII = if (sPrecio != "") sPrecio.toDouble() else 0.0
                         fDocumento.calculaPrBase()
@@ -1442,13 +1436,11 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
                     fDocumento.insertarLinea()
                 }
-
-            } while (cFtosLinea.moveToNext())
+            }
         }
 
-        cFtosLinea.close()
         // Vaciamos la tabla temporal
-        dbAlba.execSQL("DELETE FROM ftosLineas")
+        ftosLineasDao?.vaciar()
     }
 
 

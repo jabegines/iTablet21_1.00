@@ -151,14 +151,14 @@ class CatalogoArticulos : Activity(), Dlg2Listener {
         // Con setAdapter se llena el gridview con datos. En este caso un nuevo objeto de la clase GrvImageArticulosAdapter,
         // que está definida en otro archivo. Para que detecte la pulsación se le añade un listener de itemClick
         // que recibe un onItemClickListener creado con new.
-        val fTarifa: Byte = if (fVendiendo) {
+        val fTarifa: Short = if (fVendiendo) {
             val queTarifaDoc = fDocumento?.fTarifaDoc ?: 0
             if (queTarifaDoc > 0)
                 fDocumento?.fTarifaDoc ?: 0
             else
-                fConfiguracion.tarifaVentas().toString().toByte()
+                fConfiguracion.tarifaVentas().toString().toShort()
         }
-        else fConfiguracion.tarifaVentas().toString().toByte()
+        else fConfiguracion.tarifaVentas().toString().toShort()
 
         // Tendremos más de un constructor para la clase GrvImageArticulosAdapter.
         when (fDesde) {
@@ -365,7 +365,7 @@ class CatalogoArticulos : Activity(), Dlg2Listener {
             // Si hemos vendido alguna caja aplicaremos la tarifa de cajas, siempre que el documento nos permita aplicar
             // tarifa de cajas. Si vendemos alguna unidad además de las cajas se aplicará la tarifa de cajas.
             if (fHistorico.fCajas != 0.0 && (fDocumento?.fPrecioRating == true)) {
-                fDocumento?.fTarifaLin = fConfiguracion.tarifaCajas().toString().toByte()
+                fDocumento?.fTarifaLin = fConfiguracion.tarifaCajas().toString().toShort()
             }
             fDocumento?.fArticulo = fArticulosGrv.fArticulo
             fDocumento?.fAlmacen = fConfiguracion.almacen()

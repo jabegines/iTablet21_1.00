@@ -21,6 +21,7 @@ import android.view.*
 import android.widget.Button
 import androidx.appcompat.widget.Toolbar
 import es.albainformatica.albamobileandroid.*
+import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.queBDRoom
 import kotlin.Throws
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.util.Base64
@@ -70,7 +71,6 @@ class Enviar: AppCompatActivity() {
     override fun onDestroy() {
         aCabeceras.clear()
         fClientes.close()
-        fNotas.close()
         super.onDestroy()
     }
 
@@ -416,9 +416,11 @@ class Enviar: AppCompatActivity() {
         // Vemos la carpeta de envio que tenemos en preferencias.
         val directorioLocal = prefs.getString("rutacomunicacion", "") ?: ""
         result = if (directorioLocal == "") {
-            if (usarMultisistema) "/storage/sdcard0/alba/envio/" + fCodTerminal + "/" + BaseDatos.queBaseDatos else "/storage/sdcard0/alba/envio/$fCodTerminal"
+            if (usarMultisistema) "/storage/sdcard0/alba/envio/$fCodTerminal/$queBDRoom"
+            else "/storage/sdcard0/alba/envio/$fCodTerminal"
         } else {
-            if (usarMultisistema) directorioLocal + "/envio/" + fCodTerminal + "/" + BaseDatos.queBaseDatos else "$directorioLocal/envio/$fCodTerminal"
+            if (usarMultisistema) "$directorioLocal/envio/$fCodTerminal/$queBDRoom"
+            else "$directorioLocal/envio/$fCodTerminal"
         }
         return result
     }
@@ -428,9 +430,11 @@ class Enviar: AppCompatActivity() {
         // Vemos la carpeta de envio que tenemos en preferencias.
         val directorioLocal = prefs.getString("rutacomunicacion", "") ?: ""
         result = if (directorioLocal == "") {
-            if (usarMultisistema) "/storage/sdcard0/alba/firmas/" + BaseDatos.queBaseDatos else "/storage/sdcard0/alba/firmas/"
+            if (usarMultisistema) "/storage/sdcard0/alba/firmas/$queBDRoom"
+            else "/storage/sdcard0/alba/firmas/"
         } else {
-            if (usarMultisistema) directorioLocal + "/firmas/" + BaseDatos.queBaseDatos else "$directorioLocal/firmas/"
+            if (usarMultisistema) "$directorioLocal/firmas/$queBDRoom"
+            else "$directorioLocal/firmas/"
         }
         return result
     }
@@ -488,7 +492,7 @@ class Enviar: AppCompatActivity() {
     }
 
     private fun dimeRutaEnvSistema(): String {
-        when (BaseDatos.queBaseDatos) {
+        when (queBDRoom) {
             "DBAlba00" -> return "/ALBADB00"
             "DBAlba10" -> return "/ALBADB10"
             "DBAlba20" -> return "/ALBADB20"

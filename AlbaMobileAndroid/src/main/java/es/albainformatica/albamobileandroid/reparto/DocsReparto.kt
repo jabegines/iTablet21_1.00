@@ -73,11 +73,9 @@ class DocsReparto: AppCompatActivity() {
         // para continuar por el siguiente cuando volvamos a entrar en el rutero_reparto.
         guardarPreferencias()
         fDocumento.close()
-        fReparto.close()
 
         // Guardamos la ruta activa para volver a presentarla la siguiente vez que entremos en NewDocsReparto
         fConfiguracion.activarRuta(fRutaActiva)
-        fRutas.close()
         super.onDestroy()
     }
 

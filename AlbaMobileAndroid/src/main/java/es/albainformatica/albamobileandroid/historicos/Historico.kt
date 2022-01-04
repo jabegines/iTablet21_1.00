@@ -8,8 +8,7 @@ import android.database.Cursor
 /**
  * Created by jabegines on 14/10/13.
  */
-class Historico(contexto: Context) : BaseDatos(contexto) {
-    private val dbAlba: SQLiteDatabase = writableDatabase
+class Historico(contexto: Context)  {
     lateinit var cHco: Cursor
 
     private var fCliente = 0
@@ -29,7 +28,7 @@ class Historico(contexto: Context) : BaseDatos(contexto) {
     var fCodigoIva: Short = 0
     var fTasa1: Double = 0.0
     var fTasa2: Double = 0.0
-    var fFormatoLin: Byte = 0
+    var fFormatoLin: Short = 0
     var fHayArtHabituales: Boolean = false
     var fTextoLinea: String = ""
     var fLote: String = ""
@@ -52,8 +51,9 @@ class Historico(contexto: Context) : BaseDatos(contexto) {
                 " WHERE A.cliente = " + QueCliente
         if (fCadBusqueda != "") sql = "$sql AND B.descr LIKE('%$fCadBusqueda%')"
         sql = "$sql ORDER BY B.descr"
-        cHco = dbAlba.rawQuery(sql, null)
-        cHco.moveToFirst()
+        // TODO
+        //cHco = dbAlba.rawQuery(sql, null)
+        //cHco.moveToFirst()
     }
 
     fun abrirConBusqueda(QueCliente: Int, artBuscar: String) {
@@ -61,6 +61,8 @@ class Historico(contexto: Context) : BaseDatos(contexto) {
         if (this::cHco.isInitialized)
             cHco.close()
 
+        // TODO
+        /*
         cHco = dbAlba.rawQuery(
             "SELECT A._id, A.articulo, A.formato, A.cantidad, A.precio, A.dto, A.precio AS prneto, A.cajas, A.fecha," +
                     " B.codigo, B.descr, C.piezas piezpedida, C.cantidad cantpedida, D.iva porciva," +
@@ -75,6 +77,7 @@ class Historico(contexto: Context) : BaseDatos(contexto) {
                     " ORDER BY B.descr", null
         )
         cHco.moveToFirst()
+       */
     }
 
     fun abrirHcoPorArtClte(queCliente: Int, queOrdenacion: Short) {
@@ -99,8 +102,9 @@ class Historico(contexto: Context) : BaseDatos(contexto) {
                     " GROUP BY A.articulo" +
                     " ORDER BY B.codigo"
         }
-        cHco = dbAlba.rawQuery(queCadena, null)
-        cHco.moveToFirst()
+        // TODO
+        //cHco = dbAlba.rawQuery(queCadena, null)
+        //cHco.moveToFirst()
     }
 
     fun inicializarLinea() {
@@ -129,6 +133,8 @@ class Historico(contexto: Context) : BaseDatos(contexto) {
 
     fun aceptarCambios(fLinea: Int) {
         var fInsertando = true
+        // TODO
+        /*
         dbAlba.rawQuery("SELECT * FROM tmphco", null).use { cTmpHco ->
             cTmpHco.moveToFirst()
             while (!cTmpHco.isAfterLast) {
@@ -167,10 +173,13 @@ class Historico(contexto: Context) : BaseDatos(contexto) {
             } else dbAlba.update("tmphco", values, "linea=$fLinea", null)
             refrescarHco()
         }
+        */
     }
 
     fun aceptarDatosDevolucion(fLinea: Int) {
         var fInsertando = true
+        // TODO
+        /*
         dbAlba.rawQuery("SELECT * FROM tmphco", null).use { cTmpHco ->
             cTmpHco.moveToFirst()
             while (!cTmpHco.isAfterLast) {
@@ -199,6 +208,7 @@ class Historico(contexto: Context) : BaseDatos(contexto) {
                 dbAlba.insert("tmphco", null, values)
             } else dbAlba.update("tmphco", values, "linea=$fLinea", null)
         }
+         */
     }
 
     private fun refrescarHco() {
@@ -207,7 +217,8 @@ class Historico(contexto: Context) : BaseDatos(contexto) {
     }
 
     fun borrar() {
-        dbAlba.delete("tmphco", "1=1", null)
+        // TODO
+        //dbAlba.delete("tmphco", "1=1", null)
     }
 
 
@@ -223,6 +234,8 @@ class Historico(contexto: Context) : BaseDatos(contexto) {
         var fInsertando = true
         if (queArticulo > 0) {
             // Compruebo si el artículo ya existe en la tabla temporal.
+            // TODO
+            /*
             dbAlba.rawQuery("SELECT * FROM tmphco", null).use { cTmpHco ->
                 cTmpHco.moveToFirst()
                 while (!cTmpHco.isAfterLast) {
@@ -232,7 +245,10 @@ class Historico(contexto: Context) : BaseDatos(contexto) {
                     cTmpHco.moveToNext()
                 }
             }
+             */
         }
+        // TODO
+        /*
         val values = ContentValues()
         values.put("cajas", fCajas)
         values.put("cantidad", fCantidad)
@@ -254,6 +270,7 @@ class Historico(contexto: Context) : BaseDatos(contexto) {
             values.put("formato", fFormatoLin)
             dbAlba.insert("tmphco", null, values)
         } else dbAlba.update("tmphco", values, "articulo=$queArticulo", null)
+         */
     }
 
 }

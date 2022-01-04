@@ -13,8 +13,6 @@ import es.albainformatica.albamobileandroid.entity.PendienteEnt
 
 class PendienteClase(queContexto: Context) {
     private val pendienteDao: PendienteDao? = MyDatabase.getInstance(queContexto)?.pendienteDao()
-    private val bd = BaseDatos(queContexto)
-    private val dbAlba = bd.writableDatabase
     private val fContexto = queContexto
 
     var pendienteId: Int = 0
@@ -194,6 +192,8 @@ class PendienteClase(queContexto: Context) {
 
 
     fun getCabeceraId(): Int {
+        // TODO
+        /*
         try {
             dbAlba.rawQuery("SELECT _id FROM cabeceras WHERE tipodoc = " + tipoDoc +
                     " AND empresa = " + empresa + " AND alm = " + almacen +
@@ -205,6 +205,8 @@ class PendienteClase(queContexto: Context) {
         } catch (e: Exception) {
             return 0
         }
+        */
+        return 0
     }
 
 

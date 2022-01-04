@@ -138,7 +138,7 @@ class ListaPaquetes {
 
 
 class DatosVtaFtos {
-    var codigo = 0
+    var codigo: Short = 0
     var descripcion: String = ""
     var idFtosLineas = 0
     var borrar: String = ""
@@ -219,6 +219,17 @@ class DatosLinRecStock {
     var empresa: Short = 0
 }
 
+class DatosLinDocDif {
+    var codigo: String = ""
+    var descripcion: String = ""
+    var cajas: String = ""
+    var cantidad: String = ""
+    var precio: String = ""
+    var dto: String = ""
+    var importe: String = ""
+    var codigoIva: Short = 0
+    var porcIva: String = ""
+}
 
 
 var fArtSeleccCat = 0

@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
-import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.LayoutInflater
@@ -22,8 +21,6 @@ import java.util.*
 
 
 class ClientesActivity: AppCompatActivity(), View.OnClickListener {
-    private lateinit var db: BaseDatos
-    private lateinit var dbAlba: SQLiteDatabase
     private lateinit var fConfiguracion: Configuracion
     private lateinit var fRecyclerView: RecyclerView
     private lateinit var fAdapter: ClientesRvAdapter
@@ -63,8 +60,6 @@ class ClientesActivity: AppCompatActivity(), View.OnClickListener {
 
     override fun onDestroy() {
         guardarPreferencias()
-        if (dbAlba.isOpen) dbAlba.close()
-        db.close()
         super.onDestroy()
     }
 
@@ -154,8 +149,6 @@ class ClientesActivity: AppCompatActivity(), View.OnClickListener {
         val dividerItemDecoration = DividerItemDecoration(fRecyclerView.context, (fRecyclerView.layoutManager as LinearLayoutManager).orientation)
         fRecyclerView.addItemDecoration(dividerItemDecoration)
 
-        db = BaseDatos(this)
-        dbAlba = db.writableDatabase
         fCliente = 0
 
         // Si estamos buscando, ocultamos algunos botones del menú inferior.
@@ -411,6 +404,8 @@ class ClientesActivity: AppCompatActivity(), View.OnClickListener {
             else -> "$sQuery ORDER BY codigo"
         }
 
+        // TODO
+        /*
         val cClientes = dbAlba.rawQuery(sQuery, null)
         cClientes.use { cursor ->
             if (cursor.moveToFirst()) {
@@ -426,6 +421,7 @@ class ClientesActivity: AppCompatActivity(), View.OnClickListener {
                 } while (cursor.moveToNext())
             }
         }
+        */
 
         return lListaCltes
     }

@@ -49,7 +49,6 @@ class VerHcoArtCliente: Activity() {
 
     override fun onDestroy() {
         if (fArticulos != null) fArticulos.close()
-        if (fHistorico != null) fHistorico.close()
         super.onDestroy()
     }
 

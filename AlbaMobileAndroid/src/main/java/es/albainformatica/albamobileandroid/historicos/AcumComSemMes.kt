@@ -38,11 +38,6 @@ class AcumComSemMes: AppCompatActivity() {
         inicializarControles()
     }
 
-    override fun onDestroy() {
-        fHistorico.close()
-        super.onDestroy()
-    }
-
 
     private fun inicializarControles() {
         fFtoDecCantidad = fConfiguracion.formatoDecCantidad()

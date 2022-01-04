@@ -23,13 +23,12 @@ import java.util.*
 
 class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
     private val ofertasDao: OfertasDao? = MyDatabase.getInstance(this)?.ofertasDao()
-    private lateinit var db: BaseDatos
-    private lateinit var dbAlba: SQLiteDatabase
     private lateinit var fConfiguracion: Configuracion
+
     private var fArticulo = 0
     private var fVendiendo: Boolean = false
     private var fBuscando = false
-    private var fTarifa: Byte = 0
+    private var fTarifa: Short = 0
     private var fProveedor = 0
     private var fEmpresaActual: Int = 0
 
@@ -90,8 +89,6 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
 
     override fun onDestroy() {
         guardarPreferencias()
-        if (dbAlba.isOpen) dbAlba.close()
-        db.close()
         super.onDestroy()
     }
 
@@ -167,8 +164,6 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
         } else {
             btnOrdenar.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.ordenacion_alf), null, null)
         }
-        db = BaseDatos(this)
-        dbAlba = db.readableDatabase
         fArticulo = 0
 
         val tvTitulo = findViewById<TextView>(R.id.tvNombreActivity)
@@ -344,7 +339,8 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
         //    }
         //}
         sQuery = if (queOrdenacion.toInt() == 0) "$sQuery ORDER BY A.descr" else "$sQuery ORDER BY A.Codigo"
-        cursor = dbAlba.rawQuery(sQuery, null)
+        // TODO
+        //cursor = dbAlba.rawQuery(sQuery, null)
 
         // En modo catálogo visualizaremos la imagen del artículo y usaremos un
         // adaptador distinto para el listView. Se trata de un adaptador propio, al que he llamado ItemArticuloAdapter.

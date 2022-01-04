@@ -6,7 +6,6 @@ import android.content.ContentValues
 import android.content.Intent
 import android.content.SharedPreferences
 import android.database.Cursor
-import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.KeyEvent
@@ -33,11 +32,8 @@ class NuevaCarga: AppCompatActivity() {
     private lateinit var fLotes: LotesClase
     private lateinit var fArticulos: ArticulosClase
     private lateinit var fConfiguracion: Configuracion
-    private lateinit var db: BaseDatos
-    private lateinit var dbAlba: SQLiteDatabase
 
     private lateinit var adapterLineas: SimpleCursorAdapter
-    private lateinit var fCursor: Cursor
     private lateinit var prefs: SharedPreferences
 
     private var fCargaId = 0
@@ -58,8 +54,6 @@ class NuevaCarga: AppCompatActivity() {
         super.onCreate(savedInstance)
         setContentView(R.layout.nueva_carga)
 
-        db = BaseDatos(this)
-        dbAlba = db.writableDatabase
         fLotes = LotesClase(this)
         fConfiguracion = Comunicador.fConfiguracion
         fArticulos = ArticulosClase(this)
@@ -71,8 +65,6 @@ class NuevaCarga: AppCompatActivity() {
 
     override fun onDestroy() {
         fArticulos.close()
-        dbAlba.close()
-        db.close()
 
         super.onDestroy()
     }
@@ -91,14 +83,14 @@ class NuevaCarga: AppCompatActivity() {
         prepararCajas()
         prepararLote()
 
-        prepararListView()
+        // TODO: cambiar esto
+        //prepararListView()
     }
 
 
     private fun prepararCodigo() {
         // Preparamos el evento para controlar la pulsación de Enter en el código de artículo
-        edtCodArtNCarga.setOnKeyListener(
-            object : View.OnKeyListener {
+        edtCodArtNCarga.setOnKeyListener(object: View.OnKeyListener {
                 override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
                     if (event.action == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_DPAD_CENTER)) {
 
@@ -163,7 +155,8 @@ class NuevaCarga: AppCompatActivity() {
         edtCantidadNCarga.setText(dCantidad.toString())
     }
 
-
+    // TODO: cambiar el listView por un RecyclerView
+    /*
     fun prepararListView() {
         val columnas: Array<String> = arrayOf("codigo", "descr", "lote", "cajas", "cantidad")
         val to: IntArray = intArrayOf(R.id.tvLNCCodigo, R.id.tvLNCDescr, R.id.tvLNCLote, R.id.tvLNCCajas, R.id.tvLNCCantidad)
@@ -171,8 +164,6 @@ class NuevaCarga: AppCompatActivity() {
         cargarCursor()
 
         adapterLineas = SimpleCursorAdapter(this, R.layout.ly_nueva_carga, fCursor, columnas, to, 0)
-        // Formateamos las columnas.
-        //formatearColumnas()
 
         lvNCarga.adapter = adapterLineas
 
@@ -193,7 +184,7 @@ class NuevaCarga: AppCompatActivity() {
 
         fCursor.moveToFirst()
     }
-
+    */
 
     fun buscarArticulo(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
@@ -246,8 +237,6 @@ class NuevaCarga: AppCompatActivity() {
         // Presentaremos automáticamente la ventana de lotes siempre que tengamos en configuración:
         // - Usar cargas
         // - Aviso lotes
-        //if (fUsarTrazabilidad && fBuscarLote)
-        //    buscarLote(null)
 
         if (fUsarTrazabilidad) {
             if (fArticulos.controlaTrazabilidad()) {
@@ -294,7 +283,8 @@ class NuevaCarga: AppCompatActivity() {
         startActivityForResult(i, fRequestBuscarLote)
     }
 
-
+    // TODO: terminar esto
+    /*
     @SuppressLint("SimpleDateFormat")
     fun aceptarNCarga(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
@@ -346,6 +336,7 @@ class NuevaCarga: AppCompatActivity() {
             adapterLineas.changeCursor(fCursor)
         }
     }
+    */
 
     private fun actualizarStockCarga(queArticulo: Int, queCajas: String, queCantidad: String, queLote: String) {
         val dCantidad = queCantidad.toDouble()
@@ -361,7 +352,8 @@ class NuevaCarga: AppCompatActivity() {
         }
     }
 
-
+    // TODO: terminar esto
+    /*
     fun borrarNCarga(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
@@ -386,7 +378,7 @@ class NuevaCarga: AppCompatActivity() {
         }
         else Toast.makeText(this, "No ha seleccionado ninguna línea", Toast.LENGTH_SHORT).show()
     }
-
+    */
 
     @SuppressLint("InflateParams")
     fun aceptarTodos(view: View) {
@@ -445,7 +437,10 @@ class NuevaCarga: AppCompatActivity() {
 
             alert("¿Abandonar la carga?" + "\nPerderá los datos que ha introducido") {
                 title = "Abandonar"
-                positiveButton("SI") { abandonarCarga() }
+                positiveButton("SI") {
+                    // TODO: terminar esto
+                    //abandonarCarga()
+                    }
                 negativeButton("NO") { }
             }.show()
 
@@ -456,7 +451,8 @@ class NuevaCarga: AppCompatActivity() {
         return super.onKeyDown(keyCode, event)
     }
 
-
+    // TODO: terminar esto
+    /*
     private fun abandonarCarga() {
 
         if (fCursor.moveToFirst()) {
@@ -480,6 +476,6 @@ class NuevaCarga: AppCompatActivity() {
         setResult(Activity.RESULT_CANCELED, returnIntent)
         finish()
     }
-
+    */
 
 }

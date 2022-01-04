@@ -41,7 +41,7 @@ class EditarHcoActivity: AppCompatActivity() {
     private var fFtoDecPrII: String = ""
     private var fDesdeHcoArtClte: Boolean = false
     private var fEditAlmEnabled: Boolean = false
-    private var fTarifaAnt: Byte = 0
+    private var fTarifaAnt: Short = 0
     private var fVendTrfPiezas = false
 
 
@@ -107,7 +107,6 @@ class EditarHcoActivity: AppCompatActivity() {
 
     override fun onDestroy() {
         fArticulos.close()
-        fHistMes.close()
         super.onDestroy()
     }
 
@@ -441,7 +440,7 @@ class EditarHcoActivity: AppCompatActivity() {
         } else {
             // Si la línea del histórico tiene formato, mantenemos el mismo.
             if (fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("formato")) != null) fHistorico.fFormatoLin =
-                fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("formato")).toByte()
+                fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("formato")).toShort()
             fDocumento.fFormatoLin = fHistorico.fFormatoLin
 
             // Si la línea tiene formato, adjuntaremos la descripción del mismo a la del artículo.
@@ -658,15 +657,9 @@ class EditarHcoActivity: AppCompatActivity() {
                 val queFormatoId = data?.getIntExtra("formatoId", 0)
                 val queNumPiezas = data?.getStringExtra("piezas")
                 fHistorico.inicializarLinea()
-                fHistorico.fFormatoLin = queFormatoId?.toByte() ?: 0
+                fHistorico.fFormatoLin = queFormatoId?.toShort() ?: 0
                 if (queNumPiezas != "") fHistorico.fPiezas = queNumPiezas?.toDouble() ?: 0.0
-                edtPiezas.setText(
-                    String.format(
-                        Locale.getDefault(),
-                        fFtoDecCantidad,
-                        fHistorico.fPiezas
-                    )
-                )
+                edtPiezas.setText(String.format(Locale.getDefault(), fFtoDecCantidad, fHistorico.fPiezas))
                 setArticulo()
                 // Vemos qué control es el primero en obtener el foco
                 darFocoAEdit()
@@ -702,8 +695,8 @@ class EditarHcoActivity: AppCompatActivity() {
             fVendTrfPiezas = false
         } else {
             fTarifaAnt = fDocumento.fTarifaLin
-            if (fDocumento.fClientes.getTarifaPiezas() != "0") fDocumento.fTarifaLin =
-                fDocumento.fClientes.getTarifaPiezas().toByte()
+            if (fDocumento.fClientes.getTarifaPiezas() != "0")
+                fDocumento.fTarifaLin = fDocumento.fClientes.getTarifaPiezas().toShort()
             setArticulo()
             imgTrfPiezas.visibility = View.VISIBLE
             fVendTrfPiezas = true

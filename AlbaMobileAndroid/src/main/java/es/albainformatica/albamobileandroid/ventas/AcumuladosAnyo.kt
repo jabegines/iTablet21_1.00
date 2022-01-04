@@ -40,10 +40,6 @@ class AcumuladosAnyo: Activity() {
         mostrarGrafico()
     }
 
-    override fun onDestroy() {
-        fHistorico.close()
-        super.onDestroy()
-    }
 
     private fun inicializarControles() {
         linearChart = findViewById<View>(R.id.linearChart) as LinearLayout

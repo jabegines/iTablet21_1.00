@@ -49,7 +49,7 @@ class DocDiferidaPDF(private val fContexto: Context, idDocumento: Int) {
     private val fFormasPago: FormasPagoClase
 
     private val cabDifEnt = cabDifDao?.getDatosDocumento(idDocumento) ?: CabDiferidasEnt()
-    private val lLineas = linDifDao?.getLineasDoc(idDocumento) ?: emptyList<LineasDifEnt>().toMutableList()
+    private val lLineas = linDifDao?.getLineasDoc(idDocumento) ?: emptyList<DatosLinDocDif>().toMutableList()
 
     private lateinit var canvas: PdfContentByte
     private lateinit var documPDF: Document
@@ -405,8 +405,6 @@ class DocDiferidaPDF(private val fContexto: Context, idDocumento: Int) {
 
     @SuppressLint("Range")
     fun recalcularBases() {
-        val dbAlba = BaseDatos(fContexto).readableDatabase
-
         fBases.fLista.clear()
         val fDecImpII = fConfiguracion.decimalesImpII()
         configurarBases()
@@ -416,13 +414,7 @@ class DocDiferidaPDF(private val fContexto: Context, idDocumento: Int) {
             var fImpteII: Double
             if (fExentoIva) fImpteII = fImporte else {
 
-                var fPorcIva = 0.0
-                val cIva = dbAlba.rawQuery("SELECT iva FROM ivas WHERE codigo = " + linea.codigoIva, null)
-                if (cIva.moveToFirst()) {
-                    if (cIva.getString(cIva.getColumnIndex("iva")) != null)
-                        fPorcIva = cIva.getString(cIva.getColumnIndex("iva")).replace(',', '.').toDouble()
-                }
-                cIva.close()
+                val fPorcIva = linea.porcIva.replace(',', '.').toDouble()
 
                 fImpteII = fImporte + fImporte * fPorcIva / 100
                 fImpteII = Redondear(fImpteII, fDecImpII)

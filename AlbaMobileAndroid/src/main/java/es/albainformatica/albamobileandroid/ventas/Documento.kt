@@ -26,11 +26,11 @@ import java.util.*
 /**
  * Created by jabegines on 14/10/13.
  */
-class Documento(private val fContexto: Context) : BaseDatos(fContexto) {
+class Documento(private val fContexto: Context) {
     private val ofertasDao: OfertasDao? = getInstance(fContexto)?.ofertasDao()
     private val ofVolRangosDao: OftVolRangosDao? = getInstance(fContexto)?.oftVolRangosDao()
     private val ratingProvDao: RatingProvDao? = getInstance(fContexto)?.ratingProvDao()
-    private val dbAlba: SQLiteDatabase = writableDatabase
+
     private val myBD: MyDatabase? = getInstance(fContexto)
     lateinit var cLineas: Cursor
     lateinit var cDocumentos: Cursor
@@ -63,11 +63,11 @@ class Documento(private val fContexto: Context) : BaseDatos(fContexto) {
     var fFecha: String = ""
     var fFEntrega: String = ""
     var fHora: String = ""
-    var fTarifaDoc: Byte = 0
-    private var fTarifaDto: Byte = 0
-    var fTarifaLin: Byte = 0
+    var fTarifaDoc: Short = 0
+    private var fTarifaDto: Short = 0
+    var fTarifaLin: Short = 0
     var fPuedoAplTrfCajas = false
-    var fFormatoLin: Byte = 0
+    var fFormatoLin: Short = 0
     var fPorcIva: Double = 0.0
     var fAplicarIva: Boolean = true
     private var fAplicarRe: Boolean = false
@@ -125,12 +125,11 @@ class Documento(private val fContexto: Context) : BaseDatos(fContexto) {
     }
 
 
-    override fun close() {
+    fun close() {
         fBases.close()
         fClientes.close()
         fArticulos.close()
         fDtosCascada.close()
-        if (dbAlba.isOpen) dbAlba.close()
     }
 
     fun abrirLineas() {
@@ -175,11 +174,9 @@ class Documento(private val fContexto: Context) : BaseDatos(fContexto) {
                 // Actualizamos el stock del artículo
                 fControlarStock = fConfiguracion.controlarStock()
                 fUsarTrazabilidad = fConfiguracion.usarTrazabilidad()
-                fTipoDoc =
-                    cLineasSinCabecera.getString(cLineasSinCabecera.getColumnIndex("tipodoc"))
-                        .toShort()
-                if (fControlarStock && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN)) fArticulos.actualizarStock(
-                    queArticulo,
+                fTipoDoc = cLineasSinCabecera.getString(cLineasSinCabecera.getColumnIndex("tipodoc")).toShort()
+                if (fControlarStock && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN))
+                    fArticulos.actualizarStock(                    queArticulo,
                     fEmpresa,
                     -queCantidad,
                     -queCajas,

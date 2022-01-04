@@ -33,11 +33,6 @@ class Graf_Hco_Clte: AppCompatActivity() {
     }
 
 
-    override fun onDestroy() {
-        fHcoMes.close()
-        super.onDestroy()
-    }
-
 
     private fun inicializarControles() {
         lvLineas = findViewById(R.id.lvGrafHcoClte)

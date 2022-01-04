@@ -19,7 +19,7 @@ class RecAdapVtasFtos (var formatos: MutableList<DatosVtaFtos>, val context: Con
                         RecyclerView.Adapter<RecAdapVtasFtos.ViewHolder>() {
 
     var selectedPos: Int = RecyclerView.NO_POSITION
-    var formatoId: Int = 0
+    var formatoId: Short = 0
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

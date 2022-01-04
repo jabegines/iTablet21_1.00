@@ -19,13 +19,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class ClientesClase(val contexto: Context): BaseDatos(contexto) {
+class ClientesClase(val contexto: Context) {
     private val saldosDao: SaldosDao? = MyDatabase.getInstance(contexto)?.saldosDao()
     private val contactosClteDao: ContactosCltesDao? = MyDatabase.getInstance(contexto)?.contactosCltesDao()
 
-    private var dbAlba: SQLiteDatabase = writableDatabase
     lateinit var cursor: Cursor
-    //var cTelefonos: Cursor? = null
     lateinit var cDirecciones: Cursor
     private var fFPago: FormasPagoClase = FormasPagoClase(contexto)
 
@@ -40,20 +38,19 @@ class ClientesClase(val contexto: Context): BaseDatos(contexto) {
     }
 
 
-    override fun close() {
+    fun close() {
         //cTelefonos?.close()
         if (this::cDirecciones.isInitialized)
             cDirecciones.close()
         if (this::cursor.isInitialized)
             cursor.close()
-        dbAlba.close()
-        super.close()
     }
 
 
     fun abrirUnCliente(queCliente: Int): Boolean {
         fCliente = queCliente
-        dbAlba = writableDatabase
+        // TODO
+        /*
         cursor = dbAlba.rawQuery("SELECT * FROM clientes WHERE cliente = $queCliente", null)
         //cTelefonos = dbAlba.rawQuery("SELECT * FROM conclientes WHERE cliente = $queCliente ORDER BY orden", null)
         cDirecciones = dbAlba.rawQuery("SELECT * FROM dirclientes WHERE cliente = $queCliente ORDER BY orden", null)
@@ -64,17 +61,20 @@ class ClientesClase(val contexto: Context): BaseDatos(contexto) {
             cDirecciones.moveToFirst()
             return true
         } else return false
+        */
+        return true
     }
 
 
     fun Abrir() {
-        dbAlba = writableDatabase
+        // TODO
+        //dbAlba = writableDatabase
     }
 
     fun abrirParaEnviar(QueNumExportacion: Int) {
-        dbAlba = readableDatabase
+        // TODO
         val sCondicion: String = if (QueNumExportacion == 0) " WHERE estado = 'N' OR estado = 'M'" else " WHERE numexport = $QueNumExportacion"
-        cursor = dbAlba.rawQuery("SELECT * FROM clientes $sCondicion", null)
+        //cursor = dbAlba.rawQuery("SELECT * FROM clientes $sCondicion", null)
     }
 
 
@@ -83,7 +83,8 @@ class ClientesClase(val contexto: Context): BaseDatos(contexto) {
     }
 
     fun variasDirecciones(queCliente: Int): Boolean {
-        dbAlba = readableDatabase
+        // TODO
+        /*
         return try {
             cDirecciones = dbAlba.rawQuery("SELECT * FROM dirClientes WHERE cliente = $queCliente" +
                     " AND (dirdoc = 'F' OR dirdoc IS NULL)", null)
@@ -93,18 +94,21 @@ class ClientesClase(val contexto: Context): BaseDatos(contexto) {
         } finally {
             cDirecciones.close()
         }
+        */
+        return true
     }
 
     fun abrirDirParaEnviar(QueNumExportacion: Int) {
-        dbAlba = readableDatabase
         val sCondicion: String = if (QueNumExportacion == 0) "WHERE estado = 'N' OR estado = 'M'" else " WHERE numexport = $QueNumExportacion"
-        cDirecciones = dbAlba.rawQuery("SELECT * FROM dirclientes $sCondicion", null)
+        // TODO
+        //cDirecciones = dbAlba.rawQuery("SELECT * FROM dirclientes $sCondicion", null)
     }
 
 
 
     fun existeCodigo(QueCodigo: String): Int {
-        dbAlba = readableDatabase
+        // TODO
+        /*
         cursor = dbAlba.rawQuery("SELECT cliente FROM clientes WHERE codigo = '$QueCodigo'", null)
         return try {
             if (cursor.moveToFirst()) {
@@ -113,6 +117,8 @@ class ClientesClase(val contexto: Context): BaseDatos(contexto) {
         } finally {
             cursor.close()
         }
+       */
+        return 0
     }
 
     fun aceptarCambDirec(aDatosDirecc: ArrayList<String>, insertando: Boolean) {
@@ -127,10 +133,12 @@ class ClientesClase(val contexto: Context): BaseDatos(contexto) {
             values.put("orden", dimeUltimoOrdenDir(aDatosDirecc[1].toInt()))
             values.put("sucursal", "0")
             values.put("estado", "N")
-            dbAlba.insert("dirclientes", null, values)
+            // TODO
+            //dbAlba.insert("dirclientes", null, values)
         } else {
             values.put("estado", "M")
-            dbAlba.update("dirclientes", values, "_id=" + aDatosDirecc[0], null)
+            // TODO
+            //dbAlba.update("dirclientes", values, "_id=" + aDatosDirecc[0], null)
         }
         refrescarDirecc()
     }
@@ -139,40 +147,41 @@ class ClientesClase(val contexto: Context): BaseDatos(contexto) {
         val values = ContentValues()
         values.put("estado", "XN")
         values.put("numexport", iSigExportacion)
-        dbAlba.update("clientes", values, "estado='N'", null)
-        dbAlba.update("conclientes", values, "estado='N'", null)
-        dbAlba.update("dirclientes", values, "estado='N'", null)
+        // TODO
+        //dbAlba.update("clientes", values, "estado='N'", null)
+        //dbAlba.update("conclientes", values, "estado='N'", null)
+        //dbAlba.update("dirclientes", values, "estado='N'", null)
         values.put("estado", "XM")
         values.put("numexport", iSigExportacion)
-        dbAlba.update("clientes", values, "estado='M'", null)
-        dbAlba.update("conclientes", values, "estado='M'", null)
-        dbAlba.update("dirclientes", values, "estado='M'", null)
+        //dbAlba.update("clientes", values, "estado='M'", null)
+        //dbAlba.update("conclientes", values, "estado='M'", null)
+        //dbAlba.update("dirclientes", values, "estado='M'", null)
     }
 
 
     fun marcarNumExport(fNumPaquete: Int) {
         val values = ContentValues()
         values.put("numexport", fNumPaquete)
-        dbAlba.update("clientes", values, "numexport=-1", null)
-        dbAlba.update("conclientes", values, "numexport=-1", null)
-        dbAlba.update("dirclientes", values, "numexport=-1", null)
+        // TODO
+        //dbAlba.update("clientes", values, "numexport=-1", null)
+        //dbAlba.update("conclientes", values, "numexport=-1", null)
+        //dbAlba.update("dirclientes", values, "numexport=-1", null)
     }
 
     fun borrarDirecc(QueId: String) {
-        dbAlba.delete("dirclientes", "_id=$QueId", null)
+        // TODO
+        //dbAlba.delete("dirclientes", "_id=$QueId", null)
         refrescarDirecc()
     }
 
     private fun refrescarDirecc() {
         cDirecciones.close()
-        cDirecciones = dbAlba.rawQuery("SELECT * FROM dirclientes WHERE cliente = " + fCliente + " ORDER BY orden", null)
+        // TODO
+        //cDirecciones = dbAlba.rawQuery("SELECT * FROM dirclientes WHERE cliente = " + fCliente + " ORDER BY orden", null)
         cDirecciones.moveToFirst()
     }
 
     private fun refrescarTelef() {
-        //cTelefonos?.close()
-        //cTelefonos = dbAlba.rawQuery("SELECT * FROM conclientes WHERE cliente = $fCliente ORDER BY orden", null)
-        //cTelefonos?.moveToFirst()
     }
 
     fun aceptarCambTelf(aDatosTelf: ArrayList<String>, insertando: Boolean) {
@@ -188,16 +197,19 @@ class ClientesClase(val contexto: Context): BaseDatos(contexto) {
             values.put("sucursal", "0")
             values.put("orden", dimeUltimoOrdenTelf())
             values.put("estado", "N")
-            dbAlba.insert("conclientes", null, values)
+            // TODO
+            //dbAlba.insert("conclientes", null, values)
         } else {
             values.put("estado", "M")
-            dbAlba.update("conclientes", values, "_id=" + aDatosTelf[0], null)
+            // TODO
+            //dbAlba.update("conclientes", values, "_id=" + aDatosTelf[0], null)
         }
         refrescarTelef()
     }
 
     fun borrarTelf(QueId: String) {
-        dbAlba.delete("conclientes", "_id=$QueId", null)
+        // TODO
+        //dbAlba.delete("conclientes", "_id=$QueId", null)
         refrescarTelef()
     }
 
@@ -230,11 +242,14 @@ class ClientesClase(val contexto: Context): BaseDatos(contexto) {
         if (insertando) {
             values.put("cliente", dimeUltimoClte())
             values.put("tieneincid", "F")
-            dbAlba.insert("clientes", null, values)
+            // TODO
+            //dbAlba.insert("clientes", null, values)
 
             // Si hemos indicado alguna ruta, incluimos el cliente al final del rutero
             if (aDatosClte[12] != "") anyadirARutero(values.getAsString("cliente"), values.getAsString("ruta"))
-        } else dbAlba.update("clientes", values, "cliente=" + aDatosClte[0], null)
+        }
+        // TODO
+        //else dbAlba.update("clientes", values, "cliente=" + aDatosClte[0], null)
     }
 
     private fun anyadirARutero(queCliente: String, queRuta: String) {
@@ -242,28 +257,35 @@ class ClientesClase(val contexto: Context): BaseDatos(contexto) {
         values.put("ruta", queRuta)
         values.put("orden", 9999)
         values.put("cliente", queCliente)
-        dbAlba.insert("rutero", null, values)
+        // TODO
+        //dbAlba.insert("rutero", null, values)
     }
 
     private fun dimeUltimoOrdenTelf(): Int {
+        // TODO
+        /*
         dbAlba.rawQuery("SELECT MAX(orden) orden FROM conclientes", null).use { cUltOrden ->
             return if (cUltOrden.moveToFirst()) {
                 val columna = cUltOrden.getColumnIndex("orden")
                 cUltOrden.getInt(columna) + 1
             } else 1
         }
+        */
+        return 0
     }
 
     private fun dimeUltimoOrdenDir(QueCliente: Int): Int {
-        dbAlba.rawQuery(
-            "SELECT MAX(orden) orden FROM dirclientes WHERE cliente = $QueCliente",
-            null
+        // TODO
+        /*
+        dbAlba.rawQuery("SELECT MAX(orden) orden FROM dirclientes WHERE cliente = $QueCliente", null
         ).use { cUltOrden ->
             return if (cUltOrden.moveToFirst()) {
                 val columna = cUltOrden.getColumnIndex("orden")
                 cUltOrden.getInt(columna) + 1
             } else 1
         }
+        */
+        return 0
     }
 
 
@@ -287,7 +309,8 @@ class ClientesClase(val contexto: Context): BaseDatos(contexto) {
 
     private fun existeUltClte(QueClte: Int): Boolean {
         return try {
-            cursor = dbAlba.rawQuery("SELECT cliente FROM clientes WHERE cliente = $QueClte", null)
+            // TODO
+            //cursor = dbAlba.rawQuery("SELECT cliente FROM clientes WHERE cliente = $QueClte", null)
             cursor.moveToFirst()
         } finally {
             cursor.close()
@@ -298,7 +321,8 @@ class ClientesClase(val contexto: Context): BaseDatos(contexto) {
     fun actualizarPendiente(queCliente: Int, queImporte: Double) {
         var dImporte = queImporte
         val values = ContentValues()
-        dbAlba = writableDatabase
+        // TODO
+        /*
         dbAlba.rawQuery("SELECT pendiente FROM clientes WHERE cliente = $queCliente", null)
             .use { cPendiente ->
                 if (cPendiente.moveToFirst()) {
@@ -308,6 +332,7 @@ class ClientesClase(val contexto: Context): BaseDatos(contexto) {
                     dbAlba.update("clientes", values, "cliente=$queCliente", null)
                 }
             }
+        */
     }
 
 

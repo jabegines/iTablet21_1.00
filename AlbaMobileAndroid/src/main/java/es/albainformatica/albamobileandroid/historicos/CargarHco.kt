@@ -57,13 +57,6 @@ class CargarHco: Activity() {
         inicializarControles()
     }
 
-    override fun onDestroy() {
-        if (fDesdeCltes) {
-            if (this::fHistorico.isInitialized)
-                fHistorico.close()
-        }
-        super.onDestroy()
-    }
 
     private fun inicializarControles() {
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
@@ -363,17 +356,14 @@ class CargarHco: Activity() {
     }
 
     private fun usarHcoCompSemMeses(): Boolean {
-        val bd = BaseDatos(this)
-        try {
+        // TODO
+        /*
             bd.writableDatabase.use { dbAlba ->
-                dbAlba.rawQuery(
-                    "SELECT _id FROM hcoCompSemMes",
-                    null
-                ).use { cursor -> return cursor.moveToFirst() }
+                dbAlba.rawQuery("SELECT _id FROM hcoCompSemMes", null).use { cursor -> return cursor.moveToFirst() }
             }
-        } finally {
-            bd.close()
-        }
+
+        */
+        return false
     }
 
     companion object {

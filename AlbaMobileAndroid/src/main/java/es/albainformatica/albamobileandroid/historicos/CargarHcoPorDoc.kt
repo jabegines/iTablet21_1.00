@@ -25,11 +25,9 @@ class CargarHcoPorDoc: AppCompatActivity() {
 
     private lateinit var fHistorico: Historico
     private var fCliente: Int = 0
-    //private var fLinea: Int = 0
     private lateinit var fRecyclerView: RecyclerView
     private lateinit var fAdapter: RecAdapHcoPorDoc
-    private lateinit var db: BaseDatos
-    private lateinit var dbAlba: SQLiteDatabase
+
 
     private lateinit var adapterLineas: SimpleCursorAdapter
     private lateinit var fCursor: Cursor
@@ -44,8 +42,6 @@ class CargarHcoPorDoc: AppCompatActivity() {
         super.onCreate(savedInstance)
         setContentView(R.layout.cargar_hcopordoc)
 
-        db = BaseDatos(this)
-        dbAlba = db.writableDatabase
         fHistorico = Comunicador.fHistorico
         val i = intent
         fCliente = i.getIntExtra("cliente", 0)
@@ -55,8 +51,6 @@ class CargarHcoPorDoc: AppCompatActivity() {
 
     override fun onDestroy() {
         guardarPreferencias()
-        dbAlba.close()
-        db.close()
 
         super.onDestroy()
     }
@@ -144,7 +138,8 @@ class CargarHcoPorDoc: AppCompatActivity() {
 
     private fun verDocumento() {
         // Refrescamos el cursor de las cargas y mostramos los artículos de la que hemos seleccionado
-        cargarCursor()
+        // TODO
+        //cargarCursor()
         adapterLineas.changeCursor(fCursor)
     }
 
@@ -156,7 +151,8 @@ class CargarHcoPorDoc: AppCompatActivity() {
         val to = intArrayOf(R.id.tvHcoArtClTipoDoc, R.id.tvHcoArtClSerieNum, R.id.tvHcoArtClFecha,
                 R.id.tvHcoArtClVentas, R.id.tvHcoArtClDevoluciones)
 
-        cargarCursor()
+        // TODO
+        //cargarCursor()
 
         adapterLineas = SimpleCursorAdapter(this, R.layout.ly_hco_doc, fCursor, columnas, to, 0)
         // Formateamos las columnas.
@@ -220,7 +216,8 @@ class CargarHcoPorDoc: AppCompatActivity() {
         }
     }
 
-
+    // TODO
+    /*
     private fun cargarCursor() {
 
         fCursor = dbAlba.rawQuery("SELECT A.*, B.codigo, B.descr FROM hcoPorArticClte A " +
@@ -230,7 +227,7 @@ class CargarHcoPorDoc: AppCompatActivity() {
 
         fCursor.moveToFirst()
     }
-
+    */
 
     fun salvarHco(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
