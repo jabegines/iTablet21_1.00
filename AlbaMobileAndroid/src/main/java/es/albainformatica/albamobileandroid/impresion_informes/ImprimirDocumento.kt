@@ -517,14 +517,10 @@ class ImprimirDocumento(contexto: Context): Runnable {
 
         // Imprimimos el nombre comercial de cliente
         if (fConfiguracion.aconsNomComercial()) {
-            result =
-                ajustarCadena(fDocumento.fClientes.getNComercial(), 35, true) + ccSaltoLinea
+            result = ajustarCadena(fDocumento.fClientes.fNomComercial, 35, true) + ccSaltoLinea
         }
-        var cCadena: String = ajustarCadena(
-            fDocumento.fClientes.getCodigo() + " " + fDocumento.fClientes.getNFiscal(),
-            35,
-            true
-        )
+        var cCadena: String = ajustarCadena(ponerCeros(fDocumento.fClientes.fCodigo.toString(), ancho_codclte) + " " +
+                fDocumento.fClientes.fNombre, 35, true)
         result += cCadena
         cCadena = StringOfChar(
             " ",

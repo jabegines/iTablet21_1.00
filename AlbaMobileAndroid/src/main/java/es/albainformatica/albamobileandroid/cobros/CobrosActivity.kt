@@ -337,9 +337,9 @@ class CobrosActivity: AppCompatActivity() {
         edtCodClte.setOnKeyListener { v: View, keyCode: Int, event: KeyEvent ->
             if (event.action == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_DPAD_CENTER)) {
                 val edtCodigo = v as EditText
-                var queCodigo: String = edtCodigo.text.toString()
-                queCodigo = ponerCeros(queCodigo, ancho_codclte.toString().toByte())
-                val queCliente = fClientes.existeCodigo(queCodigo)
+                val queCodigo: String = edtCodigo.text.toString()
+                //queCodigo = ponerCeros(queCodigo, ancho_codclte.toString().toByte())
+                val queCliente = fClientes.existeCodigo(queCodigo.toInt())
                 if (queCliente > 0) mostrarCliente(queCliente)
                 else {
                     MsjAlerta(this@CobrosActivity).alerta(resources.getString(R.string.msj_CodNoExiste))
@@ -529,13 +529,13 @@ class CobrosActivity: AppCompatActivity() {
     }
 
 
-    private fun mostrarCliente(QueCliente: Int) {
-        if (fClientes.abrirUnCliente(QueCliente)) {
-            fCliente = QueCliente
-            val fCodClte = fClientes.getCodigo()
-            val fNombreClte = fClientes.getNFiscal()
-            val fNomComClte = fClientes.getNComercial()
-            edtCodClte.setText(fCodClte)
+    private fun mostrarCliente(queCliente: Int) {
+        if (fClientes.abrirUnCliente(queCliente)) {
+            fCliente = queCliente
+            val fCodClte = fClientes.fCodigo
+            val fNombreClte = fClientes.fNombre
+            val fNomComClte = fClientes.fNomComercial
+            edtCodClte.setText(ponerCeros(fCodClte.toString(), ancho_codclte))
             tvNombre.text = fNombreClte
             tvNomCom.text = fNomComClte
             tvFPagoClte.text = fClientes.nombreFPago(fClientes.getFPago())

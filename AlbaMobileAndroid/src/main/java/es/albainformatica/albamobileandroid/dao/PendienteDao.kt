@@ -122,6 +122,6 @@ interface PendienteDao {
     fun vaciar()
 
     @Insert
-    fun insertar(pendiente: PendienteEnt): Long
+    fun insertar(pdteEnt: PendienteEnt): Long
 
 }

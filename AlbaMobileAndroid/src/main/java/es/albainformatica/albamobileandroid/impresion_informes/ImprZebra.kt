@@ -229,8 +229,9 @@ import java.util.*
      private fun imprDatClteDoc80(): String {
          var result: String
          val sLongDatosClte = anchoPapel
-         result = ajustarCadena(fDocumento.fClientes.getCodigo() + " " + fDocumento.fClientes.getNFiscal(), sLongDatosClte.toInt(), true) + fCR + fLF
-         result = result + ajustarCadena(fDocumento.fClientes.getNComercial(), sLongDatosClte.toInt(), true) + fCR + fLF
+         result = ajustarCadena(ponerCeros(fDocumento.fClientes.fCodigo.toString(), ancho_codclte) + " " +
+                 fDocumento.fClientes.fNombre, sLongDatosClte.toInt(), true) + fCR + fLF
+         result = result + ajustarCadena(fDocumento.fClientes.fNomComercial, sLongDatosClte.toInt(), true) + fCR + fLF
          result = result + ajustarCadena(fDocumento.fClientes.getDireccion(), sLongDatosClte.toInt(), true) + fCR + fLF
          result = result + ajustarCadena(fDocumento.fClientes.getCodPostal() + " " + fDocumento.fClientes.getPoblacion(), sLongDatosClte.toInt(), true) + fCR + fLF
          result = result + ajustarCadena(fDocumento.fClientes.getProvincia(), sLongDatosClte.toInt(), true) + fCR + fLF
@@ -250,11 +251,11 @@ import java.util.*
          var result = "^XA^LL290"
          // Posición 0,0 y altura de 20
          result += "^FT0,0^AKN,25$fCR$fLF"
-         result += "^FD" + ajustarCadena(fDocumento.fClientes.getCodigo() + " " +
-                 fDocumento.fClientes.getNFiscal(), sLongDatosClte.toInt(), true) + fCR + fLF + "^FS" + fCR + fLF
+         result += "^FD" + ajustarCadena(ponerCeros(fDocumento.fClientes.fCodigo.toString(), ancho_codclte) + " " +
+                 fDocumento.fClientes.fNombre, sLongDatosClte.toInt(), true) + fCR + fLF + "^FS" + fCR + fLF
 
          result += "^FT0,50^AKN,20$fCR$fLF"
-         result += "^FD" + ajustarCadena(fDocumento.fClientes.getNComercial(), sLongDatosClte.toInt(), true) + "^FS" + fCR + fLF
+         result += "^FD" + ajustarCadena(fDocumento.fClientes.fNomComercial, sLongDatosClte.toInt(), true) + "^FS" + fCR + fLF
 
          result += "^FT0,75^AKN,20$fCR$fLF"
          result += "^FD" + ajustarCadena(fDocumento.fClientes.getDireccion(), sLongDatosClte.toInt(), true) + "^FS" + fCR + fLF

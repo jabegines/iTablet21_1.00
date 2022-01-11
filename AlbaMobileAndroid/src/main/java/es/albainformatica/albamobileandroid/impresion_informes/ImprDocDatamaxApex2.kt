@@ -119,13 +119,10 @@ class ImprDocDatamaxApex2(contexto: Context): Runnable {
     }
 
     private fun imprDatosClteYDoc(docExPCL_LP: DocumentExPCL_LP) {
-        var cCadena: String = ajustarCadena(
-            fDocumento.fClientes.getCodigo() + " " + fDocumento.fClientes.getNFiscal(),
-            35,
-            true
-        )
+        var cCadena: String = ajustarCadena(ponerCeros(fDocumento.fClientes.fCodigo.toString(), ancho_codclte) + " " +
+                fDocumento.fClientes.fNombre, 35, true)
         docExPCL_LP.writeText(cCadena)
-        cCadena = ajustarCadena(fDocumento.fClientes.getNComercial(), 35, true)
+        cCadena = ajustarCadena(fDocumento.fClientes.fNomComercial, 35, true)
         docExPCL_LP.writeText(cCadena)
         cCadena = ajustarCadena("C.I.F.: " + fDocumento.fClientes.getCIF(), 35, true)
         docExPCL_LP.writeText(cCadena)

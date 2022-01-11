@@ -369,12 +369,7 @@ class CatalogoArticulos : Activity(), Dlg2Listener {
             }
             fDocumento?.fArticulo = fArticulosGrv.fArticulo
             fDocumento?.fAlmacen = fConfiguracion.almacen()
-            fDocumento?.calculaPrecioYDto(
-                fArticulosGrv.getGrupo(),
-                fArticulosGrv.getDpto(),
-                fArticulosGrv.fCodProv,
-                fArticulosGrv.getPorcIva()
-            )
+            fDocumento?.calculaPrecioYDto(fArticulosGrv.fGrupo, fArticulosGrv.fDepartamento, fArticulosGrv.fCodProv, fArticulosGrv.fPorcIva)
             sPrecio = if (fDocumento?.fPrecio != 0.0)
                 fDocumento?.fPrecio.toString().replace(',', '.')
                 else "0"
@@ -390,13 +385,13 @@ class CatalogoArticulos : Activity(), Dlg2Listener {
         fHistorico.fTasa1 = 0.0
         fHistorico.fTasa2 = 0.0
         if (fDocumento?.fAplicarIva == true) {
-            if (fUsarTasa1) fHistorico.fTasa1 = fArticulosGrv.getTasa1()
-            if (fUsarTasa2) fHistorico.fTasa2 = fArticulosGrv.getTasa2()
+            if (fUsarTasa1) fHistorico.fTasa1 = fArticulosGrv.fTasa1
+            if (fUsarTasa2) fHistorico.fTasa2 = fArticulosGrv.fTasa2
         }
         fHistorico.fArticulo = queItem.articulo
         fHistorico.fCodigo = queItem.codigo
         fHistorico.fDescr = queItem.descr
-        fHistorico.fCodigoIva = fArticulosGrv.getCodigoIva()
+        fHistorico.fCodigoIva = fArticulosGrv.fCodIva
         fHistorico.aceptarCambiosArt(fHistorico.fArticulo)
     }
 

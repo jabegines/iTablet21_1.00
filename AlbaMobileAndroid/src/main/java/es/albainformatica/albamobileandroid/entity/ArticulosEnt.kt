@@ -14,7 +14,7 @@ data class ArticulosEnt (
     var codigo: String = "",
     @ColumnInfo(collate = ColumnInfo.NOCASE)
     var descripcion: String = "",
-    var tipoiva: Short = 0,
+    var tipoIva: Short = 0,
     var grupoId: Short = 0,
     var departamentoId: Short = 0,
     var proveedorId: Int = 0,

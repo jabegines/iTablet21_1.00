@@ -21,6 +21,15 @@ interface DtosLineasDao {
             " WHERE B.estado = 'N' OR B.estado = 'R'")
     fun abrirParaEnviar(): MutableList<DtosLineasEnt>
 
+
+    @Query("UPDATE DtosLineas SET lineaId = :queLinea WHERE lineaId = -1")
+    fun asignarLinea(queLinea: Int)
+
+
+    @Query("DELETE FROM DtosLineas WHERE lineaId = :queLinea")
+    fun borrarLinea(queLinea: Int)
+
+
     @Insert
     fun insertar(dtoLinea: DtosLineasEnt)
 }

@@ -2,7 +2,6 @@ package es.albainformatica.albamobileandroid.ventas
 
 import android.annotation.SuppressLint
 import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.getInstance
-import android.database.sqlite.SQLiteDatabase
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.maestros.ClientesClase
 import es.albainformatica.albamobileandroid.maestros.ArticulosClase
@@ -17,6 +16,7 @@ import android.widget.Toast
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.dao.*
 import es.albainformatica.albamobileandroid.entity.CatalogoLineasEnt
+import es.albainformatica.albamobileandroid.entity.LineasEnt
 import es.albainformatica.albamobileandroid.entity.OfertasEnt
 import es.albainformatica.albamobileandroid.entity.TiposIncEnt
 import java.lang.NumberFormatException
@@ -27,11 +27,21 @@ import java.util.*
  * Created by jabegines on 14/10/13.
  */
 class Documento(private val fContexto: Context) {
+    private val cabeceraDao: CabecerasDao? = getInstance(fContexto)?.cabecerasDao()
+    private val lineasDao: LineasDao? = getInstance(fContexto)?.lineasDao()
     private val ofertasDao: OfertasDao? = getInstance(fContexto)?.ofertasDao()
     private val ofVolRangosDao: OftVolRangosDao? = getInstance(fContexto)?.oftVolRangosDao()
     private val ratingProvDao: RatingProvDao? = getInstance(fContexto)?.ratingProvDao()
+    private val dtosLineasDao: DtosLineasDao? = getInstance(fContexto)?.dtosLineasDao()
+    private val tmpHcoDao: TmpHcoDao? = getInstance(fContexto)?.tmpHcoDao()
+    private val tarifasDao: TarifasDao? = getInstance(fContexto)?.tarifasDao()
+    private val trfFormatosDao: TrfFormatosDao? = getInstance(fContexto)?.trfFormatosDao()
+
+    lateinit var lLineas: List<DatosLinVtas>
 
     private val myBD: MyDatabase? = getInstance(fContexto)
+
+    // TODO: quitar cLineas
     lateinit var cLineas: Cursor
     lateinit var cDocumentos: Cursor
     private val fDtosCascada: DtosCascada = DtosCascada(fContexto)
@@ -90,7 +100,8 @@ class Documento(private val fContexto: Context) {
     var fDtoRatingImp: Double = 0.0
     var fLineaConDtCasc: Boolean = false
     var fLineaEsEnlace: Boolean = false
-    var fPrecioTarifa: Double = 0.0 // Nos servirán para saber si modificamos el precio de tarifa y, en este caso,
+    var fPrecioTarifa: Double =
+        0.0 // Nos servirán para saber si modificamos el precio de tarifa y, en este caso,
     var fDtoLinTarifa: Double = 0.0 // no aplicar ofertas por volumen.
 
     var fCajas: Double = 0.0
@@ -129,26 +140,22 @@ class Documento(private val fContexto: Context) {
         fBases.close()
         fClientes.close()
         fArticulos.close()
-        fDtosCascada.close()
     }
 
     fun abrirLineas() {
-        cLineas = dbAlba.rawQuery(
-            "SELECT A.*, B.iva porciva, C.descr descrfto FROM lineas A"
-                    + " LEFT OUTER JOIN ivas B ON B.codigo = A.codigoiva"
-                    + " LEFT OUTER JOIN formatos C ON C.codigo = A.formato"
-                    + " WHERE A.cabeceraId = " + fIdDoc, null
-        )
-        cLineas.moveToFirst()
+        lLineas = lineasDao?.abrirLineas(fIdDoc) ?: emptyList<DatosLinVtas>().toMutableList()
     }
 
     fun borrarOftVolumen(recBases: Boolean) {
-        dbAlba.delete("lineas", "cabeceraId = $fIdDoc AND flag3 = 128", null)
-        if (recBases) recalcularBases()
+        // TODO
+        //dbAlba.delete("lineas", "cabeceraId = $fIdDoc AND flag3 = 128", null)
+        //if (recBases) recalcularBases()
     }
 
     @SuppressLint("Range")
     fun comprobarLineasHuerfanas() {
+        // TODO
+        /*
         // Buscaremos aquellas líneas que estén sin cabecera
         val cLineasSinCabecera = dbAlba.rawQuery(
             "SELECT A.* FROM lineas A" +
@@ -197,9 +204,12 @@ class Documento(private val fContexto: Context) {
             dbAlba.delete("tmphco", "1=1", null)
         }
         cLineasSinCabecera.close()
+        */
     }
 
     private fun actualizarIdCabecera() {
+        // TODO
+        /*
         val values = ContentValues()
         cLineas.moveToFirst()
         while (!cLineas.isAfterLast) {
@@ -208,40 +218,78 @@ class Documento(private val fContexto: Context) {
             dbAlba.update("lineas", values, "_id=$fLinea", null)
             cLineas.moveToNext()
         }
+        */
     }
 
     @SuppressLint("Range")
     fun anularDocumento() {
-        cLineas.moveToFirst()
-        while (!cLineas.isAfterLast) {
-            borrarLinea(cLineas.getInt(cLineas.getColumnIndex("_id")), false)
-            cLineas.moveToNext()
+        for (linea in lLineas) {
+            borrarLinea(linea, false)
         }
 
         // Borro el histórico, por si he estado indicando cantidades en modo catálogo.
-        dbAlba.delete("tmphco", "1=1", null)
+        tmpHcoDao?.vaciar()
     }
+
+
+    @SuppressLint("Range")
+    fun borrarLinea(linea: DatosLinVtas, refrescar: Boolean) {
+        fArticulo = linea.articuloId
+        fOldCajas = linea.cajas.replace(",", ".").toDouble()
+        fOldCantidad = linea.cantidad.replace(",", ".").toDouble()
+        fOldLote = linea.lote
+        val fOldImpte = linea.importe.replace(",", ".").toDouble()
+        val fOldImpteII: Double = if (linea.importeII != "")
+            linea.importeII.replace(",", ".").toDouble()
+            else 0.0
+
+        val queCodIva = linea.codigoIva
+
+        // Recalculamos las bases.
+        if (fBases.fIvaIncluido) fBases.calcularBase(queCodIva, -fOldImpteII)
+        else fBases.calcularBase(queCodIva, -fOldImpte)
+
+        lineasDao?.borrarLinea(linea.lineaId)
+
+        // Borramos las posibles líneas de descuentos en cascada
+        dtosLineasDao?.borrarLinea(linea.lineaId)
+
+        // Actualizamos el stock del artículo
+        if (fControlarStock && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN))
+            fArticulos.actualizarStock(fArticulo, fEmpresa, -fOldCantidad, -fOldCajas, false)
+
+        // Actualizamos el stock del lote.
+        if (fUsarTrazabilidad && fOldLote != "" && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN))
+            fLotes.actStockLote(fArticulo, -fOldCantidad, fOldLote, fEmpresa)
+        if (refrescar) refrescarLineas()
+    }
+
 
     fun borrarDocumento(queIdDoc: Int) {
         // Cargamos el documento para poder tener acceso al cursor de las líneas.
-        cargarDocumento(queIdDoc, false)
+        // TODO: comprobar si es necesario llamar a cargarDocumento()
+        //cargarDocumento(queIdDoc, false)
+
         // Borramos las líneas.
         anularDocumento()
+
         // Borramos la cabecera.
-        dbAlba.delete("cabeceras", "_id=$queIdDoc", null)
+        cabeceraDao?.borrarDoc(queIdDoc)
     }
 
     fun borrarModifDocReparto(queIdDoc: Int) {
         // Borramos las líneas.
         anularDocumento()
         // Borramos la cabecera.
-        dbAlba.delete("cabeceras", "_id=$queIdDoc", null)
+        // TODO
+        //dbAlba.delete("cabeceras", "_id=$queIdDoc", null)
     }
 
     fun marcarParaEnviar(queIdDoc: Int) {
         val values = ContentValues()
         values.put("estado", "N")
-        dbAlba.update("cabeceras", values, "_id=$queIdDoc", null)
+        // TODO
+        //dbAlba.update("cabeceras", values, "_id=$queIdDoc", null)
     }
 
     fun abrirTodos(queCliente: Int, queEmpresa: Int, queFiltro: Int) {
@@ -269,8 +317,9 @@ class Documento(private val fContexto: Context) {
         }
         sCadena =
             "$sCadena ORDER BY substr(A.fecha, 7)||substr(A.fecha, 4, 2)||substr(A.fecha, 1, 2) DESC"
-        cDocumentos = dbAlba.rawQuery(sCadena, null)
-        cDocumentos.moveToFirst()
+        // TODO
+        //cDocumentos = dbAlba.rawQuery(sCadena, null)
+        //cDocumentos.moveToFirst()
     }
 
     @SuppressLint("Range")
@@ -278,6 +327,8 @@ class Documento(private val fContexto: Context) {
         val empresasDao = myBD?.empresasDao()
         var queTotal = 0.0
         var haySerieNumero = false
+        // TODO
+        /*
         cDocumentos = dbAlba.rawQuery("SELECT * FROM cabeceras WHERE _id= $queIdDoc", null)
         if (cDocumentos.moveToFirst()) {
             fTipoDoc = TIPODOC_ALBARAN
@@ -365,6 +416,7 @@ class Documento(private val fContexto: Context) {
                 copiarLineasAAlb(queViejoId)
             }
         }
+        */
         return if (haySerieNumero) {
             // Una vez copiado, cargamos el albarán.
             cargarDocumento(fIdDoc, false)
@@ -374,6 +426,8 @@ class Documento(private val fContexto: Context) {
 
     @SuppressLint("Range")
     private fun copiarLineasAAlb(queViejoId: Int) {
+        // TODO
+        /*
         cLineas = dbAlba.rawQuery(
             "SELECT A.*, B.iva porciva, C.descr descrfto FROM lineas A"
                     + " LEFT OUTER JOIN ivas B ON B.codigo = A.codigoiva"
@@ -469,13 +523,15 @@ class Documento(private val fContexto: Context) {
             cLineas.moveToNext()
         }
         cLineas.close()
+        */
     }
 
     @SuppressLint("Range")
     private fun copiarDtosCascAAlbaran(viejaLinea: Int) {
+        // TODO
+        /*
         val values = ContentValues()
-        val cDtosCas =
-            dbAlba.rawQuery("SELECT linea FROM desctoslineas WHERE linea = $viejaLinea", null)
+        val cDtosCas = dbAlba.rawQuery("SELECT linea FROM desctoslineas WHERE linea = $viejaLinea", null)
         cDtosCas.moveToFirst()
         while (!cDtosCas.isAfterLast) {
             values.put("linea", cDtosCas.getInt(cDtosCas.getColumnIndex("linea")))
@@ -489,21 +545,19 @@ class Documento(private val fContexto: Context) {
             cDtosCas.moveToNext()
         }
         cDtosCas.close()
+        */
     }
 
     // Borraremos las líneas que no han sido modificadas ni insertadas.
     @SuppressLint("Range")
     fun borrarLineasNoModif() {
         val fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresa.toString().toInt())
-        cLineas.moveToFirst()
-        while (!cLineas.isAfterLast) {
-            val fLinea = cLineas.getInt(cLineas.getColumnIndexOrThrow("_id"))
-            if (cLineas.getString(cLineas.getColumnIndex("modif_nueva"))
-                    .equals("F", ignoreCase = true)
-            ) {
-                borrarLinea(fLinea, false)
+        for (linea in lLineas) {
+            val fLinea = linea.lineaId
+            if (cLineas.getString(cLineas.getColumnIndex("modif_nueva")).equals("F", ignoreCase = true)) {
+                borrarLinea(linea, false)
             } else {
-                val fAplicarIva = fClientes.getAplicarIva()
+                val fAplicarIva = fClientes.fAplIva
                 fPrecio = cLineas.getString(cLineas.getColumnIndex("precio")).toDouble()
                 fPrecioII = cLineas.getString(cLineas.getColumnIndex("precioii")).toDouble()
                 fCodigoIva = cLineas.getString(cLineas.getColumnIndex("codigoiva")).toShort()
@@ -515,20 +569,14 @@ class Documento(private val fContexto: Context) {
                 fOldCajas = 0.0
                 var fOldPiezas = 0.0
                 fOldCantidad = 0.0
-                if (cLineas.getString(cLineas.getColumnIndex("cajasorg")) != null) fOldCajas =
-                    cLineas.getString(
-                        cLineas.getColumnIndex("cajasorg")
-                    ).toDouble()
+                if (cLineas.getString(cLineas.getColumnIndex("cajasorg")) != null)
+                    fOldCajas = cLineas.getString(cLineas.getColumnIndex("cajasorg")).toDouble()
                 fCajas = cLineas.getString(cLineas.getColumnIndex("cajas")).toDouble()
-                if (cLineas.getString(cLineas.getColumnIndex("piezasorg")) != null) fOldPiezas =
-                    cLineas.getString(
-                        cLineas.getColumnIndex("piezasorg")
-                    ).toDouble()
+                if (cLineas.getString(cLineas.getColumnIndex("piezasorg")) != null)
+                    fOldPiezas = cLineas.getString(cLineas.getColumnIndex("piezasorg")).toDouble()
                 fPiezas = cLineas.getString(cLineas.getColumnIndex("piezas")).toDouble()
-                if (cLineas.getString(cLineas.getColumnIndex("cantidadorg")) != null) fOldCantidad =
-                    cLineas.getString(
-                        cLineas.getColumnIndex("cantidadorg")
-                    ).toDouble()
+                if (cLineas.getString(cLineas.getColumnIndex("cantidadorg")) != null)
+                    fOldCantidad = cLineas.getString(cLineas.getColumnIndex("cantidadorg")).toDouble()
                 fCantidad = cLineas.getString(cLineas.getColumnIndex("cantidad")).toDouble()
                 // Recalculamos las cantidades restando las antiguas, de forma que el resultado sea la diferencia.
                 fCajas -= fOldCajas
@@ -547,9 +595,9 @@ class Documento(private val fContexto: Context) {
                 values.put("cantidad", fCantidad)
                 values.put("importe", fImporte)
                 values.put("importeii", fImpteII)
-                dbAlba.update("lineas", values, "_id=$fLinea", null)
+                // TODO
+                //dbAlba.update("lineas", values, "_id=$fLinea", null)
             }
-            cLineas.moveToNext()
         }
     }
 
@@ -572,6 +620,8 @@ class Documento(private val fContexto: Context) {
 
     @SuppressLint("Range")
     fun cargarDocumento(QueIdDoc: Int, borrarOftVol: Boolean) {
+        // TODO
+        /*
         cDocumentos = dbAlba.rawQuery("SELECT * FROM cabeceras WHERE _id=$QueIdDoc", null)
         if (cDocumentos.moveToFirst()) {
             // Establezco el cliente del documento y las propiedades necesarias para cargar las líneas y el pie del documento.
@@ -640,11 +690,13 @@ class Documento(private val fContexto: Context) {
             fBases.cargarDesdeDoc(fIdDoc)
             fTotalAnterior = fBases.totalConImptos
         }
+        */
     }
 
     fun esContado(): Boolean {
         val pendienteDao = myBD?.pendienteDao()
-        val generaCobro = pendienteDao?.esContado(fEmpresa, fAlmacen, serie, numero, fEjercicio) ?: "F"
+        val generaCobro =
+            pendienteDao?.esContado(fEmpresa, fAlmacen, serie, numero, fEjercicio) ?: "F"
         return generaCobro == "T"
     }
 
@@ -714,7 +766,7 @@ class Documento(private val fContexto: Context) {
 
     fun setExento() {
         val seriesDao = myBD?.seriesDao()
-        val fClteExento = !fClientes.getAplicarIva()
+        val fClteExento = !fClientes.fAplIva
         val queFlag = seriesDao?.getFlag(serie, fEjercicio.toInt()) ?: 0
         fSerieExenta = queFlag and FLAGSERIE_INV_SUJ_PASIVO > 0
         val fParaFraSimpl = queFlag and FLAGSERIE_PARA_FRA_SIMPL > 0
@@ -734,7 +786,7 @@ class Documento(private val fContexto: Context) {
                     fAplicarRe = false
                 } else {
                     fAplicarIva = true
-                    fAplicarRe = fClientes.getAplicarRe()
+                    fAplicarRe = fClientes.fAplRec
                 }
             }
         }
@@ -752,6 +804,8 @@ class Documento(private val fContexto: Context) {
     }
 
     private fun serieNumeroValidos(): Boolean {
+        // TODO
+        /*
         val cDocs = dbAlba.rawQuery(
             "SELECT numero FROM cabeceras" +
                     " WHERE tipodoc = " + fTipoDoc + " AND alm = " + fAlmacen +
@@ -761,6 +815,8 @@ class Documento(private val fContexto: Context) {
         val resultado = !cDocs.moveToFirst()
         cDocs.close()
         return resultado
+        */
+        return true
     }
 
     private fun actualizarNumero() {
@@ -832,7 +888,7 @@ class Documento(private val fContexto: Context) {
             fArticulo = cLineas.getInt(cLineas.getColumnIndex("articulo"))
             fCodArt = cLineas.getString(cLineas.getColumnIndex("codigo"))
             fDescr = cLineas.getString(cLineas.getColumnIndex("descr"))
-            fTarifaLin = cLineas.getString(cLineas.getColumnIndex("tarifa")).toByte()
+            fTarifaLin = cLineas.getString(cLineas.getColumnIndex("tarifa")).toShort()
             //fAlmacen = cLineas.getShort(cLineas.getColumnIndex("alm"));
             fPorcIva = sPorcIva.toDouble()
             fPrecio = cLineas.getString(cLineas.getColumnIndex("precio")).toDouble()
@@ -871,7 +927,7 @@ class Documento(private val fContexto: Context) {
             val queFlag3 = cLineas.getInt(cLineas.getColumnIndex("flag3"))
             fLineaPorPiezas = queFlag3 and FLAG3LINEAVENTA_PRECIO_POR_PIEZAS > 0
             fCodIncidencia = cLineas.getInt(cLineas.getColumnIndex("incidencia"))
-            fFormatoLin = cLineas.getString(cLineas.getColumnIndex("formato")).toByte()
+            fFormatoLin = cLineas.getString(cLineas.getColumnIndex("formato")).toShort()
             if (cLineas.getString(cLineas.getColumnIndex("textolinea")) != null)
                 fTextoLinea = cLineas.getString(cLineas.getColumnIndex("textolinea"))
             else
@@ -883,10 +939,11 @@ class Documento(private val fContexto: Context) {
                 fAlmacPedido = ""
 
             // Vemos si la línea tiene descuentos en cascada.
-            val cDtosCas =
-                dbAlba.rawQuery("SELECT linea FROM desctoslineas WHERE linea = $fLinea", null)
-            fLineaConDtCasc = cDtosCas.moveToFirst()
-            cDtosCas.close()
+            // TODO
+            //val cDtosCas = dbAlba.rawQuery("SELECT linea FROM desctoslineas WHERE linea = $fLinea", null)
+            //fLineaConDtCasc = cDtosCas.moveToFirst()
+            //cDtosCas.close()
+
             if (cLineas.getString(cLineas.getColumnIndex("lote")) != null)
                 fLote = cLineas.getString(cLineas.getColumnIndex("lote"))
             else
@@ -907,6 +964,8 @@ class Documento(private val fContexto: Context) {
 
     @SuppressLint("Range")
     fun grabarHistorico() {
+        // TODO
+        /*
         val fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresa.toString().toInt())
         dbAlba.rawQuery("SELECT * FROM tmphco", null).use { cTmpHco ->
             cTmpHco.moveToFirst()
@@ -984,6 +1043,7 @@ class Documento(private val fContexto: Context) {
             dbAlba.delete("tmphco", "1=1", null)
         }
         refrescarLineas()
+        */
     }
 
     private fun anyadirDtoCascada() {
@@ -999,7 +1059,7 @@ class Documento(private val fContexto: Context) {
         fDtosCascada.abrir(-1)
         // Configuramos el objeto de los dtos. en cascada
         fDtosCascada.fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresa.toString().toInt())
-        fDtosCascada.fAplicarIva = fClientes.getAplicarIva()
+        fDtosCascada.fAplicarIva = fClientes.fAplIva
         fDtosCascada.fPorcIva = fPorcIva
         fDtosCascada.fDecPrBase = fConfiguracion.decimalesPrecioBase()
         fDtosCascada.fExentoIva = !fAplicarIva
@@ -1008,33 +1068,38 @@ class Documento(private val fContexto: Context) {
     }
 
     fun insertarLinea() {
-        val values = ContentValues()
-        values.put("cabeceraId", fIdDoc)
-        values.put("linea", siguienteLinea())
-        values.put("articulo", fArticulo)
-        values.put("codigo", fCodArt)
-        values.put("descr", fDescr)
-        values.put("tarifa", fTarifaLin)
-        values.put("precio", fPrecio)
-        values.put("precioii", fPrecioII)
-        values.put("codigoiva", fCodigoIva)
-        values.put("cajas", fCajas)
-        values.put("piezas", fPiezas)
-        values.put("cantidad", fCantidad)
-        values.put("importe", fImporte)
-        values.put("importeii", fImpteII)
-        values.put("dto", fDtoLin)
-        values.put("dtoi", fDtoImp)
-        values.put("dtoiii", fDtoImpII)
-        values.put("lote", fLote)
-        values.put("flag5", fFlag5)
-        values.put("modif_nueva", "T")
-        values.put(
-            "precioTarifa",
-            fPrecioTarifa
-        ) // Nos servirán para saber si modificamos el precio de tarifa y, en este caso,
-        values.put("dtoTarifa", fDtoLinTarifa) // no aplicar oferta por volumen.
-        values.put("almacenPedido", fAlmacPedido)
+        val lineaEnt = LineasEnt()
+
+        //values.put("linea", siguienteLinea())
+        lineaEnt.cabeceraId = fIdDoc
+        lineaEnt.articuloId = fArticulo
+        lineaEnt.codArticulo = fCodArt
+        lineaEnt.descripcion = fDescr
+        lineaEnt.tarifaId = fTarifaLin
+        lineaEnt.precio = fPrecio.toString()
+        lineaEnt.precioII = fPrecioII.toString()
+        lineaEnt.codigoIva = fCodigoIva
+        lineaEnt.cajas = fCajas.toString()
+        lineaEnt.cantidad = fCantidad.toString()
+        lineaEnt.piezas = fPiezas.toString()
+        lineaEnt.formatoId = fFormatoLin
+        lineaEnt.importe = fImporte.toString()
+        lineaEnt.importeII = fImpteII.toString()
+        lineaEnt.dto = fDtoLin.toString()
+        lineaEnt.dtoImpte = fDtoImp.toString()
+        lineaEnt.dtoImpteII = fDtoImpII.toString()
+        lineaEnt.lote = fLote
+        lineaEnt.flag5 = fFlag5
+        lineaEnt.tasa1 = fTasa1.toString()
+        lineaEnt.tasa2 = fTasa2.toString()
+        lineaEnt.tipoIncId = fCodIncidencia
+        lineaEnt.textoLinea = fTextoLinea
+        lineaEnt.modif_nueva = "T"
+        lineaEnt.precioTarifa = fPrecioTarifa.toString() // Nos servirán para saber si modificamos el precio de tarifa y, en este caso,
+        lineaEnt.dtoTarifa = fDtoLinTarifa.toString()    // no aplicar oferta por volumen.
+        lineaEnt.almacenPedido = fAlmacPedido
+        if (fLineaEsEnlace) lineaEnt.esEnlace = "T" else lineaEnt.esEnlace = "F"
+
         var queFlag = 0
         if (fArtSinCargo) queFlag = queFlag or FLAGLINEAVENTA_SIN_CARGO
         if (fPrecioRating) queFlag = queFlag or FLAGLINEAVENTA_PRECIO_RATING
@@ -1043,8 +1108,8 @@ class Documento(private val fContexto: Context) {
             queFlag or FLAGLINEAVENTA_ARTICULO_EN_OFERTA
         // Si el artículo está en oferta pero vamos a aplicar el precio por rating lo marcamos como posible oferta,
         // siempre que no hayamos cambiado el precio
-        if (fArtEnOferta && fPrecioRating && !fHayCambPrecio) queFlag =
-            queFlag or FLAGLINEAVENTA_POSIBLE_OFERTA
+        if (fArtEnOferta && fPrecioRating && !fHayCambPrecio)
+            queFlag = queFlag or FLAGLINEAVENTA_POSIBLE_OFERTA
         var queFlag3 = 0
         if (fLineaPorPiezas) {
             queFlag3 = queFlag3 or FLAG3LINEAVENTA_PRECIO_POR_PIEZAS
@@ -1052,18 +1117,11 @@ class Documento(private val fContexto: Context) {
             queFlag = queFlag or FLAGLINEAVENTA_CAMBIAR_TARIFA_PRECIO
             queFlag = queFlag or FLAGLINEAVENTA_CAMBIAR_DESCRIPCION
         }
-        values.put("flag", queFlag)
-        values.put("flag3", queFlag3)
-        values.put("tasa1", fTasa1)
-        values.put("tasa2", fTasa2)
-        values.put("formato", fFormatoLin)
-        values.put("incidencia", fCodIncidencia)
-        // (Si trabajamos con artículos habituales (p.ej. Pare Pere), grabaremos en el texto de la línea
-        // el texto que tenga el artículo para el cliente del documento y el formato de la línea.) Por ahora grabamos siempre el texto
-        //if (fHayArtHabituales) values.put("textolinea", fTextoLinea);
-        values.put("textolinea", fTextoLinea)
-        if (fLineaEsEnlace) values.put("esEnlace", "T") else values.put("esEnlace", "F")
-        val fIdLinea = dbAlba.insert("lineas", null, values)
+
+        lineaEnt.flag = queFlag
+        lineaEnt.flag3 =  queFlag3
+
+        val fIdLinea = lineasDao?.insertar(lineaEnt)?.toInt() ?: -1
 
         // Si la línea tiene descuentos en cascada lo que hacemos es reemplazar en la tabla "desctoslineas"
         // el campo linea, que estará a -1, por el id de la línea que acabamos de insertar.
@@ -1072,44 +1130,41 @@ class Documento(private val fContexto: Context) {
         }
 
         // Actualizamos el stock del artículo, si el almacen <> 0.
-        if (fControlarStock && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN)) fArticulos.actualizarStock(
-            fArticulo,
-            fEmpresa,
-            fCantidad,
-            fCajas,
-            false
-        )
+        if (fControlarStock && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN))
+            fArticulos.actualizarStock(fArticulo, fEmpresa, fCantidad, fCajas, false)
         // Actualizamos el stock del lote. Aunque el lote esté en blanco lo llevaremos también a la tabla de lotes, porque me viene
         // bien para el momento de realizar el fin de día de las cargas.
-        if (fUsarTrazabilidad && fLote != null && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN)) fLotes.actStockLote(
-            fArticulo,
-            fCantidad,
-            fLote,
-            fEmpresa
-        )
-        if (fBases.fIvaIncluido) fBases.calcularBase(
-            fCodigoIva,
-            fImpteII
-        ) else fBases.calcularBase(fCodigoIva, fImporte)
-        refrescarLineas()
+        if (fUsarTrazabilidad && fLote != "" && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN))
+            fLotes.actStockLote(fArticulo, fCantidad, fLote, fEmpresa)
+        if (fBases.fIvaIncluido) fBases.calcularBase(fCodigoIva, fImpteII)
+        else fBases.calcularBase(fCodigoIva, fImporte)
+
+        abrirLineas()
     }
 
+
     // Vemos si el artículo tiene texto habitual
-    val textoArtHabitual: String
-        @SuppressLint("Range")
-        get() {
-            // Vemos si el artículo tiene texto habitual
-            val sQuery = ("SELECT texto FROM arthabituales WHERE articulo = " + fArticulo
-                    + " AND cliente = " + fCliente + " AND (formato = " + fFormatoLin + " OR formato = 0)")
+    fun textoArtHabitual(): String {
+        // Vemos si el artículo tiene texto habitual
+        val sQuery = ("SELECT texto FROM arthabituales WHERE articulo = " + fArticulo
+                + " AND cliente = " + fCliente + " AND (formato = " + fFormatoLin + " OR formato = 0)")
+
+        // TODO
+        /*
             dbAlba.rawQuery(sQuery, null).use { cTxtArtHabit ->
                 return if (cTxtArtHabit.moveToFirst()) {
                     cTxtArtHabit.getString(cTxtArtHabit.getColumnIndex("texto"))
                 } else ""
             }
-        }
+            */
+        return ""
+    }
+
 
     @SuppressLint("Range")
     fun getDescrFormato(queCodigo: Int): String {
+        // TODO
+        /*
         if (fFormatoLin.toInt() != 0) {
             dbAlba.rawQuery("SELECT descr FROM formatos WHERE codigo = $queCodigo", null)
                 .use { cDescrFto ->
@@ -1117,24 +1172,27 @@ class Documento(private val fContexto: Context) {
                         cDescrFto.getColumnIndex("descr")) else ""
                 }
         } else return ""
+        */
+        return ""
     }
 
-    private fun asignarLineaADtos(fIdLinea: Long) {
-        val values = ContentValues()
-        values.put("linea", fIdLinea)
-        dbAlba.update("desctoslineas", values, "linea=-1", null)
+    private fun asignarLineaADtos(fIdLinea: Int) {
+        dtosLineasDao?.asignarLinea(fIdLinea)
     }
 
     fun insertarDtoCasc(values: ContentValues?) {
-        dbAlba.insert("desctoslineas", null, values)
+        // TODO
+        //dbAlba.insert("desctoslineas", null, values)
     }
 
     fun editarDtoCasc(values: ContentValues?, fLineaDto: Int) {
-        dbAlba.update("desctoslineas", values, "_id=$fLineaDto", null)
+        // TODO
+        //dbAlba.update("desctoslineas", values, "_id=$fLineaDto", null)
     }
 
     fun borrarDtosCasc(fIdLinea: Long) {
-        dbAlba.delete("desctoslineas", "linea=$fIdLinea", null)
+        //  TODO
+        //dbAlba.delete("desctoslineas", "linea=$fIdLinea", null)
     }
 
     @SuppressLint("Range")
@@ -1191,7 +1249,8 @@ class Documento(private val fContexto: Context) {
         }
         values.put("flag", queFlag)
         values.put("flag3", queFlag3)
-        dbAlba.update("lineas", values, "_id=$fLinea", null)
+        // TODO
+        //dbAlba.update("lineas", values, "_id=$fLinea", null)
         // Actualizamos el stock del artículo
         if (fControlarStock && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN)) fArticulos.actualizarStock(
             fArticulo,
@@ -1276,7 +1335,8 @@ class Documento(private val fContexto: Context) {
             if (fAplOftEnPed) values.put("hoja", 1) else values.put("hoja", 0)
         }
         if (DocNuevo) {
-            fIdDoc = dbAlba.insert("cabeceras", null, values).toInt()
+            // TODO
+            //fIdDoc = dbAlba.insert("cabeceras", null, values).toInt()
 
             // En las líneas del nuevo documento hemos ido guardando cabeceraId a -1 y ahora lo actualizamos
             actualizarIdCabecera()
@@ -1286,7 +1346,8 @@ class Documento(private val fContexto: Context) {
             // Si estamos haciendo un pedido actualizaremos el pendiente del cliente.
             if (fTipoDoc == TIPODOC_PEDIDO) actualizarPendiente(true)
         } else {
-            dbAlba.update("cabeceras", values, "_id=$fIdDoc", null)
+            // TODO
+            //dbAlba.update("cabeceras", values, "_id=$fIdDoc", null)
             // Si estamos haciendo un pedido actualizaremos el pendiente del cliente.
             if (fTipoDoc == TIPODOC_PEDIDO) actualizarPendiente(false)
         }
@@ -1308,26 +1369,24 @@ class Documento(private val fContexto: Context) {
     fun verOftVolumen() {
         val lOftVol = ArrayList<ListOftVol>()
         var queArticulo: Int
-        var queTarifaLin: String
+        var queTarifaLin: Short
         var oListOftVol: ListOftVol
         var indice: Int
         var linConCambPrecio: Boolean
         var linConRating: Boolean
 
-        cLineas.moveToFirst()
-        while (!cLineas.isAfterLast) {
-            val queFlag = cLineas.getInt(cLineas.getColumnIndex("flag"))
+        for (linea in lLineas) {
+            val queFlag = linea.flag
             linConCambPrecio = queFlag and FLAGLINEAVENTA_CAMBIAR_PRECIO > 0
             linConRating = queFlag and FLAGLINEAVENTA_PRECIO_RATING > 0
             // Las líneas con cambio de precio no contabilizan para las ofertas por volumen. Tampoco las que tengan precio por rating.
             if (!linConCambPrecio && !linConRating) {
-                queArticulo = cLineas.getInt(cLineas.getColumnIndex("articulo"))
-                queTarifaLin = cLineas.getString(cLineas.getColumnIndex("tarifa"))
+                queArticulo = linea.articuloId
+                queTarifaLin = linea.tarifaId
 
                 // Buscamos si el artículo tiene oferta por volumen e insertamos en la lista.
                 val lista: List<ListOftVol> =
-                    ofertasDao?.getOftVolArt(queArticulo, fEmpresa, queTarifaLin.toShort(), fechaEnJulian(fFecha))
-                        ?: emptyList()
+                    ofertasDao?.getOftVolArt(queArticulo, fEmpresa, queTarifaLin, fechaEnJulian(fFecha)) ?: emptyList()
 
                 for (oferta in lista) {
                     oListOftVol = ListOftVol()
@@ -1341,7 +1400,6 @@ class Documento(private val fContexto: Context) {
                         lOftVol[indice].importe + oListOftVol.importe else lOftVol.add(oListOftVol)
                 }
             }
-            cLineas.moveToNext()
         }
         // Añadimos las ofertas
         if (lOftVol.isNotEmpty()) anyadirOftVol(lOftVol)
@@ -1356,6 +1414,8 @@ class Documento(private val fContexto: Context) {
             val queDescto: String = ofVolRangosDao?.getDescuento(oftVol.idOferta, oftVol.importe) ?: "0.0"
             if (queDescto != "") {
                 dDto = queDescto.replace(',', '.').toDouble()
+                // TODO
+                /*
                 cArticuloDto = dbAlba.rawQuery(
                     "SELECT articulo FROM articulos WHERE articulo = " + oftVol.articuloDesct,
                     null
@@ -1367,6 +1427,7 @@ class Documento(private val fContexto: Context) {
                     marcarLinComoOfta(oftVol.idOferta)
                 } else MsjAlerta(fContexto).alerta("No se encontró el artículo para los descuentos de la oferta")
                 cArticuloDto.close()
+                */
             } else  // Si no hemos llegado a completar la oferta marcamos las líneas como posible oferta.
                 marcarLinComoPosibleOfta(oftVol.idOferta)
         }
@@ -1380,6 +1441,8 @@ class Documento(private val fContexto: Context) {
         val lArtOfta: List<Int> = ofertasDao?.getAllArtOftaId(queIdOfta) ?: emptyList()
         for (queArticulo in lArtOfta) {
             // Buscamos el artículo en concreto dentro del documento, excluyendo las lineas con cambio de precio
+            // TODO
+            /*
             val cIdLinea = dbAlba.rawQuery(
                 "SELECT _id, flag FROM lineas WHERE articulo = " + queArticulo
                         + " AND flag & " + FLAGLINEAVENTA_CAMBIAR_PRECIO + " = 0"
@@ -1392,6 +1455,7 @@ class Documento(private val fContexto: Context) {
                 dbAlba.update("lineas", values, "_id=$queLinea", null)
             }
             cIdLinea.close()
+            */
         }
     }
 
@@ -1402,6 +1466,8 @@ class Documento(private val fContexto: Context) {
         val lArtOfta: List<Int> = ofertasDao?.getAllArtOftaId(queIdOfta) ?: emptyList()
         for (queArticulo in lArtOfta) {
             // Buscamos el artículo en concreto dentro del documento, excluyendo las lineas con cambio de precio
+            // TODO
+            /*
             val cIdLinea = dbAlba.rawQuery(
                 "SELECT _id, flag FROM lineas WHERE articulo = " + queArticulo
                         + " AND flag & " + FLAGLINEAVENTA_CAMBIAR_PRECIO + " = 0"
@@ -1414,6 +1480,7 @@ class Documento(private val fContexto: Context) {
                 dbAlba.update("lineas", values, "_id=$queLinea", null)
             }
             cIdLinea.close()
+            */
         }
     }
 
@@ -1428,6 +1495,8 @@ class Documento(private val fContexto: Context) {
         values.put("ejer", fEjercicio)
         values.put("linea", siguienteLinea())
         values.put("articulo", oftVol.articuloDesct)
+        // TODO
+        /*
         val cArticulos = dbAlba.rawQuery(
             "SELECT A.codigo, A.descr, I.codigo codiva, I.iva FROM articulos A" +
                     " LEFT JOIN ivas I ON I.tipo = A.tipoiva" +
@@ -1445,6 +1514,7 @@ class Documento(private val fContexto: Context) {
                         cArticulos.getString(cArticulos.getColumnIndex("descr"))
             )
         }
+
         values.put("tarifa", oftVol.tarifa)
         fPrecio = oftVol.importe * dDto / 100
         fCodigoIva = cArticulos.getShort(cArticulos.getColumnIndex("codiva"))
@@ -1473,6 +1543,7 @@ class Documento(private val fContexto: Context) {
         values.put("dtoOftVol", dDto)
         cArticulos.close()
         dbAlba.insert("lineas", null, values)
+        */
 
         // Recalculamos las bases
         if (fBases.fIvaIncluido) fBases.calcularBase(
@@ -1482,22 +1553,22 @@ class Documento(private val fContexto: Context) {
     }
 
     fun hayOftVolumen(): Boolean {
-        val cHayOftVol = dbAlba.rawQuery(
-            "SELECT * FROM lineas"
-                    + " WHERE cabeceraId = " + fIdDoc + " AND flag3 = 128", null
-        )
-        val resultado = cHayOftVol.moveToFirst()
-        cHayOftVol.close()
-        return resultado
+        val queLinea = lineasDao?.hayOftVolumen(fIdDoc) ?: 0
+
+        return queLinea > 0
     }
 
     fun cargarCursorOftVol(): Cursor {
+        // TODO
+        /*
         val cLinOftVol = dbAlba.rawQuery(
             "SELECT _id, descr, importe FROM lineas"
                     + " WHERE flag3 = 128 AND cabeceraId = " + fIdDoc, null
         )
         cLinOftVol.moveToFirst()
         return cLinOftVol
+        */
+        return cLineas
     }
 
     private fun localizaId(lista: ArrayList<ListOftVol>, queId: Int): Int {
@@ -1510,61 +1581,26 @@ class Documento(private val fContexto: Context) {
 
     @SuppressLint("Range")
     fun borrarArticuloDeDoc(queArticulo: Int) {
-        cLineas.moveToFirst()
-        while (!cLineas.isAfterLast) {
-            if (cLineas.getInt(cLineas.getColumnIndex("articulo")) == queArticulo) {
+        for (linea in lLineas) {
+            if (linea.articuloId == queArticulo) {
                 // He detectado que si no refresco no borra. No tenemos problemas al hacer
                 // el break porque a esta función se llama una vez por cada formato, de forma que
                 // si un artículo tiene varios formatos se llamará una vez por cada uno de ellos y,
                 // al final, se borran todas las líneas de dicho artículo.
-                borrarLinea(cLineas.getInt(cLineas.getColumnIndex("_id")), true)
+                borrarLinea(linea, true)
                 break
             }
-            cLineas.moveToNext()
         }
     }
 
-    @SuppressLint("Range")
-    fun borrarLinea(fLinea: Int, refrescar: Boolean) {
-        if (cLineas.count > 0) {
-            fArticulo = cLineas.getInt(cLineas.getColumnIndex("articulo"))
-            fOldCajas = cLineas.getString(cLineas.getColumnIndex("cajas")).replace(",", ".").toDouble()
-            fOldCantidad = cLineas.getString(cLineas.getColumnIndex("cantidad")).replace(",", ".").toDouble()
-            if (cLineas.getString(cLineas.getColumnIndex("lote")) != null)
-                fOldLote = cLineas.getString(cLineas.getColumnIndex("lote"))
-            else
-                fOldLote = ""
-            val fOldImpte = cLineas.getString(cLineas.getColumnIndex("importe")).replace(",", ".").toDouble()
-            val fOldImpteII: Double = if (cLineas.getString(cLineas.getColumnIndex("importeii")) != null) cLineas.getString(
-                    cLineas.getColumnIndex("importeii")
-                ).replace(",", ".").toDouble() else 0.0
-
-            val queCodIva = cLineas.getShort(cLineas.getColumnIndex("codigoiva"))
-
-            // Recalculamos las bases.
-            if (fBases.fIvaIncluido) fBases.calcularBase(queCodIva, -fOldImpteII)
-            else fBases.calcularBase(queCodIva, -fOldImpte)
-            dbAlba.delete("lineas", "_id=$fLinea", null)
-
-            // Borramos las posibles líneas de descuentos en cascada
-            dbAlba.delete("desctoslineas", "linea=$fLinea", null)
-            // Actualizamos el stock del artículo
-            if (fControlarStock && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN))
-                fArticulos.actualizarStock(fArticulo, fEmpresa, -fOldCantidad, -fOldCajas, false)
-
-            // Actualizamos el stock del lote.
-            if (fUsarTrazabilidad && fOldLote != null && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN))
-                fLotes.actStockLote(fArticulo, -fOldCantidad, fOldLote, fEmpresa)
-            if (refrescar) refrescarLineas()
-        }
-    }
 
     private fun refrescarLineas() {
-        cLineas.close()
         abrirLineas()
     }
 
     private fun siguienteLinea(): Int {
+        // TODO
+        /*
         dbAlba.rawQuery(
             "SELECT MAX(linea) linea FROM lineas"
                     + " WHERE cabeceraId = " + fIdDoc, null
@@ -1574,40 +1610,42 @@ class Documento(private val fContexto: Context) {
                 cUltLinea.getInt(columna) + 1
             } else 1
         }
+        */
+        return 1
     }
 
-    fun setCliente(QueCliente: Int) {
-        fCliente = QueCliente
+    fun setCliente(queCliente: Int) {
+        fCliente = queCliente
         // Abrimos el objeto fClientes para tener acceso a los datos del cliente del documento.
-        fClientes.abrirUnCliente(QueCliente)
+        fClientes.abrirUnCliente(queCliente)
         // Aplicaremos la tarifa según configuración: si tenemos configurado usar la
         // del cliente usaremos la de éste, si no, la que tengamos para ventas.
         fTarifaDoc = fConfiguracion.tarifaVentas()
         if (fConfiguracion.usarTarifaClte()) {
-            if (fClientes.getTarifa() != "" && fClientes.getTarifa() != "0") fTarifaDoc =
-                fClientes.getTarifa().toByte()
+            if (fClientes.fTarifa > 0)
+                fTarifaDoc = fClientes.fTarifa
         }
         // La tarifa de descuento será la que tenga el cliente en su ficha y, si no, la que esté en configuración.
-        val queTarifaDto = fClientes.getTarifaDto()
         //if (!fClientes.getTarifaDto().equals("0"))
-        fTarifaDto = if (queTarifaDto != "0" && queTarifaDto != "") fClientes.getTarifaDto()
-            .toByte() else fConfiguracion.tarifaDto()
+        fTarifaDto = if (fClientes.fTrfDto > 0) fClientes.fTrfDto
+        else fConfiguracion.tarifaDto()
         // Por ahora la tarifa de la línea será la del documento, a no ser que cambiemos luego.
         fTarifaLin = fTarifaDoc
     }
 
     fun nombreCliente(): String {
-        return fClientes.getNFiscal()
+        return fClientes.fNombre
     }
 
     fun nombreComClte(): String {
-        return fClientes.getNComercial()
+        return fClientes.fNomComercial
     }
 
     fun marcarComoImprimido(queId: Int) {
         val values = ContentValues()
         values.put("imprimido", "T")
-        dbAlba.update("cabeceras", values, "_id=$queId", null)
+        // TODO
+        //dbAlba.update("cabeceras", values, "_id=$queId", null)
     }
 
     fun marcarComoEntregado(queId: Int, queCliente: Int, queEmpresa: Int, refrescar: Boolean) {
@@ -1619,7 +1657,8 @@ class Documento(private val fContexto: Context) {
         values.put("firmado", "T")
         values.put("fechafirma", df.format(tim))
         values.put("horafirma", dfHora.format(tim))
-        dbAlba.update("cabeceras", values, "_id=$queId", null)
+        // TODO
+        //dbAlba.update("cabeceras", values, "_id=$queId", null)
         if (refrescar) {
             // Refresco el cursor cerrándolo y volviéndolo a abrir.
             cDocumentos.close()
@@ -1637,7 +1676,8 @@ class Documento(private val fContexto: Context) {
         val values = ContentValues()
         values.put("tipoincidencia", queTipoIncid)
         values.put("textoincidencia", queTexto)
-        dbAlba.update("cabeceras", values, "_id=$queId", null)
+        // TODO
+        //dbAlba.update("cabeceras", values, "_id=$queId", null)
 
         // Refresco el cursor cerrándolo y volviéndolo a abrir.
         cDocumentos.close()
@@ -1653,7 +1693,8 @@ class Documento(private val fContexto: Context) {
         val queSerie: String
         val values = ContentValues()
         values.put("estado", "R")
-        dbAlba.update("cabeceras", values, "_id=$QueID", null)
+        // TODO
+        //dbAlba.update("cabeceras", values, "_id=$QueID", null)
         val queTipoDoc: Byte = cDocumentos.getString(cDocumentos.getColumnIndex("tipodoc")).toByte()
         if (queTipoDoc.toShort() == TIPODOC_FACTURA) {
             queAlmacen = cDocumentos.getShort(cDocumentos.getColumnIndex("alm"))
@@ -1671,14 +1712,12 @@ class Documento(private val fContexto: Context) {
         abrirTodos(QueCliente, empresaActual, 0)
     }
 
-    fun calculaPrecioYDto(pGrupo: String, pDpto: String, pProv: String, porcIva: Double) {
+    fun calculaPrecioYDto(pGrupo: Short, pDpto: Short, pProv: Int, porcIva: Double) {
         // El orden para obtener el precio y el dto. del artículo será el siguiente:
         // 1º- Del histórico, último precio de venta (si está configurado).
         // 2º- De la oferta o el rating.
         // 3º- De la tarifa.
-        var queGrupo = pGrupo
-        var queDpto = pDpto
-        var queProv = pProv
+
         fPrecio = 0.0
         fDtoLin = 0.0
         fDtoImp = 0.0
@@ -1698,11 +1737,6 @@ class Documento(private val fContexto: Context) {
         fPrecio = 0.0
         fDtoLin = 0.0
 
-        // Comprobamos que tenemos grupo y departamento.
-        if (queGrupo == null) queGrupo = ""
-        if (queDpto == null) queDpto = ""
-        if (queProv == null) queProv = ""
-
         // Vemos el precio del histórico.
         if (fConfiguracion.pvpHistorico()) {
             tomaPrecioHco()
@@ -1710,7 +1744,7 @@ class Documento(private val fContexto: Context) {
         // Si tenemos configurado aplicar el precio más ventajoso obviamos la configuración del rating.
         if (fPrecio == 0.0 && fConfiguracion.aplicarPvpMasVent() && fClientes.getAplicarOfertas()) {
             if (fConfiguracion.usarRating()) {
-                tomaPrecioRating(queGrupo, queDpto, queProv)
+                tomaPrecioRating(pGrupo, pDpto, pProv)
                 if (fPrecio != 0.0) fPrRating = fPrecio
                 if (fDtoRatingImp != 0.0) {
                     // Puede ser que en el rating sólo tengamos un descuento, por lo que éste se
@@ -1765,7 +1799,7 @@ class Documento(private val fContexto: Context) {
         } else {
             // Vemos el rating.
             if (fConfiguracion.predominaRating() && fConfiguracion.usarRating() && fPrecio == 0.0) {
-                tomaPrecioRating(queGrupo, queDpto, queProv)
+                tomaPrecioRating(pGrupo, pDpto, pProv)
                 if (fPrecio != 0.0 || fDtoLin != 0.0 || fDtoRatingImp != 0.0) fPrecioRating = true
             }
             // Vemos si el cliente usa ofertas.
@@ -1778,7 +1812,7 @@ class Documento(private val fContexto: Context) {
             }
             // Volvemos a ver el rating, en el caso de que no predomine sobre la oferta.
             if (!fConfiguracion.predominaRating() && fConfiguracion.usarRating() && fPrecio == 0.0) {
-                tomaPrecioRating(queGrupo, queDpto, queProv)
+                tomaPrecioRating(pGrupo, pDpto, pProv)
                 if (fPrecio != 0.0 || fDtoLin != 0.0 || fDtoRatingImp != 0.0) fPrecioRating = true
             }
         }
@@ -1907,6 +1941,8 @@ class Documento(private val fContexto: Context) {
     }
 
     private fun tomaPrecioHco() {
+        // TODO
+        /*
         // Si estamos vendiendo con formatos tomaremos del histórico el precio del formato seleccionado
         val cPrecio: Cursor = if (fFormatoLin > 0) {
             dbAlba.rawQuery(
@@ -1927,6 +1963,7 @@ class Documento(private val fContexto: Context) {
             fDtoLin = Redondear(sDto.toDouble(), 2)
         }
         cPrecio.close()
+        */
     }
 
     @SuppressLint("Range")
@@ -1954,6 +1991,8 @@ class Documento(private val fContexto: Context) {
                 // Comprobamos si hay alguna oferta de escalado de precios
             } else {
                 var quePrecOfta: Double
+                // TODO
+                /*
                 val cOftPorCant = dbAlba.rawQuery(
                     "SELECT * FROM oftCantRangos WHERE articulo = $fArticulo",
                     null
@@ -1998,51 +2037,38 @@ class Documento(private val fContexto: Context) {
                     cOftPorCant.moveToNext()
                 }
                 cOftPorCant.close()
+                */
             }
         }
     }
 
     private fun tomaPrecioTarifa() {
         // Vemos si tenemos formato para la línea, en cuyo caso tomamos el precio de la tabla "trfformatos".
-        var cPrTrfa: Cursor
-        cPrTrfa = if (fFormatoLin > 0) {
-            dbAlba.rawQuery(
-                "SELECT precio, dto FROM trfformatos WHERE articulo = "
-                        + fArticulo + " AND tarifa = " + fTarifaLin + " AND formato = " + fFormatoLin,
-                null
-            )
+        var datosPrecios = if (fFormatoLin > 0) {
+            trfFormatosDao?.getPrecioDto(fArticulo, fTarifaLin, fFormatoLin) ?: DatosPrecios()
         } else {
-            dbAlba.rawQuery(
-                "SELECT precio, dto FROM tarifas WHERE articulo = "
-                        + fArticulo + " AND tarifa = " + fTarifaLin, null
-            )
+            tarifasDao?.getPrecioDto(fArticulo, fTarifaLin) ?: DatosPrecios()
         }
-        if (cPrTrfa.moveToFirst()) {
-            val sPrecio = cPrTrfa.getString(0).replace(',', '.')
-            val sDto = cPrTrfa.getString(1).replace(',', '.')
+
+        if (datosPrecios.precio != "") {
+            val sPrecio = datosPrecios.precio.replace(',', '.')
+            val sDto = datosPrecios.dto.replace(',', '.')
             fPrecio = Redondear(sPrecio.toDouble(), fDecPrBase)
             if (fDtoLin == 0.0) fDtoLin = Redondear(sDto.toDouble(), 2)
         }
-        cPrTrfa.close()
+
         if (fTarifaDto > 0 && fDtoLin == 0.0) {
             // Idem para los descuentos.
-            cPrTrfa = if (fFormatoLin > 0) {
-                dbAlba.rawQuery(
-                    "SELECT dto FROM trfformatos WHERE articulo = "
-                            + fArticulo + " AND tarifa = " + fTarifaDto + " AND formato = " + fFormatoLin,
-                    null
-                )
+            datosPrecios = if (fFormatoLin > 0) {
+                trfFormatosDao?.getPrecioDto(fArticulo, fTarifaDto, fFormatoLin) ?: DatosPrecios()
             } else {
-                dbAlba.rawQuery(
-                    "SELECT dto FROM tarifas WHERE articulo = "
-                            + fArticulo + " AND tarifa = " + fTarifaDto, null
-                )
+                tarifasDao?.getPrecioDto(fArticulo, fTarifaDto) ?: DatosPrecios()
             }
-            if (cPrTrfa.moveToFirst()) {
-                val sDto = cPrTrfa.getString(0).replace(',', '.')
+
+            if (datosPrecios.dto != "") {
+                val sDto = datosPrecios.dto.replace(',', '.')
                 fDtoLin = Redondear(sDto.toDouble(), 2)
             }
-            cPrTrfa.close()
         }
     }
 
@@ -2054,7 +2080,9 @@ class Documento(private val fContexto: Context) {
     }
 
     @SuppressLint("Range")
-    private fun tomaPrecioRating(queGrupo: String, queDpto: String, queProv: String) {
+    private fun tomaPrecioRating(queGrupo: Short, queDpto: Short, queProv: Int) {
+        // TODO
+        /*
         val ratingGrDao: RatingGruposDao? = getInstance(fContexto)?.ratingGruposDao()
 
         var existe = false
@@ -2185,6 +2213,7 @@ class Documento(private val fContexto: Context) {
                 }
             }
         }
+        */
     }
 
     fun hayStockLote(): Boolean {
@@ -2269,8 +2298,9 @@ class Documento(private val fContexto: Context) {
         // Buscamos si existe la tarifa que tenemos configurada como tarifa de cajas. Si es así podremos aplicar tarifa de cajas
         // en el documento, en caso contrario no.
         val queTrfCajas = fConfiguracion.tarifaCajas()
-        dbAlba.rawQuery("SELECT codigo FROM cnftarifas WHERE codigo = $queTrfCajas", null)
-            .use { buscaTrfCajas -> fPuedoAplTrfCajas = buscaTrfCajas.moveToFirst() }
+        // TODO
+        //dbAlba.rawQuery("SELECT codigo FROM cnftarifas WHERE codigo = $queTrfCajas", null)
+        //    .use { buscaTrfCajas -> fPuedoAplTrfCajas = buscaTrfCajas.moveToFirst() }
     }
 
     @SuppressLint("Range")
@@ -2285,6 +2315,8 @@ class Documento(private val fContexto: Context) {
 
     @SuppressLint("Range")
     fun getTextoIncidencia(queId: Int): String {
+        // TODO
+        /*
         dbAlba.rawQuery("SELECT textoincidencia FROM cabeceras WHERE _id = $queId", null)
             .use { buscaTextoInc ->
                 if (buscaTextoInc.moveToFirst()) {
@@ -2295,12 +2327,16 @@ class Documento(private val fContexto: Context) {
                 } else
                     return ""
             }
+        */
+        return ""
     }
 
     @SuppressLint("Range")
     fun dimeCantCajasArticulo(queArticulo: Int): Array<String> {
         var iArticulo: Int
         val sCantCajas = arrayOf("0.0", "0.0")
+        // TODO
+        /*
         dbAlba.rawQuery("SELECT * FROM tmphco", null).use { cTmpHco ->
             cTmpHco.moveToFirst()
             while (!cTmpHco.isAfterLast) {
@@ -2313,12 +2349,15 @@ class Documento(private val fContexto: Context) {
                 cTmpHco.moveToNext()
             }
         }
+        */
         return sCantCajas
     }
 
     fun hayArtHabituales(): Boolean {
-        dbAlba.rawQuery("SELECT articulo FROM arthabituales", null)
-            .use { cursor -> return cursor.moveToFirst() }
+        // TODO
+        //dbAlba.rawQuery("SELECT articulo FROM arthabituales", null)
+        //    .use { cursor -> return cursor.moveToFirst() }
+        return false
     }
 
 }

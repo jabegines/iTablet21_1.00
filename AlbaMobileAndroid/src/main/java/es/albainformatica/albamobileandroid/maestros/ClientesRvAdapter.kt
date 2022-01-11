@@ -15,7 +15,7 @@ import es.albainformatica.albamobileandroid.ponerCeros
 import kotlinx.android.synthetic.main.item_clientes_list.view.*
 
 
-class ClientesRvAdapter(var clientes: MutableList<ListaClientes>, val context: Context, private var listener: OnItemClickListener): RecyclerView.Adapter<ClientesRvAdapter.ViewHolder>() {
+class ClientesRvAdapter(var clientes: List<ListaClientes>, val context: Context, private var listener: OnItemClickListener): RecyclerView.Adapter<ClientesRvAdapter.ViewHolder>() {
 
     private var selectedPos: Int = RecyclerView.NO_POSITION
 
@@ -42,7 +42,7 @@ class ClientesRvAdapter(var clientes: MutableList<ListaClientes>, val context: C
 
         holder.itemView.setOnClickListener {
             selectedPos = position
-            notifyDataSetChanged()
+            notifyItemChanged(position)
             listener.onClick(it, clientes[position])
         }
     }
@@ -75,7 +75,7 @@ class ClientesRvAdapter(var clientes: MutableList<ListaClientes>, val context: C
         private val nombreCom = itemView.findViewById(R.id.tvClt_NombreClte2) as TextView
 
         fun bind(cliente: ListaClientes) {
-            codigo.text = ponerCeros(cliente.codigo.toString(), ancho_codclte)
+            codigo.text = ponerCeros(cliente.codigo, ancho_codclte)
             nombre.text = cliente.nombre
             nombreCom.text = cliente.nombreComercial
         }

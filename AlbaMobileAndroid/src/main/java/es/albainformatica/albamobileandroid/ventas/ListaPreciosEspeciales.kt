@@ -1,12 +1,10 @@
 package es.albainformatica.albamobileandroid.ventas
 
 import android.app.Activity
-import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.database.Cursor
 import android.view.View
 import android.widget.TextView
-import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.SimpleCursorAdapter
 import es.albainformatica.albamobileandroid.*
@@ -16,9 +14,6 @@ import java.util.*
  * Created by jabegines on 16/02/2018.
  */
 class ListaPreciosEspeciales : Activity() {
-    private lateinit var db: BaseDatos
-    private lateinit var dbAlba: SQLiteDatabase
-
     private var fCliente = 0
     private lateinit var lvLineas: ListView
     private lateinit var adapterLineas: SimpleCursorAdapter
@@ -39,15 +34,8 @@ class ListaPreciosEspeciales : Activity() {
         inicializarControles()
     }
 
-    override fun onDestroy() {
-        dbAlba.close()
-        db.close()
-        super.onDestroy()
-    }
 
     private fun inicializarControles() {
-        db = BaseDatos(this)
-        dbAlba = db.readableDatabase
         fFtoDecPrBase = fConfiguracion.formatoDecPrecioBase()
         fFtoDecPrII = fConfiguracion.formatoDecPrecioIva()
         fDecPrII = fConfiguracion.decimalesPrecioIva()
@@ -58,7 +46,9 @@ class ListaPreciosEspeciales : Activity() {
     }
 
     private fun prepararListView() {
-        val fTarifaDoc: Byte = fDocumento.fTarifaDoc
+        // TODO
+        /*
+        val fTarifaDoc: Short = fDocumento.fTarifaDoc
         var cadena =
             "SELECT A._id, A.precio, A.dto, A.precio prNeto, A.flag, B.descr, C.descr descrFto, D.iva porciva," +
                     " E.precio prTarifa, E.dto dtoTarifa, F.precio prTrfFto, F.dto dtoTrfFto FROM ratingart A" +
@@ -75,8 +65,7 @@ class ListaPreciosEspeciales : Activity() {
             "$cadena WHERE A.cliente = $fCliente"
         }
         val cursor = dbAlba.rawQuery(cadena, null)
-        val columnas =
-            arrayOf("descr", "descrFto", "precio", "dto", "prNeto", "prTarifa", "dtoTarifa")
+        val columnas = arrayOf("descr", "descrFto", "precio", "dto", "prNeto", "prTarifa", "dtoTarifa")
         val to = intArrayOf(
             R.id.pr_esp_descrArt,
             R.id.pr_esp_descrFto,
@@ -86,8 +75,7 @@ class ListaPreciosEspeciales : Activity() {
             R.id.pr_esp_tvPrTrf,
             R.id.pr_esp_tvDtTrf
         )
-        adapterLineas =
-            SimpleCursorAdapter(this, R.layout.ly_prec_especiales, cursor, columnas, to, 0)
+        adapterLineas = SimpleCursorAdapter(this, R.layout.ly_prec_especiales, cursor, columnas, to, 0)
         // Formateamos las columnas.
         formatearColumnas()
         lvLineas.adapter = adapterLineas
@@ -95,6 +83,7 @@ class ListaPreciosEspeciales : Activity() {
         // Establecemos el evento on click del ListView.
         lvLineas.onItemClickListener =
             AdapterView.OnItemClickListener { _: AdapterView<*>?, _: View?, _: Int, _: Long -> }
+        */
     }
 
     private fun formatearColumnas() {

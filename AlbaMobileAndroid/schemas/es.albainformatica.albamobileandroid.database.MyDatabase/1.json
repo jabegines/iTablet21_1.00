@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "09aa09dd3275c5dbce441ba1921f8814",
+    "identityHash": "2d26dc6e23347877d949c020952a0f25",
     "entities": [
       {
         "tableName": "Almacenes",
@@ -144,7 +144,7 @@
       },
       {
         "tableName": "Articulos",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`articuloId` INTEGER NOT NULL, `codigo` TEXT NOT NULL, `descripcion` TEXT NOT NULL COLLATE NOCASE, `tipoiva` INTEGER NOT NULL, `grupoId` INTEGER NOT NULL, `departamentoId` INTEGER NOT NULL, `proveedorId` INTEGER NOT NULL, `costo` TEXT NOT NULL, `uCaja` TEXT NOT NULL, `medida` TEXT NOT NULL, `flag1` INTEGER NOT NULL, `flag2` INTEGER NOT NULL, `peso` TEXT NOT NULL, `tasa1` TEXT NOT NULL, `tasa2` TEXT NOT NULL, `enlace` INTEGER NOT NULL, PRIMARY KEY(`articuloId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`articuloId` INTEGER NOT NULL, `codigo` TEXT NOT NULL, `descripcion` TEXT NOT NULL COLLATE NOCASE, `tipoIva` INTEGER NOT NULL, `grupoId` INTEGER NOT NULL, `departamentoId` INTEGER NOT NULL, `proveedorId` INTEGER NOT NULL, `costo` TEXT NOT NULL, `uCaja` TEXT NOT NULL, `medida` TEXT NOT NULL, `flag1` INTEGER NOT NULL, `flag2` INTEGER NOT NULL, `peso` TEXT NOT NULL, `tasa1` TEXT NOT NULL, `tasa2` TEXT NOT NULL, `enlace` INTEGER NOT NULL, PRIMARY KEY(`articuloId`))",
         "fields": [
           {
             "fieldPath": "articuloId",
@@ -165,8 +165,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "tipoiva",
-            "columnName": "tipoiva",
+            "fieldPath": "tipoIva",
+            "columnName": "tipoIva",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -4376,7 +4376,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '09aa09dd3275c5dbce441ba1921f8814')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2d26dc6e23347877d949c020952a0f25')"
     ]
   }
 }

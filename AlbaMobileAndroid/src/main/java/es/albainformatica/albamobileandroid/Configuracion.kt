@@ -3,6 +3,8 @@ package es.albainformatica.albamobileandroid
 import es.albainformatica.albamobileandroid.dao.*
 import android.content.ContentValues
 import android.content.Context
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.entity.ConfiguracionEnt
 import java.text.ParseException
@@ -19,11 +21,11 @@ class Configuracion(queContexto: Context) {
     private val ejerciciosDao: EjerciciosDao? = MyDatabase.getInstance(queContexto)?.ejerciciosDao()
     private val docsCabPiesDao: DocsCabPiesDao? = MyDatabase.getInstance(queContexto)?.docsCabPiesDao()
     private val empresasDao: EmpresasDao? = MyDatabase.getInstance(queContexto)?.empresasDao()
-    //private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(queContexto)
-    //private val fContext: Context = queContexto
+    private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(queContexto)
+    private val fContext: Context = queContexto
     var fTamanyoPantLargo = true
 
-    /*
+
     fun rutaLocalComunicacion(): String {
 
         val fCodTablet = prefs.getString("tablet", "") ?: ""
@@ -39,7 +41,6 @@ class Configuracion(queContexto: Context) {
 
         } else ""
     }
-    */
 
 
     fun codTerminal(): String {

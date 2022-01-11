@@ -1,7 +1,6 @@
 package es.albainformatica.albamobileandroid.historicos
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -36,7 +35,7 @@ class EditarHcoActivity: AppCompatActivity() {
     private var fUsarTasa1: Boolean = false
     private var fUsarTasa2: Boolean = false
     private var fLinea = 0
-    var fFtoDecCantidad: String = ""
+    private var fFtoDecCantidad: String = ""
     private var fFtoDecPrBase: String = ""
     private var fFtoDecPrII: String = ""
     private var fDesdeHcoArtClte: Boolean = false
@@ -94,7 +93,7 @@ class EditarHcoActivity: AppCompatActivity() {
         inicializarControles()
         if (fPedirDosis) {
             val i = Intent(this, PedirDosis::class.java)
-            i.putExtra("articulo", fArticulos.getArticulo())
+            i.putExtra("articulo", fArticulos.fArticulo)
             startActivityForResult(i, fRequestPedirDosis)
         } else {
             fHistorico.inicializarLinea()
@@ -146,7 +145,7 @@ class EditarHcoActivity: AppCompatActivity() {
 
         // fEditAlmEnabled nos servirá para saber si tenemos el control edtAlmacen enabled o no
         fEditAlmEnabled =
-            fConfiguracion.pedirAlmPorLinPresup() && fDocumento.fTipoDoc.toShort() == TIPODOC_PRESUPUESTO
+            fConfiguracion.pedirAlmPorLinPresup() && fDocumento.fTipoDoc == TIPODOC_PRESUPUESTO
         if (!fEditAlmEnabled) {
             val lyAlmacen = findViewById<LinearLayout>(R.id.lyHco_Almacen)
             lyAlmacen.visibility = View.GONE
@@ -166,7 +165,7 @@ class EditarHcoActivity: AppCompatActivity() {
 
         // Si no vamos a usar el lote vemos si el artículo ya está en el documento para mostrar el correspondiente mensaje
         if (fDesdeHcoArtClte && edtLote.visibility == View.GONE) {
-            if (fDocumento.existeLineaArticulo(fArticulos.getArticulo()) > 0) {
+            if (fDocumento.existeLineaArticulo(fArticulos.fArticulo) > 0) {
                 avisoArtEnDoc()
             }
         }
@@ -232,7 +231,7 @@ class EditarHcoActivity: AppCompatActivity() {
         val tvAcumCantAnt = findViewById<TextView>(R.id.edtHco_AcumCantAnt)
         val tvAcumCant = findViewById<TextView>(R.id.edtHco_AcumCant)
         val tvAcumDif = findViewById<TextView>(R.id.edtHco_AcumDiferencia)
-        fHistMes.AbrirClteArt(fDocumento.fCliente, fArticulos.getArticulo())
+        fHistMes.AbrirClteArt(fDocumento.fCliente, fArticulos.fArticulo)
         val fecha = Calendar.getInstance()
         val anyo = fecha[Calendar.YEAR]
         val nombreMes = DimeNombreMesResum(fHistMes.getMes() - 1)
@@ -337,7 +336,7 @@ class EditarHcoActivity: AppCompatActivity() {
 
 
     private fun prepararLote() {
-        if (fDocumento.fTipoDoc.toShort() == TIPODOC_FACTURA || fDocumento.fTipoDoc.toShort() == TIPODOC_ALBARAN) {
+        if (fDocumento.fTipoDoc == TIPODOC_FACTURA || fDocumento.fTipoDoc == TIPODOC_ALBARAN) {
             if (!fConfiguracion.usarTrazabilidad() || !fArticulos.controlaTrazabilidad()) {
                 tvLote.visibility = View.GONE
                 edtLote.visibility = View.GONE
@@ -355,7 +354,7 @@ class EditarHcoActivity: AppCompatActivity() {
                     OnFocusChangeListener { _: View?, hasFocus: Boolean ->
                         if (!hasFocus && edtLote.text.toString() != "") {
                             if (fDocumento.existeArtYLote(
-                                    fArticulos.getArticulo(),
+                                    fArticulos.fArticulo,
                                     edtLote.text.toString()
                                 )
                             ) {
@@ -418,10 +417,10 @@ class EditarHcoActivity: AppCompatActivity() {
 
     @SuppressLint("Range")
     private fun setArticulo() {
-        fDocumento.fArticulo = fArticulos.getArticulo()
-        fDocumento.fCodArt = fArticulos.getCodigo()
-        fDocumento.fDescr = fArticulos.getDescripcion()
-        fDocumento.fCodigoIva = fArticulos.getCodigoIva()
+        fDocumento.fArticulo = fArticulos.fArticulo
+        fDocumento.fCodArt = fArticulos.fCodigo
+        fDocumento.fDescr = fArticulos.fDescripcion
+        fDocumento.fCodigoIva = fArticulos.fCodIva
         // Vemos las posibles tasas de la línea. Antes inicializamos para no tener problemas con valores nulos. Idem con el formato.
         fDocumento.fTasa1 = 0.0
         fDocumento.fTasa2 = 0.0
@@ -430,8 +429,8 @@ class EditarHcoActivity: AppCompatActivity() {
         fDocumento.fArtSinCargo = false
         fHistorico.fFormatoLin = 0
         if (fDocumento.fAplicarIva) {
-            if (fUsarTasa1) fDocumento.fTasa1 = fArticulos.getTasa1()
-            if (fUsarTasa2) fDocumento.fTasa2 = fArticulos.getTasa2()
+            if (fUsarTasa1) fDocumento.fTasa1 = fArticulos.fTasa1
+            if (fUsarTasa2) fDocumento.fTasa2 = fArticulos.fTasa2
         }
         val queDescr = fDocumento.fCodArt + " - " + fDocumento.fDescr
         tvArticulo.text = queDescr
@@ -455,12 +454,12 @@ class EditarHcoActivity: AppCompatActivity() {
         // Si trabajamos con artículos habituales grabamos el texto del artículo en el de la línea.
         // Si el artículo tiene texto resaltamos en rojo el título del botón para que el vendedor se percate.
         if (fDocumento.fHayArtHabituales) {
-            fDocumento.fTextoLinea = fDocumento.textoArtHabitual
+            fDocumento.fTextoLinea = fDocumento.textoArtHabitual()
         }
 
         // Calculamos precio y dto. una vez que ya hemos escogido la tarifa.
         tvPrNeto.text = ""
-        fDocumento.calculaPrecioYDto(fArticulos.getGrupo(), fArticulos.getDpto(), fArticulos.fCodProv, fArticulos.getPorcIva())
+        fDocumento.calculaPrecioYDto(fArticulos.fGrupo, fArticulos.fDepartamento, fArticulos.fCodProv, fArticulos.fPorcIva)
         // Mostramos precio y dto.
         if (fIvaIncluido) {
             edtPrecio.setText(
@@ -605,7 +604,7 @@ class EditarHcoActivity: AppCompatActivity() {
                 fHistorico.fDtoImp = fDocumento.fDtoImp
                 fHistorico.fDtoImpII = fDocumento.fDtoImpII
             }
-            fHistorico.fCodigoIva = fArticulos.getCodigoIva()
+            fHistorico.fCodigoIva = fArticulos.fCodIva
             var queFlag = 0
             if (fDocumento.fArtEnOferta) queFlag = FLAGLINEAVENTA_ARTICULO_EN_OFERTA
             if (fDocumento.fArtSinCargo) queFlag = queFlag or FLAGLINEAVENTA_SIN_CARGO
@@ -680,7 +679,7 @@ class EditarHcoActivity: AppCompatActivity() {
         view.getTag(0)          // Para que no dé warning el compilador
 
         val i = Intent(this, PedirDosis::class.java)
-        i.putExtra("articulo", fArticulos.getArticulo())
+        i.putExtra("articulo", fArticulos.fArticulo)
         startActivityForResult(i, fRequestPedirDosis)
     }
 
@@ -695,8 +694,8 @@ class EditarHcoActivity: AppCompatActivity() {
             fVendTrfPiezas = false
         } else {
             fTarifaAnt = fDocumento.fTarifaLin
-            if (fDocumento.fClientes.getTarifaPiezas() != "0")
-                fDocumento.fTarifaLin = fDocumento.fClientes.getTarifaPiezas().toShort()
+            if (fDocumento.fClientes.fTrfPiezas > 0)
+                fDocumento.fTarifaLin = fDocumento.fClientes.fTrfPiezas
             setArticulo()
             imgTrfPiezas.visibility = View.VISIBLE
             fVendTrfPiezas = true

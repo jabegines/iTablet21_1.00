@@ -139,11 +139,11 @@ class DatosDevolucion: Activity() {
     }
 
     private fun setArticulo() {
-        fDocumento.fArticulo = fArticulos.getArticulo()
-        fDocumento.fCodArt = fArticulos.getCodigo()
-        fDocumento.fDescr = fArticulos.getDescripcion()
-        fDocumento.fCodigoIva = fArticulos.getCodigoIva()
-        fDocumento.fPorcIva = fArticulos.getPorcIva()
+        fDocumento.fArticulo = fArticulos.fArticulo
+        fDocumento.fCodArt = fArticulos.fCodigo
+        fDocumento.fDescr = fArticulos.fDescripcion
+        fDocumento.fCodigoIva = fArticulos.fCodIva
+        fDocumento.fPorcIva = fArticulos.fPorcIva
 
         // Si la línea del histórico tiene formato, mantenemos el mismo.
         if (fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("formato")) != null)

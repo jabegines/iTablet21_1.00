@@ -25,7 +25,6 @@ import android.widget.TextView
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.dao.OftCantRangosDao
 import es.albainformatica.albamobileandroid.dao.TiposIncDao
-import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.getInstance
 import es.albainformatica.albamobileandroid.entity.TiposIncEnt
 import es.albainformatica.albamobileandroid.historicos.VerHcoArtCliente
@@ -56,7 +55,7 @@ class VentasDatosLinea: Activity() {
     private var fPedirPiezas: Boolean = false
     private var fPedirTarifa: Boolean = false
     private var fHeElegidoTarifa: Boolean = false
-    private var fTarifaAnt: Byte = 0
+    private var fTarifaAnt: Short = 0
     private var fVendTrfPiezas = false
     private var fEstado: Byte = 0
     private var fIvaIncluido: Boolean = false
@@ -141,7 +140,6 @@ class VentasDatosLinea: Activity() {
 
     override fun onDestroy() {
         fArticulos.close()
-        fDtosCascada.close()
         super.onDestroy()
     }
 
@@ -150,8 +148,7 @@ class VentasDatosLinea: Activity() {
         val tvNComClte = findViewById<TextView>(R.id.tvVL_NComClte)
         val tvTipoDoc = findViewById<TextView>(R.id.tvVL_TipoDoc)
         val tvSerieNum = findViewById<TextView>(R.id.tvVL_SerieNum)
-        val queNombreClte =
-            fDocumento.fClientes.getCodigo() + " - " + fDocumento.nombreCliente()
+        val queNombreClte = fDocumento.fClientes.fCodigo + " - " + fDocumento.nombreCliente()
         tvNombreClte.text = queNombreClte
         tvNComClte.text = fDocumento.nombreComClte()
         tvTipoDoc.text = tipoDocAsString(fDocumento.fTipoDoc)
@@ -181,7 +178,7 @@ class VentasDatosLinea: Activity() {
         carpetaImagenes = dimeRutaImagenes(this)
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
         fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa.toString().toInt())
-        fAplicarIva = fDocumento.fClientes.getAplicarIva()
+        fAplicarIva = fDocumento.fClientes.fAplIva
         fUsarTasa1 = fConfiguracion.usarTasa1()
         fUsarTasa2 = fConfiguracion.usarTasa2()
         fPedirTarifa = fConfiguracion.pedirTarifa()
@@ -324,7 +321,7 @@ class VentasDatosLinea: Activity() {
 
         if (fArticulos.existeCodigo(edtCodArt.text.toString().uppercase(Locale.getDefault()))) {
             // No sé por qué, pero si quitamos esta línea la aplicación da error
-            edtCodArt.setText(fArticulos.getCodigo())
+            edtCodArt.setText(fArticulos.fCodigo)
 
             // Si el artículo usa formatos no permitiremos continuar hasta haber elegido uno.
             if (fArticulos.usarFormatos()) {
@@ -411,7 +408,7 @@ class VentasDatosLinea: Activity() {
                         if (fPedirDosis) {
                             if (fArticulos.venderPorDosis() && fArticulos.usarPiezas()) {
                                 val i = Intent(this@VentasDatosLinea, PedirDosis::class.java)
-                                i.putExtra("articulo", fArticulos.getArticulo())
+                                i.putExtra("articulo", fArticulos.fArticulo)
                                 startActivityForResult(i, fRequestPedirDosis)
                             }
                         }
@@ -506,18 +503,19 @@ class VentasDatosLinea: Activity() {
         }
     }
 
+
     private fun elegirFormato() {
-        val listItems: MutableList<String> = ArrayList()
-        fArticulos.formatosALista(listItems)
+        //var listItems: MutableList<String> = ArrayList()
+        val listItems = fArticulos.formatosALista()
         chsFormatos = listItems.toTypedArray()
         // Mostramos la descripción del artículo para saber de qué artículo estamos escogiendo los formatos,
         // aunque luego la volvemos a mostrar en terminaAceptarArticulo().
-        tvDescr.text = fArticulos.getDescripcion()
+        tvDescr.text = fArticulos.fDescripcion
         val altBld = AlertDialog.Builder(this)
         altBld.setTitle("Escoger formato")
         altBld.setSingleChoiceItems(chsFormatos, -1) { dialog: DialogInterface, item: Int ->
             val sFormato = chsFormatos[item].toString()
-            fDocumento.fFormatoLin = sFormato.substring(0, 2).toByte()
+            fDocumento.fFormatoLin = sFormato.substring(0, 2).toShort()
             dialog.dismiss()
             aceptarArticulo()
         }
@@ -530,7 +528,7 @@ class VentasDatosLinea: Activity() {
         altBld.setTitle("Escoger tarifa")
         altBld.setSingleChoiceItems(chsTarifas, -1) { dialog: DialogInterface, item: Int ->
             val sTarifa = chsTarifas[item].toString()
-            fDocumento.fTarifaLin = sTarifa.substring(0, 2).toByte()
+            fDocumento.fTarifaLin = sTarifa.substring(0, 2).toShort()
             // Si la tarifa que acabamos de elegir es de piezas activaremos la venta por piezas
             if (esTarifaPiezas(fDocumento.fTarifaLin)) {
                 fTarifaAnt = fDocumento.fTarifaLin
@@ -678,20 +676,20 @@ class VentasDatosLinea: Activity() {
     }
 
     private fun setArticulo() {
-        fDocumento.fArticulo = fArticulos.getArticulo()
-        fDocumento.fCodArt = fArticulos.getCodigo()
-        fDocumento.fDescr = fArticulos.getDescripcion()
-        fDocumento.fCodigoIva = fArticulos.getCodigoIva()
+        fDocumento.fArticulo = fArticulos.fArticulo
+        fDocumento.fCodArt = fArticulos.fCodigo
+        fDocumento.fDescr = fArticulos.fDescripcion
+        fDocumento.fCodigoIva = fArticulos.fCodIva
         // Vemos las posibles tasas de la línea.
         if (fDocumento.fAplicarIva) {
-            if (fUsarTasa1) fDocumento.fTasa1 = fArticulos.getTasa1()
-            if (fUsarTasa2) fDocumento.fTasa2 = fArticulos.getTasa2()
+            if (fUsarTasa1) fDocumento.fTasa1 = fArticulos.fTasa1
+            if (fUsarTasa2) fDocumento.fTasa2 = fArticulos.fTasa2
         }
         // Si trabajamos con artículos habituales grabamos el texto del artículo en el de la línea.
         // Si el artículo tiene texto resaltamos en rojo el título del botón para que el vendedor se percate.
         if (fDocumento.fHayArtHabituales) {
-            fDocumento.fTextoLinea = fDocumento.textoArtHabitual
-            if (fDocumento.fTextoLinea != null) {
+            fDocumento.fTextoLinea = fDocumento.textoArtHabitual()
+            if (fDocumento.fTextoLinea != "") {
                 if (fDocumento.fTextoLinea == "") btnTextoLinea.setTextColor(
                     resources.getColor(
                         R.color.texto_botones
@@ -699,8 +697,8 @@ class VentasDatosLinea: Activity() {
                 ) else btnTextoLinea.setTextColor(Color.RED)
             }
         }
-        edtCodArt.setText(fArticulos.getCodigo())
-        tvDescr.text = fArticulos.getDescripcion()
+        edtCodArt.setText(fArticulos.fCodigo)
+        tvDescr.text = fArticulos.fDescripcion
         mostrarTarifa()
         if (fDocumento.fFormatoLin.toInt() != 0) mostrarFormato()
 
@@ -727,12 +725,7 @@ class VentasDatosLinea: Activity() {
     private fun calcularPrecioYDto(calcDtoImpte: Boolean) {
         tvPrNeto.text = ""
         // Calculamos precio y dto. una vez que ya hemos escogido la tarifa.
-        fDocumento.calculaPrecioYDto(
-            fArticulos.getGrupo(),
-            fArticulos.getDpto(),
-            fArticulos.fCodProv,
-            fArticulos.getPorcIva()
-        )
+        fDocumento.calculaPrecioYDto(fArticulos.fGrupo, fArticulos.fDepartamento, fArticulos.fCodProv, fArticulos.fPorcIva)
         // Mostramos precio y dto.
         if (fIvaIncluido && fAplicarIva) {
             edtPrecio.setText(String.format(fFtoDecPrII, fDocumento.fPrecioII))
@@ -782,14 +775,12 @@ class VentasDatosLinea: Activity() {
         fDocumento.insertarDtoCasc(values)
         fDtosCascada.abrir(-1)
         // Configuramos el objeto de los dtos. en cascada
-        fDtosCascada.fExentoIva =
-            fConfiguracion.ivaIncluido(fDocumento.fEmpresa.toString().toInt())
-        fDtosCascada.fAplicarIva = fDocumento.fClientes.getAplicarIva()
+        fDtosCascada.fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa.toString().toInt())
+        fDtosCascada.fAplicarIva = fDocumento.fClientes.fAplIva
         fDtosCascada.fPorcIva = fDocumento.fPorcIva
         fDtosCascada.fDecPrBase = fConfiguracion.decimalesPrecioBase()
-        fDtosCascada.fExentoIva = fDocumento.fClientes.getAplicarIva()
-        fDocumento.fDtoLin =
-            fDtosCascada.calcularDtoEquiv(fDocumento.fPrecio, fDecPrBase).toDouble()
+        fDtosCascada.fExentoIva = !fDocumento.fClientes.fAplIva
+        fDocumento.fDtoLin = fDtosCascada.calcularDtoEquiv(fDocumento.fPrecio, fDecPrBase).toDouble()
         fDocumento.fLineaConDtCasc = true
     }
 
@@ -987,14 +978,12 @@ class VentasDatosLinea: Activity() {
                     -1
                 )
                 // Configuramos el objeto de los dtos. en cascada
-                fDtosCascada.fIvaIncluido =
-                    fConfiguracion.ivaIncluido(fDocumento.fEmpresa.toString().toInt())
-                fDtosCascada.fAplicarIva = fDocumento.fClientes.getAplicarIva()
+                fDtosCascada.fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa.toString().toInt())
+                fDtosCascada.fAplicarIva = fDocumento.fClientes.fAplIva
                 fDtosCascada.fPorcIva = fDocumento.fPorcIva
                 fDtosCascada.fDecPrBase = fConfiguracion.decimalesPrecioBase()
-                fDtosCascada.fExentoIva = fDocumento.fClientes.getAplicarIva()
-                fDocumento.fDtoLin =
-                    fDtosCascada.calcularDtoEquiv(fDocumento.fPrecio, fDecPrBase)
+                fDtosCascada.fExentoIva = !fDocumento.fClientes.fAplIva
+                fDocumento.fDtoLin = fDtosCascada.calcularDtoEquiv(fDocumento.fPrecio, fDecPrBase)
                         .toDouble()
             }
             var continuar: Boolean
@@ -1122,8 +1111,8 @@ class VentasDatosLinea: Activity() {
                     } else if (vengoDe == LISTA_ARTICULOS) {
                         val queArticulo = data?.getIntExtra("articulo", -1) ?: 0
                         if (fArticulos.existeArticulo(queArticulo)) {
-                            edtCodArt.setText(fArticulos.getCodigo())
-                            tvDescr.text = fArticulos.getDescripcion()
+                            edtCodArt.setText(fArticulos.fCodigo)
+                            tvDescr.text = fArticulos.fDescripcion
                             if (fArticulos.usarFormatos()) {
                                 elegirFormato()
                             } else {
@@ -1159,9 +1148,9 @@ class VentasDatosLinea: Activity() {
 
         } else if (requestCode == fRequestPedirDosis) {
             if (resultCode == RESULT_OK) {
-                val queFormatoId = data?.getIntExtra("formatoId", 0) ?: 0
+                val queFormatoId = data?.getShortExtra("formatoId", 0) ?: 0
                 val queNumPiezas = data?.getStringExtra("piezas")
-                fDocumento.fFormatoLin = queFormatoId.toByte()
+                fDocumento.fFormatoLin = queFormatoId
                 mostrarFormato()
                 edtPiezas.setText(queNumPiezas)
             }
@@ -1271,7 +1260,7 @@ class VentasDatosLinea: Activity() {
     }
 
     private fun prepararIncidencias() {
-        val tiposIncDao: TiposIncDao? = MyDatabase.getInstance(this)?.tiposIncDao()
+        val tiposIncDao: TiposIncDao? = getInstance(this)?.tiposIncDao()
         val lIncidencias = tiposIncDao?.getAllIncidencias() ?: emptyList<TiposIncEnt>().toMutableList()
 
         val listItems: MutableList<String> = ArrayList()
@@ -1286,7 +1275,7 @@ class VentasDatosLinea: Activity() {
         view.getTag(0)              // Para que no dé warning el compilador
 
         // Mostramos la descripción del artículo para saber de qué artículo estamos escogiendo la incidencia.
-        tvDescr.text = fArticulos.getDescripcion()
+        tvDescr.text = fArticulos.fDescripcion
         val altBld = AlertDialog.Builder(this)
         altBld.setTitle("Escoger incidencia")
         altBld.setSingleChoiceItems(chsIncidencias, -1) { dialog: DialogInterface, item: Int ->
@@ -1339,8 +1328,9 @@ class VentasDatosLinea: Activity() {
                 fVendTrfPiezas = false
             } else {
                 fTarifaAnt = fDocumento.fTarifaLin
-                if (fDocumento.fClientes.getTarifaPiezas() != "0") fDocumento.fTarifaLin =
-                    fDocumento.fClientes.getTarifaPiezas().toByte()
+                if (fDocumento.fClientes.fTrfPiezas > 0)
+                    fDocumento.fTarifaLin = fDocumento.fClientes.fTrfPiezas
+
                 calcularPrecioYDto(false)
                 mostrarTarifa()
                 fDocumento.fLineaPorPiezas = true
@@ -1366,8 +1356,8 @@ class VentasDatosLinea: Activity() {
     }
 
     private fun tarifasALista(listItems: MutableList<String>) {
-        val db = BaseDatos(this)
-        try {
+        // TODO
+        /*
             val dbAlba = db.writableDatabase
             dbAlba.rawQuery("SELECT codigo, tarifa FROM cnftarifas", null).use { cursor ->
                 cursor.moveToFirst()
@@ -1379,24 +1369,20 @@ class VentasDatosLinea: Activity() {
                     cursor.moveToNext()
                 }
             }
-        } finally {
-            db.close()
-        }
+        */
     }
 
-    private fun esTarifaPiezas(queTarifa: Byte): Boolean {
-        val db = BaseDatos(this)
-        try {
-            val dbAlba = db.writableDatabase
+    private fun esTarifaPiezas(queTarifa: Short): Boolean {
+        // TODO
+        /*
             dbAlba.rawQuery("SELECT flag FROM cnftarifas WHERE codigo = $queTarifa", null)
                 .use { cursor ->
                     return if (cursor.moveToFirst()) {
                         cursor.getInt(0) and FLAGCNFTARIFAS_PARA_PIEZAS > 0
                     } else false
                 }
-        } finally {
-            db.close()
-        }
+        */
+        return false
     }
 
 

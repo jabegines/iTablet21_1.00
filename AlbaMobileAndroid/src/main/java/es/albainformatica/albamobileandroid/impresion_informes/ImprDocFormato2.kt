@@ -1,24 +1,20 @@
 package es.albainformatica.albamobileandroid.impresion_informes
 
 import android.annotation.SuppressLint
-import es.albainformatica.albamobileandroid.stringABytes
-import es.albainformatica.albamobileandroid.StringOfChar
-import es.albainformatica.albamobileandroid.tipoDocAsString
 import es.albainformatica.albamobileandroid.ventas.Documento
-import es.albainformatica.albamobileandroid.Configuracion
 import android.content.SharedPreferences
 import android.app.ProgressDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothSocket
 import android.bluetooth.BluetoothDevice
 import android.content.Context
-import es.albainformatica.albamobileandroid.Comunicador
 import android.preference.PreferenceManager
 import android.widget.Toast
 import android.content.Intent
 import android.os.Handler
 import android.os.Message
 import android.os.SystemClock
+import es.albainformatica.albamobileandroid.*
 import java.io.IOException
 import java.io.OutputStream
 import java.lang.Exception
@@ -211,10 +207,8 @@ class ImprDocFormato2(contexto: Context): Runnable {
 
     private fun imprDatosClteYDoc(): String {
         var result: String
-        var cCadena: String = ajustarCadena(
-            fDocumento.fClientes.getCodigo() + " "
-                    + fDocumento.fClientes.getNFiscal(), 35, true
-        )
+        var cCadena: String = ajustarCadena(ponerCeros(fDocumento.fClientes.fCodigo.toString(), ancho_codclte) + " "
+                    + fDocumento.fClientes.fNombre, 35, true)
         result = cCadena
         result += ccSaltoLinea
         cCadena = ajustarCadena(fDocumento.fClientes.getDireccion(), 35, true)

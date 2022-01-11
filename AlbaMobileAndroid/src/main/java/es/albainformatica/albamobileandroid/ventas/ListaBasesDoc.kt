@@ -2,14 +2,17 @@ package es.albainformatica.albamobileandroid.ventas
 
 import android.content.Context
 import es.albainformatica.albamobileandroid.Redondear
-import android.database.sqlite.SQLiteDatabase
+import es.albainformatica.albamobileandroid.dao.IvasDao
+import es.albainformatica.albamobileandroid.database.MyDatabase
+import es.albainformatica.albamobileandroid.entity.IvasEnt
 import java.util.ArrayList
 
 /**
  * Created by jabegines on 14/10/13.
  */
-class ListaBasesDoc(contexto: Context) : BaseDatos(contexto) {
-    private val dbAlba: SQLiteDatabase = readableDatabase
+class ListaBasesDoc(contexto: Context) {
+
+    private val ivasDao: IvasDao? = MyDatabase.getInstance(contexto)?.ivasDao()
     var fLista: ArrayList<TBaseDocumento> = ArrayList()
     var fAplicarIva: Boolean = true
     var fAplicarRecargo: Boolean = false
@@ -18,8 +21,7 @@ class ListaBasesDoc(contexto: Context) : BaseDatos(contexto) {
     var fDecImpII = 0
 
 
-    override fun close() {
-        dbAlba.close()
+    fun close() {
         fLista.clear()
     }
 
@@ -27,18 +29,19 @@ class ListaBasesDoc(contexto: Context) : BaseDatos(contexto) {
         fLista.add(Base)
     }
 
-    fun calcularBase(CodigoIva: Short, Importe: Double) {
+    fun calcularBase(codigoIva: Short, importe: Double) {
         var continuar = true
 
         // Si no tenemos el código de iva en la lista, lo añadimos.
-        if (!existeBase(CodigoIva)) {
-            dbAlba.rawQuery("SELECT * FROM ivas WHERE codigo=$CodigoIva", null).use { cIvas ->
-                if (cIvas.moveToFirst()) {
+        if (!existeBase(codigoIva)) {
+            val ivaEnt = ivasDao?.getCodigoIva(codigoIva) ?: IvasEnt()
+
+                if (ivaEnt.codigo > 0) {
                     val oBase = TBaseDocumento()
                     if (fAplicarIva) {
-                        oBase.fCodigoIva = CodigoIva
-                        oBase.fPorcIva = cIvas.getString(cIvas.getColumnIndex("iva")).replace(',', '.').toDouble()
-                        if (fAplicarRecargo) oBase.fPorcRe = cIvas.getString(cIvas.getColumnIndex("recargo")).replace(',', '.').toDouble()
+                        oBase.fCodigoIva = codigoIva
+                        oBase.fPorcIva = ivaEnt.porcIva.replace(',', '.').toDouble()
+                        if (fAplicarRecargo) oBase.fPorcRe = ivaEnt.porcRe.replace(',', '.').toDouble()
                         else oBase.fPorcRe = 0.0
                     } else {
                         oBase.fCodigoIva = -1
@@ -49,11 +52,12 @@ class ListaBasesDoc(contexto: Context) : BaseDatos(contexto) {
                     // Le aplicamos la configuración a la base que acabamos de añadir.
                     aplicarConfiguracion(oBase)
                 } else continuar = false
-            }
+
         }
+
         if (continuar) {
-            val oBase = getBasePorCodigo(CodigoIva)
-            oBase.calcularBase(Importe)
+            val oBase = getBasePorCodigo(codigoIva)
+            oBase.calcularBase(importe)
         }
     }
 
@@ -78,9 +82,9 @@ class ListaBasesDoc(contexto: Context) : BaseDatos(contexto) {
         }
     }
 
-    private fun existeBase(CodigoIva: Short): Boolean {
+    private fun existeBase(codigoIva: Short): Boolean {
         for (aFLista in fLista) {
-            if (aFLista.fCodigoIva == CodigoIva) return true
+            if (aFLista.fCodigoIva == codigoIva) return true
         }
         return false
     }
@@ -140,6 +144,8 @@ class ListaBasesDoc(contexto: Context) : BaseDatos(contexto) {
         var fImporte: Double
         var fImporteII: Double
         var dPorcIva: Double
+        // TODO
+        /*
         val cLineas = dbAlba.rawQuery(
             "SELECT A.codigoiva, A.importe, A.importeii, B.iva porciva"
                     + " FROM lineas A "
@@ -172,6 +178,7 @@ class ListaBasesDoc(contexto: Context) : BaseDatos(contexto) {
             cLineas.moveToNext()
         }
         cLineas.close()
+        */
     }
 
 

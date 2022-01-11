@@ -8,8 +8,8 @@ import android.database.sqlite.SQLiteDatabase
 /**
  * Created by jabegines on 30/05/2014.
  */
-class DtosCascada(fContexto: Context): BaseDatos(fContexto) {
-    private var dbAlba: SQLiteDatabase = writableDatabase
+class DtosCascada(fContexto: Context) {
+
     lateinit var cursor: Cursor
     var fIvaIncluido: Boolean = false
     var fAplicarIva: Boolean = true
@@ -19,14 +19,12 @@ class DtosCascada(fContexto: Context): BaseDatos(fContexto) {
     var fDecPrBase = 0
 
 
-    override fun close() {
-        dbAlba.close()
-    }
 
 
     fun abrir(queLinea: Int) {
-        cursor = dbAlba.rawQuery("SELECT * FROM desctoslineas WHERE linea = $queLinea", null)
-        cursor.moveToFirst()
+        // TODO
+        //cursor = dbAlba.rawQuery("SELECT * FROM desctoslineas WHERE linea = $queLinea", null)
+        //cursor.moveToFirst()
     }
 
     fun calcularDtoEquiv(precio: Double, fDecPrBase: Int): Float {
@@ -75,7 +73,8 @@ class DtosCascada(fContexto: Context): BaseDatos(fContexto) {
     }
 
     fun borrar(queId: Int) {
-        dbAlba.delete("desctoslineas", "_id=$queId", null)
+        // TODO
+        //dbAlba.delete("desctoslineas", "_id=$queId", null)
     }
 
     val porcDto: Double

@@ -218,7 +218,7 @@ class GrvImageArticulosAdapter: BaseAdapter {
                 var queArticulo = 0
                 if (usarOfertas) {
                     // Vemos si el artículo está en el array de ofertas, en cuyo caso buscaremos el precio y dto. de la oferta
-                    val queIndice = ofertas.indexOf(fArticulosGrv.getArticulo())
+                    val queIndice = ofertas.indexOf(fArticulosGrv.fArticulo)
                     if (queIndice > -1) {
                         queArticulo = ofertas[queIndice]
                         val (_, _, _, precio, dto) = ofertasDao?.getOftaArt(queArticulo, fEmpresaActual, fTarifa.toShort()) ?: OfertasEnt()
@@ -230,7 +230,7 @@ class GrvImageArticulosAdapter: BaseAdapter {
                 // Buscamos en las líneas del documento si el artículo tiene alguna cantidad vendida. Idem con las cajas.
                 if (fVendiendo) {
                     // fDocumento.dimeCantCajasArticulo devolverá un array de string con dos elementos: uno para la cantidad y otro para las cajas.
-                    val sCantCajas = fDocumento.dimeCantCajasArticulo(fArticulosGrv.getArticulo())
+                    val sCantCajas = fDocumento.dimeCantCajasArticulo(fArticulosGrv.fArticulo)
                     queCantidad = sCantCajas[0]
                     queCajas = sCantCajas[1]
                 }
@@ -239,9 +239,9 @@ class GrvImageArticulosAdapter: BaseAdapter {
                 if (fEnHistorico) {
                     items.add(
                         ItemArticulo(
-                            fArticulosGrv.getArticulo(),
-                            fArticulosGrv.getCodigo(),
-                            fArticulosGrv.getDescripcion(),
+                            fArticulosGrv.fArticulo,
+                            fArticulosGrv.fCodigo,
+                            fArticulosGrv.fDescripcion,
                             fArticulosGrv.getUCajaAsString(),
                             fArticulosGrv.getCantHco(),
                             fArticulosGrv.getCajasHco(),
@@ -251,7 +251,7 @@ class GrvImageArticulosAdapter: BaseAdapter {
                             fArticulosGrv.getDto(),
                             quePrOfta,
                             queDtoOfta,
-                            fArticulosGrv.getPorcIva(),
+                            fArticulosGrv.fPorcIva,
                             hayOferta,
                             queCantidad,
                             queCajas,
@@ -262,9 +262,9 @@ class GrvImageArticulosAdapter: BaseAdapter {
                     if (!fSoloOftas || queArticulo > 0) {
                         items.add(
                             ItemArticulo(
-                                fArticulosGrv.getArticulo(),
-                                fArticulosGrv.getCodigo(),
-                                fArticulosGrv.getDescripcion(),
+                                fArticulosGrv.fArticulo,
+                                fArticulosGrv.fCodigo,
+                                fArticulosGrv.fDescripcion,
                                 fArticulosGrv.getUCajaAsString(),
                                 fArticulosGrv.getPrecio(),
                                 fArticulosGrv.getDto(),
@@ -272,7 +272,7 @@ class GrvImageArticulosAdapter: BaseAdapter {
                                 fArticulosGrv.getDtoCajas(),
                                 quePrOfta,
                                 queDtoOfta,
-                                fArticulosGrv.getPorcIva(),
+                                fArticulosGrv.fPorcIva,
                                 hayOferta,
                                 queCantidad,
                                 queCajas,

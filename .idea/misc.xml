@@ -3,6 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/buscar_articulos.xml" value="0.33" />
+        <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/clientes_activity.xml" value="0.30083333333333334" />
+        <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/ly_lineas_ventas.xml" value="0.30083333333333334" />
+        <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/ventas_lineas.xml" value="0.30083333333333334" />
+        <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-normal/buscar_articulos.xml" value="0.990625" />
+        <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-normal/clientes_activity.xml" value="0.990625" />
+        <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-normal/ly_lineas_ventas.xml" value="0.990625" />
+        <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-normal/ventas_lineas.xml" value="0.990625" />
+        <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout/item_articulos_list.xml" value="0.33" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout/nueva_carga.xml" value="0.26416666666666666" />
         <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/buscar_articulos.xml" value="0.4675" />
         <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/clientes_activity.xml" value="0.4675" />

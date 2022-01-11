@@ -42,10 +42,6 @@ class VerNotasCliente: Activity() {
         inicializarControles()
     }
 
-    override fun onDestroy() {
-        fNotas.close()
-        super.onDestroy()
-    }
 
     private fun inicializarControles() {
         fIdNota = 0

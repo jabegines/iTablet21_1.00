@@ -44,6 +44,9 @@ interface CabecerasDao {
     fun actualizarNumPaquete(queNumPaquete: Int)
 
 
+    @Query("DELETE FROM Cabeceras WHERE cabeceraId = :queIdDoc")
+    fun borrarDoc(queIdDoc: Int)
+
     @Insert
     fun insertar(cabecera: CabecerasEnt)
 }

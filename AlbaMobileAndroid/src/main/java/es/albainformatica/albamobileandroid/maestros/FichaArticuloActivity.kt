@@ -77,17 +77,17 @@ class FichaArticuloActivity: AppCompatActivity() {
             val path = carpetaImagenes + fArticulos.getImagen()
             val file = File(path)
             if (file.exists()) imgArticulo.setImageURI(Uri.parse(path)) else imgArticulo.setImageBitmap(null)
-            tvDescrArt.text = fArticulos.getDescripcion()
-            tvCodArt.text = fArticulos.getCodigo()
+            tvDescrArt.text = fArticulos.fDescripcion
+            tvCodArt.text = fArticulos.fCodigo
             edtCBarras.setText(fArticulos.getCBarras())
             if (fConfiguracion.verProveedores()) {
                 val provDao: ProveedoresDao? = MyDatabase.getInstance(this)?.proveedoresDao()
                 val queNombreProv = provDao?.getNombreProv(fArticulos.fCodProv.toInt()) ?: ""
-                val queTexto = ponerCeros(fArticulos.fCodProv, ancho_codprov) + " " + queNombreProv
+                val queTexto = ponerCeros(fArticulos.fCodProv.toString(), ancho_codprov) + " " + queNombreProv
                 edtProveedor.setText(queTexto)
 
             } else edtProveedor.setText("")
-            val textoTipoIva = String.format("%.2f", fArticulos.getPorcIva()) + '%'
+            val textoTipoIva = String.format("%.2f", fArticulos.fPorcIva) + '%'
             edtTipoIva.setText(textoTipoIva)
             edtCosto.setText((String.format(fConfiguracion.formatoDecPrecioBase(), fArticulos.getCosto()) + " €"))
             edtPeso.setText(String.format(fDecCantidad, fArticulos.getPeso()))
@@ -164,7 +164,7 @@ class FichaArticuloActivity: AppCompatActivity() {
         var sPrecio = cursor.getString(cursor.getColumnIndex("priva"))
         sPrecio = sPrecio.replace(',', '.')
         var dPrecio = sPrecio.toDouble()
-        val dImpIva = dPrecio * fArticulos.getPorcIva() / 100
+        val dImpIva = dPrecio * fArticulos.fPorcIva / 100
         dPrecio += dImpIva
         sPrecio = String.format(fConfiguracion.formatoDecPrecioIva(), dPrecio)
         tv.text = sPrecio

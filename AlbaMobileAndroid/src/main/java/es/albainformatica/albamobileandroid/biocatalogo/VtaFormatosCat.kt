@@ -83,16 +83,10 @@ class VtaFormatosCat: AppCompatActivity() {
     }
 
 
-    public override fun onDestroy() {
-        fDtosCascada.close()
-
-        super.onDestroy()
-    }
-
 
     private fun inicializarControles() {
 
-        tvDescrArt.text = fArticulos.getDescripcion()
+        tvDescrArt.text = fArticulos.fDescripcion
 
         // Presentamos también aquí la imagen del artículo
         val queFichero = "$fRutaImagenes/ART_$fArticulo.jpg"
@@ -106,7 +100,7 @@ class VtaFormatosCat: AppCompatActivity() {
         fFtoDecPrBase = fConfiguracion.formatoDecPrecioBase()
         fFtoDecPrII = fConfiguracion.formatoDecPrecioIva()
         fDecPrBase = fConfiguracion.decimalesPrecioBase()
-        fAplicarIva = fDocumento.fClientes.getAplicarIva()
+        fAplicarIva = fDocumento.fClientes.fAplIva
 
         setupRecyclerView()
 
@@ -253,7 +247,7 @@ class VtaFormatosCat: AppCompatActivity() {
     private fun calcularPrecioYDto() {
         edtFtCatPrecio.setText("")
         // Calculamos precio y dto. una vez que ya tenemos la tarifa.
-        fDocumento.calculaPrecioYDto(fArticulos.getGrupo(), fArticulos.getDpto(), fArticulos.fCodProv, fArticulos.getPorcIva())
+        fDocumento.calculaPrecioYDto(fArticulos.fGrupo, fArticulos.fDepartamento, fArticulos.fCodProv, fArticulos.fPorcIva)
 
         // Mostramos precio y dto.
         if (fIvaIncluido && fAplicarIva) {
@@ -304,10 +298,10 @@ class VtaFormatosCat: AppCompatActivity() {
         fDtosCascada.abrir(-1)
         // Configuramos el objeto de los dtos. en cascada
         fDtosCascada.fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresaActual)
-        fDtosCascada.fAplicarIva = fDocumento.fClientes.getAplicarIva()
+        fDtosCascada.fAplicarIva = fDocumento.fClientes.fAplIva
         fDtosCascada.fPorcIva = fDocumento.fPorcIva
         fDtosCascada.fDecPrBase = fConfiguracion.decimalesPrecioBase()
-        fDtosCascada.fExentoIva = !fDocumento.fClientes.getAplicarIva()
+        fDtosCascada.fExentoIva = !fDocumento.fClientes.fAplIva
 
         fDocumento.fDtoLin = fDtosCascada.calcularDtoEquiv(fDocumento.fPrecio, fDecPrBase).toDouble()
         fDocumento.fLineaConDtCasc = true
@@ -362,7 +356,7 @@ class VtaFormatosCat: AppCompatActivity() {
             fDocumento.fArticulo = fArticulo
             fDocumento.fFormatoLin = fFormato
             // Ahora que le hemos asignado al documento el formato de la línea, tomamos el texto de artículo habitual
-            fTextoLinea = fDocumento.textoArtHabitual
+            fTextoLinea = fDocumento.textoArtHabitual()
             // Si la línea es nueva calculamos el precio y dto. para el artículo y formato
             calcularPrecioYDto()
         }

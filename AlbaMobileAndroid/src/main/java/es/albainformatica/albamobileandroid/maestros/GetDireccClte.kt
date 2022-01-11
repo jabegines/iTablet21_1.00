@@ -43,7 +43,7 @@ class GetDireccClte: Activity() {
 
     private fun inicializarControles() {
         val tvNombreClte = findViewById<TextView>(R.id.tvDirNombreClte)
-        tvNombreClte.text = fClientes.getNFiscal()
+        tvNombreClte.text = fClientes.fNombre
         //TextView tvNComClte = findViewById(R.id.tvDirNComClte);
         //tvNComClte.setText(fClientes.getNComercial());
         val tvDirecc = findViewById<TextView>(R.id.tvDirDirecc)

@@ -1,10 +1,7 @@
 package es.albainformatica.albamobileandroid.maestros
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
-import android.database.Cursor
-import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.View
@@ -12,27 +9,33 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.*
-import es.albainformatica.albamobileandroid.dao.OfertasDao
+import es.albainformatica.albamobileandroid.dao.ArticulosDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
-import es.albainformatica.albamobileandroid.entity.OfertasEnt
-import es.albainformatica.albamobileandroid.oldcatalogo.ItemArticulo
-import es.albainformatica.albamobileandroid.oldcatalogo.ItemArticuloAdapter
+import kotlinx.android.synthetic.main.buscar_articulos.*
 import java.util.*
 
 
 class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
-    private val ofertasDao: OfertasDao? = MyDatabase.getInstance(this)?.ofertasDao()
-    private lateinit var fConfiguracion: Configuracion
+    private var fConfiguracion: Configuracion = Comunicador.fConfiguracion
 
     private var fArticulo = 0
+    private var fEnBusqueda = false
     private var fVendiendo: Boolean = false
+    private var fVerPromociones = false
     private var fBuscando = false
-    private var fTarifa: Short = 0
+    private var fTarifaVtas: Short = 0
+    private var fTarifaCajas: Short = fConfiguracion.tarifaCajas()
     private var fProveedor = 0
     private var fEmpresaActual: Int = 0
 
-    private lateinit var queBuscar: String
+    private lateinit var fRecyclerView: RecyclerView
+    private lateinit var fAdapter: ArticulosRvAdapter
+
+    private var queBuscar: String = ""
     private var queOrdenacion: Short = 0    // 0-> por descripción, 1-> por código
     private lateinit var llSideIndex: LinearLayout
     private lateinit var prefs: SharedPreferences
@@ -40,15 +43,11 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
     private lateinit var btnBuscar: Button
     private lateinit var btnHco: Button
 
-    private var fEnBusqueda = false
-    private var fEnOfertas = false
     private var fIndiceMostrado = false
-
 
     private lateinit var mapIndex: MutableMap<String, Int>
     private var alfabeto = arrayOf("#", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "Ñ", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z")
-    private lateinit var listView: ListView
-    private lateinit var cursor: Cursor
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,12 +59,11 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
         fVendiendo = i != null && i.getBooleanExtra("vendiendo", false)
         fBuscando = i != null && i.getBooleanExtra("buscando", false)
         if (i != null) queBuscar = i.getStringExtra("buscar") ?: ""
-        fConfiguracion = Comunicador.fConfiguracion
 
         // Vemos la tarifa que tendremos que utilizar para presentar los precios de cada artículo.
-        fTarifa = if (fVendiendo) {
+        fTarifaVtas = if (fVendiendo) {
             val fDocumento = Comunicador.fDocumento
-            if (fDocumento.fTarifaDoc != null) fDocumento.fTarifaDoc
+            if (fDocumento.fTarifaDoc > 0) fDocumento.fTarifaDoc
             else fConfiguracion.tarifaVentas()
 
         } else {
@@ -77,13 +75,13 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
         val fCargarTodosArt = prefs.getBoolean("cargar_todos_art", true)
         if (fCargarTodosArt) {
             // Cargamos los artículos de inicio.
-            prepararListView("", 1)
+            prepararRecyclerView()
             // Preparamos la búsqueda por letra.
             displayIndex()
             fIndiceMostrado = true
         }
         else {
-            buscar(queBuscar)
+            buscarArticulos(queBuscar)
         }
     }
 
@@ -92,9 +90,10 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
         super.onDestroy()
     }
 
+
     private fun getIndexList() {
-        var letra: String?
-        cursor.moveToFirst()
+        var letra: String
+        var posicion = 0
         mapIndex.clear()
         mapIndex[alfabeto[0]] = 0
         for (i in 1 until alfabeto.size) {
@@ -103,20 +102,34 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
             // Vamos recorriendo el cursor para encontrar el primer registro que coincida con la letra que
             // estamos indexando. Una vez encontrado guardamos su posición en el objeto mapIndex.
             // Si llegamos a un registro cuya primera letra es mayor que la que estamos indexando, salimos del bucle.
-            if (mapIndex[letra] == null) // La eñe tenemos que tratarla aparte, ya que con ella no funciona bien el compareTo().
-                while (!cursor.isAfterLast) {
-                    if (cursor.getString(2) != "") {
+            if (mapIndex[letra] == null) { // La eñe tenemos que tratarla aparte, ya que con ella no funciona bien el compareTo().
+                for (item in fAdapter.articulos) {
+                    if (item.descripcion != "") {
                         if (letra == "Ñ") {
-                            if (cursor.getString(2).substring(0, 1) == letra) break
-                            else if (cursor.getString(2).substring(0, 1).uppercase(Locale.getDefault()) > "N") break
+                            if (item.descripcion.substring(0, 1) == letra)  {
+                                posicion = fAdapter.articulos.indexOf(item)
+                                break
+                            } else {
+                                if (item.descripcion.substring(0, 1).uppercase(Locale.ROOT) > "N") {
+                                    posicion = fAdapter.articulos.indexOf(item)
+                                    break
+                                }
+                            }
                         } else {
-                            if (cursor.getString(2).substring(0, 1) == letra) break
-                            else if (cursor.getString(2).substring(0, 1).uppercase(Locale.getDefault()) > letra) break
+                            if (item.descripcion.substring(0, 1) == letra) {
+                                posicion = fAdapter.articulos.indexOf(item)
+                                break
+                            } else {
+                                if (item.descripcion.substring(0, 1).uppercase(Locale.ROOT) > letra) {
+                                    posicion = fAdapter.articulos.indexOf(item)
+                                    break
+                                }
+                            }
                         }
                     }
-                    cursor.moveToNext()
                 }
-            mapIndex[letra] = cursor.position
+            }
+            mapIndex[letra] = posicion
         }
     }
 
@@ -141,7 +154,7 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
     override fun onClick(view: View) {
         val selectedIndex = view as TextView
         val quePosicion = mapIndex[selectedIndex.text] ?: 0
-        listView.setSelection(quePosicion)
+        fRecyclerView.layoutManager?.scrollToPosition(quePosicion)
     }
 
     private fun inicializarControles() {
@@ -168,6 +181,12 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
 
         val tvTitulo = findViewById<TextView>(R.id.tvNombreActivity)
         tvTitulo.setText(R.string.articulos)
+
+        fRecyclerView = rvArticulos
+        fRecyclerView.layoutManager = LinearLayoutManager(this)
+        // Añadimos una línea divisoria entre elementos
+        val dividerItemDecoration = DividerItemDecoration(fRecyclerView.context, (fRecyclerView.layoutManager as LinearLayoutManager).orientation)
+        fRecyclerView.addItemDecoration(dividerItemDecoration)
     }
 
 
@@ -192,79 +211,57 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
 
 
     fun ordenarArt(view: View) {
-        view.getTag(0)          // Para que no dé warning el compilador
+        view.getTag(0)              // Para que no dé warning el compilador
 
-        if (queOrdenacion.toInt() == 1) {
-            queOrdenacion = 0
-            llSideIndex.visibility = View.VISIBLE
-            btnOrdenar.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.ordenacion_alf), null, null)
-        } else {
-            queOrdenacion = 1
-            llSideIndex.visibility = View.GONE
-            btnOrdenar.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.ordenacion_cod), null, null)
-        }
-        when {
-            fEnOfertas -> prepararListView(queBuscar, 2)
-            else -> prepararListView(queBuscar, 1)
-        }
+        queOrdenacion = if (queOrdenacion == 0.toShort()) 1 else 0
+        prepararRecyclerView()
+
+        if (queOrdenacion == 1.toShort()) llSideIndex.visibility = View.GONE
+        else llSideIndex.visibility = View.VISIBLE
     }
 
+
     fun buscarArt(view: View) {
-        view.getTag(0)          // Para que no dé warning el compilador
+        view.getTag(0)              // Para que no dé warning el compilador
 
         if (!fEnBusqueda) {
             val builder = AlertDialog.Builder(this)
-            builder.setTitle("Buscar artículos")
             val inflater = layoutInflater
+            builder.setTitle("Buscar artículos")
             val dialogLayout = inflater.inflate(R.layout.bio_alert_dialog_with_edittext, null)
-            builder.setView(dialogLayout)
             val editText = dialogLayout.findViewById<EditText>(R.id.editText)
             editText.requestFocus()
-            builder.setPositiveButton("OK") { _: DialogInterface?, _: Int ->
-                buscar(editText.text.toString())
-            }
-            builder.setNegativeButton("Cancelar") { dialog: DialogInterface, _: Int -> dialog.cancel() }
-            val alert = builder.create()
-            alert.show()
+            builder.setView(dialogLayout)
+            builder.setPositiveButton("OK") { _, _ -> buscarArticulos(editText.text.toString()) }
+            builder.setNegativeButton("Cancelar") { _, _ -> }
+            builder.show()
         } else {
             fEnBusqueda = false
             queBuscar = ""
-            btnBuscar.setText(R.string.buscar)
-            // Volvemos a cargar los artículos de inicio.
-            prepararListView("", 1)
-            // Si hemos entrado sin mostrar el índice, lo mostramos.
-            if (!fIndiceMostrado) {
-                displayIndex()
-                fIndiceMostrado = true
-            }
+            btnBuscar.text = getString(R.string.buscar)
+            prepararRecyclerView()
         }
     }
 
 
-    fun buscar(cadBuscar: String) {
+    private fun buscarArticulos(cadBuscar: String) {
         if (cadBuscar != "") {
             fEnBusqueda = true
             queBuscar = cadBuscar
-            btnBuscar.setText(R.string.anular_busq)
-            prepararListView(queBuscar, 1)
-        } else MsjAlerta(this).alerta(getString(R.string.msj_SinBusqueda))
+            btnBuscar.text = getString(R.string.anular_busq)
+            prepararRecyclerView()
+        }
+        else MsjAlerta(this).alerta(resources.getString(R.string.msj_SinBusqueda))
     }
+
+
 
 
     fun verPromociones(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
-        if (!fEnBusqueda) {
-            if (fEnOfertas) {
-                fEnOfertas = false
-                // Volvemos a cargar los artículos de inicio.
-                prepararListView("", 1)
-            } else {
-                fEnOfertas = true
-                queBuscar = ""
-                prepararListView("", 2)
-            }
-        }
+        fVerPromociones = !fVerPromociones
+        prepararRecyclerView()
     }
 
     fun verGrupos(view: View) {
@@ -297,6 +294,31 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
     }
 
 
+
+    private fun prepararRecyclerView() {
+        fAdapter = ArticulosRvAdapter(getArticulos(), this, object: ArticulosRvAdapter.OnItemClickListener {
+            override fun onClick(view: View, data: ListaArticulos) {
+                if (fVendiendo) seleccionar(data.articuloId)
+                else abrirFicha(data.articuloId)
+            }
+        })
+
+        fRecyclerView.adapter = fAdapter
+
+        // Cargamos el Map con las posiciones para la búsqueda por letra.
+        getIndexList()
+    }
+
+
+    private fun getArticulos(): MutableList<ListaArticulos> {
+        val articulosDao: ArticulosDao? = MyDatabase.getInstance(this)?.articulosDao()
+
+        return if (fVerPromociones) articulosDao?.getArticPorPromoc()?.toMutableList() ?: emptyList<ListaArticulos>().toMutableList()
+        else articulosDao?.getArticPorDescrCod(queOrdenacion, "%$queBuscar%", fEmpresaActual, fTarifaVtas, fTarifaCajas)?.toMutableList() ?: emptyList<ListaArticulos>().toMutableList()
+    }
+
+
+/*
     private fun prepararListView(artBuscar: String, tipoBusqueda: Int) {
         var sQuery: String
         listView = findViewById(R.id.lvArticulos)
@@ -361,8 +383,9 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
         // Cargamos el Map con las posiciones para la búsqueda por letra.
         getIndexList()
     }
+*/
 
-
+    /*
     // En modo lista uso un adaptador propio para el listView: ItemArticuloAdapter, que usa un ArrayList con objetos de la clase
     // ItemArticulo. En obtenerItems lo que hago es llenar dicho ArrayList.
     private fun obtenerItems(cursor: Cursor, tipoBusqueda: Int): ArrayList<ItemArticulo> {
@@ -414,23 +437,21 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
         }
         return items
     }
+    */
 
 
-    private fun abrirFicha() {
-        if (fArticulo > 0) {
-            val i = Intent(this, FichaArticuloActivity::class.java)
-            i.putExtra("articulo", fArticulo)
-            startActivity(i)
-            fArticulo = 0
-        }
+    private fun abrirFicha(articuloId: Int) {
+        val i = Intent(this, FichaArticuloActivity::class.java)
+        i.putExtra("articulo", articuloId)
+        startActivity(i)
     }
 
-    private fun seleccionar() {
+    private fun seleccionar(articuloId: Int) {
         // Devolvemos el artículo que tengamos seleccionado (fArticulo).
-        if (fArticulo > 0) {
+        if (articuloId > 0) {
             val returnIntent = Intent()
             returnIntent.putExtra("vengoDe", LISTA_ARTICULOS)
-            returnIntent.putExtra("articulo", fArticulo)
+            returnIntent.putExtra("articulo", articuloId)
             setResult(RESULT_OK, returnIntent)
             finish()
         }

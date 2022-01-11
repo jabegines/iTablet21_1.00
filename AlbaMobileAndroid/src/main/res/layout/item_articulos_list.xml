@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:baselineAligned="false">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.2"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imgvArtIm"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:contentDescription="@string/articulos"
+            android:scaleType="fitCenter" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_weight="0.8"
+        android:baselineAligned="false"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvDescrArt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:gravity="center_vertical"
+            android:text="@string/descr"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvCodigoArt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/codigo" />
+
+                <TextView
+                    android:id="@+id/tvDescrFto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:text="@string/formato" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvPrecio"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="0.35"
+                        android:background="@color/gris_alba"
+                        android:drawableStart="@drawable/ctlg_precio"
+                        android:gravity="end"
+                        android:padding="3dp"
+                        android:text="@string/precio"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tvDescuento"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="0.3"
+                        android:background="@color/gris_alba"
+                        android:drawableStart="@drawable/ctlg_dto"
+                        android:gravity="end"
+                        android:padding="3dp"
+                        android:text="@string/porcentaje"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tvPrCajas"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="0.35"
+                        android:background="@color/gris_alba"
+                        android:drawableStart="@drawable/ctlg_precio"
+                        android:gravity="end"
+                        android:padding="3dp"
+                        android:text="@string/precio"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvUnidadesCaja"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="0.5"
+                        android:background="@color/gris_alba"
+                        android:drawableStart="@drawable/ctlg_cajas"
+                        android:gravity="end"
+                        android:padding="3dp"
+                        android:text="@string/cajas"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tvExistencias"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="0.5"
+                        android:background="@color/gris_alba"
+                        android:drawableStart="@drawable/ctlg_stock"
+                        android:gravity="end"
+                        android:padding="3dp"
+                        android:text="@string/stock"
+                        android:textSize="16sp" />
+
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.1"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imgvArtImgOft"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:contentDescription="@string/articulos"
+            android:src="@drawable/oferta" />
+    </LinearLayout>
+
+</LinearLayout>

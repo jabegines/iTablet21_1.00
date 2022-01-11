@@ -7,7 +7,6 @@ import android.app.Dialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.database.Cursor
-import android.database.sqlite.SQLiteDatabase
 import android.graphics.Typeface
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -31,9 +30,6 @@ import java.util.*
 
 
 class VentasActivity: AppCompatActivity() {
-    private lateinit var db: BaseDatos
-    private lateinit var dbAlba: SQLiteDatabase
-
     private lateinit var fConfiguracion: Configuracion
     private lateinit var prefs: SharedPreferences
     private lateinit var fRutero: Rutero
@@ -72,9 +68,6 @@ class VentasActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstance: Bundle?) {
         super.onCreate(savedInstance)
-
-        db = BaseDatos(this)
-        dbAlba = db.writableDatabase
 
         fConfiguracion = Comunicador.fConfiguracion
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
@@ -124,13 +117,9 @@ class VentasActivity: AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        dbAlba.close()
-        db.close()
-
         // Si estamos usando rutero, guardamos el último cliente al que le hemos vendido,
         // para continuar por el siguiente cuando volvamos a entrar en ventas.
         if (fUsarRutero || fUsarCP) guardarPreferencias()
-        fRutero.close()
 
         // Guardamos la ruta activa para volver a presentarla la siguiente vez que entremos en ventas.
         if (fUsarRutero) fConfiguracion.activarRuta(fRutaActiva)
@@ -142,7 +131,6 @@ class VentasActivity: AppCompatActivity() {
 
 
     private fun hayDocParaEnviar(): Boolean {
-        val dbAlba = BaseDatos(this).writableDatabase
         // Si tenemos rutero_reparto mandaremos también las cabeceras de los documentos que estén firmados o tengan alguna incidencia (sólo las cabeceras).
         val sCondicion = if (fConfiguracion.hayReparto()) {
             " WHERE estado = 'N' OR estado = 'R' OR " + "((firmado = 'T' OR tipoincidencia IS NOT NULL) AND estado <> 'X')"
@@ -150,10 +138,10 @@ class VentasActivity: AppCompatActivity() {
             " WHERE estado = 'N' OR estado = 'R'"
         }
 
-        val cDoc = dbAlba.rawQuery("SELECT * FROM cabeceras $sCondicion", null)
-        cDoc.use {
-            return (it.moveToFirst())
-        }
+        // TODO
+        //val cDoc = dbAlba.rawQuery("SELECT * FROM cabeceras $sCondicion", null)
+        //cDoc.use { return (it.moveToFirst()) }
+        return false
     }
 
 
@@ -467,9 +455,9 @@ class VentasActivity: AppCompatActivity() {
             if (event.action == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_DPAD_CENTER)) {
 
                 val edtCodigo = v as EditText
-                var queCodigo = edtCodigo.text.toString()
-                queCodigo = ponerCeros(queCodigo, ancho_codclte)
-                val queCliente = fClientes.existeCodigo(queCodigo)
+                val queCodigo = edtCodigo.text.toString()
+                //queCodigo = ponerCeros(queCodigo, ancho_codclte)
+                val queCliente = fClientes.existeCodigo(queCodigo.toInt())
                 if (queCliente > 0)
                     mostrarCliente(queCliente)
                 else {
@@ -558,9 +546,9 @@ class VentasActivity: AppCompatActivity() {
                 MsjAlerta(this).alerta(getString(R.string.msj_SinClte))
             }
         } else {
-            var queCodClte = edtCodClte.text.toString()
-            queCodClte = ponerCeros(queCodClte, ancho_codclte)
-            queCliente = fClientes.existeCodigo(queCodClte)
+            val queCodClte = edtCodClte.text.toString()
+            //queCodClte = ponerCeros(queCodClte, ancho_codclte)
+            queCliente = fClientes.existeCodigo(queCodClte.toInt())
         }
 
         if (queCliente > 0) {
@@ -582,9 +570,9 @@ class VentasActivity: AppCompatActivity() {
                 0
             }
         } else {
-            var queCodClte = edtCodClte.text.toString()
-            queCodClte = ponerCeros(queCodClte, ancho_codclte)
-            queCliente = fClientes.existeCodigo(queCodClte)
+            val queCodClte = edtCodClte.text.toString()
+            //queCodClte = ponerCeros(queCodClte, ancho_codclte)
+            queCliente = fClientes.existeCodigo(queCodClte.toInt())
         }
 
         val i = Intent(this, VerDocumentosActivity::class.java)
@@ -614,9 +602,9 @@ class VentasActivity: AppCompatActivity() {
                 MsjAlerta(this).alerta(getString(R.string.msj_SinClte))
             }
         } else {
-            var queCodClte = edtCodClte.text.toString()
-            queCodClte = ponerCeros(queCodClte, ancho_codclte)
-            queCliente = fClientes.existeCodigo(queCodClte)
+            val queCodClte = edtCodClte.text.toString()
+            //queCodClte = ponerCeros(queCodClte, ancho_codclte)
+            queCliente = fClientes.existeCodigo(queCodClte.toInt())
         }
 
         if (queCliente > 0) {
@@ -628,16 +616,14 @@ class VentasActivity: AppCompatActivity() {
 
 
 
-    private fun mostrarCliente(QueCliente: Int) {
-        if (fClientes.abrirUnCliente(QueCliente)) {
-            edtCodClte.setText(fClientes.getCodigo())
-            tvNombreClte.text = fClientes.getNFiscal()
-            tvNombreCom.text = fClientes.getNComercial()
+    private fun mostrarCliente(queCliente: Int) {
+        if (fClientes.abrirUnCliente(queCliente)) {
+            edtCodClte.setText(ponerCeros(fClientes.fCodigo.toString(), ancho_codclte))
+            tvNombreClte.text = fClientes.fNombre
+            tvNombreCom.text = fClientes.fNomComercial
 
             if (fClientes.noVender()) imvNoVender.visibility = View.VISIBLE
             else imvNoVender.visibility = View.GONE
-
-            fClientes.close()
         }
     }
 
@@ -649,11 +635,11 @@ class VentasActivity: AppCompatActivity() {
             continuar = fClteDoc > 0
 
         } else {
-            var queCodClte = edtCodClte.text.toString()
+            val queCodClte = edtCodClte.text.toString()
             if (edtCodClte.text.toString() == "") return false
 
-            queCodClte = ponerCeros(queCodClte, ancho_codclte)
-            val queCliente = fClientes.existeCodigo(queCodClte)
+            //queCodClte = ponerCeros(queCodClte, ancho_codclte)
+            val queCliente = fClientes.existeCodigo(queCodClte.toInt())
             if (queCliente > 0) {
                 fClteDoc = queCliente
                 continuar = true

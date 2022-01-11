@@ -3,16 +3,19 @@ package es.albainformatica.albamobileandroid.maestros
 import android.content.Context
 import android.database.Cursor
 import es.albainformatica.albamobileandroid.*
-import es.albainformatica.albamobileandroid.dao.ArticDatAdicDao
-import es.albainformatica.albamobileandroid.dao.CostosArticulosDao
-import es.albainformatica.albamobileandroid.dao.OfertasDao
+import es.albainformatica.albamobileandroid.dao.*
 import es.albainformatica.albamobileandroid.database.MyDatabase
-import java.lang.Exception
+import es.albainformatica.albamobileandroid.entity.ArticulosEnt
+import es.albainformatica.albamobileandroid.entity.FormatosEnt
+import es.albainformatica.albamobileandroid.entity.IvasEnt
 
 
 class ArticulosClase(val contexto: Context) {
+    private val articulosDao: ArticulosDao? = MyDatabase.getInstance(contexto)?.articulosDao()
     private val ofertasDao: OfertasDao? = MyDatabase.getInstance(contexto)?.ofertasDao()
     private val articDatAdicDao: ArticDatAdicDao? = MyDatabase.getInstance(contexto)?.articDatAdicDao()
+    private var formatosDao: FormatosDao? = MyDatabase.getInstance(contexto)?.formatosDao()
+    private var ivasDao: IvasDao? = MyDatabase.getInstance(contexto)?.ivasDao()
     private var fLotes: LotesClase = LotesClase(contexto)
 
     lateinit var cursor: Cursor
@@ -20,12 +23,23 @@ class ArticulosClase(val contexto: Context) {
     var cDatAdicionales: Cursor? = null
 
     var fArticulo = 0
+    var fCodigo: String = ""
+    var fDescripcion: String = ""
     var fEmpresa = 0
+    var fCodIva: Short = 0
+    var fPorcIva: Double = 0.0
+    var fGrupo: Short = 0
+    var fDepartamento: Short = 0
     var fUCaja: Double = 0.0
     var fCodBCajas: Boolean = false
     var fTarifaCajas: Boolean = false
+    var fCodProv: Int = 0
+    var fTasa1: Double = 0.0
+    var fTasa2: Double = 0.0
+    private var fFlag1: Int = 0
+    private var fFlag2: Int = 0
+    var fEnlace: Int = 0
 
-    var fCodProv: String = ""
 
     fun close() {
         cDatAdicionales?.close()
@@ -400,7 +414,36 @@ class ArticulosClase(val contexto: Context) {
         return cDatAdicionales?.getString(cDatAdicionales?.getColumnIndex("cadena") ?: 0) ?: ""
     }
 
-    fun existeArticulo(QueArticulo: Int): Boolean {
+    fun existeArticulo(queArticulo: Int): Boolean {
+
+        val articuloEnt = articulosDao?.existeArticulo(queArticulo) ?: ArticulosEnt()
+
+        return if (articuloEnt.articuloId > 0) {
+            fArticulo = queArticulo
+            fCodigo = articuloEnt.codigo
+            fDescripcion = articuloEnt.descripcion
+
+            val ivasEnt = ivasDao?.getDatosIva(articuloEnt.tipoIva) ?: IvasEnt()
+            fCodIva = ivasEnt.codigo
+            if (ivasEnt.porcIva != "") fPorcIva = ivasEnt.porcIva.replace(',', '.').toDouble()
+            else fPorcIva = 0.0
+
+            fTasa1 = if (articuloEnt.tasa1 != "") articuloEnt.tasa1.replace(',', '.').toDouble()
+            else 0.0
+            fTasa2 = if (articuloEnt.tasa2 != "") articuloEnt.tasa2.replace(',', '.').toDouble()
+            else 0.0
+
+            fGrupo = articuloEnt.grupoId
+            fDepartamento = articuloEnt.departamentoId
+            fCodProv = articuloEnt.proveedorId
+            fFlag1 = articuloEnt.flag1
+            fFlag2 = articuloEnt.flag2
+            fEnlace = articuloEnt.enlace
+
+            true
+        }
+        else false
+
         // TODO
         /*
         cursor = dbAlba.rawQuery(
@@ -422,7 +465,6 @@ class ArticulosClase(val contexto: Context) {
             return true
         } else return false
         */
-        return true
     }
 
     fun articuloEnTablet(queArticulo: Int): Boolean {
@@ -466,18 +508,6 @@ class ArticulosClase(val contexto: Context) {
         return true
     }
 
-    fun getArticulo(): Int {
-        val columna = cursor.getColumnIndex("articulo")
-        return try {
-            cursor.getInt(columna)
-        } catch (e: Exception) {
-            0
-        }
-    }
-
-    fun getCodigo(): String {
-        return cursor.getString(cursor.getColumnIndex("codigo"))
-    }
 
 
     fun getCodAlternativo(): String {
@@ -485,11 +515,6 @@ class ArticulosClase(val contexto: Context) {
             return cursor.getString(cursor.getColumnIndex("codalternativo"))
         else
             return ""
-    }
-
-    fun getDescripcion(): String {
-        val colDescr = cursor.getColumnIndex("descr")
-        return cursor.getString(colDescr)
     }
 
 
@@ -502,27 +527,6 @@ class ArticulosClase(val contexto: Context) {
     }
 
 
-    fun getGrupo(): String {
-        return cursor.getString(cursor.getColumnIndex("grupo"))
-    }
-
-    fun getDpto(): String {
-        return cursor.getString(cursor.getColumnIndex("dpto"))
-    }
-
-    fun getPorcIva(): Double {
-        val colTipoIva = cursor.getColumnIndex("porciva")
-        var sPorcIva = cursor.getString(colTipoIva)
-        return if (sPorcIva != null) {
-            sPorcIva = sPorcIva.replace(',', '.')
-            java.lang.Double.valueOf(sPorcIva)
-        } else 0.0
-    }
-
-    fun getCodigoIva(): Short {
-        val columna = cursor.getColumnIndex("codiva")
-        return cursor.getShort(columna)
-    }
 
     fun getUCaja(): Double {
         var sUCaja = cursor.getString(cursor.getColumnIndex("ucaja"))
@@ -535,16 +539,16 @@ class ArticulosClase(val contexto: Context) {
 
     fun getCosto(): Double {
         val costosDao: CostosArticulosDao? = MyDatabase.getInstance(contexto)?.costosArticulosDao()
-        return costosDao?.getCostoArticulo(getArticulo(), fEmpresa) ?: 0.0
+        return costosDao?.getCostoArticulo(fArticulo, fEmpresa) ?: 0.0
     }
 
 
     fun getPrOfta(): String {
-        return ofertasDao?.getPrOferta(getArticulo(), fEmpresa) ?: "0.0"
+        return ofertasDao?.getPrOferta(fArticulo, fEmpresa) ?: "0.0"
     }
 
     fun getDtoOfta(): String {
-        return ofertasDao?.getDtoOferta(getArticulo(), fEmpresa) ?: "0.0"
+        return ofertasDao?.getDtoOferta(fArticulo, fEmpresa) ?: "0.0"
     }
 
 
@@ -607,37 +611,27 @@ class ArticulosClase(val contexto: Context) {
     }
 
     fun getImagen(): String {
-        return "ART_" + getArticulo() + ".jpg"
+        return "ART_$fArticulo.jpg"
     }
 
     fun usarPiezas(): Boolean {
-        val iFlag = cursor.getString(cursor.getColumnIndex("flag2")).toInt()
-        val resultado = iFlag and FLAGARTICULO_USARPIEZAS
-        return resultado > 0
+        return (fFlag2 and FLAGARTICULO_USARPIEZAS) > 0
     }
 
     fun venderPorDosis(): Boolean {
-        val iFlag = cursor.getString(cursor.getColumnIndex("flag1")).toInt()
-        val Resultado = iFlag and FLAGARTICULO_VENDER_POR_DOSIS
-        return Resultado > 0
+        return (fFlag1 and FLAGARTICULO_VENDER_POR_DOSIS) > 0
     }
 
     fun controlaTrazabilidad(): Boolean {
-        val iFlag = cursor.getString(cursor.getColumnIndex("flag2")).toInt()
-        val Resultado = iFlag and FLAGARTICULO_CONTROLA_TRAZABILIDAD
-        return Resultado > 0
+        return (fFlag2 and FLAGARTICULO_CONTROLA_TRAZABILIDAD) > 0
     }
 
     fun usarFormatos(): Boolean {
-        val iFlag = cursor.getString(cursor.getColumnIndex("flag1")).toInt()
-        val Resultado = iFlag and FLAGARTICULO_USARFORMATOS
-        return Resultado > 0
+        return (fFlag1 and FLAGARTICULO_USARFORMATOS) > 0
     }
 
     fun aplicarTrfCajas(): Boolean {
-        val iFlag = cursor.getString(cursor.getColumnIndex("flag1")).toInt()
-        val Resultado = iFlag and FLAGARTICULO_APLICARTRFCAJAS
-        return Resultado > 0
+        return (fFlag1 and FLAGARTICULO_APLICARTRFCAJAS) > 0
     }
 
     fun getPrecio(): String {
@@ -676,41 +670,26 @@ class ArticulosClase(val contexto: Context) {
             return "0.0"
     }
 
-    fun getTasa1(): Double {
-        var sTasa = cursor.getString(cursor.getColumnIndex("tasa1"))
-        return if (sTasa != null) {
-            sTasa = sTasa.replace(',', '.')
-            java.lang.Double.valueOf(sTasa)
-        } else 0.0
-    }
-
-    fun getTasa2(): Double {
-        var sTasa = cursor.getString(cursor.getColumnIndex("tasa2"))
-        return if (sTasa != null) {
-            sTasa = sTasa.replace(',', '.')
-            java.lang.Double.valueOf(sTasa)
-        } else 0.0
-    }
 
     fun tieneEnlace(): Boolean {
-        return cursor.getInt(cursor.getColumnIndex("enlace")) > 0
+        return fEnlace > 0
     }
+
 
     fun codArtEnlazado(): String {
-        val queArticulo = cursor.getInt(cursor.getColumnIndex("enlace"))
-        // TODO
-        /*
-        dbAlba.rawQuery("SELECT codigo FROM articulos WHERE articulo = $queArticulo", null)
-            .use { cArtEnlazado ->
-                return if (cArtEnlazado.moveToFirst()) {
-                    cArtEnlazado.getString(cArtEnlazado.getColumnIndex("codigo"))
-                } else ""
-            }
-         */
-        return ""
+        return articulosDao?.getCodigo(fEnlace) ?: ""
     }
 
-    fun formatosALista(listItems: MutableList<String>) {
+    fun formatosALista(): MutableList<String> {
+
+        val lFormatos = formatosDao?.formatosALista(fArticulo) ?: emptyList<FormatosEnt>().toMutableList()
+        val listItems: MutableList<String> = emptyList<String>().toMutableList()
+
+        for (formatoEnt in lFormatos) {
+            listItems.add(ponerCeros(formatoEnt.formatoId.toString(), ancho_formato) + " " + formatoEnt.descripcion)
+        }
+        return listItems
+
         // TODO
         /*
         dbAlba.rawQuery("SELECT DISTINCT A.codigo, A.descr FROM formatos A" +

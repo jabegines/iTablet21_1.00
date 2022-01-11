@@ -118,8 +118,12 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
                 // Volvemos a crear todas las tablas si no estamos usando el servicio
                 if (!fDesdeServicio) {
-                    fContext.deleteDatabase(queBDRoom)
-                    //CrearBD(fContext)
+                    MyDatabase.getInstance(fContext)?.beginTransaction()
+                    try {
+                        MyDatabase.getInstance(fContext)?.clearAllTables()
+                    } finally {
+                        MyDatabase.getInstance(fContext)?.endTransaction()
+                    }
                 }
 
                 val numArchivos = xmlFiles.size
@@ -395,7 +399,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                                 sCampo.equals("Articulo", true) -> articEnt.articuloId = parser.getAttributeValue("", sCampo).toInt()
                                 sCampo.equals("Codigo", true) -> articEnt.codigo = parser.getAttributeValue("", sCampo)
                                 sCampo.equals("Descr", true) -> articEnt.descripcion = parser.getAttributeValue("", sCampo)
-                                sCampo.equals("Iva", true) -> articEnt.tipoiva = parser.getAttributeValue("", sCampo).toShort()
+                                sCampo.equals("Iva", true) -> articEnt.tipoIva = parser.getAttributeValue("", sCampo).toShort()
                                 sCampo.equals("Prov", true) -> articEnt.proveedorId = parser.getAttributeValue("", sCampo).toInt()
                                 sCampo.equals("UCaja", true) -> articEnt.uCaja = parser.getAttributeValue("", sCampo)
                                 sCampo.equals("Flag1", true) -> articEnt.flag1 = parser.getAttributeValue("", sCampo).toInt()
@@ -942,7 +946,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                                 sCampo = parser.getAttributeName(i)
 
                                 when {
-                                    sCampo.equals("Linea", ignoreCase = true) -> lineaEnt.lineaId = parser.getAttributeValue("", sCampo).toInt()
+                                    //sCampo.equals("Linea", ignoreCase = true) -> lineaEnt.lineaId = parser.getAttributeValue("", sCampo).toInt()
                                     sCampo.equals("Articulo", ignoreCase = true) -> lineaEnt.articuloId = parser.getAttributeValue("", sCampo).toInt()
                                     sCampo.equals("Codigo", ignoreCase = true) -> lineaEnt.codArticulo = parser.getAttributeValue("", sCampo)
                                     sCampo.equals("Descripcion", ignoreCase = true) -> lineaEnt.descripcion = parser.getAttributeValue("", sCampo)
@@ -3406,10 +3410,10 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             val continuar = (quedanFich.isEmpty())
 
             if (continuar) {
-                fClientes.abrirParaEnviar(queNumExportacion)
-                if (fClientes.cursor.count > 0) {
+                val lClientes = fClientes.abrirParaEnviar(queNumExportacion)
+                if (lClientes.isNotEmpty()) {
                     hayClientes = true
-                    enviarClientes(fClientes)
+                    enviarClientes(lClientes)
                 }
 
                 fClientes.abrirDirParaEnviar(queNumExportacion)
@@ -3621,8 +3625,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
     }
 
 
-    private fun enviarClientes(fClientes: ClientesClase) {
-
+    private fun enviarClientes(lClientes: List<ClientesEnt>) {
         val msg = Message()
         msg.obj = "Preparando clientes"
         puente.sendMessage(msg)
@@ -3637,44 +3640,42 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true)
 
             serializer.startTag("", "consulta")
-            fClientes.cursor.moveToFirst()
-            while (!fClientes.cursor.isAfterLast) {
+            for (clienteEnt in lClientes) {
                 // Construimos el XML
                 serializer.startTag("", "record")
-                serializer.attribute(null, "CLIENTE", fClientes.getCliente().toString())
-                serializer.attribute(null, "CODIGO", fClientes.getCodigo())
-                serializer.attribute(null, "NOMFI", fClientes.getNFiscal())
-                serializer.attribute(null, "NOMCO", fClientes.getNComercial())
-                serializer.attribute(null, "CIF", fClientes.getCIF())
-                serializer.attribute(null, "DIRECC", fClientes.getDireccion())
-                serializer.attribute(null, "LOCALI", fClientes.getPoblacion())
-                serializer.attribute(null, "CPOSTAL", fClientes.getCodPostal())
-                serializer.attribute(null, "PROVIN", fClientes.getProvincia())
-                serializer.attribute(null, "APLIVA", logicoACadena(fClientes.getAplicarIva()))
-                serializer.attribute(null, "APLREC", logicoACadena(fClientes.getAplicarRe()))
-                serializer.attribute(null, "IVA", "NULL")
-                if (fClientes.getTarifa() == "")
-                    serializer.attribute(null, "TARIFA", "NULL")
+                serializer.attribute(null, "Cliente", clienteEnt.clienteId.toString())
+                serializer.attribute(null, "Codigo", clienteEnt.codigo.toString())
+                serializer.attribute(null, "Nomfi", clienteEnt.nombre)
+                serializer.attribute(null, "Nomco", clienteEnt.nombreComercial)
+                serializer.attribute(null, "Cif", clienteEnt.cif)
+                serializer.attribute(null, "Direcc", clienteEnt.direccion)
+                serializer.attribute(null, "Locali", clienteEnt.localidad)
+                serializer.attribute(null, "CPostal", clienteEnt.cPostal)
+                serializer.attribute(null, "Provin", clienteEnt.provincia)
+                serializer.attribute(null, "AplIva", clienteEnt.aplIva)
+                serializer.attribute(null, "ApRec", clienteEnt.aplRec)
+                serializer.attribute(null, "Iva", "NULL")
+                if (clienteEnt.tarifaId <= 0)
+                    serializer.attribute(null, "Tarifa", "NULL")
                 else
-                    serializer.attribute(null, "TARIFA", fClientes.getTarifa())
-                if (fClientes.getTarifaDto() == "")
-                    serializer.attribute(null, "TARDTO", "NULL")
+                    serializer.attribute(null, "Tarifa", clienteEnt.tarifaId.toString())
+                if (clienteEnt.tarifaDtoId <= 0)
+                    serializer.attribute(null, "TarDto", "NULL")
                 else
-                    serializer.attribute(null, "TARDTO", fClientes.getTarifaDto())
+                    serializer.attribute(null, "TarDto", clienteEnt.tarifaDtoId.toString())
 
-                serializer.attribute(null, "FPAGO", fClientes.getFPago())
-                serializer.attribute(null, "RUTA", fClientes.getRuta())
-                serializer.attribute(null, "RIESGO", fClientes.getRiesgo().toString().replace('.', ','))
-                serializer.attribute(null, "FLAG", fClientes.getFlag().toString())
+                serializer.attribute(null, "FPago", clienteEnt.fPago)
+                serializer.attribute(null, "Ruta", clienteEnt.rutaId.toString())
+                serializer.attribute(null, "Riesgo", clienteEnt.riesgo.replace('.', ','))
+                serializer.attribute(null, "Flag", clienteEnt.flag.toString())
 
-                when (fClientes.getEstado()) {
-                    "XN" -> serializer.attribute(null, "ESTADO", "N")
-                    "XM" -> serializer.attribute(null, "ESTADO", "M")
-                    else -> serializer.attribute(null, "ESTADO", fClientes.getEstado())
+                when (clienteEnt.estado) {
+                    "XN" -> serializer.attribute(null, "Estado", "N")
+                    "XM" -> serializer.attribute(null, "Estado", "M")
+                    else -> serializer.attribute(null, "Estado", clienteEnt.estado)
                 }
 
                 serializer.endTag("", "record")
-                fClientes.cursor.moveToNext()
             }
             serializer.endTag("", "consulta")
 

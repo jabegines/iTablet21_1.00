@@ -53,14 +53,13 @@
       android:layout_marginTop="5dp"
       android:background="@color/gris_alba"/>
 
-    <ListView
-      android:id="@+id/lvVL_LineasDoc"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginLeft="5dp"
-      android:layout_marginRight="5dp"
-      android:listSelector="@drawable/list_selector">
-    </ListView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvVL_LineasDoc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+      />
 
   </LinearLayout>
 

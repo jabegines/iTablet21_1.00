@@ -996,13 +996,9 @@ class ImprGenerica(contexto: Context): Runnable {
     private fun imprDatClteDoc80(): String {
         var result: String
         val sLongDatosClte = anchoPapel
-        result = ajustarCadena(
-            fMargenIzq + fDocumento.fClientes.getCodigo() + " " + fDocumento.fClientes.getNFiscal(),
-            sLongDatosClte.toInt(),
-            true
-        ) + ccSaltoLinea
-        result = result + ajustarCadena(
-            fMargenIzq + fDocumento.fClientes.getNComercial(),
+        result = ajustarCadena(fMargenIzq + ponerCeros(fDocumento.fClientes.fCodigo.toString(), ancho_codclte) + " " +
+                fDocumento.fClientes.fNombre, sLongDatosClte.toInt(), true) + ccSaltoLinea
+        result = result + ajustarCadena(fMargenIzq + fDocumento.fClientes.fNomComercial,
             sLongDatosClte.toInt(),
             true
         ) + ccSaltoLinea
@@ -1041,19 +1037,12 @@ class ImprGenerica(contexto: Context): Runnable {
         var result: String
         var cCadena: String
         val sLongDatosClte: Short = 47
-        cCadena = ajustarCadena(
-            fMargenIzq + fDocumento.fClientes.getCodigo() + " " + fDocumento.fClientes.getNFiscal(),
-            sLongDatosClte.toInt(),
-            true
-        )
+        cCadena = ajustarCadena(fMargenIzq + ponerCeros(fDocumento.fClientes.fCodigo.toString(), ancho_codclte) + " " +
+                fDocumento.fClientes.fNombre, sLongDatosClte.toInt(), true)
         result = cCadena
         cCadena = StringOfChar(" ", 5) + "Vendedor: " + fConfiguracion.vendedor()
         result = result + cCadena + ccSaltoLinea
-        cCadena = ajustarCadena(
-            fMargenIzq + fDocumento.fClientes.getNComercial(),
-            sLongDatosClte.toInt(),
-            true
-        )
+        cCadena = ajustarCadena(fMargenIzq + fDocumento.fClientes.fNomComercial, sLongDatosClte.toInt(), true)
         result = result + cCadena + ccSaltoLinea
         result += ajustarCadena(
             fMargenIzq + fDocumento.fClientes.getDireccion(),

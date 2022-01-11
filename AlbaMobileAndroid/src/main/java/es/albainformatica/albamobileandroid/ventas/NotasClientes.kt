@@ -10,9 +10,8 @@ import java.util.*
 /**
  * Created by jabegines on 27/12/2017.
  */
-class NotasClientes(contexto: Context): BaseDatos(contexto) {
+class NotasClientes(contexto: Context) {
     private val notasCltesDao: NotasCltesDao? = MyDatabase.getInstance(contexto)?.notasCltesDao()
-
 
 
     fun abrirUnCliente(queCliente: Int): MutableList<NotasCltesEnt> {

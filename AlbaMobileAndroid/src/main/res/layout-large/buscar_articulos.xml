@@ -20,15 +20,13 @@
       android:baselineAligned="false"
       android:orientation="horizontal">
 
-    <ListView
-        android:id="@+id/lvArticulos"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvArticulos"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_marginTop="5dp"
         android:layout_weight="1"
-        android:background="#FFFFFFFF"
-        android:fastScrollEnabled="true"
-        android:listSelector="@drawable/list_selector"></ListView>
+        android:layout_marginTop="5dp"
+      />
 
     <LinearLayout
         android:id="@+id/side_index"

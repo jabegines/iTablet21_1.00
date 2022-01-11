@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.text.method.DigitsKeyListener
 import android.view.KeyEvent
 import android.view.View
-import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import es.albainformatica.albamobileandroid.*
@@ -67,7 +66,7 @@ class VtaDetallesCat: AppCompatActivity() {
         if (fArtNumVecesEnDoc > 1) {
             escogerLineaArt(fArticulo)
         } else {
-            queLinea = fDocumento.existeLineaArticulo(fArticulos.getArticulo())
+            queLinea = fDocumento.existeLineaArticulo(fArticulos.fArticulo)
             setArticulo()
             inicializarControles()
         }
@@ -84,6 +83,8 @@ class VtaDetallesCat: AppCompatActivity() {
     private fun escogerLineaArt(fArticulo: Int) {
         val listItems: MutableList<String> = ArrayList()
 
+        // TODO
+        /*
         if (fDocumento.cLineas.moveToFirst()) {
             do {
                 if (fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("articulo")) == fArticulo) {
@@ -103,7 +104,7 @@ class VtaDetallesCat: AppCompatActivity() {
                 }
             } while (fDocumento.cLineas.moveToNext())
         }
-
+        */
         chsLineas = listItems.toTypedArray()
 
         val altbld = AlertDialog.Builder(this)
@@ -277,10 +278,10 @@ class VtaDetallesCat: AppCompatActivity() {
             fDocumento.cargarLinea(queLinea)
 
         } else {
-            fDocumento.fArticulo = fArticulos.getArticulo()
-            fDocumento.fCodArt = fArticulos.getCodigo()
-            fDocumento.fDescr = fArticulos.getDescripcion()
-            fDocumento.fCodigoIva = fArticulos.getCodigoIva()
+            fDocumento.fArticulo = fArticulos.fArticulo
+            fDocumento.fCodArt = fArticulos.fCodigo
+            fDocumento.fDescr = fArticulos.fDescripcion
+            fDocumento.fCodigoIva = fArticulos.fCodIva
             fDocumento.fTasa1 = 0.0
             fDocumento.fTasa2 = 0.0
             // Vemos las posibles tasas de la línea. Antes inicializamos para no tener problemas con valores nulos. Idem con el formato.
@@ -292,20 +293,20 @@ class VtaDetallesCat: AppCompatActivity() {
             fDocumento.fCantidad = 0.0
 
             if (fDocumento.fAplicarIva) {
-                if (fUsarTasa1) fDocumento.fTasa1 = fArticulos.getTasa1()
-                if (fUsarTasa2) fDocumento.fTasa2 = fArticulos.getTasa2()
+                if (fUsarTasa1) fDocumento.fTasa1 = fArticulos.fTasa1
+                if (fUsarTasa2) fDocumento.fTasa2 = fArticulos.fTasa2
             }
 
             // Si trabajamos con artículos habituales grabamos el texto del artículo en el de la línea.
             if (fDocumento.fHayArtHabituales) {
-                fDocumento.fTextoLinea = fDocumento.textoArtHabitual
+                fDocumento.fTextoLinea = fDocumento.textoArtHabitual()
             }
 
             // Calculamos precio y dto. una vez que ya hemos escogido la tarifa.
-            fDocumento.calculaPrecioYDto(fArticulos.getGrupo(), fArticulos.getDpto(), fArticulos.fCodProv, fArticulos.getPorcIva())
+            fDocumento.calculaPrecioYDto(fArticulos.fGrupo, fArticulos.fDepartamento, fArticulos.fCodProv, fArticulos.fPorcIva)
         }
 
-        val fDescr = fArticulos.getCodigo() + " - " + fArticulos.getDescripcion()
+        val fDescr = fArticulos.fCodigo + " - " + fArticulos.fDescripcion
         tvDet_Articulo.text = fDescr
 
         val fFtoDecCant = fConfiguracion.formatoDecCantidad()
@@ -373,7 +374,7 @@ class VtaDetallesCat: AppCompatActivity() {
         view.getTag(0)          // Para que no dé warning el compilador
 
         val i = Intent(this, BuscarLotes::class.java)
-        i.putExtra("articulo", fArticulos.getArticulo())
+        i.putExtra("articulo", fArticulos.fArticulo)
         i.putExtra("formatocant", fConfiguracion.formatoDecCantidad())
         startActivityForResult(i, fRequestBuscarLote)
     }

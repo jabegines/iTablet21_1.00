@@ -48,10 +48,6 @@ class EditarDtosCascada : Activity(), OnFocusChangeListener {
         inicializarControles()
     }
 
-    override fun onDestroy() {
-        fDtosCascada.close()
-        super.onDestroy()
-    }
 
     override fun onFocusChange(v: View, hasFocus: Boolean) {
         // En este evento se entra varias veces: cuando un control pierde el foco y cuando un control lo toma.
@@ -86,10 +82,10 @@ class EditarDtosCascada : Activity(), OnFocusChangeListener {
         // Configuramos el objeto de los dtos. en cascada
         fDtosCascada.fIvaIncluido =
             fConfiguracion.ivaIncluido(fDocumento.fEmpresa.toString().toInt())
-        fDtosCascada.fAplicarIva = fDocumento.fClientes.getAplicarIva()
+        fDtosCascada.fAplicarIva = fDocumento.fClientes.fAplIva
         fDtosCascada.fPorcIva = fDocumento.fPorcIva
         fDtosCascada.fDecPrBase = fConfiguracion.decimalesPrecioBase()
-        fDtosCascada.fExentoIva = fDocumento.fClientes.getAplicarIva()
+        fDtosCascada.fExentoIva = fDocumento.fClientes.fAplIva
 
         // Si el dto. en cascada viene a través de un rating no permitiremos editar ni borrar ni crear, sólo ver.
         fPuedoEditar = !fDtosCascada.desdeRating

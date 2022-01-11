@@ -169,7 +169,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         carpetaDocAsoc = dimeRutaDocAsoc(this)
 
         fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresaActual)
-        fAplicarIva = fDocumento.fClientes.getAplicarIva()
+        fAplicarIva = fDocumento.fClientes.fAplIva
         fDecPrBase = fConfiguracion.decimalesPrecioBase()
         fDecPrII = fConfiguracion.decimalesPrecioIva()
         fFtoPrecioBase = fConfiguracion.formatoDecPrecioBase()
@@ -647,10 +647,10 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
                     fArticulos.existeArticulo(aImages[fPosicion])
                     val i = Intent(this, Graf_Vtas_Art::class.java)
                     i.putExtra("articulo", aImages[fPosicion])
-                    i.putExtra("descripcion", fArticulos.getDescripcion())
+                    i.putExtra("descripcion", fArticulos.fDescripcion)
                     i.putExtra("cliente", fDocumento.fCliente)
-                    if (fConfiguracion.aconsNomComercial()) i.putExtra("nombre", fDocumento.fClientes.getNComercial())
-                    else i.putExtra("nombre", fDocumento.fClientes.getNFiscal())
+                    if (fConfiguracion.aconsNomComercial()) i.putExtra("nombre", fDocumento.fClientes.fNomComercial)
+                    else i.putExtra("nombre", fDocumento.fClientes.fNombre)
                     startActivity(i)
                 }
                 return true
@@ -659,8 +659,8 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
             R.id.mni_bioVtasClte -> {
                 val i = Intent(this, Graf_Vtas_Clte::class.java)
                 i.putExtra("cliente", fDocumento.fCliente)
-                if (fConfiguracion.aconsNomComercial()) i.putExtra("nombre", fDocumento.fClientes.getNComercial())
-                else i.putExtra("nombre", fDocumento.fClientes.getNFiscal())
+                if (fConfiguracion.aconsNomComercial()) i.putExtra("nombre", fDocumento.fClientes.fNomComercial)
+                else i.putExtra("nombre", fDocumento.fClientes.fNombre)
                 startActivity(i)
 
                 return true
@@ -751,6 +751,8 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
             3 -> continuar = fArticulos.abrirBioHistorico(fDocumento.fCliente, fOrdenacion)
         }
 
+        // TODO
+        /*
         if (continuar) {
             // Insertamos en aImages todos los artículos que pertenezcan al catálogo o departamento seleccionado
             do {
@@ -806,6 +808,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
                 } while (fDocumento.cLineas.moveToNext())
             }
         }
+        */
         return continuar
     }
 
@@ -831,7 +834,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
                 fDocumento.fArticulo = aImages[fPosicion]
 
                 fDocumento.fCantidad = java.lang.Double.parseDouble(queCantidad)
-                fDocumento.calculaPrecioYDto(fArticulos.getGrupo(), fArticulos.getDpto(), fArticulos.fCodProv, fArticulos.getPorcIva())
+                fDocumento.calculaPrecioYDto(fArticulos.fGrupo, fArticulos.fDepartamento, fArticulos.fCodProv, fArticulos.fPorcIva)
             }
         }
 
@@ -873,7 +876,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
                 if (aDatosArt[0] != "F") fDocumento.fCantidad = java.lang.Double.parseDouble(aDatosArt[2])
                 else fDocumento.fCantidad = 0.0
-                fDocumento.calculaPrecioYDto(fArticulos.getGrupo(), fArticulos.getDpto(), fArticulos.fCodProv, fArticulos.getPorcIva())
+                fDocumento.calculaPrecioYDto(fArticulos.fGrupo, fArticulos.fDepartamento, fArticulos.fCodProv, fArticulos.fPorcIva)
             }
         }
 
@@ -923,7 +926,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
                 }
 
                 fDocumento.fArticulo = aImages[fPosicion]
-                fDocumento.calculaPrecioYDto(fArticulos.getGrupo(), fArticulos.getDpto(), fArticulos.fCodProv, fArticulos.getPorcIva())
+                fDocumento.calculaPrecioYDto(fArticulos.fGrupo, fArticulos.fDepartamento, fArticulos.fCodProv, fArticulos.fPorcIva)
 
                 catLineaEnt.cantidad = aDatosArt[2]
                 catLineaEnt.precio = fDocumento.fPrecio.toString()
@@ -980,7 +983,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
                 catLineaEnt.cantidad = queCantidad.toString()
 
                 fDocumento.fArticulo = aImages[fPosicion]
-                fDocumento.calculaPrecioYDto(fArticulos.getGrupo(), fArticulos.getDpto(), fArticulos.fCodProv, fArticulos.getPorcIva())
+                fDocumento.calculaPrecioYDto(fArticulos.fGrupo, fArticulos.fDepartamento, fArticulos.fCodProv, fArticulos.fPorcIva)
 
                 catLineaEnt.cajas = aDatosArt[1]
                 catLineaEnt.precio = fDocumento.fPrecio.toString()
@@ -1038,7 +1041,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
                 }
 
                 fDocumento.fArticulo = aImages[fPosicion]
-                fDocumento.calculaPrecioYDto(fArticulos.getGrupo(), fArticulos.getDpto(), fArticulos.fCodProv, fArticulos.getPorcIva())
+                fDocumento.calculaPrecioYDto(fArticulos.fGrupo, fArticulos.fDepartamento, fArticulos.fCodProv, fArticulos.fPorcIva)
 
                 catLineaEnt.cajas = aDatosArt[2]
                 catLineaEnt.precio = fDocumento.fPrecio.toString()
@@ -1101,7 +1104,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
                 catLineaEnt.cantidad = queCantidad.toString()
 
                 fDocumento.fArticulo = aImages[fPosicion]
-                fDocumento.calculaPrecioYDto(fArticulos.getGrupo(), fArticulos.getDpto(), fArticulos.fCodProv, fArticulos.getPorcIva())
+                fDocumento.calculaPrecioYDto(fArticulos.fGrupo, fArticulos.fDepartamento, fArticulos.fCodProv, fArticulos.fPorcIva)
 
                 catLineaEnt.cajas = aDatosArt[1]
                 catLineaEnt.precio = fDocumento.fPrecio.toString()
@@ -1413,10 +1416,10 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
                     fDocumento.fTasa1 = 0.0
                     fDocumento.fTasa2 = 0.0
                     fDocumento.fFormatoLin = ftoLineaEnt.formatoId
-                    fDocumento.fCodArt = fArticulos.getCodigo()
-                    fDocumento.fDescr = fArticulos.getDescripcion()
-                    fDocumento.fCodigoIva = fArticulos.getCodigoIva()
-                    fDocumento.fPorcIva = fArticulos.getPorcIva()
+                    fDocumento.fCodArt = fArticulos.fCodigo
+                    fDocumento.fDescr = fArticulos.fDescripcion
+                    fDocumento.fCodigoIva = fArticulos.fCodIva
+                    fDocumento.fPorcIva = fArticulos.fPorcIva
                     val sDtoLin = ftoLineaEnt.dto.replace(',', '.')
                     fDocumento.fDtoLin = if (sDtoLin != "") sDtoLin.toDouble() else 0.0
 
@@ -1478,10 +1481,10 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
                     fDocumento.fTasa1 = 0.0
                     fDocumento.fTasa2 = 0.0
-                    fDocumento.fCodArt = fArticulos.getCodigo()
-                    fDocumento.fDescr = fArticulos.getDescripcion()
-                    fDocumento.fCodigoIva = fArticulos.getCodigoIva()
-                    fDocumento.fPorcIva = fArticulos.getPorcIva()
+                    fDocumento.fCodArt = fArticulos.fCodigo
+                    fDocumento.fDescr = fArticulos.fDescripcion
+                    fDocumento.fCodigoIva = fArticulos.fCodIva
+                    fDocumento.fPorcIva = fArticulos.fPorcIva
                     fDocumento.fLote = catLinea.lote
 
                     val sPrecio = catLinea.precio.replace(',', '.')
@@ -1529,7 +1532,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
                 fDocumento.inicializarLinea()
 
-                fDocumento.fArticulo = fArticulos.getArticulo()
+                fDocumento.fArticulo = fArticulos.fArticulo
                 fDocumento.fAlmacen = fConfiguracion.almacen()
 
                 if (fConfiguracion.igualarCantArtEnlace()) {
@@ -1544,15 +1547,15 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
                 fDocumento.fTasa1 = 0.0
                 fDocumento.fTasa2 = 0.0
-                fDocumento.fCodArt = fArticulos.getCodigo()
-                fDocumento.fDescr = fArticulos.getDescripcion()
-                fDocumento.fCodigoIva = fArticulos.getCodigoIva()
-                fDocumento.fPorcIva = fArticulos.getPorcIva()
+                fDocumento.fCodArt = fArticulos.fCodigo
+                fDocumento.fDescr = fArticulos.fDescripcion
+                fDocumento.fCodigoIva = fArticulos.fCodIva
+                fDocumento.fPorcIva = fArticulos.fPorcIva
                 //val sDtoLin = cCatLineas.getString(cCatLineas.getColumnIndex("dto")).replace(',', '.')
                 //fDocumento.fDtoLin = if (sDtoLin != "") sDtoLin.toDouble() else 0.0
                 fDocumento.fDtoLin = 0.0
 
-                fDocumento.calculaPrecioYDto(fArticulos.getGrupo(), fArticulos.getDpto(), fArticulos.fCodProv, fArticulos.getPorcIva())
+                fDocumento.calculaPrecioYDto(fArticulos.fGrupo, fArticulos.fDepartamento, fArticulos.fCodProv, fArticulos.fPorcIva)
                 if (fIvaIncluido && fAplicarIva) {
                     fDocumento.calculaPrBase()
                     fDocumento.calcularImpteII(false)

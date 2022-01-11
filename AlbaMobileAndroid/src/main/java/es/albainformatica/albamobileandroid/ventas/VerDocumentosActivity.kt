@@ -24,6 +24,7 @@ import android.content.pm.PackageManager
 import es.albainformatica.albamobileandroid.dao.ContactosCltesDao
 import es.albainformatica.albamobileandroid.dao.TiposIncDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
+import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.queBDRoom
 import es.albainformatica.albamobileandroid.entity.ContactosCltesEnt
 import es.albainformatica.albamobileandroid.entity.TiposIncEnt
 
@@ -82,9 +83,11 @@ class VerDocumentosActivity: Activity() {
         fEmpresaActual = prefs.getInt("ultima_empresa", 0)
         fRutaFirmas = prefs.getString("rutacomunicacion", "") ?: ""
         fRutaFirmas = if (fRutaFirmas == "") {
-            if (usarMultisistema) "/storage/sdcard0/alba/firmas/" + BaseDatos.queBaseDatos else "/storage/sdcard0/alba/firmas/"
+            if (usarMultisistema) "/storage/sdcard0/alba/firmas/" + queBDRoom
+            else "/storage/sdcard0/alba/firmas/"
         } else {
-            if (usarMultisistema) fRutaFirmas + "/firmas/" + BaseDatos.queBaseDatos else "$fRutaFirmas/firmas/"
+            if (usarMultisistema) fRutaFirmas + "/firmas/" + queBDRoom
+            else "$fRutaFirmas/firmas/"
         }
 
         btnEditar = findViewById(R.id.btnVDEditar)

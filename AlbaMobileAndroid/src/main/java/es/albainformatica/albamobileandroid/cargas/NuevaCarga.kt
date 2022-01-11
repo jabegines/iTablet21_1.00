@@ -228,8 +228,8 @@ class NuevaCarga: AppCompatActivity() {
 
     private fun aceptarArticulo() {
 
-        edtCodArtNCarga.setText(fArticulos.getCodigo())
-        tvDescrNCarga.text = fArticulos.getDescripcion()
+        edtCodArtNCarga.setText(fArticulos.fCodigo)
+        tvDescrNCarga.text = fArticulos.fDescripcion
 
         // Una vez tenemos un código de artículo válido, activamos el resto de controles.
         activarControlesLinea(true)
@@ -278,7 +278,7 @@ class NuevaCarga: AppCompatActivity() {
         view?.getTag(0)          // Para que no dé warning el compilador
 
         val i = Intent(this, BuscarLotes::class.java)
-        i.putExtra("articulo", fArticulos.getArticulo())
+        i.putExtra("articulo", fArticulos.fArticulo)
         i.putExtra("formatocant", fConfiguracion.formatoDecCantidad())
         startActivityForResult(i, fRequestBuscarLote)
     }

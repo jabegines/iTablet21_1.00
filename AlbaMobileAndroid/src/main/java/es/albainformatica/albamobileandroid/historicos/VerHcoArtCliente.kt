@@ -62,8 +62,8 @@ class VerHcoArtCliente: Activity() {
         if (fArticulos.existeArticulo(fArticulo)) {
             val tvArticulo = findViewById<TextView>(R.id.tvArticulo)
             val queTexto = """
-                Artículo: ${fArticulos.getCodigo()}
-                ${fArticulos.getDescripcion()}
+                Artículo: ${fArticulos.fCodigo}
+                ${fArticulos.fDescripcion }
                 """.trimIndent()
             tvArticulo.text = queTexto
             val prefs = PreferenceManager.getDefaultSharedPreferences(this)

@@ -43,9 +43,9 @@ class VentasIncidencia : Activity() {
         val tvNFiscal = findViewById<View>(R.id.tvNombreClte) as TextView
         val tvNComercial = findViewById<View>(R.id.tvNComClte) as TextView
         val tvIncidencia = findViewById<View>(R.id.tvIncidencia) as TextView
-        val queNFiscal = fClientes.getCodigo() + " - " + fClientes.getNFiscal()
+        val queNFiscal = fClientes.fCodigo + " - " + fClientes.fNombre
         tvNFiscal.text = queNFiscal
-        tvNComercial.text = fClientes.getNComercial()
+        tvNComercial.text = fClientes.fNomComercial
         tvIncidencia.text = fIncidencia
         edtIncidencia = findViewById<View>(R.id.edtIncid) as EditText
         editTextMaxLength(edtIncidencia, ancho_incidencia)

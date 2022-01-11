@@ -4,15 +4,15 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
-import android.database.sqlite.SQLiteDatabase
 import android.preference.PreferenceManager
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.cobros.FormasPagoClase
 import es.albainformatica.albamobileandroid.cobros.PendienteClase
+import es.albainformatica.albamobileandroid.dao.ClientesDao
 import es.albainformatica.albamobileandroid.dao.ContactosCltesDao
 import es.albainformatica.albamobileandroid.dao.SaldosDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
-import es.albainformatica.albamobileandroid.entity.ContactosCltesEnt
+import es.albainformatica.albamobileandroid.entity.ClientesEnt
 import java.lang.Exception
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -20,16 +20,29 @@ import java.util.*
 
 
 class ClientesClase(val contexto: Context) {
+    private val clientesDao: ClientesDao? = MyDatabase.getInstance(contexto)?.clientesDao()
     private val saldosDao: SaldosDao? = MyDatabase.getInstance(contexto)?.saldosDao()
     private val contactosClteDao: ContactosCltesDao? = MyDatabase.getInstance(contexto)?.contactosCltesDao()
+    private var fConfiguracion: Configuracion = Comunicador.fConfiguracion
 
     lateinit var cursor: Cursor
     lateinit var cDirecciones: Cursor
     private var fFPago: FormasPagoClase = FormasPagoClase(contexto)
 
     private var fCliente = 0
+    var fCodigo: String = ""
+    var fNombre: String = ""
+    var fNomComercial: String = ""
+    var fAplIva: Boolean = true
+    var fAplRec: Boolean = false
+    private var fFlag: Int = 0
+    var fTarifa: Short = 0
+    var fTrfDto: Short = 0
+    var fTrfPiezas: Short = 0
     private var fEmpresaActual = 0
-    private var fConfiguracion: Configuracion = Comunicador.fConfiguracion
+    private var fMaxFrasPdtes: Int = 0
+
+
 
 
     init {
@@ -39,7 +52,6 @@ class ClientesClase(val contexto: Context) {
 
 
     fun close() {
-        //cTelefonos?.close()
         if (this::cDirecciones.isInitialized)
             cDirecciones.close()
         if (this::cursor.isInitialized)
@@ -49,9 +61,23 @@ class ClientesClase(val contexto: Context) {
 
     fun abrirUnCliente(queCliente: Int): Boolean {
         fCliente = queCliente
+
+        val clteEnt = clientesDao?.abrirUnCliente(queCliente) ?: ClientesEnt()
+        if (clteEnt.codigo > 0) {
+            fCodigo = ponerCeros(clteEnt.codigo.toString(), ancho_codclte)
+            fNombre = clteEnt.nombre
+            fNomComercial = clteEnt.nombreComercial
+            fAplIva = (clteEnt.aplIva == "T")
+            fAplRec = (clteEnt.aplRec == "T")
+            fFlag = clteEnt.flag
+            fMaxFrasPdtes = clteEnt.maxFrasPdtes
+            fTarifa = clteEnt.tarifaId
+            fTrfDto = clteEnt.tarifaDtoId
+            fTrfPiezas = clteEnt.tarifaPiezas
+        }
+
         // TODO
         /*
-        cursor = dbAlba.rawQuery("SELECT * FROM clientes WHERE cliente = $queCliente", null)
         //cTelefonos = dbAlba.rawQuery("SELECT * FROM conclientes WHERE cliente = $queCliente ORDER BY orden", null)
         cDirecciones = dbAlba.rawQuery("SELECT * FROM dirclientes WHERE cliente = $queCliente ORDER BY orden", null)
 
@@ -62,7 +88,8 @@ class ClientesClase(val contexto: Context) {
             return true
         } else return false
         */
-        return true
+
+        return (clteEnt.codigo > 0)
     }
 
 
@@ -71,10 +98,12 @@ class ClientesClase(val contexto: Context) {
         //dbAlba = writableDatabase
     }
 
-    fun abrirParaEnviar(QueNumExportacion: Int) {
-        // TODO
-        val sCondicion: String = if (QueNumExportacion == 0) " WHERE estado = 'N' OR estado = 'M'" else " WHERE numexport = $QueNumExportacion"
-        //cursor = dbAlba.rawQuery("SELECT * FROM clientes $sCondicion", null)
+
+    fun abrirParaEnviar(queNumExportacion: Int): List<ClientesEnt> {
+        return if (queNumExportacion == 0)
+            clientesDao?.abrirParaEnviar() ?: emptyList<ClientesEnt>().toMutableList()
+        else
+            clientesDao?.abrirParaEnvExp(queNumExportacion) ?: emptyList<ClientesEnt>().toMutableList()
     }
 
 
@@ -106,19 +135,8 @@ class ClientesClase(val contexto: Context) {
 
 
 
-    fun existeCodigo(QueCodigo: String): Int {
-        // TODO
-        /*
-        cursor = dbAlba.rawQuery("SELECT cliente FROM clientes WHERE codigo = '$QueCodigo'", null)
-        return try {
-            if (cursor.moveToFirst()) {
-                getCliente()
-            } else 0
-        } finally {
-            cursor.close()
-        }
-       */
-        return 0
+    fun existeCodigo(queCodigo: Int): Int {
+        return clientesDao?.existeCodigo(queCodigo) ?: 0
     }
 
     fun aceptarCambDirec(aDatosDirecc: ArrayList<String>, insertando: Boolean) {
@@ -336,26 +354,6 @@ class ClientesClase(val contexto: Context) {
     }
 
 
-    fun getCliente(): Int {
-        val columna = cursor.getColumnIndex("cliente")
-        return cursor.getInt(columna)
-    }
-
-
-    fun getCodigo(): String {
-        val columna = cursor.getColumnIndex("codigo")
-        return cursor.getString(columna)
-    }
-
-    fun getNFiscal(): String {
-        val columna = cursor.getColumnIndex("nomfi")
-        return cursor.getString(columna)
-    }
-
-    fun getNComercial(): String {
-        val columna = cursor.getColumnIndex("nomco")
-        return cursor.getString(columna)
-    }
 
     fun getCIF(): String {
         val columna = cursor.getColumnIndex("cif")
@@ -382,36 +380,13 @@ class ClientesClase(val contexto: Context) {
         return cursor.getString(columna)
     }
 
-    fun getMatricula(): String {
-        return cursor.getString(cursor.getColumnIndex("matricula"))
-    }
 
     fun getFlag(): Int {
         val columna = cursor.getColumnIndex("flag")
         return cursor.getInt(columna)
     }
 
-    fun getTarifa(): String {
-        // Hacemos el trim a getString() porque en el caso de haber escogido
-        // "Sin tarifa" hemos guardado un espacio en blanco en el campo "tarifa" de
-        // la tabla.
-        val columna = cursor.getColumnIndex("tarifa")
-        return if (cursor.getString(columna) != null) cursor.getString(columna)
-            .trim { it <= ' ' } else ""
-    }
 
-    fun getTarifaDto(): String {
-        val columna = cursor.getColumnIndex("tardto")
-        return if (cursor.getString(columna) != null) cursor.getString(columna)
-            .trim { it <= ' ' } else ""
-    }
-
-    fun getTarifaPiezas(): String {
-        var queTarifa = "0"
-        if (cursor.getString(cursor.getColumnIndex("tarifaPiezas")) != null) queTarifa =
-            cursor.getString(cursor.getColumnIndex("tarifaPiezas"))
-        return queTarifa
-    }
 
     fun getFPago(): String {
         val columna = cursor.getColumnIndex("fpago")
@@ -455,7 +430,7 @@ class ClientesClase(val contexto: Context) {
 
 
     fun getSaldo(): Double {
-        return saldosDao?.getSaldoClte(getCliente(), fEmpresaActual)?.replace(",", ".")?.toDouble() ?: 0.0
+        return saldosDao?.getSaldoClte(fCliente, fEmpresaActual)?.replace(",", ".")?.toDouble() ?: 0.0
     }
 
 
@@ -465,27 +440,9 @@ class ClientesClase(val contexto: Context) {
 
 
 
-    fun getAplicarIva(): Boolean {
-        val columna = cursor.getColumnIndex("apliva")
-        val sAplIva = cursor.getString(columna)
-        return sAplIva == "T"
-    }
-
-    fun getAplicarRe(): Boolean {
-        val columna = cursor.getColumnIndex("aplrec")
-        val sAplRec = cursor.getString(columna)
-        return sAplRec == "T"
-    }
-
-
 
     fun getAplicarOfertas(): Boolean {
-        val sFlag = cursor.getString(cursor.getColumnIndex("flag"))
-        return if (sFlag != null) {
-            val iFlag = sFlag.toInt()
-            val Resultado = iFlag and FLAGCLIENTE_APLICAROFERTAS
-            Resultado > 0
-        } else false
+        return (fFlag and FLAGCLIENTE_APLICAROFERTAS) > 0
     }
 
 
@@ -532,12 +489,7 @@ class ClientesClase(val contexto: Context) {
 
 
     fun controlarRiesgo(): Boolean {
-        val sFlag = cursor.getString(cursor.getColumnIndex("flag"))
-        return if (sFlag != null) {
-            val iFlag = sFlag.toInt()
-            val Resultado = iFlag and FLAGCLIENTE_CONTROLARRIESGO
-            Resultado > 0
-        } else false
+        return (fFlag and FLAGCLIENTE_CONTROLARRIESGO) > 0
     }
 
     fun maxDiasRiesgo(): Int {
@@ -545,18 +497,9 @@ class ClientesClase(val contexto: Context) {
         return cursor.getInt(columna)
     }
 
-    fun maxFrasRiesgo(): Int {
-        val columna = cursor.getColumnIndex("maxfraspdtes")
-        return cursor.getInt(columna)
-    }
 
     fun noVender(): Boolean {
-        val sFlag = cursor.getString(cursor.getColumnIndex("flag"))
-        return if (sFlag != null) {
-            val iFlag = sFlag.toInt()
-            val Resultado = iFlag and FLAGCLIENTE_NOVENDER
-            Resultado > 0
-        } else false
+        return (fFlag and FLAGCLIENTE_NOVENDER) > 0
     }
 
 
@@ -584,8 +527,8 @@ class ClientesClase(val contexto: Context) {
                     if (fDiasClte > 0 || fCltesDiasRiesgo > 0) {
                         val fPendiente = PendienteClase(contexto)
                         if (fPendiente.abrirPorFDoc(fCliente, fEmpresa)) {
-                            val fEsDocNuevo = fPendiente.cursor!!.getString(0).contains("/")
-                            val strFechaDoc = fPendiente.cursor!!.getString(0).replace('-', '/')
+                            val fEsDocNuevo = fPendiente.cursor?.getString(0)?.contains("/") ?: true
+                            val strFechaDoc = fPendiente.cursor?.getString(0)?.replace('-', '/') ?: ""
                             val fFechaDoc: Date
                             val fFechaAct: Date
                             // Si el registro de la tabla Pendiente lo hemos hecho nuevo en la tablet, el formato de la fecha
@@ -596,8 +539,8 @@ class ClientesClase(val contexto: Context) {
                             val tim = System.currentTimeMillis()
                             val strFechaAct = formatoFechaAct.format(tim)
                             try {
-                                fFechaDoc = formatoFechaDoc.parse(strFechaDoc)
-                                fFechaAct = formatoFechaAct.parse(strFechaAct)
+                                fFechaDoc = formatoFechaDoc.parse(strFechaDoc) ?: Date()
+                                fFechaAct = formatoFechaAct.parse(strFechaAct) ?: Date()
                                 val dias = ((fFechaAct.time - fFechaDoc.time) / 86400000).toInt()
                                 resultado = if (fDiasClte > 0) dias >= fDiasClte else dias >= fCltesDiasRiesgo
                             } catch (ex: ParseException) {
@@ -615,9 +558,8 @@ class ClientesClase(val contexto: Context) {
                     val fPendiente = PendienteClase(contexto)
                     val fNumDocs = fPendiente.dimeNumDocsClte(fCliente, fEmpresa) + numDocsPdtes
                     if (fNumDocs > 0) {
-                        val fDocsClte = maxFrasRiesgo()
                         val fCltesDocsRiesgo = fConfiguracion.cltesMaxFrasRiesgo()
-                        if (fDocsClte > 0) resultado = fNumDocs > fDocsClte else {
+                        if (fMaxFrasPdtes > 0) resultado = fNumDocs > fMaxFrasPdtes else {
                             if (fCltesDocsRiesgo > 0) resultado = fNumDocs > fCltesDocsRiesgo
                         }
                     }

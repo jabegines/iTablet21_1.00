@@ -306,8 +306,8 @@ class FichaClteActivity: AppCompatActivity() {
         // Seleccionamos la tarifa que tenga el cliente, siempre que estemos editando.
         if (fCliente > 0) {
             if (deDescuento)
-                spnTarifa.setSelection(getIndexTrf(spnTarifa, fClientes.getTarifaDto())
-            ) else spnTarifa.setSelection(getIndexTrf(spnTarifa, fClientes.getTarifa()))
+                spnTarifa.setSelection(getIndexTrf(spnTarifa, fClientes.fTrfDto.toString())
+            ) else spnTarifa.setSelection(getIndexTrf(spnTarifa, fClientes.fTarifa.toString()))
         }
 
         // Evento onClick.
@@ -390,21 +390,21 @@ class FichaClteActivity: AppCompatActivity() {
             val tvTlfNComercial = findViewById<View>(R.id.tvTlfNComClte) as TextView
             val tvDirNFiscal = findViewById<View>(R.id.tvDirNombreClte) as TextView
             val tvDirNComercial = findViewById<View>(R.id.tvDirNComClte) as TextView
-            var queTexto = fClientes.getCodigo() + " - " + fClientes.getNFiscal()
+            var queTexto = fClientes.fCodigo + " - " + fClientes.fNombre
             tvNFiscal.text = queTexto
-            tvNComercial.text = fClientes.getNComercial()
-            queTexto = fClientes.getCodigo() + " - " + fClientes.getNFiscal()
+            tvNComercial.text = fClientes.fNomComercial
+            queTexto = fClientes.fCodigo + " - " + fClientes.fNombre
             tvVariosNFiscal.text = queTexto
-            tvVariosNComercial.text = fClientes.getNComercial()
-            queTexto = fClientes.getCodigo() + " - " + fClientes.getNFiscal()
+            tvVariosNComercial.text = fClientes.fNomComercial
+            queTexto = fClientes.fCodigo + " - " + fClientes.fNombre
             tvTlfNFiscal.text = queTexto
-            tvTlfNComercial.text = fClientes.getNComercial()
-            queTexto = fClientes.getCodigo() + " - " + fClientes.getNFiscal()
+            tvTlfNComercial.text = fClientes.fNomComercial
+            queTexto = fClientes.fCodigo + " - " + fClientes.fNombre
             tvDirNFiscal.text = queTexto
-            tvDirNComercial.text = fClientes.getNComercial()
-            edtCodigo.setText(fClientes.getCodigo())
-            edtNFiscal.setText(fClientes.getNFiscal())
-            edtNComercial.setText(fClientes.getNComercial())
+            tvDirNComercial.text = fClientes.fNomComercial
+            edtCodigo.setText(fClientes.fCodigo)
+            edtNFiscal.setText(fClientes.fNombre)
+            edtNComercial.setText(fClientes.fNomComercial)
             edtCIF.setText(fClientes.getCIF())
             edtDirecc.setText(fClientes.getDireccion())
             edtPoblac.setText(fClientes.getPoblacion())
@@ -412,8 +412,8 @@ class FichaClteActivity: AppCompatActivity() {
             edtProvincia.setText(fClientes.getProvincia())
             edtRiesgo.setText(String.format(fConfiguracion.formatoDecImptesIva(), fClientes.getRiesgo()))
             edtSaldo.setText(String.format(fConfiguracion.formatoDecImptesIva(), fClientes.getSaldo()))
-            chkAplIva.isChecked = fClientes.getAplicarIva()
-            chkAplRe.isChecked = fClientes.getAplicarRe()
+            chkAplIva.isChecked = fClientes.fAplIva
+            chkAplRe.isChecked = fClientes.fAplRec
             mostrarTelefonos()
             mostrarDirecciones()
             edtCodigo.isFocusable = false
@@ -593,8 +593,8 @@ class FichaClteActivity: AppCompatActivity() {
         } else {
             // Si fCliente = 0 es que estamos dando de alta.
             if (fCliente <= 0) {
-                val queCodigo = ponerCeros(edtCodigo.text.toString(), ancho_codclte)
-                if (fClientes.existeCodigo(queCodigo) > 0) {
+                //val queCodigo = ponerCeros(edtCodigo.text.toString(), ancho_codclte)
+                if (fClientes.existeCodigo(edtCodigo.text.toString().toInt()) > 0) {
                     MsjAlerta(this).alerta(resources.getString(R.string.msj_CodYaExiste))
                     return false
                 }

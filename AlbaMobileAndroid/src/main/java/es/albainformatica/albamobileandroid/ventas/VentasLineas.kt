@@ -39,6 +39,7 @@ import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.entity.ContactosCltesEnt
 import es.albainformatica.albamobileandroid.impresion_informes.ImprDocFormato2
 import kotlinx.android.synthetic.main.clientes_activity.*
+import kotlinx.android.synthetic.main.ventas_lineas.*
 import java.io.File
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -57,8 +58,9 @@ class VentasLineas : Activity() {
     private lateinit var adapterLineas: SimpleCursorAdapter
     private var fEstado: Byte = 0
     private var fIvaIncluido: Boolean = false
-    private lateinit var lvLineas: ListView
 
+    private lateinit var fRecyclerView: RecyclerView
+    private lateinit var fAdapter: LineasVtasRvAdapter
     private lateinit var fRecBases: RecyclerView
     private lateinit var fAdpBases: BasesRvAdapter
 
@@ -165,7 +167,8 @@ class VentasLineas : Activity() {
             fDocumento.setExento()
 
             // Abrimos el cursor con las líneas del documento.
-            fDocumento.abrirLineas()
+            //fDocumento.abrirLineas()
+
         } else {
             fIdDoc = intent.getIntExtra("iddoc", 0)
             fDocumento.cargarDocumento(fIdDoc, !fSoloVer)
@@ -247,13 +250,14 @@ class VentasLineas : Activity() {
         fNombreTasa1 = fConfiguracion.nombreTasa1()
         fNombreTasa2 = fConfiguracion.nombreTasa2()
         indicarTipoDoc()
-        tvNombreClte.text = fDocumento.fClientes.getCodigo() + " - " + fDocumento.nombreCliente()
+        tvNombreClte.text = fDocumento.fClientes.fCodigo + " - " + fDocumento.nombreCliente()
         tvNComClte.text = fDocumento.nombreComClte()
         fEstado = est_Vl_Browse
         fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa.toString().toInt())
 
-        fRecBases = findViewById(R.id.rvVl_BasesDoc)
-        prepararListView()
+        fRecyclerView = rvVL_LineasDoc
+        fRecyclerView.layoutManager = LinearLayoutManager(this)
+        prepararRecyclerView()
         prepararBases()
 
         // Vemos como tenemos configurado el modo de venta
@@ -270,11 +274,28 @@ class VentasLineas : Activity() {
                 cargarHco(null)
             } else nuevaLinea(null)
         }
-        val tvTitulo =
-            findViewById<TextView>(R.id.tvNombreActivity)
+        val tvTitulo = findViewById<TextView>(R.id.tvNombreActivity)
         tvTitulo.setText(R.string.ventas)
     }
 
+
+    private fun prepararRecyclerView() {
+        fAdapter = LineasVtasRvAdapter(getLineasDoc(), this, object: LineasVtasRvAdapter.OnItemClickListener {
+            override fun onClick(view: View, data: DatosLinVtas) {
+
+            }
+        })
+
+        fRecyclerView.adapter = fAdapter
+    }
+
+
+    private fun getLineasDoc(): List<DatosLinVtas> {
+        fDocumento.abrirLineas()
+        return fDocumento.lLineas
+    }
+
+    /*
     private fun prepararListView() {
         val columnas: Array<String> = if (fIvaIncluido && fAplicarIva) {
             arrayOf(
@@ -344,6 +365,8 @@ class VentasLineas : Activity() {
                 }
             }
     }
+    */
+
 
     private fun formatearListVOftVolDoc(adapter: SimpleCursorAdapter) {
         adapter.viewBinder =
@@ -516,6 +539,7 @@ class VentasLineas : Activity() {
             override fun onClick(view: View, data: ListaBasesDoc.TBaseDocumento) {}
         })
 
+        fRecBases = findViewById(R.id.rvVl_BasesDoc)
         fRecBases.layoutManager = LinearLayoutManager(this)
         fRecBases.adapter = fAdpBases
     }
@@ -558,11 +582,13 @@ class VentasLineas : Activity() {
     }
 
     private fun refrescarLineas() {
-        adapterLineas.changeCursor(fDocumento.cLineas)
+        //adapterLineas.changeCursor(fDocumento.cLineas)
         //adpBases.notifyDataSetChanged()
+        prepararRecyclerView()
         fAdpBases.notifyDataSetChanged()
         tvTotal.text = String.format(fFtoDecImpIva, fDocumento.fBases.totalConImptos)
     }
+
 
     fun nuevaLinea(view: View?) {
         view?.getTag(0)              // Para que no dé warning el compilador
@@ -592,7 +618,6 @@ class VentasLineas : Activity() {
                 // al layout de edición de la línea, el cursor (fDocumento.cLineas) se
                 // mueve al último registro, por lo que realmente no estamos modificando
                 // la línea que queremos, sino siempre la última.
-                lvLineas.adapter = null
                 fEstado = est_Vl_Editar
                 val i = Intent(this, VentasDatosLinea::class.java)
                 i.putExtra("estado", fEstado)
@@ -605,9 +630,12 @@ class VentasLineas : Activity() {
     fun borrarLinea(view: View) {
         view.getTag(0)              // Para que no dé warning el compilador
 
-        if (fEstado == est_Vl_Browse && fDocumento.cLineas.count > 0) {
+        if (fEstado == est_Vl_Browse && fDocumento.lLineas.isNotEmpty()) {
             if (fLinea > 0) {
-                fDocumento.borrarLinea(fLinea, true)
+                for (linea in fDocumento.lLineas) {
+                    if (linea.lineaId == fLinea)
+                        fDocumento.borrarLinea(linea, true)
+                }
                 refrescarLineas()
                 fLinea = 0
             } else MsjAlerta(this).alerta(resources.getString(R.string.msj_NoRegSelecc))
@@ -625,7 +653,7 @@ class VentasLineas : Activity() {
             } else {
                 val i = Intent(this, CargarHco::class.java)
                 i.putExtra("cliente", fDocumento.fCliente)
-                i.putExtra("aplicariva", fDocumento.fClientes.getAplicarIva())
+                i.putExtra("aplicariva", fDocumento.fClientes.fAplIva)
                 i.putExtra("desdecltes", false)
                 i.putExtra("empresa", fDocumento.fEmpresa.toString().toInt())
                 startActivityForResult(i, fRequestHistorico)
@@ -635,7 +663,7 @@ class VentasLineas : Activity() {
 
     fun terminarDoc(view: View) {
         // Comprobamos que el documento tenga alguna línea.
-        if (fDocumento.cLineas.count > 0) {
+        if (fDocumento.lLineas.isNotEmpty()) {
             // Deshabilitamos el botón para que no lo pulsemos varias veces (p.ej. cuando está calculando las ofertas por volumen)
             view.isEnabled = false
 
@@ -653,8 +681,7 @@ class VentasLineas : Activity() {
     private fun mostrarOftVolumenDoc() {
         // Lo primero que debemos hacer es rescatar el layout creado para el prompt.
         val li = LayoutInflater.from(this)
-        val prompt =
-            li.inflate(R.layout.mostrar_oft_vol_doc, null)
+        val prompt = li.inflate(R.layout.mostrar_oft_vol_doc, null)
         prepararListVOftVolDoc(prompt)
 
         // Luego, creamos un constructor de Alert Dialog que nos ayudará a utilizar nuestro layout.
@@ -706,7 +733,6 @@ class VentasLineas : Activity() {
         // Actividad editarlinea
         if (requestCode == fRequestEditarLinea) {
             // Volvemos a activar el adaptador del listView, porque en editarLinea lo desactivamos.
-            lvLineas.adapter = adapterLineas
             if (resultCode == RESULT_OK) refrescarLineas()
             fEstado = est_Vl_Browse
 

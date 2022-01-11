@@ -111,7 +111,7 @@ class ModifDocReparto: Activity() {
         } else {
 
             fLinea = 0
-            fAplicarIva = fDocumento.fClientes.getAplicarIva()
+            fAplicarIva = fDocumento.fClientes.fAplIva
 
             // Uso Comunicador para tener una referencia al objeto
             // fDocumento también desde CargarHco.java y desde Pendiente.java.
@@ -144,7 +144,7 @@ class ModifDocReparto: Activity() {
         fNombreTasa1 = fConfiguracion.nombreTasa1()
         fNombreTasa2 = fConfiguracion.nombreTasa2()
         indicarTipoDoc()
-        val queTexto = fDocumento.fClientes.getCodigo() + " - " + fDocumento.nombreCliente()
+        val queTexto = fDocumento.fClientes.fCodigo + " - " + fDocumento.nombreCliente()
         tvNombreClte.text = queTexto
         tvNComClte.text = fDocumento.nombreComClte()
         fEstado = est_Vl_Browse
@@ -437,9 +437,12 @@ class ModifDocReparto: Activity() {
     fun borrarLinea(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
-        if (fEstado == est_Vl_Browse && fDocumento.cLineas.count > 0) {
+        if (fEstado == est_Vl_Browse && fDocumento.lLineas.isNotEmpty()) {
             if (fLinea > 0) {
-                fDocumento.borrarLinea(fLinea, true)
+                for (linea in fDocumento.lLineas) {
+                    if (linea.lineaId == fLinea)
+                        fDocumento.borrarLinea(linea, true)
+                }
                 refrescarLineas()
                 fLinea = 0
             } else MsjAlerta(this).alerta(resources.getString(R.string.msj_NoRegSelecc))

@@ -96,7 +96,7 @@ class VentasFinDoc: AppCompatActivity() {
         edtDtoPie4 = findViewById(R.id.edtVFP_Dto4)
         tvTipoDoc.text = tipoDocAsString(fDocumento.fTipoDoc)
         tvSerieNum.text = fDocumento.serie + '/' + fDocumento.numero
-        tvNombre.text = fDocumento.fClientes.getCodigo() + " - " + fDocumento.nombreCliente()
+        tvNombre.text = fDocumento.fClientes.fCodigo + " - " + fDocumento.nombreCliente()
         tvNomComerc.text = fDocumento.nombreComClte()
         val llFEntrega =
             findViewById<LinearLayout>(R.id.lyVFD_FEntrega)
@@ -206,8 +206,8 @@ class VentasFinDoc: AppCompatActivity() {
     }
 
     private fun cargarDtosClte() {
-        val bd = BaseDatos(this)
-        val dbAlba = bd.writableDatabase
+        // TODO
+        /*
         val cDtos = dbAlba.rawQuery(
             "SELECT dto FROM dtoscltes WHERE cliente = " + fDocumento.fCliente +
                     " ORDER BY iddescuento", null
@@ -220,13 +220,12 @@ class VentasFinDoc: AppCompatActivity() {
         cDtos.moveToNext()
         if (!cDtos.isAfterLast) edtDtoPie4.setText(cDtos.getString(cDtos.getColumnIndex("dto")))
         cDtos.close()
-        dbAlba.close()
-        bd.close()
+        */
     }
 
     private fun cargarDatos() {
-        val bd = BaseDatos(this)
-        val dbAlba = bd.writableDatabase
+        // TODO
+        /*
         val cDocumento = dbAlba.rawQuery(
             "SELECT obs1, obs2, dto, dto2, dto3, dto4, fpago"
                     + " FROM cabeceras WHERE _id=" + fIdDoc, null
@@ -249,8 +248,7 @@ class VentasFinDoc: AppCompatActivity() {
                 fDocumento.numero, fDocumento.fEjercicio
             )
         }
-        dbAlba.close()
-        bd.close()
+        */
     }
 
     private fun prepararBases() {

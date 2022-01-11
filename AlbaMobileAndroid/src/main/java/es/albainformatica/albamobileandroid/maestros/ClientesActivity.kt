@@ -15,13 +15,17 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.*
+import es.albainformatica.albamobileandroid.dao.ClientesDao
+import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.historicos.CargarHco
 import kotlinx.android.synthetic.main.clientes_activity.*
 import java.util.*
 
 
 class ClientesActivity: AppCompatActivity(), View.OnClickListener {
+    private val clientesDao: ClientesDao? = MyDatabase.getInstance(this)?.clientesDao()
     private lateinit var fConfiguracion: Configuracion
+
     private lateinit var fRecyclerView: RecyclerView
     private lateinit var fAdapter: ClientesRvAdapter
 
@@ -387,41 +391,13 @@ class ClientesActivity: AppCompatActivity(), View.OnClickListener {
 
 
 
-    private fun getClientes(queBuscar: String): MutableList<ListaClientes> {
-        val lListaCltes = emptyList<ListaClientes>().toMutableList()
+    private fun getClientes(queBuscar: String): List<ListaClientes> {
 
-        var sQuery = if (queOrdenacion.toInt() == 1) "SELECT cliente _id, codigo, nomco nombre, nomfi nombre2, flag FROM clientes"
-        else "SELECT cliente _id, codigo, nomfi nombre, nomco nombre2, flag FROM clientes"
-
-        if (queBuscar != "") {
-            val cadenaLike = "LIKE('%$queBuscar%')"
-            sQuery = "$sQuery WHERE nomfi $cadenaLike OR nomco $cadenaLike OR codigo $cadenaLike"
+        val lListaCltes: List<ListaClientes> = if (queBuscar != "") {
+            clientesDao?.getCltesBusq("%$queBuscar%", queOrdenacion) ?: emptyList<ListaClientes>().toMutableList()
+        } else {
+            clientesDao?.getCltes(queOrdenacion) ?: emptyList<ListaClientes>().toMutableList()
         }
-
-        sQuery = when {
-            queOrdenacion.toInt() == 0 -> "$sQuery ORDER BY nomfi"
-            queOrdenacion.toInt() == 1 -> "$sQuery ORDER BY nomco"
-            else -> "$sQuery ORDER BY codigo"
-        }
-
-        // TODO
-        /*
-        val cClientes = dbAlba.rawQuery(sQuery, null)
-        cClientes.use { cursor ->
-            if (cursor.moveToFirst()) {
-                do {
-                    val elemento = ListaClientes()
-                    elemento.clienteId = cursor.getInt(cursor.getColumnIndex("_id"))
-                    elemento.codigo = cursor.getString(cursor.getColumnIndex("codigo"))
-                    elemento.nombre = cursor.getString(cursor.getColumnIndex("nombre"))
-                    elemento.nombreComercial = cursor.getString(cursor.getColumnIndex("nombre2"))
-                    elemento.flag = cursor.getInt(cursor.getColumnIndex("flag"))
-                    lListaCltes.add(elemento)
-
-                } while (cursor.moveToNext())
-            }
-        }
-        */
 
         return lListaCltes
     }

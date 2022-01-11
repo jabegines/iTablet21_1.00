@@ -20,7 +20,7 @@ class PedirDosis: AppCompatActivity() {
     private lateinit var fFormatos: Formatos
 
     private var fArticulo = 0
-    private var fFormatoId = 0
+    private var fFormatoId: Short = 0
     private var fDosis = ""
 
 
@@ -37,11 +37,6 @@ class PedirDosis: AppCompatActivity() {
         prepararRecycler()
     }
 
-
-    public override fun onDestroy() {
-        fFormatos.close()
-        super.onDestroy()
-    }
 
 
     private fun inicializarControles() {
@@ -67,7 +62,7 @@ class PedirDosis: AppCompatActivity() {
         if (fFormatos.todosLosFormatos()) {
             do {
                 val dVtasFtos = DatosVtaFtos()
-                dVtasFtos.codigo = fFormatos.cursor.getInt(fFormatos.cursor.getColumnIndex("codigo"))
+                dVtasFtos.codigo = fFormatos.cursor.getShort(fFormatos.cursor.getColumnIndex("codigo"))
                 dVtasFtos.descripcion = fFormatos.cursor.getString(fFormatos.cursor.getColumnIndex("descr"))
                 dVtasFtos.dosis1 = fFormatos.cursor.getString(fFormatos.cursor.getColumnIndex("dosis1"))
                 lFormatos.add(dVtasFtos)
@@ -125,7 +120,7 @@ class PedirDosis: AppCompatActivity() {
 
         var resultado = true
 
-        if (fFormatoId == 0) {
+        if (fFormatoId == 0.toShort()) {
             MsjAlerta(this).alerta("No ha indicado ningún formato")
             resultado = false
 

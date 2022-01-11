@@ -31,7 +31,6 @@ import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.dao.CabDiferidasDao
 import es.albainformatica.albamobileandroid.dao.LineasDifDao
 import es.albainformatica.albamobileandroid.entity.CabDiferidasEnt
-import es.albainformatica.albamobileandroid.entity.LineasDifEnt
 import harmony.java.awt.Color
 import java.io.File
 import java.io.FileOutputStream
@@ -113,7 +112,7 @@ class DocDiferidaPDF(private val fContexto: Context, idDocumento: Int) {
             fSerie = cabDifEnt.serie
             fNumero = cabDifEnt.numero.toString()
             fClientes.abrirUnCliente(cabDifEnt.clienteId)
-            fExentoIva = fClientes.getAplicarIva()
+            fExentoIva = fClientes.fAplIva
             fEmpresaActual = cabDifEnt.empresa
         }
     }
@@ -426,8 +425,8 @@ class DocDiferidaPDF(private val fContexto: Context, idDocumento: Int) {
     }
 
     private fun configurarBases() {
-        fBases.fAplicarIva = fClientes.getAplicarIva()
-        fBases.fAplicarRecargo = fBases.fAplicarIva && fClientes.getAplicarRe()
+        fBases.fAplicarIva = fClientes.fAplIva
+        fBases.fAplicarRecargo = fBases.fAplicarIva && fClientes.fAplRec
         fBases.fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresaActual)
         fBases.fDecImpBase = fConfiguracion.decimalesImpBase()
         fBases.fDecImpII = fConfiguracion.decimalesImpII()
@@ -582,7 +581,7 @@ class DocDiferidaPDF(private val fContexto: Context, idDocumento: Int) {
         private fun pdfDatosClteYDoc(writer: PdfWriter) {
             var y: Short = 710
             val canvas = writer.directContent
-            var c = Chunk(fClientes.getCodigo() + " " + fClientes.getNFiscal())
+            var c = Chunk(ponerCeros(fClientes.fCodigo.toString(), ancho_codclte) + " " + fClientes.fNombre)
             mostrarChunk(canvas, c, 40f, y.toFloat(), fntHelv8)
             c = Chunk("Vendedor: " + fConfiguracion.vendedor())
             mostrarChunk(canvas, c, 400f, y.toFloat(), fntHelv8)

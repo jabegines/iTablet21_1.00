@@ -55,7 +55,7 @@ class TextoLinea : Activity() {
 
         // Si hemos cambiado algo en el texto, preguntamos para marcar la línea con el flag 'articulo cambiado'.
         if (fDocumento.fHayArtHabituales) {
-            if (edtObserv.text.toString() != fDocumento.textoArtHabitual) {
+            if (edtObserv.text.toString() != fDocumento.textoArtHabitual()) {
                 val aldDialog =
                     NuevoAlertBuilder(this, "Marcar", "¿Marcar el texto como modificado?", true)
                 aldDialog.setPositiveButton("Si") { _: DialogInterface?, _: Int ->
