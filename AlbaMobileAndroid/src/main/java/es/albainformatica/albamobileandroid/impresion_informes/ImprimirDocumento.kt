@@ -6,7 +6,6 @@ import es.albainformatica.albamobileandroid.ventas.Documento
 import es.albainformatica.albamobileandroid.cobros.FormasPagoClase
 import es.albainformatica.albamobileandroid.cobros.PendienteClase
 import android.content.SharedPreferences
-import android.database.sqlite.SQLiteDatabase
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import android.app.ProgressDialog
 import android.bluetooth.BluetoothAdapter
@@ -391,15 +390,15 @@ class ImprimirDocumento(contexto: Context): Runnable {
         val lImpte = 8
         val lLote = 20
         fLineasImpresas = fPrimLinArticulos
-        fDocumento.cLineas.moveToFirst()
-        while (!fDocumento.cLineas.isAfterLast) {
+
+        for (linea in fDocumento.lLineas) {
             sumaYSigue(os)
-            sCodigo = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("codigo"))
-            sDescr = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("descr"))
+            sCodigo = linea.codArticulo
+            sDescr = linea.descripcion
             result.append(ajustarCadena(sCodigo, lCodigo, true)).append(" ")
                 .append(ajustarCadena(sDescr, lDescr, true))
-            sCajas = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cajas"))
-            sCant = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cantidad"))
+            sCajas = linea.cajas
+            sCant = linea.cantidad
             val dCajas = sCajas.toDouble()
             val dCant = sCant.toDouble()
             sCajas = String.format(fFtoCant, dCajas)
@@ -408,15 +407,11 @@ class ImprimirDocumento(contexto: Context): Runnable {
                 .append(ajustarCadena(sCant, lCant, false)).append(" ")
             if (!fImprSinValorar) {
                 if (fVtaIvaIncluido) {
-                    sPrecio =
-                        fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("precioii"))
-                    sImpte =
-                        fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("importeii"))
+                    sPrecio = linea.precioII
+                    sImpte = linea.importeII
                 } else {
-                    sPrecio =
-                        fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("precio"))
-                    sImpte =
-                        fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("importe"))
+                    sPrecio = linea.precio
+                    sImpte = linea.importe
                 }
                 val dPrecio = sPrecio.toDouble()
                 val dImpte = sImpte.toDouble()
@@ -429,15 +424,13 @@ class ImprimirDocumento(contexto: Context): Runnable {
             fLineasImpresas++
             var dDto = 0.0
             sDto = ""
-            if (fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("dto")) != null) {
-                sDto = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("dto"))
+            if (linea.dto != "") {
+                sDto = linea.dto
                 dDto = sDto.toDouble()
             }
             // Si la línea tiene número de lote lo imprimimos. También si tiene descuento por línea.
-            if (fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("lote")) != null &&
-                fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("lote")) != ""
-            ) {
-                sLote = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("lote"))
+            if (linea.lote != "") {
+                sLote = linea.lote
                 result.append("Numero lote: ").append(ajustarCadena(sLote, lLote, true))
                 if (dDto != 0.0) result.append(" % Dto.: ").append(ajustarCadena(sDto, lDto, true))
                 result.append(ccSaltoLinea)
@@ -456,7 +449,6 @@ class ImprimirDocumento(contexto: Context): Runnable {
                 SystemClock.sleep(500)
             } catch (ignored: Exception) {
             }
-            fDocumento.cLineas.moveToNext()
         }
     }
 
@@ -528,26 +520,19 @@ class ImprimirDocumento(contexto: Context): Runnable {
         ) + "Vendedor: " + fConfiguracion.vendedor() // + " " + fConfiguracion.nombreVendedor(), 20, true);
         result += cCadena
         result += ccSaltoLinea
-        result += ajustarCadena(fDocumento.fClientes.getDireccion(), 35, true)
+        result += ajustarCadena(fDocumento.fClientes.fDireccion, 35, true)
         cCadena = StringOfChar(" ", 5) + "Hora: " + fDocumento.fHora
         result += cCadena
         result += ccSaltoLinea
-        result += ajustarCadena(
-            fDocumento.fClientes.getCodPostal() + " " + fDocumento.fClientes.getPoblacion(),
-            35,
-            true
-        )
+        result += ajustarCadena(fDocumento.fClientes.fCodPostal + " " + fDocumento.fClientes.fPoblacion, 35, true)
         cCadena = StringOfChar(" ", 5) + "Fecha: " + fDocumento.fFecha
         result += cCadena
         result += ccSaltoLinea
-        result += ajustarCadena(fDocumento.fClientes.getProvincia(), 35, true)
+        result += ajustarCadena(fDocumento.fClientes.fProvincia, 35, true)
         result = result + StringOfChar(" ", 5) + "Doc: " + tipoDocAsString(fDocumento.fTipoDoc)
         result += ccSaltoLinea
-        result += ajustarCadena("C.I.F.: " + fDocumento.fClientes.getCIF(), 35, true)
-        result = result + StringOfChar(
-            " ",
-            5
-        ) + "Num.: " + fDocumento.serie + "/" + fDocumento.numero
+        result += ajustarCadena("C.I.F.: " + fDocumento.fClientes.fCif, 35, true)
+        result = result + StringOfChar(" ", 5) + "Num.: " + fDocumento.serie + "/" + fDocumento.numero
         result = result + ccSaltoLinea + ccSaltoLinea
         return result
     }

@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "Series", primaryKeys = ["serie", "ejercicio"])
 data class SeriesEnt(
+
     var serie: String = "",
     var ejercicio: Short = 0,
     var empresa: Short = 0,

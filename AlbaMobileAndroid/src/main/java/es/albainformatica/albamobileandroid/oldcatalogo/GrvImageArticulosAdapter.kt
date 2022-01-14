@@ -44,8 +44,9 @@ class GrvImageArticulosAdapter: BaseAdapter {
     private lateinit var prefs: SharedPreferences
 
     // El constructor necesita el contexto de la actividad donde se utiliza el adapter
-    constructor(activity: Activity, fGrupo: Int, fDepartam: Int, queBuscar: String, dondeBuscar: Short,
+    constructor(activity: Activity, fGrupo: Short, fDepartam: Short, queBuscar: String, dondeBuscar: Short,
         queOrdenacion: Short, fSoloOftas: Boolean, queTarifa: Short, vendiendo: Boolean) {
+
         this.activity = activity
         carpetaImagenes = dimeRutaImagenes(activity)
         fVendiendo = vendiendo
@@ -53,12 +54,11 @@ class GrvImageArticulosAdapter: BaseAdapter {
         fTarifa = queTarifa
         inflater = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         prefs = PreferenceManager.getDefaultSharedPreferences(activity)
-        fEmpresaActual = prefs.getInt("ultima_empresa", 0) ?: 0
+        fEmpresaActual = prefs.getInt("ultima_empresa", 0)
         fArticulosGrv = Comunicador.fArticulosGrv
         if (fVendiendo)
             fDocumento = Comunicador.fDocumento
 
-        //Configuracion fConfiguracion = Comunicador.fConfiguracion;
         fFtoDecCant = fConfiguracion.formatoDecCantidad()
         fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresaActual)
         fFtoPrecio =
@@ -71,26 +71,16 @@ class GrvImageArticulosAdapter: BaseAdapter {
 
         // Tenemos en cuenta si hemos indicado alguna cadena de búsqueda.
         if (fSoloOftas) {
-            fArticulosGrv.abrirSoloOftas(queTarifa, queCliente, queOrdenacion)
+            fArticulosGrv.abrirSoloOftasParaGrView(queTarifa, queCliente, queOrdenacion)
         } else {
             if (queBuscar == "") {
                 fArticulosGrv.abrirParaGridView(fGrupo, fDepartam, queTarifa, queTrfCajas, queCliente, queOrdenacion)
             } else {
-                if (dondeBuscar.toInt() == 0) fArticulosGrv.abrirBusqEnGrupoParaGridView(
-                    queBuscar,
-                    fGrupo,
-                    fDepartam,
-                    queTarifa,
-                    queTrfCajas,
-                    queCliente,
-                    queOrdenacion
-                ) else fArticulosGrv.abrirBusqParaGridView(
-                    queBuscar,
-                    queTarifa,
-                    queTrfCajas,
-                    queCliente,
-                    queOrdenacion
-                )
+                if (dondeBuscar.toInt() == 0)
+                    fArticulosGrv.abrirBusqEnGrupoParaGridView(queBuscar, fGrupo, fDepartam, queTarifa,
+                        queTrfCajas, queCliente, queOrdenacion)
+                else
+                    fArticulosGrv.abrirBusqParaGridView(queBuscar, queTarifa, queTrfCajas, queCliente, queOrdenacion)
             }
         }
         // Obtenemos los items para el gridView.
@@ -98,10 +88,9 @@ class GrvImageArticulosAdapter: BaseAdapter {
     }
 
     // Tendremos tres constructores para la clase, dependiendo de si usamos grupos, clasificadores/catalogos o histórico.
-    constructor(
-        activity: Activity, fClasificador: Int, queBuscar: String, dondeBuscar: Short,
-        queOrdenacion: Short, fSoloOftas: Boolean, queTarifa: Short, vendiendo: Boolean
-    ) {
+    constructor(activity: Activity, fClasificador: Int, queBuscar: String, dondeBuscar: Short,
+        queOrdenacion: Short, fSoloOftas: Boolean, queTarifa: Short, vendiendo: Boolean) {
+
         this.activity = activity
         carpetaImagenes = dimeRutaImagenes(activity)
         fVendiendo = vendiendo
@@ -110,7 +99,7 @@ class GrvImageArticulosAdapter: BaseAdapter {
         fArticulosGrv = Comunicador.fArticulosGrv
         if (fVendiendo)
             fDocumento = Comunicador.fDocumento
-        //Configuracion fConfiguracion = Comunicador.fConfiguracion;
+
         fFtoDecCant = fConfiguracion.formatoDecCantidad()
         fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresaActual)
         fFtoPrecio =
@@ -123,31 +112,15 @@ class GrvImageArticulosAdapter: BaseAdapter {
 
         // Tenemos en cuenta si hemos indicado alguna cadena de búsqueda.
         if (fSoloOftas) {
-            fArticulosGrv.abrirSoloOftas(queTarifa, queCliente, queOrdenacion)
+            fArticulosGrv.abrirSoloOftasParaGrView(queTarifa, queCliente, queOrdenacion)
         } else {
             if (queBuscar == "") {
-                fArticulosGrv.abrirClasifParaGrView(
-                    fClasificador,
-                    queTarifa,
-                    queTrfCajas,
-                    queCliente,
-                    queOrdenacion
-                )
+                fArticulosGrv.abrirClasifParaGrView(fClasificador, queTarifa, queTrfCajas,
+                    queCliente, queOrdenacion)
             } else {
                 if (dondeBuscar.toInt() == 0) fArticulosGrv.abrirBusqEnClasifParaGridView(
-                    queBuscar,
-                    fClasificador,
-                    queTarifa,
-                    queTrfCajas,
-                    queCliente,
-                    queOrdenacion
-                ) else fArticulosGrv.abrirBusqParaGridView(
-                    queBuscar,
-                    queTarifa,
-                    queTrfCajas,
-                    queCliente,
-                    queOrdenacion
-                )
+                    queBuscar, fClasificador, queTarifa, queTrfCajas, queCliente, queOrdenacion)
+                else fArticulosGrv.abrirBusqParaGridView(queBuscar, queTarifa, queTrfCajas, queCliente, queOrdenacion)
             }
         }
         // Obtenemos los items para el gridView.
@@ -155,10 +128,9 @@ class GrvImageArticulosAdapter: BaseAdapter {
     }
 
     // Constructor para cargar el histórico.
-    constructor(
-        activity: Activity, queBuscar: String, dondeBuscar: Short, queOrdenacion: Short,
-        fSoloOftas: Boolean, queTarifa: Short, vendiendo: Boolean
-    ) {
+    constructor(activity: Activity, queBuscar: String, dondeBuscar: Short, queOrdenacion: Short,
+        fSoloOftas: Boolean, queTarifa: Short, vendiendo: Boolean) {
+
         this.activity = activity
         carpetaImagenes = dimeRutaImagenes(activity)
         fVendiendo = vendiendo
@@ -166,7 +138,7 @@ class GrvImageArticulosAdapter: BaseAdapter {
         inflater = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         fArticulosGrv = Comunicador.fArticulosGrv
         fDocumento = Comunicador.fDocumento
-        //Configuracion fConfiguracion = Comunicador.fConfiguracion;
+
         fFtoDecCant = fConfiguracion.formatoDecCantidad()
         fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresaActual)
         fFtoPrecio =
@@ -178,24 +150,16 @@ class GrvImageArticulosAdapter: BaseAdapter {
         val queCliente: Int = if (fVendiendo) fDocumento.fCliente else 0
 
         // Tenemos en cuenta si hemos indicado alguna cadena de búsqueda.
-        if (fSoloOftas) fArticulosGrv.abrirSoloOftas(queTarifa, queCliente, queOrdenacion) else {
+        if (fSoloOftas) fArticulosGrv.abrirSoloOftasParaGrView(queTarifa, queCliente, queOrdenacion)
+        else {
             fEnHistorico = true
             if (queBuscar == "") {
-                //fEnHistorico = true;
-                fArticulosGrv.abrirHistorico(fDocumento.fCliente, queOrdenacion, queTarifa)
+                fArticulosGrv.abrirHistoricoParaGrView(fDocumento.fCliente, queOrdenacion, queTarifa)
             } else {
-                if (dondeBuscar.toInt() == 0) fArticulosGrv.abrirBusqEnHcoParaGridView(
-                    queBuscar,
-                    queCliente,
-                    queOrdenacion,
-                    queTarifa
-                ) else fArticulosGrv.abrirBusqParaGridView(
-                    queBuscar,
-                    queTarifa,
-                    queTrfCajas,
-                    queCliente,
-                    queOrdenacion
-                )
+                if (dondeBuscar.toInt() == 0)
+                    fArticulosGrv.abrirBusqEnHcoParaGridView(queBuscar, queCliente, queOrdenacion, queTarifa)
+                else
+                    fArticulosGrv.abrirBusqParaGridView(queBuscar, queTarifa, queTrfCajas, queCliente, queOrdenacion)
             }
         }
         // Obtenemos los items para el gridView.
@@ -209,19 +173,20 @@ class GrvImageArticulosAdapter: BaseAdapter {
         var queCantidad = "0.0"
         var queCajas = "0.0"
         val usarOfertas = fConfiguracion.usarOfertas()
-        val ofertas: List<Int> = ofertasDao?.getAllOftas(fEmpresaActual, fTarifa.toShort()) ?: emptyList()
-        if (fArticulosGrv.cursor.moveToFirst()) {
-            fArticulosGrv.cursor.moveToPosition(-1)
-            while (fArticulosGrv.cursor.moveToNext()) {
+        val ofertas: List<Int> = ofertasDao?.getAllOftas(fEmpresaActual, fTarifa) ?: emptyList()
+
+        if (fArticulosGrv.lArtGridView.count() > 0) {
+
+            for (datoGridV in fArticulosGrv.lArtGridView) {
                 var quePrOfta = "0.0"
                 var queDtoOfta = "0.0"
                 var queArticulo = 0
                 if (usarOfertas) {
                     // Vemos si el artículo está en el array de ofertas, en cuyo caso buscaremos el precio y dto. de la oferta
-                    val queIndice = ofertas.indexOf(fArticulosGrv.fArticulo)
+                    val queIndice = ofertas.indexOf(datoGridV.articuloId)
                     if (queIndice > -1) {
                         queArticulo = ofertas[queIndice]
-                        val (_, _, _, precio, dto) = ofertasDao?.getOftaArt(queArticulo, fEmpresaActual, fTarifa.toShort()) ?: OfertasEnt()
+                        val (_, _, _, precio, dto) = ofertasDao?.getOftaArt(queArticulo, fEmpresaActual, fTarifa) ?: OfertasEnt()
                         quePrOfta = precio
                         queDtoOfta = dto
                     }
@@ -230,56 +195,26 @@ class GrvImageArticulosAdapter: BaseAdapter {
                 // Buscamos en las líneas del documento si el artículo tiene alguna cantidad vendida. Idem con las cajas.
                 if (fVendiendo) {
                     // fDocumento.dimeCantCajasArticulo devolverá un array de string con dos elementos: uno para la cantidad y otro para las cajas.
-                    val sCantCajas = fDocumento.dimeCantCajasArticulo(fArticulosGrv.fArticulo)
+                    val sCantCajas = fDocumento.dimeCantCajasArticulo(datoGridV.articuloId)
                     queCantidad = sCantCajas[0]
                     queCajas = sCantCajas[1]
                 }
 
                 // Si vamos a cargar el histórico, los campos que necesitamos son otros.
                 if (fEnHistorico) {
-                    items.add(
-                        ItemArticulo(
-                            fArticulosGrv.fArticulo,
-                            fArticulosGrv.fCodigo,
-                            fArticulosGrv.fDescripcion,
-                            fArticulosGrv.getUCajaAsString(),
-                            fArticulosGrv.getCantHco(),
-                            fArticulosGrv.getCajasHco(),
-                            fArticulosGrv.getPrecioHco(),
-                            fArticulosGrv.getDtoHco(),
-                            fArticulosGrv.getPrecio(),
-                            fArticulosGrv.getDto(),
-                            quePrOfta,
-                            queDtoOfta,
-                            fArticulosGrv.fPorcIva,
-                            hayOferta,
-                            queCantidad,
-                            queCajas,
-                            fArticulosGrv.getFechaHco()
-                        )
+                    items.add(ItemArticulo(datoGridV.articuloId, datoGridV.codigo, datoGridV.descripcion,
+                            datoGridV.uCaja, datoGridV.cantHco.toDouble(), datoGridV.cajasHco.toDouble(),
+                            datoGridV.precioHco, datoGridV.dtoHco, datoGridV.precio, datoGridV.dto, quePrOfta,
+                            queDtoOfta, fArticulosGrv.fPorcIva, hayOferta, queCantidad, queCajas, datoGridV.fecha)
                     )
                 } else {
                     if (!fSoloOftas || queArticulo > 0) {
                         items.add(
-                            ItemArticulo(
-                                fArticulosGrv.fArticulo,
-                                fArticulosGrv.fCodigo,
-                                fArticulosGrv.fDescripcion,
-                                fArticulosGrv.getUCajaAsString(),
-                                fArticulosGrv.getPrecio(),
-                                fArticulosGrv.getDto(),
-                                fArticulosGrv.getPrCajas(),
-                                fArticulosGrv.getDtoCajas(),
-                                quePrOfta,
-                                queDtoOfta,
-                                fArticulosGrv.fPorcIva,
-                                hayOferta,
-                                queCantidad,
-                                queCajas,
-                                fArticulosGrv.getExistencias(),
-                                fArticulosGrv.getTieneHco(),
-                                ""
-                            )
+                            ItemArticulo(datoGridV.articuloId, datoGridV.codigo, datoGridV.descripcion,
+                                datoGridV.uCaja, datoGridV.precio, datoGridV.dto, datoGridV.prCajas,
+                                datoGridV.dtoCajas, quePrOfta, queDtoOfta, datoGridV.porcIva.toDouble(),
+                                hayOferta, queCantidad, queCajas, (datoGridV.ent.toDouble() - datoGridV.sal.toDouble()),
+                                (datoGridV.historicoId > 0), "")
                         )
                     }
                 }
@@ -423,7 +358,8 @@ class GrvImageArticulosAdapter: BaseAdapter {
             val dImpIva = dPrecio * item.porcIva / 100
             dPrecio += dImpIva
         }
-        tvPrecio?.text = String.format(Locale.getDefault(), fFtoPrecio, dPrecio) + " €"
+        val queTexto = String.format(Locale.getDefault(), fFtoPrecio, dPrecio) + " €"
+        tvPrecio?.text = queTexto
 
         // % Dto. en hco.
         item.dtoHco
@@ -494,7 +430,8 @@ class GrvImageArticulosAdapter: BaseAdapter {
                 val dImpIva = dPrecio * item.porcIva / 100
                 dPrecio += dImpIva
             }
-            tvPrecio?.text = String.format(Locale.getDefault(), fFtoPrecio, dPrecio) + " €"
+            val queTexto = String.format(Locale.getDefault(), fFtoPrecio, dPrecio) + " €"
+            tvPrecio?.text = queTexto
         }
 
         // % Dto.
@@ -516,7 +453,8 @@ class GrvImageArticulosAdapter: BaseAdapter {
         val sUdsCaja = item.undCaja.replace(',', '.')
         val dUdsCaja = sUdsCaja.toDouble()
         if (dUdsCaja != 0.0) {
-            tvUdsCaja?.text = item.undCaja + " Ud"
+            val queTexto = item.undCaja + " Ud"
+            tvUdsCaja?.text = queTexto
             tvUdsCaja?.alpha = 1f
             if (fVendiendo) {
                 // Activamos los controles para vender por cajas.
@@ -548,7 +486,8 @@ class GrvImageArticulosAdapter: BaseAdapter {
             dPrecio += dImpIva
         }
         if (dPrecio != 0.0) {
-            tvPrCajas?.text = String.format(Locale.getDefault(), fFtoPrecio, dPrecio) + " €"
+            val queTexto = String.format(Locale.getDefault(), fFtoPrecio, dPrecio) + " €"
+            tvPrCajas?.text = queTexto
             tvPrCajas?.alpha = 1f
         } else {
             tvPrCajas?.text = "--"

@@ -17,6 +17,7 @@ class GetDireccClte: Activity() {
     private lateinit var adapterDir: SimpleCursorAdapter
     private lateinit var fClientes: ClientesClase
     private lateinit var fConfiguracion: Configuracion
+
     private var fCliente = 0
     private var fIdDireccion = 0
     private var fAlmDireccion = ""
@@ -44,11 +45,9 @@ class GetDireccClte: Activity() {
     private fun inicializarControles() {
         val tvNombreClte = findViewById<TextView>(R.id.tvDirNombreClte)
         tvNombreClte.text = fClientes.fNombre
-        //TextView tvNComClte = findViewById(R.id.tvDirNComClte);
-        //tvNComClte.setText(fClientes.getNComercial());
         val tvDirecc = findViewById<TextView>(R.id.tvDirDirecc)
-        val queTexto = fClientes.getDireccion() + "-" + fClientes.getCodPostal() + "-" +
-                fClientes.getPoblacion() + "-" + fClientes.getProvincia()
+        val queTexto = fClientes.fDireccion + "-" + fClientes.fCodPostal + "-" +
+                fClientes.fPoblacion + "-" + fClientes.fProvincia
         tvDirecc.text = queTexto
     }
 

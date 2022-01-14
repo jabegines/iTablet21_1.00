@@ -79,7 +79,7 @@ class FichaArticuloActivity: AppCompatActivity() {
             if (file.exists()) imgArticulo.setImageURI(Uri.parse(path)) else imgArticulo.setImageBitmap(null)
             tvDescrArt.text = fArticulos.fDescripcion
             tvCodArt.text = fArticulos.fCodigo
-            edtCBarras.setText(fArticulos.getCBarras())
+            edtCBarras.setText(fArticulos.fCodBarras)
             if (fConfiguracion.verProveedores()) {
                 val provDao: ProveedoresDao? = MyDatabase.getInstance(this)?.proveedoresDao()
                 val queNombreProv = provDao?.getNombreProv(fArticulos.fCodProv.toInt()) ?: ""
@@ -90,8 +90,8 @@ class FichaArticuloActivity: AppCompatActivity() {
             val textoTipoIva = String.format("%.2f", fArticulos.fPorcIva) + '%'
             edtTipoIva.setText(textoTipoIva)
             edtCosto.setText((String.format(fConfiguracion.formatoDecPrecioBase(), fArticulos.getCosto()) + " €"))
-            edtPeso.setText(String.format(fDecCantidad, fArticulos.getPeso()))
-            edtUndCj.setText(String.format(fDecCantidad, fArticulos.getUCaja()))
+            edtPeso.setText(String.format(fDecCantidad, fArticulos.fPeso))
+            edtUndCj.setText(String.format(fDecCantidad, fArticulos.fUCaja))
             edtExistencias.setText(String.format(fDecCantidad, fArticulos.getExistencias()))
             edtCajas.setText(String.format(fDecCantidad, fArticulos.getCajas()))
             mostrarTarifas()

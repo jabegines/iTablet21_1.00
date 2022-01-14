@@ -14,6 +14,8 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.*
 import es.albainformatica.albamobileandroid.*
+import es.albainformatica.albamobileandroid.dao.HcoCompSemMesDao
+import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.ventas.ListaPreciosEspeciales
 import es.albainformatica.albamobileandroid.ventas.AcumuladosMes
 import java.lang.Exception
@@ -41,6 +43,9 @@ class CargarHco: Activity() {
     private var fAlertarArtNoVend = false
     private var fDiasAlerta = 0
     private var fEmpresaActual = 0
+
+    // Request de las actividades a las que llamamos.
+    private  val fRequestEditarHco = 1
 
 
     public override fun onCreate(savedInstance: Bundle?) {
@@ -161,7 +166,7 @@ class CargarHco: Activity() {
                     val i = Intent(this@CargarHco, EditarHcoActivity::class.java)
                     i.putExtra("linea", fLinea)
                     i.putExtra("empresa", fEmpresaActual)
-                    startActivityForResult(i, REQUEST_EDITARHCO)
+                    startActivityForResult(i, fRequestEditarHco)
                 }
         }
     }
@@ -280,7 +285,7 @@ class CargarHco: Activity() {
             val i = Intent(this, EditarHcoActivity::class.java)
             i.putExtra("linea", fLinea)
             i.putExtra("empresa", fEmpresaActual)
-            startActivityForResult(i, REQUEST_EDITARHCO)
+            startActivityForResult(i, fRequestEditarHco)
         } else MsjAlerta(this).alerta(getString(R.string.msj_NoRegSelecc))
     }
 
@@ -300,7 +305,7 @@ class CargarHco: Activity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         // Actividad editar historico.
-        if (requestCode == REQUEST_EDITARHCO) {
+        if (requestCode == fRequestEditarHco) {
             if (resultCode == RESULT_OK) fHistorico.abrirConBusqueda(fCliente, queBuscar)
             refrescarLineas()
         }
@@ -355,19 +360,12 @@ class CargarHco: Activity() {
         return super.onKeyDown(keyCode, event)
     }
 
+
     private fun usarHcoCompSemMeses(): Boolean {
-        // TODO
-        /*
-            bd.writableDatabase.use { dbAlba ->
-                dbAlba.rawQuery("SELECT _id FROM hcoCompSemMes", null).use { cursor -> return cursor.moveToFirst() }
-            }
+        val hcoCompSemMesDao: HcoCompSemMesDao? = MyDatabase.getInstance(this)?.hcoCompSemMesDao()
 
-        */
-        return false
+        val queId = hcoCompSemMesDao?.existe() ?: 0
+        return (queId > 0)
     }
 
-    companion object {
-        // Request de las actividades a las que llamamos.
-        private const val REQUEST_EDITARHCO = 1
-    }
 }

@@ -12,6 +12,14 @@ import es.albainformatica.albamobileandroid.entity.TempCltesEnt
 @Dao
 interface ClientesDao {
 
+    @Query("UPDATE Clientes SET pendiente = :queImporte WHERE clienteId = :queCliente")
+    fun actualizarPendiente(queCliente: Int, queImporte: String)
+
+
+    @Query("SELECT pendiente FROM Clientes WHERE clienteId = :queCliente")
+    fun getPendienteClte(queCliente: Int): String
+
+
     @Query("SELECT clienteId, codigo, nombre, nombreComercial, flag FROM Clientes " +
             " ORDER BY CASE " +
             " WHEN :queOrdenacion = 0 THEN nombre " +
@@ -28,6 +36,7 @@ interface ClientesDao {
             " ELSE codigo " +
             " END")
     fun getCltesBusq(queBuscar: String, queOrdenacion: Short): List<ListaClientes>
+
 
     @Query("SELECT * FROM Clientes WHERE estado = 'N' OR estado = 'M'")
     fun abrirParaEnviar(): List<ClientesEnt>

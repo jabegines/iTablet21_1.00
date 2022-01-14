@@ -220,12 +220,13 @@
       android:layout_marginTop="10dp"
       android:background="#ffb1b1b1" />
 
-    <ListView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:id="@+id/lvDtosC"
-      android:listSelector="@drawable/list_selector"
-      />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvDtosC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+    />
+
+
   </LinearLayout>
 
 </LinearLayout>

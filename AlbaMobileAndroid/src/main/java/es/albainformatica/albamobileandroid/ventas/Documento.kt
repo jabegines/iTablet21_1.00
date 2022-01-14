@@ -1,24 +1,18 @@
 package es.albainformatica.albamobileandroid.ventas
 
-import android.annotation.SuppressLint
 import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.getInstance
-import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.maestros.ClientesClase
 import es.albainformatica.albamobileandroid.maestros.ArticulosClase
 import es.albainformatica.albamobileandroid.cobros.FormasPagoClase
 import es.albainformatica.albamobileandroid.maestros.LotesClase
 import android.content.ContentValues
 import android.content.Context
-import android.database.Cursor
 import android.text.SpannableStringBuilder
 import android.text.style.RelativeSizeSpan
 import android.widget.Toast
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.dao.*
-import es.albainformatica.albamobileandroid.entity.CatalogoLineasEnt
-import es.albainformatica.albamobileandroid.entity.LineasEnt
-import es.albainformatica.albamobileandroid.entity.OfertasEnt
-import es.albainformatica.albamobileandroid.entity.TiposIncEnt
+import es.albainformatica.albamobileandroid.entity.*
 import java.lang.NumberFormatException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -31,19 +25,24 @@ class Documento(private val fContexto: Context) {
     private val lineasDao: LineasDao? = getInstance(fContexto)?.lineasDao()
     private val ofertasDao: OfertasDao? = getInstance(fContexto)?.ofertasDao()
     private val ofVolRangosDao: OftVolRangosDao? = getInstance(fContexto)?.oftVolRangosDao()
+    private val oftCantRangosDao: OftCantRangosDao? = getInstance(fContexto)?.oftCantRangosDao()
     private val ratingProvDao: RatingProvDao? = getInstance(fContexto)?.ratingProvDao()
+    private val ratingArtDao: RatingArtDao? = getInstance(fContexto)?.ratingArtDao()
     private val dtosLineasDao: DtosLineasDao? = getInstance(fContexto)?.dtosLineasDao()
     private val tmpHcoDao: TmpHcoDao? = getInstance(fContexto)?.tmpHcoDao()
     private val tarifasDao: TarifasDao? = getInstance(fContexto)?.tarifasDao()
     private val trfFormatosDao: TrfFormatosDao? = getInstance(fContexto)?.trfFormatosDao()
+    private val seriesDao: SeriesDao? = getInstance(fContexto)?.seriesDao()
+    private val pendienteDao: PendienteDao? = getInstance(fContexto)?.pendienteDao()
+    private val empresasDao: EmpresasDao? = getInstance(fContexto)?.empresasDao()
+    private val artHabitDao: ArtHabitualesDao? = getInstance(fContexto)?.artHabitualesDao()
+    private val formatosDao: FormatosDao? = getInstance(fContexto)?.formatosDao()
+    private val articulosDao: ArticulosDao? = getInstance(fContexto)?.articulosDao()
+    private val historicoDao: HistoricoDao? = getInstance(fContexto)?.historicoDao()
 
     lateinit var lLineas: List<DatosLinVtas>
+    lateinit var cabActualEnt: CabecerasEnt
 
-    private val myBD: MyDatabase? = getInstance(fContexto)
-
-    // TODO: quitar cLineas
-    lateinit var cLineas: Cursor
-    lateinit var cDocumentos: Cursor
     private val fDtosCascada: DtosCascada = DtosCascada(fContexto)
     var fClientes: ClientesClase = ClientesClase(fContexto)
     private val fArticulos: ArticulosClase = ArticulosClase(fContexto)
@@ -67,7 +66,7 @@ class Documento(private val fContexto: Context) {
     var fPago: String = ""
     var fHayArtHabituales: Boolean = false
     var fTipoDoc: Short = 0
-    var fTipoPedido = 0
+    var fTipoPedido: Short = 0
     var fAplOftEnPed: Boolean = false
     var fCliente = 0
     var fFecha: String = ""
@@ -147,81 +146,46 @@ class Documento(private val fContexto: Context) {
     }
 
     fun borrarOftVolumen(recBases: Boolean) {
-        // TODO
-        //dbAlba.delete("lineas", "cabeceraId = $fIdDoc AND flag3 = 128", null)
-        //if (recBases) recalcularBases()
+        lineasDao?.borrarOftVolumen(fIdDoc)
+
+        if (recBases) recalcularBases()
     }
 
-    @SuppressLint("Range")
     fun comprobarLineasHuerfanas() {
-        // TODO
-        /*
         // Buscaremos aquellas líneas que estén sin cabecera
-        val cLineasSinCabecera = dbAlba.rawQuery(
-            "SELECT A.* FROM lineas A" +
-                    " LEFT JOIN cabeceras B ON B._id = A.cabeceraId" +
-                    " WHERE B.numero IS NULL", null
-        )
-        if (cLineasSinCabecera.moveToFirst()) {
-            cLineasSinCabecera.moveToFirst()
-            while (!cLineasSinCabecera.isAfterLast) {
-                val fLinea = cLineasSinCabecera.getInt(cLineasSinCabecera.getColumnIndex("_id"))
-                val queArticulo =
-                    cLineasSinCabecera.getInt(cLineasSinCabecera.getColumnIndex("articulo"))
-                val queCajas = cLineasSinCabecera.getString(cLineasSinCabecera.getColumnIndex("cajas")).toDouble()
-                val queCantidad = cLineasSinCabecera.getString(cLineasSinCabecera.getColumnIndex("cantidad")).toDouble()
-                var queLote = ""
-                if (cLineasSinCabecera.getString(cLineasSinCabecera.getColumnIndex("lote")) != null)
-                    queLote = cLineasSinCabecera.getString(cLineasSinCabecera.getColumnIndex("lote"))
+        val lLinSinCab = lineasDao?.getLineasHuerfanas() ?: emptyList<DatosLinVtas>().toMutableList()
 
-                dbAlba.delete("lineas", "_id=$fLinea", null)
+        if (lLinSinCab.isNotEmpty()) {
+            for (linea in lLinSinCab) {
+                val fLinea = linea.lineaId
+                val queArticulo = linea.articuloId
+                val queCajas = linea.cajas.toDouble()
+                val queCantidad = linea.cantidad.toDouble()
+                val queLote = linea.lote
+
+                lineasDao?.borrarLinea(fLinea)
 
                 // Borramos las posibles líneas de descuentos en cascada
-                dbAlba.delete("desctoslineas", "linea=$fLinea", null)
+                dtosLineasDao?.borrarLinea(fLinea)
+
                 // Actualizamos el stock del artículo
                 fControlarStock = fConfiguracion.controlarStock()
                 fUsarTrazabilidad = fConfiguracion.usarTrazabilidad()
-                fTipoDoc = cLineasSinCabecera.getString(cLineasSinCabecera.getColumnIndex("tipodoc")).toShort()
+                fTipoDoc = linea.tipoDoc
                 if (fControlarStock && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN))
-                    fArticulos.actualizarStock(                    queArticulo,
-                    fEmpresa,
-                    -queCantidad,
-                    -queCajas,
-                    false
-                )
+                    fArticulos.actualizarStock(queArticulo, fEmpresa, -queCantidad, -queCajas, false)
 
                 // Actualizamos el stock del lote.
-                if (fUsarTrazabilidad && queLote != null && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN)) fLotes.actStockLote(
-                    queArticulo,
-                    -queCantidad,
-                    queLote,
-                    fEmpresa
-                )
-                cLineasSinCabecera.moveToNext()
+                if (fUsarTrazabilidad && queLote != "" && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN))
+                    fLotes.actStockLote(queArticulo, -queCantidad, queLote, fEmpresa)
             }
 
             // Borro el histórico, por si he estado indicando cantidades en modo catálogo.
-            dbAlba.delete("tmphco", "1=1", null)
+            tmpHcoDao?.vaciar()
         }
-        cLineasSinCabecera.close()
-        */
     }
 
-    private fun actualizarIdCabecera() {
-        // TODO
-        /*
-        val values = ContentValues()
-        cLineas.moveToFirst()
-        while (!cLineas.isAfterLast) {
-            val fLinea = cLineas.getInt(cLineas.getColumnIndexOrThrow("_id"))
-            values.put("cabeceraId", fIdDoc)
-            dbAlba.update("lineas", values, "_id=$fLinea", null)
-            cLineas.moveToNext()
-        }
-        */
-    }
 
-    @SuppressLint("Range")
     fun anularDocumento() {
         for (linea in lLineas) {
             borrarLinea(linea, false)
@@ -232,7 +196,6 @@ class Documento(private val fContexto: Context) {
     }
 
 
-    @SuppressLint("Range")
     fun borrarLinea(linea: DatosLinVtas, refrescar: Boolean) {
         fArticulo = linea.articuloId
         fOldCajas = linea.cajas.replace(",", ".").toDouble()
@@ -266,10 +229,6 @@ class Documento(private val fContexto: Context) {
 
 
     fun borrarDocumento(queIdDoc: Int) {
-        // Cargamos el documento para poder tener acceso al cursor de las líneas.
-        // TODO: comprobar si es necesario llamar a cargarDocumento()
-        //cargarDocumento(queIdDoc, false)
-
         // Borramos las líneas.
         anularDocumento()
 
@@ -280,80 +239,52 @@ class Documento(private val fContexto: Context) {
     fun borrarModifDocReparto(queIdDoc: Int) {
         // Borramos las líneas.
         anularDocumento()
+
         // Borramos la cabecera.
-        // TODO
-        //dbAlba.delete("cabeceras", "_id=$queIdDoc", null)
+        cabeceraDao?.borrarDoc(queIdDoc)
     }
 
     fun marcarParaEnviar(queIdDoc: Int) {
-        val values = ContentValues()
-        values.put("estado", "N")
-        // TODO
-        //dbAlba.update("cabeceras", values, "_id=$queIdDoc", null)
+        cabeceraDao?.marcarParaEnviar(queIdDoc)
     }
 
-    fun abrirTodos(queCliente: Int, queEmpresa: Int, queFiltro: Int) {
-        var sCadena: String
-        sCadena = ("SELECT A._id, A.tipodoc, A.alm, A.serie, A.numero, A.ejer, A.fecha,"
-                + " A.cliente, A.total, A.estado, A.facturado, B.nomfi, B.nomco, A.firmado, A.imprimido," +
-                " A.tipoincidencia FROM cabeceras A"
-                + " LEFT OUTER JOIN clientes B ON B.cliente = A.cliente")
-
-        // Vemos si los documentos son de un cliente.
-        sCadena = if (queCliente > 0) {
-            "$sCadena WHERE A.cliente = $queCliente AND A.empresa = $queEmpresa"
-        } else {
-            "$sCadena WHERE A.empresa = $queEmpresa"
-        }
-
+    fun abrirTodos(queCliente: Int, queEmpresa: Int, queFiltro: Int): List<DatosVerDocs> {
         // Vemos si queremos filtrar por estado
+        var sCadFiltro = ""
         if (queFiltro > 0) {
-            sCadena = "$sCadena AND "
             when (queFiltro) {
-                1 -> sCadena = "$sCadena A.estado = 'P'"
-                2 -> sCadena = "$sCadena A.estado = 'N' OR A.estado = 'R'"
-                3 -> sCadena = "$sCadena A.estado = 'X'"
+                1 -> sCadFiltro = " A.estado = 'P'"
+                2 -> sCadFiltro = " (A.estado = 'N' OR A.estado = 'R')"
+                3 -> sCadFiltro = " A.estado = 'X'"
             }
+        } else sCadFiltro = "1=1"
+
+        return if (queCliente > 0) {
+            cabeceraDao?.abrirTodosClte(queCliente, queEmpresa, queFiltro) ?: emptyList<DatosVerDocs>().toMutableList()
+        } else {
+            cabeceraDao?.abrirTodos(queEmpresa, sCadFiltro) ?: emptyList<DatosVerDocs>().toMutableList()
         }
-        sCadena =
-            "$sCadena ORDER BY substr(A.fecha, 7)||substr(A.fecha, 4, 2)||substr(A.fecha, 1, 2) DESC"
-        // TODO
-        //cDocumentos = dbAlba.rawQuery(sCadena, null)
-        //cDocumentos.moveToFirst()
     }
 
-    @SuppressLint("Range")
+
     fun copiarAAlbaran(queIdDoc: Int): Double {
-        val empresasDao = myBD?.empresasDao()
         var queTotal = 0.0
         var haySerieNumero = false
-        // TODO
-        /*
-        cDocumentos = dbAlba.rawQuery("SELECT * FROM cabeceras WHERE _id= $queIdDoc", null)
-        if (cDocumentos.moveToFirst()) {
+
+        val cabEntOrigen = cabeceraDao?.cargarDoc(queIdDoc) ?: CabecerasEnt()
+        if (cabEntOrigen.cabeceraId > 0) {
             fTipoDoc = TIPODOC_ALBARAN
             // Tomamos la serie configurada para la empresa
-            serie = empresasDao?.getSerieEmpresa(cDocumentos.getInt(cDocumentos.getColumnIndex("empresa"))) ?: ""
+            serie = empresasDao?.getSerieEmpresa(cabEntOrigen.empresa.toInt()) ?: ""
             haySerieNumero = setSerieNumero(serie)
             if (haySerieNumero) {
                 // Tomamos el total del documento para devolverlo.
-                queTotal =
-                    cDocumentos.getString(cDocumentos.getColumnIndex("total")).replace(',', '.')
-                        .toDouble()
-                val values = ContentValues()
-                values.put("tipodoc", TIPODOC_ALBARAN)
-                val queViejoId = cDocumentos.getInt(cDocumentos.getColumnIndex("_id"))
-                val queAlmacen = cDocumentos.getString(cDocumentos.getColumnIndex("alm"))
-                val queEjercicio = cDocumentos.getString(cDocumentos.getColumnIndex("ejer"))
-                val queEmpresa = cDocumentos.getInt(cDocumentos.getColumnIndex("empresa"))
-                values.put("alm", queAlmacen)
-                values.put("serie", serie)
-                values.put("numero", numero)
-                values.put("ejer", queEjercicio)
-                values.put("empresa", queEmpresa)
-                // Mantendremos el nuevo documento en la misma hoja de reparto que el original. También le daremos el mismo orden.
-                values.put("hoja", cDocumentos.getInt(cDocumentos.getColumnIndex("hoja")))
-                values.put("orden", cDocumentos.getInt(cDocumentos.getColumnIndex("orden")))
+                queTotal = cabEntOrigen.total.replace(',', '.').toDouble()
+
+                val queViejoId = cabEntOrigen.cabeceraId
+                val queAlmacen = cabEntOrigen.almacen
+                val queEjercicio = cabEntOrigen.ejercicio
+                val queEmpresa = cabEntOrigen.empresa
 
                 // Obtenemos la fecha y hora actuales, que son las que grabaremos en el nuevo albarán.
                 val tim = System.currentTimeMillis()
@@ -362,61 +293,46 @@ class Documento(private val fContexto: Context) {
                 fFEntrega = fFecha
                 val dfHora = SimpleDateFormat("HH:mm", Locale.getDefault())
                 fHora = dfHora.format(tim)
-                values.put("fecha", fFecha)
-                values.put("hora", fHora)
-                values.put("cliente", cDocumentos.getString(cDocumentos.getColumnIndex("cliente")))
-                values.put("apliva", cDocumentos.getString(cDocumentos.getColumnIndex("apliva")))
-                values.put("aplrec", cDocumentos.getString(cDocumentos.getColumnIndex("aplrec")))
-                values.put("bruto", cDocumentos.getString(cDocumentos.getColumnIndex("bruto")))
-                if (cDocumentos.getString(cDocumentos.getColumnIndex("dto")) != null) values.put(
-                    "dto",
-                    cDocumentos.getString(cDocumentos.getColumnIndex("dto")).replace(',', '.')
-                )
-                if (cDocumentos.getString(cDocumentos.getColumnIndex("dto2")) != null) values.put(
-                    "dto2",
-                    cDocumentos.getString(cDocumentos.getColumnIndex("dto2")).replace(',', '.')
-                )
-                if (cDocumentos.getString(cDocumentos.getColumnIndex("dto3")) != null) values.put(
-                    "dto3",
-                    cDocumentos.getString(cDocumentos.getColumnIndex("dto3")).replace(',', '.')
-                )
-                if (cDocumentos.getString(cDocumentos.getColumnIndex("dto4")) != null) values.put(
-                    "dto4",
-                    cDocumentos.getString(cDocumentos.getColumnIndex("dto4")).replace(',', '.')
-                )
-                if (cDocumentos.getString(cDocumentos.getColumnIndex("base")) != null) values.put(
-                    "base",
-                    cDocumentos.getString(cDocumentos.getColumnIndex("base")).replace(',', '.')
-                )
-                if (cDocumentos.getString(cDocumentos.getColumnIndex("iva")) != null) values.put(
-                    "iva",
-                    cDocumentos.getString(cDocumentos.getColumnIndex("iva")).replace(',', '.')
-                )
-                if (cDocumentos.getString(cDocumentos.getColumnIndex("recargo")) != null) values.put(
-                    "recargo",
-                    cDocumentos.getString(cDocumentos.getColumnIndex("recargo")).replace(',', '.')
-                )
-                if (cDocumentos.getString(cDocumentos.getColumnIndex("total")) != null) values.put(
-                    "total",
-                    cDocumentos.getString(cDocumentos.getColumnIndex("total")).replace(',', '.')
-                )
-                values.put("direnv", cDocumentos.getString(cDocumentos.getColumnIndex("direnv")))
+
+                val cabEntAlbaran = CabecerasEnt()
+                cabEntAlbaran.tipoDoc = TIPODOC_ALBARAN
+                cabEntAlbaran.almacen = queAlmacen
+                cabEntAlbaran.serie = serie
+                cabEntAlbaran.numero = numero
+                cabEntAlbaran.ejercicio = queEjercicio
+                cabEntAlbaran.empresa = queEmpresa
+                // Mantendremos el nuevo documento en la misma hoja de reparto que el original. También le daremos el mismo orden.
+                cabEntAlbaran.hojaReparto = cabEntOrigen.hojaReparto
+                cabEntAlbaran.ordenReparto = cabEntOrigen.ordenReparto
+                cabEntAlbaran.fecha = fFecha
+                cabEntAlbaran.hora = fHora
+                cabEntAlbaran.clienteId = cabEntOrigen.clienteId
+                cabEntAlbaran.aplicarIva = cabEntOrigen.aplicarIva
+                cabEntAlbaran.aplicarRe = cabEntOrigen.aplicarRe
+                cabEntAlbaran.bruto = cabEntOrigen.bruto
+                cabEntAlbaran.dto = cabEntOrigen.dto.replace(',', '.')
+                cabEntAlbaran.dto2 = cabEntOrigen.dto2.replace(',', '.')
+                cabEntAlbaran.dto3 = cabEntOrigen.dto3.replace(',', '.')
+                cabEntAlbaran.dto4 = cabEntOrigen.dto4.replace(',', '.')
+                cabEntAlbaran.base = cabEntOrigen.base.replace(',', '.')
+                cabEntAlbaran.iva = cabEntOrigen.iva.replace(',', '.')
+                cabEntAlbaran.recargo = cabEntOrigen.recargo.replace(',', '.')
+                cabEntAlbaran.total = cabEntOrigen.total.replace(',', '.')
+                cabEntAlbaran.dirEnv = cabEntOrigen.dirEnv
                 // Cuando modificamos un albarán de reparto, en el campo ruta pondremos lo que tengamos en 'hoja'
-                values.put(
-                    "ruta",
-                    cDocumentos.getInt(cDocumentos.getColumnIndex("hoja")).toString()
-                )
-                values.put("estado", "N")
-                values.put("flag", 0)
-                values.put("obs1", cDocumentos.getString(cDocumentos.getColumnIndex("obs1")))
-                values.put("obs2", cDocumentos.getString(cDocumentos.getColumnIndex("obs2")))
-                values.put("facturado", "F")
-                fIdDoc = dbAlba.insert("cabeceras", null, values).toInt()
-                cDocumentos.close()
+                cabEntAlbaran.ruta = cabEntOrigen.hojaReparto.toShort()
+                cabEntAlbaran.estado = "N"
+                cabEntAlbaran.flag = 0
+                cabEntAlbaran.observ1 = cabEntOrigen.observ1
+                cabEntAlbaran.observ2 = cabEntOrigen.observ2
+                cabEntAlbaran.facturado = "F"
+
+                fIdDoc = cabeceraDao?.insertar(cabEntAlbaran)?.toInt() ?: -1
+
                 copiarLineasAAlb(queViejoId)
             }
         }
-        */
+
         return if (haySerieNumero) {
             // Una vez copiado, cargamos el albarán.
             cargarDocumento(fIdDoc, false)
@@ -424,160 +340,99 @@ class Documento(private val fContexto: Context) {
         } else -0.00001
     }
 
-    @SuppressLint("Range")
     private fun copiarLineasAAlb(queViejoId: Int) {
-        // TODO
-        /*
-        cLineas = dbAlba.rawQuery(
-            "SELECT A.*, B.iva porciva, C.descr descrfto FROM lineas A"
-                    + " LEFT OUTER JOIN ivas B ON B.codigo = A.codigoiva"
-                    + " LEFT OUTER JOIN formatos C ON C.codigo = A.formato"
-                    + " WHERE A.cabeceraId = " + queViejoId, null
-        )
-        val values = ContentValues()
-        cLineas.moveToFirst()
-        while (!cLineas.isAfterLast) {
-            val viejaLinea = cLineas.getInt(cLineas.getColumnIndex("_id"))
-            values.put("cabeceraId", fIdDoc)
-            values.put("linea", cLineas.getString(cLineas.getColumnIndex("linea")))
-            values.put("articulo", cLineas.getInt(cLineas.getColumnIndex("articulo")))
-            values.put("codigo", cLineas.getString(cLineas.getColumnIndex("codigo")))
-            values.put("descr", cLineas.getString(cLineas.getColumnIndex("descr")))
-            values.put("tarifa", cLineas.getString(cLineas.getColumnIndex("tarifa")))
-            if (cLineas.getString(cLineas.getColumnIndex("precio")) != null) values.put(
-                "precio",
-                cLineas.getString(cLineas.getColumnIndex("precio")).replace(',', '.')
-            )
-            if (cLineas.getString(cLineas.getColumnIndex("precioii")) != null) values.put(
-                "precioii",
-                cLineas.getString(cLineas.getColumnIndex("precioii")).replace(',', '.')
-            )
-            values.put("codigoiva", cLineas.getString(cLineas.getColumnIndex("codigoiva")))
-            if (cLineas.getString(cLineas.getColumnIndex("cajas")) != null) values.put(
-                "cajas",
-                cLineas.getString(cLineas.getColumnIndex("cajas")).replace(',', '.')
-            )
-            if (cLineas.getString(cLineas.getColumnIndex("cantidad")) != null) values.put(
-                "cantidad",
-                cLineas.getString(cLineas.getColumnIndex("cantidad")).replace(',', '.')
-            )
-            if (cLineas.getString(cLineas.getColumnIndex("importe")) != null) values.put(
-                "importe",
-                cLineas.getString(cLineas.getColumnIndex("importe")).replace(',', '.')
-            )
-            if (cLineas.getString(cLineas.getColumnIndex("importeii")) != null) values.put(
-                "importeii",
-                cLineas.getString(cLineas.getColumnIndex("importeii")).replace(',', '.')
-            )
-            if (cLineas.getString(cLineas.getColumnIndex("dto")) != null) values.put(
-                "dto",
-                cLineas.getString(cLineas.getColumnIndex("dto")).replace(',', '.')
-            )
-            if (cLineas.getString(cLineas.getColumnIndex("dtoi")) != null) values.put(
-                "dtoi",
-                cLineas.getString(cLineas.getColumnIndex("dtoi")).replace(',', '.')
-            )
-            if (cLineas.getString(cLineas.getColumnIndex("dtoiii")) != null) values.put(
-                "dtoiii",
-                cLineas.getString(cLineas.getColumnIndex("dtoiii")).replace(',', '.')
-            )
-            if (cLineas.getString(cLineas.getColumnIndex("lote")) != null)
-                values.put("lote", cLineas.getString(cLineas.getColumnIndex("lote")))
-            else
-                values.put("lote", "")
+        val lineasAlb = lineasDao?.abrirLineas(queViejoId) ?: emptyList<DatosLinVtas>().toMutableList()
 
-            if (cLineas.getString(cLineas.getColumnIndex("piezas")) != null)
-                values.put("piezas", cLineas.getString(cLineas.getColumnIndex("piezas")).replace(',', '.')
-            )
-            values.put("flag", cLineas.getString(cLineas.getColumnIndex("flag")))
-            values.put("flag3", cLineas.getString(cLineas.getColumnIndex("flag3")))
-            values.put("flag5", cLineas.getString(cLineas.getColumnIndex("flag5")))
-            if (cLineas.getString(cLineas.getColumnIndex("tasa1")) != null) values.put(
-                "tasa1",
-                cLineas.getString(cLineas.getColumnIndex("tasa1")).replace(',', '.')
-            )
-            if (cLineas.getString(cLineas.getColumnIndex("tasa2")) != null) values.put(
-                "tasa2",
-                cLineas.getString(cLineas.getColumnIndex("tasa2")).replace(',', '.')
-            )
-            values.put("formato", cLineas.getInt(cLineas.getColumnIndex("formato")))
-            values.put("incidencia", cLineas.getInt(cLineas.getColumnIndex("incidencia")))
-            values.put("textolinea", cLineas.getString(cLineas.getColumnIndex("textolinea")))
+        for (lineaOrg in lineasAlb) {
+            val lineaEnt = LineasEnt()
+            val viejaLinea = lineaOrg.lineaId
+
+            lineaEnt.cabeceraId = fIdDoc
+            lineaEnt.articuloId = lineaOrg.articuloId
+            lineaEnt.codArticulo = lineaOrg.codArticulo
+            lineaEnt.descripcion = lineaOrg.descripcion
+            lineaEnt.tarifaId = lineaOrg.tarifaId
+            lineaEnt.precio = lineaOrg.precio.replace(',', '.')
+            lineaEnt.precioII = lineaOrg.precioII.replace(',', '.')
+            lineaEnt.codigoIva = lineaOrg.codigoIva
+            lineaEnt.cajas = lineaOrg.cajas.replace(',', '.')
+            lineaEnt.cantidad = lineaOrg.cantidad.replace(',', '.')
+            lineaEnt.importe = lineaOrg.importe.replace(',', '.')
+            lineaEnt.importeII = lineaOrg.importeII.replace(',', '.')
+            lineaEnt.dto = lineaOrg.dto.replace(',', '.')
+            lineaEnt.dtoImpte = lineaOrg.dtoImpte.replace(',', '.')
+            lineaEnt.dtoImpteII = lineaOrg.dtoImpteII.replace(',', '.')
+            lineaEnt.lote = lineaOrg.lote
+            lineaEnt.piezas = lineaOrg.piezas.replace(',', '.')
+            lineaEnt.flag = lineaOrg.flag
+            lineaEnt.flag3 = lineaOrg.flag3
+            lineaEnt.flag5 = lineaOrg.flag5
+            lineaEnt.tasa1 = lineaOrg.tasa1.replace(',', '.')
+            lineaEnt.tasa2 = lineaOrg.tasa2.replace(',', '.')
+            lineaEnt.formatoId = lineaOrg.formatoId
+            lineaEnt.tipoIncId = lineaOrg.tipoIncId
+            lineaEnt.textoLinea = lineaOrg.textoLinea
             // Estos valores nos servirán para saber si hemos modificado una línea del albarán original y para calcular
             // la diferencia, que es el dato que al final quedará en el nuevo albarán.
-            values.put(
-                "cajasorg",
-                cLineas.getString(cLineas.getColumnIndex("cajas")).replace(',', '.')
-            )
-            values.put(
-                "cantidadorg",
-                cLineas.getString(cLineas.getColumnIndex("cantidad")).replace(',', '.')
-            )
-            if (cLineas.getString(cLineas.getColumnIndex("piezas")) != null) values.put(
-                "piezasorg",
-                cLineas.getString(cLineas.getColumnIndex("piezas")).replace(',', '.')
-            )
-            values.put("modif_nueva", "F")
-            dbAlba.insert("lineas", null, values)
+            lineaEnt.cajasOrg = lineaOrg.cajas.replace(',', '.')
+            lineaEnt.cantidadOrg = lineaOrg.cantidad.replace(',', '.')
+            lineaEnt.piezasOrg = lineaOrg.piezas.replace(',', '.')
+            lineaEnt.modif_nueva = "F"
+
+            lineasDao?.insertar(lineaEnt)
+
             copiarDtosCascAAlbaran(viejaLinea)
-            cLineas.moveToNext()
         }
-        cLineas.close()
-        */
     }
 
-    @SuppressLint("Range")
     private fun copiarDtosCascAAlbaran(viejaLinea: Int) {
-        // TODO
-        /*
-        val values = ContentValues()
-        val cDtosCas = dbAlba.rawQuery("SELECT linea FROM desctoslineas WHERE linea = $viejaLinea", null)
-        cDtosCas.moveToFirst()
-        while (!cDtosCas.isAfterLast) {
-            values.put("linea", cDtosCas.getInt(cDtosCas.getColumnIndex("linea")))
-            values.put("orden", cDtosCas.getInt(cDtosCas.getColumnIndex("orden")))
-            values.put("descuento", cDtosCas.getString(cDtosCas.getColumnIndex("descuento")))
-            values.put("importe", cDtosCas.getString(cDtosCas.getColumnIndex("importe")))
-            values.put("cantidad1", cDtosCas.getString(cDtosCas.getColumnIndex("cantidad1")))
-            values.put("cantidad2", cDtosCas.getString(cDtosCas.getColumnIndex("cantidad2")))
-            values.put("desderating", cDtosCas.getString(cDtosCas.getColumnIndex("desderating")))
-            dbAlba.insert("desctoslineas", null, values)
-            cDtosCas.moveToNext()
+
+        val lDtos = dtosLineasDao?.getAllDtosLinea(viejaLinea) ?: emptyList<DtosLineasEnt>().toMutableList()
+
+        for (dtoOrg in lDtos) {
+            val dtoLineaEnt = DtosLineasEnt()
+            dtoLineaEnt.lineaId = dtoOrg.lineaId
+            dtoLineaEnt.orden = dtoOrg.orden
+            dtoLineaEnt.descuento = dtoOrg.descuento
+            dtoLineaEnt.importe = dtoOrg.importe
+            dtoLineaEnt.cantidad1 = dtoOrg.cantidad1
+            dtoLineaEnt.cantidad2 = dtoOrg.cantidad2
+            dtoLineaEnt.desdeRating = dtoOrg.desdeRating
+
+            dtosLineasDao?.insertar(dtoLineaEnt)
         }
-        cDtosCas.close()
-        */
     }
 
     // Borraremos las líneas que no han sido modificadas ni insertadas.
-    @SuppressLint("Range")
     fun borrarLineasNoModif() {
         val fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresa.toString().toInt())
+
         for (linea in lLineas) {
             val fLinea = linea.lineaId
-            if (cLineas.getString(cLineas.getColumnIndex("modif_nueva")).equals("F", ignoreCase = true)) {
+
+            if (linea.modif_nueva.equals("F", ignoreCase = true)) {
                 borrarLinea(linea, false)
+
             } else {
                 val fAplicarIva = fClientes.fAplIva
-                fPrecio = cLineas.getString(cLineas.getColumnIndex("precio")).toDouble()
-                fPrecioII = cLineas.getString(cLineas.getColumnIndex("precioii")).toDouble()
-                fCodigoIva = cLineas.getString(cLineas.getColumnIndex("codigoiva")).toShort()
-                fDtoLin = cLineas.getString(cLineas.getColumnIndex("dto")).toDouble()
-                fDtoImp = cLineas.getString(cLineas.getColumnIndex("dtoi")).toDouble()
-                fDtoImpII = cLineas.getString(cLineas.getColumnIndex("dtoiii")).toDouble()
-                fTasa1 = cLineas.getString(cLineas.getColumnIndex("tasa1")).toDouble()
-                fTasa2 = cLineas.getString(cLineas.getColumnIndex("tasa2")).toDouble()
+                fPrecio = linea.precio.toDouble()
+                fPrecioII = linea.precioII.toDouble()
+                fCodigoIva = linea.codigoIva
+                fDtoLin = linea.dto.toDouble()
+                fDtoImp = linea.dtoImpte.toDouble()
+                fDtoImpII = linea.dtoImpteII.toDouble()
+                fTasa1 = linea.tasa1.toDouble()
+                fTasa2 = linea.tasa2.toDouble()
                 fOldCajas = 0.0
                 var fOldPiezas = 0.0
                 fOldCantidad = 0.0
-                if (cLineas.getString(cLineas.getColumnIndex("cajasorg")) != null)
-                    fOldCajas = cLineas.getString(cLineas.getColumnIndex("cajasorg")).toDouble()
-                fCajas = cLineas.getString(cLineas.getColumnIndex("cajas")).toDouble()
-                if (cLineas.getString(cLineas.getColumnIndex("piezasorg")) != null)
-                    fOldPiezas = cLineas.getString(cLineas.getColumnIndex("piezasorg")).toDouble()
-                fPiezas = cLineas.getString(cLineas.getColumnIndex("piezas")).toDouble()
-                if (cLineas.getString(cLineas.getColumnIndex("cantidadorg")) != null)
-                    fOldCantidad = cLineas.getString(cLineas.getColumnIndex("cantidadorg")).toDouble()
-                fCantidad = cLineas.getString(cLineas.getColumnIndex("cantidad")).toDouble()
+                if (linea.cajasOrg != "") fOldCajas = linea.cajasOrg.toDouble()
+                fCajas = linea.cajas.toDouble()
+                if (linea.piezasOrg != "") fOldPiezas =  linea.piezasOrg.toDouble()
+                fPiezas = linea.piezas.toDouble()
+                if (linea.cantidadOrg != "") fOldCantidad = linea.cantidadOrg.toDouble()
+                fCantidad = linea.cantidad.toDouble()
+
                 // Recalculamos las cantidades restando las antiguas, de forma que el resultado sea la diferencia.
                 fCajas -= fOldCajas
                 fCantidad -= fOldCantidad
@@ -589,89 +444,66 @@ class Documento(private val fContexto: Context) {
                     calcularImpte(false)
                     calcularImpteII(true)
                 }
+
                 val values = ContentValues()
                 values.put("cajas", fCajas)
                 values.put("piezas", fPiezas)
                 values.put("cantidad", fCantidad)
                 values.put("importe", fImporte)
                 values.put("importeii", fImpteII)
-                // TODO
-                //dbAlba.update("lineas", values, "_id=$fLinea", null)
+
+                lineasDao?.actDatosReparto(fLinea, fCajas.toString(), fPiezas.toString(), fCantidad.toString(),
+                                    fImporte.toString(), fImpteII.toString())
             }
         }
     }
 
-    @SuppressLint("Range")
     fun recalcularBases() {
         fBases.fLista.clear()
         configurarBases()
-        cLineas.moveToFirst()
-        while (!cLineas.isAfterLast) {
-            fImporte = cLineas.getString(cLineas.getColumnIndex("importe")).toDouble()
-            fImpteII = cLineas.getString(cLineas.getColumnIndex("importeii")).toDouble()
-            fCodigoIva = cLineas.getShort(cLineas.getColumnIndex("codigoiva"))
-            if (fBases.fIvaIncluido) fBases.calcularBase(
-                fCodigoIva,
-                fImpteII
-            ) else fBases.calcularBase(fCodigoIva, fImporte)
-            cLineas.moveToNext()
+
+        for (linea in lLineas) {
+            fImporte = linea.importe.toDouble()
+            fImpteII = linea.importeII.toDouble()
+            fCodigoIva = linea.codigoIva
+            if (fBases.fIvaIncluido)
+                fBases.calcularBase(fCodigoIva, fImpteII)
+            else
+                fBases.calcularBase(fCodigoIva, fImporte)
         }
     }
 
-    @SuppressLint("Range")
-    fun cargarDocumento(QueIdDoc: Int, borrarOftVol: Boolean) {
-        // TODO
-        /*
-        cDocumentos = dbAlba.rawQuery("SELECT * FROM cabeceras WHERE _id=$QueIdDoc", null)
-        if (cDocumentos.moveToFirst()) {
+
+    fun cargarDocumento(queIdDoc: Int, borrarOftVol: Boolean) {
+        cabActualEnt = cabeceraDao?.cargarDoc(queIdDoc) ?: CabecerasEnt()
+
+        if (cabActualEnt.cabeceraId > 0) {
             // Establezco el cliente del documento y las propiedades necesarias para cargar las líneas y el pie del documento.
-            fIdDoc = QueIdDoc
-            setCliente(cDocumentos.getInt(cDocumentos.getColumnIndex("cliente")))
-            fTipoDoc = cDocumentos.getString(cDocumentos.getColumnIndex("tipodoc")).toShort()
-            fAlmacen = cDocumentos.getShort(cDocumentos.getColumnIndex("alm"))
-            serie = cDocumentos.getString(cDocumentos.getColumnIndex("serie"))
-            numero = cDocumentos.getInt(cDocumentos.getColumnIndex("numero"))
-            fEjercicio = cDocumentos.getShort(cDocumentos.getColumnIndex("ejer"))
-            fEmpresa = cDocumentos.getShort(cDocumentos.getColumnIndex("empresa"))
-            fFecha = cDocumentos.getString(cDocumentos.getColumnIndex("fecha"))
-            if (cDocumentos.getString(cDocumentos.getColumnIndex("hora")) != null)
-                fHora = cDocumentos.getString(cDocumentos.getColumnIndex("hora"))
-            else
-                fHora = ""
-            fObs1 = cDocumentos.getString(cDocumentos.getColumnIndex("obs1"))
-            fObs2 = cDocumentos.getString(cDocumentos.getColumnIndex("obs2"))
-            fIncidenciaDoc = cDocumentos.getInt(cDocumentos.getColumnIndex("tipoincidencia"))
-            if (cDocumentos.getString(cDocumentos.getColumnIndex("tipoincidencia")) != null)
-                fTextoIncidencia = cDocumentos.getString(cDocumentos.getColumnIndex("textoincidencia"))
-            else
-                fTextoIncidencia = ""
-            if (cDocumentos.getString(cDocumentos.getColumnIndex("fechaentrega")) != null)
-                fFEntrega = cDocumentos.getString(cDocumentos.getColumnIndex("fechaentrega"))
-            else
-                fFEntrega = ""
-            if (cDocumentos.getString(cDocumentos.getColumnIndex("fpago")) != null)
-                fPago = cDocumentos.getString(cDocumentos.getColumnIndex("fpago"))
-            else
-                fPago = ""
+            fIdDoc = queIdDoc
+            setCliente(cabActualEnt.clienteId)
+            fTipoDoc = cabActualEnt.tipoDoc
+            fAlmacen = cabActualEnt.almacen
+            serie = cabActualEnt.serie
+            numero = cabActualEnt.numero
+            fEjercicio = cabActualEnt.ejercicio
+            fEmpresa = cabActualEnt.empresa
+            fFecha = cabActualEnt.fecha
+            fHora = cabActualEnt.hora
+            fObs1 = cabActualEnt.observ1
+            fObs2 = cabActualEnt.observ2
+            fIncidenciaDoc = cabActualEnt.tipoIncidencia
+            fTextoIncidencia = cabActualEnt.textoIncidencia
+            fFEntrega = cabActualEnt.fechaEntrega
+            fPago = cabActualEnt.fPago
 
             // Vemos si tenemos que aplicar las ofertas si el documento es un pedido de Bionat
             if (fTipoDoc == TIPODOC_PEDIDO && fConfiguracion.codigoProducto() == "UY6JK-6KAYw-PO0Py-6OX9B-OJOPY") {
-                fAplOftEnPed = cDocumentos.getInt(cDocumentos.getColumnIndex("hoja")) == 1
+                fAplOftEnPed = (cabActualEnt.hojaReparto == 1)
             }
-            fDtoPie1 = cDocumentos.getString(cDocumentos.getColumnIndex("dto")).replace(',', '.')
-                .toDouble()
-            fDtoPie2 =
-                if (cDocumentos.getString(cDocumentos.getColumnIndex("dto2")) == null) 0.0 else cDocumentos.getString(
-                    cDocumentos.getColumnIndex("dto2")
-                ).replace(',', '.').toDouble()
-            fDtoPie3 =
-                if (cDocumentos.getString(cDocumentos.getColumnIndex("dto3")) == null) 0.0 else cDocumentos.getString(
-                    cDocumentos.getColumnIndex("dto3")
-                ).replace(',', '.').toDouble()
-            fDtoPie4 =
-                if (cDocumentos.getString(cDocumentos.getColumnIndex("dto4")) == null) 0.0 else cDocumentos.getString(
-                    cDocumentos.getColumnIndex("dto4")
-                ).replace(',', '.').toDouble()
+            fDtoPie1 = if (cabActualEnt.dto == "") 0.0 else cabActualEnt.dto.replace(',', '.').toDouble()
+            fDtoPie2 = if (cabActualEnt.dto2 == "") 0.0 else cabActualEnt.dto2.replace(',', '.').toDouble()
+            fDtoPie3 = if (cabActualEnt.dto3 == "") 0.0 else cabActualEnt.dto3.replace(',', '.').toDouble()
+            fDtoPie4 = if (cabActualEnt.dto4 == "") 0.0 else cabActualEnt.dto4.replace(',', '.').toDouble()
 
             // Abrimos el cursor con las líneas del documento.
             abrirLineas()
@@ -690,11 +522,10 @@ class Documento(private val fContexto: Context) {
             fBases.cargarDesdeDoc(fIdDoc)
             fTotalAnterior = fBases.totalConImptos
         }
-        */
     }
 
+
     fun esContado(): Boolean {
-        val pendienteDao = myBD?.pendienteDao()
         val generaCobro =
             pendienteDao?.esContado(fEmpresa, fAlmacen, serie, numero, fEjercicio) ?: "F"
         return generaCobro == "T"
@@ -741,7 +572,6 @@ class Documento(private val fContexto: Context) {
     }
 
     fun setSerieNumero(queSerie: String): Boolean {
-        val seriesDao = myBD?.seriesDao()
         serie = queSerie
         return if (serie == "") {
             false
@@ -765,7 +595,6 @@ class Documento(private val fContexto: Context) {
     }
 
     fun setExento() {
-        val seriesDao = myBD?.seriesDao()
         val fClteExento = !fClientes.fAplIva
         val queFlag = seriesDao?.getFlag(serie, fEjercicio.toInt()) ?: 0
         fSerieExenta = queFlag and FLAGSERIE_INV_SUJ_PASIVO > 0
@@ -804,28 +633,16 @@ class Documento(private val fContexto: Context) {
     }
 
     private fun serieNumeroValidos(): Boolean {
-        // TODO
-        /*
-        val cDocs = dbAlba.rawQuery(
-            "SELECT numero FROM cabeceras" +
-                    " WHERE tipodoc = " + fTipoDoc + " AND alm = " + fAlmacen +
-                    " AND serie = '" + serie + "' AND numero = " + numero + " AND ejer = " + fEjercicio,
-            null
-        )
-        val resultado = !cDocs.moveToFirst()
-        cDocs.close()
-        return resultado
-        */
-        return true
+        val queNumero = cabeceraDao?.getSerieNum(fTipoDoc, fAlmacen, serie, numero, fEjercicio) ?:  0
+        return (queNumero == 0)
     }
 
     private fun actualizarNumero() {
-        val seriesDao = myBD?.seriesDao()
         when (fTipoDoc) {
-            2.toShort() -> seriesDao?.setNumAlbaran(serie, fEjercicio.toInt(), numero + 1)
-            3.toShort() -> seriesDao?.setNumPedido(serie, fEjercicio.toInt(), numero + 1)
-            6.toShort() -> seriesDao?.setNumPresupuesto(serie, fEjercicio.toInt(), numero + 1)
-            else -> seriesDao?.setNumFactura(serie, fEjercicio.toInt(), numero + 1)
+            2.toShort() -> seriesDao?.setNumAlbaran(serie, fEjercicio, numero + 1)
+            3.toShort() -> seriesDao?.setNumPedido(serie, fEjercicio, numero + 1)
+            6.toShort() -> seriesDao?.setNumPresupuesto(serie, fEjercicio, numero + 1)
+            else -> seriesDao?.setNumFactura(serie, fEjercicio, numero + 1)
         }
     }
 
@@ -868,201 +685,155 @@ class Documento(private val fContexto: Context) {
         fLineaEsEnlace = false
     }
 
-    @SuppressLint("Range")
     fun cargarLinea(fLinea: Int): Boolean {
         var fEncontrada = false
         val sPorcIva: String
-        cLineas.moveToFirst()
-        while (!cLineas.isAfterLast) {
-            if (fLinea == cLineas.getInt(cLineas.getColumnIndexOrThrow("_id"))) {
+        var datosLinVta = DatosLinVtas()
+
+        for (linea in lLineas) {
+            if (fLinea == linea.lineaId) {
                 fEncontrada = true
+                datosLinVta = linea
                 break
             }
-            cLineas.moveToNext()
         }
+
         return if (fEncontrada) {
-            sPorcIva =
-                if (cLineas.getString(cLineas.getColumnIndex("porciva")) == null) "0.0" else cLineas.getString(
-                    cLineas.getColumnIndex("porciva")
-                ).replace(',', '.')
-            fArticulo = cLineas.getInt(cLineas.getColumnIndex("articulo"))
-            fCodArt = cLineas.getString(cLineas.getColumnIndex("codigo"))
-            fDescr = cLineas.getString(cLineas.getColumnIndex("descr"))
-            fTarifaLin = cLineas.getString(cLineas.getColumnIndex("tarifa")).toShort()
-            //fAlmacen = cLineas.getShort(cLineas.getColumnIndex("alm"));
+            sPorcIva = if (datosLinVta.porcIva != "") "0.0"
+            else datosLinVta.porcIva.replace(',', '.')
+            fArticulo = datosLinVta.articuloId
+            fCodArt = datosLinVta.codArticulo
+            fDescr = datosLinVta.descripcion
+            fTarifaLin = datosLinVta.tarifaId
             fPorcIva = sPorcIva.toDouble()
-            fPrecio = cLineas.getString(cLineas.getColumnIndex("precio")).toDouble()
-            if (cLineas.getString(cLineas.getColumnIndex("precioii")) != null) fPrecioII =
-                cLineas.getString(
-                    cLineas.getColumnIndex("precioii")
-                ).toDouble() else calculaPrecioII()
-            fPrecioTarifa =
-                if (cLineas.getString(cLineas.getColumnIndex("precioTarifa")) != null) cLineas.getString(
-                    cLineas.getColumnIndex("precioTarifa")
-                ).toDouble() else fPrecio
-            fCodigoIva = cLineas.getShort(cLineas.getColumnIndex("codigoiva"))
-            fCajas = cLineas.getString(cLineas.getColumnIndex("cajas")).toDouble()
-            fPiezas = cLineas.getString(cLineas.getColumnIndex("piezas")).toDouble()
+            fPrecio = datosLinVta.precio.toDouble()
+            if (datosLinVta.precioII != "") fPrecioII = datosLinVta.precioII.toDouble() else calculaPrecioII()
+            fPrecioTarifa = if (datosLinVta.precioTarifa != "") datosLinVta.precioTarifa.toDouble() else fPrecio
+            fCodigoIva = datosLinVta.codigoIva
+            fCajas = datosLinVta.cajas.toDouble()
+            fPiezas = datosLinVta.piezas.toDouble()
             fOldCajas = fCajas
-            fCantidad = cLineas.getString(cLineas.getColumnIndex("cantidad")).toDouble()
+            fCantidad = datosLinVta.cantidad.toDouble()
             fOldCantidad = fCantidad
-            fImporte = cLineas.getString(cLineas.getColumnIndex("importe")).toDouble()
-            fDtoLin = cLineas.getString(cLineas.getColumnIndex("dto")).toDouble()
-            fDtoLinTarifa =
-                if (cLineas.getString(cLineas.getColumnIndex("dtoTarifa")) != null) cLineas.getString(
-                    cLineas.getColumnIndex("dtoTarifa")
-                ).toDouble() else fDtoLin
-            fDtoImp =
-                if (cLineas.getString(cLineas.getColumnIndex("dtoi")) != null) cLineas.getString(
-                    cLineas.getColumnIndex("dtoi")
-                ).toDouble() else 0.0
-            fDtoImpII =
-                0.0 // Por ahora lo dejamos así, tiene que tener algún valor porque lo usamos en algunas funciones.
+            fImporte = datosLinVta.importe.toDouble()
+            fDtoLin = datosLinVta.dto.toDouble()
+            fDtoLinTarifa = if (datosLinVta.dtoTarifa != "") datosLinVta.dtoTarifa.toDouble() else fDtoLin
+            fDtoImp =  if (datosLinVta.dtoImpte != "") datosLinVta.dtoImpte.toDouble() else 0.0
+            fDtoImpII = 0.0 // Por ahora lo dejamos así, tiene que tener algún valor porque lo usamos en algunas funciones.
             // Vemos si la línea es sin cargo.
-            val queFlag = cLineas.getInt(cLineas.getColumnIndex("flag"))
+            val queFlag = datosLinVta.flag
             fArtEnOferta = queFlag and FLAGLINEAVENTA_ARTICULO_EN_OFERTA > 0
             fArtSinCargo = queFlag and FLAGLINEAVENTA_SIN_CARGO > 0
             fPrecioRating = queFlag and FLAGLINEAVENTA_PRECIO_RATING > 0
             fHayCambPrecio = queFlag and FLAGLINEAVENTA_CAMBIAR_PRECIO > 0
-            val queFlag3 = cLineas.getInt(cLineas.getColumnIndex("flag3"))
+            val queFlag3 = datosLinVta.flag3
             fLineaPorPiezas = queFlag3 and FLAG3LINEAVENTA_PRECIO_POR_PIEZAS > 0
-            fCodIncidencia = cLineas.getInt(cLineas.getColumnIndex("incidencia"))
-            fFormatoLin = cLineas.getString(cLineas.getColumnIndex("formato")).toShort()
-            if (cLineas.getString(cLineas.getColumnIndex("textolinea")) != null)
-                fTextoLinea = cLineas.getString(cLineas.getColumnIndex("textolinea"))
-            else
-                fTextoLinea = ""
-            fFlag5 = cLineas.getInt(cLineas.getColumnIndex("flag5"))
-            if (cLineas.getString(cLineas.getColumnIndexOrThrow("almacenPedido")) != null)
-                fAlmacPedido = cLineas.getString(cLineas.getColumnIndexOrThrow("almacenPedido"))
-            else
-                fAlmacPedido = ""
+            fCodIncidencia = datosLinVta.tipoIncId
+            fFormatoLin = datosLinVta.formatoId
+            fTextoLinea = datosLinVta.textoLinea
+            fFlag5 = datosLinVta.flag5
+            fAlmacPedido = datosLinVta.almacenPedido
 
             // Vemos si la línea tiene descuentos en cascada.
-            // TODO
-            //val cDtosCas = dbAlba.rawQuery("SELECT linea FROM desctoslineas WHERE linea = $fLinea", null)
-            //fLineaConDtCasc = cDtosCas.moveToFirst()
-            //cDtosCas.close()
+            val queLinea = dtosLineasDao?.getLinea(fLinea)?: 0
+            fLineaConDtCasc = (queLinea > 0)
 
-            if (cLineas.getString(cLineas.getColumnIndex("lote")) != null)
-                fLote = cLineas.getString(cLineas.getColumnIndex("lote"))
-            else
-                fLote = ""
-            if (fLote == null) fLote = ""
+            fLote = datosLinVta.lote
             fOldLote = fLote
-            fTasa1 =
-                if (cLineas.getString(cLineas.getColumnIndex("tasa1")) != null) cLineas.getString(
-                    cLineas.getColumnIndex("tasa1")
-                ).toDouble() else 0.0
-            fTasa2 =
-                if (cLineas.getString(cLineas.getColumnIndex("tasa2")) != null) cLineas.getString(
-                    cLineas.getColumnIndex("tasa2")
-                ).toDouble() else 0.0
+            fTasa1 = if (datosLinVta.tasa1 != "") datosLinVta.tasa1.toDouble() else 0.0
+            fTasa2 = if (datosLinVta.tasa2 != "") datosLinVta.tasa2.toDouble() else 0.0
+
             true
         } else false
     }
 
-    @SuppressLint("Range")
     fun grabarHistorico() {
-        // TODO
-        /*
         val fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresa.toString().toInt())
-        dbAlba.rawQuery("SELECT * FROM tmphco", null).use { cTmpHco ->
-            cTmpHco.moveToFirst()
-            while (!cTmpHco.isAfterLast) {
 
-                // Comprobamos que alguna de las cantidades sea distinta de cero.
-                if (cTmpHco.getString(cTmpHco.getColumnIndex("cajas")).toDouble() != 0.0 ||
-                    cTmpHco.getString(cTmpHco.getColumnIndex("cantidad")).toDouble() != 0.0 ||
-                    cTmpHco.getString(cTmpHco.getColumnIndex("piezas")).toDouble() != 0.0
-                ) {
-                    inicializarLinea()
-                    fArticulo = cTmpHco.getInt(cTmpHco.getColumnIndex("articulo"))
-                    fCodArt = cTmpHco.getString(cTmpHco.getColumnIndex("codigo"))
-                    fDescr = cTmpHco.getString(cTmpHco.getColumnIndex("descr"))
-                    fTarifaLin = fTarifaDoc
-                    fPrecio = cTmpHco.getString(cTmpHco.getColumnIndex("precio")).toDouble()
-                    fPrecioII = cTmpHco.getString(cTmpHco.getColumnIndex("precioii")).toDouble()
-                    fCodigoIva = cTmpHco.getString(cTmpHco.getColumnIndex("codigoiva")).toShort()
-                    fCajas = cTmpHco.getString(cTmpHco.getColumnIndex("cajas")).toDouble()
-                    fCantidad = cTmpHco.getString(cTmpHco.getColumnIndex("cantidad")).toDouble()
-                    fPiezas = cTmpHco.getString(cTmpHco.getColumnIndex("piezas")).toDouble()
-                    fDtoLin = cTmpHco.getString(cTmpHco.getColumnIndex("dto")).toDouble()
-                    fDtoImp = cTmpHco.getString(cTmpHco.getColumnIndex("dtoi")).toDouble()
-                    fDtoImpII = cTmpHco.getString(cTmpHco.getColumnIndex("dtoiii")).toDouble()
-                    fTasa1 = cTmpHco.getString(cTmpHco.getColumnIndex("tasa1")).toDouble()
-                    fTasa2 = cTmpHco.getString(cTmpHco.getColumnIndex("tasa2")).toDouble()
-                    fFormatoLin = cTmpHco.getString(cTmpHco.getColumnIndex("formato")).toByte()
-                    if (cTmpHco.getString(cTmpHco.getColumnIndex("textolinea")) != null)
-                        fTextoLinea = cTmpHco.getString(cTmpHco.getColumnIndex("textolinea"))
-                    else
-                        fTextoLinea = ""
-                    if (cTmpHco.getString(cTmpHco.getColumnIndex("lote")) != null)
-                        fLote = cTmpHco.getString(cTmpHco.getColumnIndex("lote"))
-                    else
-                        fLote = ""
-                    // Por ahora entenderemos que el precio y el dto. que vienen del hco. van a ser el precio y dto. de tarifa,
-                    // por si luego modificamos la línea
-                    fPrecioTarifa = fPrecio
-                    fDtoLinTarifa = fDtoLin
-                    if (cTmpHco.getString(cTmpHco.getColumnIndex("almacenPedido")) != null)
-                        fAlmacPedido = cTmpHco.getString(cTmpHco.getColumnIndex("almacenPedido"))
-                    else
-                        fAlmacPedido = ""
-                    fCodIncidencia = cTmpHco.getInt(cTmpHco.getColumnIndex("incidencia"))
-                    // Tenemos que calcular fLineaPorPiezas antes de llamar a calcularImpte(), ya que fLineaPorPiezas interviene en esta función
-                    val queFlag3 = cTmpHco.getInt(cTmpHco.getColumnIndex("flag3"))
-                    fLineaPorPiezas = queFlag3 and FLAG3LINEAVENTA_PRECIO_POR_PIEZAS > 0
+        val lineasHco = tmpHcoDao?.getAllLineas() ?: emptyList<TmpHcoEnt>().toMutableList()
+        for (linHco in lineasHco) {
+            // Comprobamos que alguna de las cantidades sea distinta de cero.
+            if (linHco.cajas.toDouble() != 0.0 || linHco.cantidad.toDouble() != 0.0 || linHco.piezas.toDouble() != 0.0) {
+                inicializarLinea()
+                fArticulo = linHco.articuloId
+                fCodArt = linHco.codigo
+                fDescr = linHco.descripcion
+                fTarifaLin = fTarifaDoc
+                fPrecio = linHco.precio.toDouble()
+                fPrecioII = linHco.precioII.toDouble()
+                fCodigoIva = linHco.codigoIva
+                fCajas = linHco.cajas.toDouble()
+                fCantidad = linHco.cantidad.toDouble()
+                fPiezas = linHco.piezas.toDouble()
+                fDtoLin = linHco.dto.toDouble()
+                fDtoImp = linHco.dtoImpte.toDouble()
+                fDtoImpII = linHco.dtoImpteII.toDouble()
+                fTasa1 = linHco.tasa1.toDouble()
+                fTasa2 = linHco.tasa2.toDouble()
+                fFormatoLin = linHco.formatoId
+                fTextoLinea = linHco.textoLinea
+                fLote = linHco.lote
+                // Por ahora entenderemos que el precio y el dto. que vienen del hco. van a ser el precio y dto. de tarifa,
+                // por si luego modificamos la línea
+                fPrecioTarifa = fPrecio
+                fDtoLinTarifa = fDtoLin
 
-                    // Calculamos los importes.
-                    if (fIvaIncluido && fAplicarIva) {
-                        calcularImpteII(false)
-                        calcularImpte(true)
-                    } else {
-                        calcularImpte(false)
-                        calcularImpteII(true)
-                    }
-                    // Si tenemos descuento por importe lo añadimos como descuento en cascada
-                    if (fDtoImp != 0.0) {
-                        anyadirDtoCascada()
-                        fDtoImp = 0.0
-                        fDtoImpII = 0.0
-                    }
-                    // Mantenemos los flags que traigamos del histórico.
-                    val queFlag = cTmpHco.getInt(cTmpHco.getColumnIndex("flag"))
-                    fArtEnOferta = queFlag and FLAGLINEAVENTA_ARTICULO_EN_OFERTA > 0
-                    fArtSinCargo = queFlag and FLAGLINEAVENTA_SIN_CARGO > 0
-                    fPrecioRating = queFlag and FLAGLINEAVENTA_PRECIO_RATING > 0
-                    fHayCambPrecio = queFlag and FLAGLINEAVENTA_CAMBIAR_PRECIO > 0
-                    fFlag5 = cTmpHco.getInt(cTmpHco.getColumnIndex("flag5"))
-                    insertarLinea()
+                fAlmacPedido = linHco.almacenPedido.toString()
+                fCodIncidencia = linHco.incidenciaId
+                // Tenemos que calcular fLineaPorPiezas antes de llamar a calcularImpte(), ya que fLineaPorPiezas interviene en esta función
+                val queFlag3 = linHco.flag3
+                fLineaPorPiezas = queFlag3 and FLAG3LINEAVENTA_PRECIO_POR_PIEZAS > 0
+
+                // Calculamos los importes.
+                if (fIvaIncluido && fAplicarIva) {
+                    calcularImpteII(false)
+                    calcularImpte(true)
+                } else {
+                    calcularImpte(false)
+                    calcularImpteII(true)
                 }
-                cTmpHco.moveToNext()
+                // Si tenemos descuento por importe lo añadimos como descuento en cascada
+                if (fDtoImp != 0.0) {
+                    anyadirDtoCascada()
+                    fDtoImp = 0.0
+                    fDtoImpII = 0.0
+                }
+                // Mantenemos los flags que traigamos del histórico.
+                val queFlag = linHco.flag
+                fArtEnOferta = queFlag and FLAGLINEAVENTA_ARTICULO_EN_OFERTA > 0
+                fArtSinCargo = queFlag and FLAGLINEAVENTA_SIN_CARGO > 0
+                fPrecioRating = queFlag and FLAGLINEAVENTA_PRECIO_RATING > 0
+                fHayCambPrecio = queFlag and FLAGLINEAVENTA_CAMBIAR_PRECIO > 0
+                fFlag5 = linHco.flag5
+
+                insertarLinea()
             }
-            // Borro el histórico.
-            dbAlba.delete("tmphco", "1=1", null)
         }
+        // Borro el histórico.
+        tmpHcoDao?.vaciar()
+
         refrescarLineas()
-        */
     }
 
     private fun anyadirDtoCascada() {
-        val values = ContentValues()
-        values.put("descuento", 0.0)
-        values.put("importe", fDtoImp)
-        values.put("cantidad1", 0.0)
-        values.put("cantidad2", 0.0)
-        values.put("linea", -1)
-        values.put("orden", 1)
-        values.put("desderating", "T")
-        insertarDtoCasc(values)
+
+        val dtoLineaEnt = DtosLineasEnt()
+        dtoLineaEnt.lineaId = -1
+        dtoLineaEnt.orden = 1
+        dtoLineaEnt.descuento = "0.0"
+        dtoLineaEnt.importe = fDtoImp.toString()
+        dtoLineaEnt.cantidad1 = "0.0"
+        dtoLineaEnt.cantidad2 = "0.0"
+        dtoLineaEnt.desdeRating = "T"
+
+        insertarDtoCasc(dtoLineaEnt)
+
         fDtosCascada.abrir(-1)
         // Configuramos el objeto de los dtos. en cascada
         fDtosCascada.fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresa.toString().toInt())
         fDtosCascada.fAplicarIva = fClientes.fAplIva
         fDtosCascada.fPorcIva = fPorcIva
         fDtosCascada.fDecPrBase = fConfiguracion.decimalesPrecioBase()
-        fDtosCascada.fExentoIva = !fAplicarIva
         fDtoLin = fDtosCascada.calcularDtoEquiv(fPrecio, fDecPrBase).toDouble()
         fLineaConDtCasc = true
     }
@@ -1145,101 +916,102 @@ class Documento(private val fContexto: Context) {
 
     // Vemos si el artículo tiene texto habitual
     fun textoArtHabitual(): String {
-        // Vemos si el artículo tiene texto habitual
-        val sQuery = ("SELECT texto FROM arthabituales WHERE articulo = " + fArticulo
-                + " AND cliente = " + fCliente + " AND (formato = " + fFormatoLin + " OR formato = 0)")
-
-        // TODO
-        /*
-            dbAlba.rawQuery(sQuery, null).use { cTxtArtHabit ->
-                return if (cTxtArtHabit.moveToFirst()) {
-                    cTxtArtHabit.getString(cTxtArtHabit.getColumnIndex("texto"))
-                } else ""
-            }
-            */
-        return ""
+        return artHabitDao?.getTexto(fArticulo, fCliente, fFormatoLin) ?: ""
     }
 
 
-    @SuppressLint("Range")
     fun getDescrFormato(queCodigo: Int): String {
-        // TODO
-        /*
-        if (fFormatoLin.toInt() != 0) {
-            dbAlba.rawQuery("SELECT descr FROM formatos WHERE codigo = $queCodigo", null)
-                .use { cDescrFto ->
-                    return if (cDescrFto.moveToFirst()) cDescrFto.getString(
-                        cDescrFto.getColumnIndex("descr")) else ""
-                }
-        } else return ""
-        */
-        return ""
+
+        return if (fFormatoLin.toInt() != 0) {
+            return formatosDao?.getDescripcion(queCodigo) ?: ""
+        } else ""
     }
 
     private fun asignarLineaADtos(fIdLinea: Int) {
         dtosLineasDao?.asignarLinea(fIdLinea)
     }
 
-    fun insertarDtoCasc(values: ContentValues?) {
-        // TODO
-        //dbAlba.insert("desctoslineas", null, values)
+
+    fun insertarDtoCasc(dtoLineaEnt: DtosLineasEnt) {
+        dtosLineasDao?.insertar(dtoLineaEnt)
     }
 
-    fun editarDtoCasc(values: ContentValues?, fLineaDto: Int) {
-        // TODO
-        //dbAlba.update("desctoslineas", values, "_id=$fLineaDto", null)
+    fun editarDtoCasc(dtoId: Int, dtoLineaEnt: DtosLineasEnt) {
+        dtosLineasDao?.actualizar(dtoId, dtoLineaEnt.descuento, dtoLineaEnt.importe, dtoLineaEnt.cantidad1, dtoLineaEnt.cantidad2)
     }
 
     fun borrarDtosCasc(fIdLinea: Long) {
-        //  TODO
-        //dbAlba.delete("desctoslineas", "linea=$fIdLinea", null)
+        dtosLineasDao?.borrarLinea(fIdLinea.toInt())
     }
 
-    @SuppressLint("Range")
     fun editarLinea(fLinea: Int) {
-        val fOldImpte = cLineas.getString(cLineas.getColumnIndex("importe")).toDouble()
+        val datosLinVta = lineasDao?.getLinea(fLinea) ?: DatosLinVtas()
+
+        val fOldImpte = datosLinVta.importe.toDouble()
         var fOldImpteII: Double
-        if (cLineas.getString(cLineas.getColumnIndex("importeii")) != null) fOldImpteII =
-            cLineas.getString(
-                cLineas.getColumnIndex("importeii")
-            ).toDouble() else {
-            if (!fAplicarIva) fOldImpteII = fOldImpte else {
-                fOldImpteII = fOldImpte + fOldImpte * fPorcIva / 100
+        if (datosLinVta.importeII != "")
+            fOldImpteII = datosLinVta.importeII.toDouble()
+        else {
+            if (!fAplicarIva) fOldImpteII = fOldImpte
+            else {
+                fOldImpteII = fOldImpte + ((fOldImpte * fPorcIva) / 100)
                 fOldImpteII = Redondear(fOldImpteII, fDecImpII)
             }
         }
-        val values = ContentValues()
-        values.put("precio", fPrecio)
-        values.put("precioii", fPrecioII)
-        values.put("cajas", fCajas)
-        values.put("piezas", fPiezas)
-        values.put("cantidad", fCantidad)
-        values.put("importe", fImporte)
-        values.put("importeii", fImpteII)
-        values.put("dto", fDtoLin)
-        values.put("dtoi", fDtoImp)
-        values.put("dtoiii", fDtoImpII)
-        values.put("lote", fLote)
-        values.put("tasa1", fTasa1)
-        values.put("tasa2", fTasa2)
-        values.put("textolinea", fTextoLinea)
-        values.put("flag5", fFlag5)
-        values.put("almacenPedido", fAlmacPedido)
-        values.put("modif_nueva", "T")
+
+        val lineaEnt = LineasEnt()
+        lineaEnt.lineaId = fLinea
+        lineaEnt.cabeceraId = datosLinVta.cabeceraId
+        lineaEnt.articuloId = datosLinVta.articuloId
+        lineaEnt.codArticulo = datosLinVta.codArticulo
+        lineaEnt.descripcion = datosLinVta.descripcion
+        lineaEnt.tarifaId = datosLinVta.tarifaId
+        lineaEnt.codigoIva = datosLinVta.codigoIva
+        lineaEnt.cajasOrg = datosLinVta.cajasOrg
+        lineaEnt.cantidadOrg = datosLinVta.cantidadOrg
+        lineaEnt.piezasOrg = datosLinVta.piezasOrg
+        lineaEnt.formatoId = datosLinVta.formatoId
+        lineaEnt.precioTarifa = datosLinVta.precioTarifa
+        lineaEnt.dtoTarifa = datosLinVta.dtoTarifa
+        lineaEnt.ofertaId = datosLinVta.ofertaId
+        lineaEnt.dtoOftVol = datosLinVta.dtoOftVol
+        lineaEnt.esEnlace = datosLinVta.esEnlace
+
+        lineaEnt.precio = fPrecio.toString()
+        lineaEnt.precioII = fPrecioII.toString()
+        lineaEnt.cajas = fCajas.toString()
+        lineaEnt.piezas = fPiezas.toString()
+        lineaEnt.cantidad = fCantidad.toString()
+        lineaEnt.importe = fImporte.toString()
+        lineaEnt.importeII = fImpteII.toString()
+        lineaEnt.dto = fDtoLin.toString()
+        lineaEnt.dtoImpte = fDtoImp.toString()
+        lineaEnt.dtoImpteII = fDtoImpII.toString()
+        lineaEnt.lote = fLote
+        lineaEnt.tasa1 = fTasa1.toString()
+        lineaEnt.tasa2 = fTasa2.toString()
+        lineaEnt.textoLinea = fTextoLinea
+        lineaEnt.flag5 = fFlag5
+        lineaEnt.almacenPedido = fAlmacPedido
+        lineaEnt.modif_nueva = "T"
+
         var queFlag = 0
         // Si la línea no tiene cargo guardamos el flag y el código de incidencia.
         if (fArtSinCargo) {
             queFlag = queFlag or FLAGLINEAVENTA_SIN_CARGO
-            values.put("incidencia", fCodIncidencia)
+            lineaEnt.tipoIncId = fCodIncidencia
         }
+        else lineaEnt.tipoIncId = datosLinVta.tipoIncId
+
         if (fPrecioRating) queFlag = queFlag or FLAGLINEAVENTA_PRECIO_RATING
         if (fHayCambPrecio) queFlag = queFlag or FLAGLINEAVENTA_CAMBIAR_PRECIO
-        if (fArtEnOferta && !fPrecioRating && !fHayCambPrecio) queFlag =
-            queFlag or FLAGLINEAVENTA_ARTICULO_EN_OFERTA
+        if (fArtEnOferta && !fPrecioRating && !fHayCambPrecio)
+            queFlag = queFlag or FLAGLINEAVENTA_ARTICULO_EN_OFERTA
         // Si el artículo está en oferta pero vamos a aplicar el precio por rating lo marcamos como posible oferta,
         // siempre que no hayamos cambiado el precio
-        if (fArtEnOferta && fPrecioRating && !fHayCambPrecio) queFlag =
-            queFlag or FLAGLINEAVENTA_POSIBLE_OFERTA
+        if (fArtEnOferta && fPrecioRating && !fHayCambPrecio)
+            queFlag = queFlag or FLAGLINEAVENTA_POSIBLE_OFERTA
+
         var queFlag3 = 0
         if (fLineaPorPiezas) {
             queFlag3 = queFlag3 or FLAG3LINEAVENTA_PRECIO_POR_PIEZAS
@@ -1247,125 +1019,124 @@ class Documento(private val fContexto: Context) {
             queFlag = queFlag or FLAGLINEAVENTA_CAMBIAR_TARIFA_PRECIO
             queFlag = queFlag or FLAGLINEAVENTA_CAMBIAR_DESCRIPCION
         }
-        values.put("flag", queFlag)
-        values.put("flag3", queFlag3)
-        // TODO
-        //dbAlba.update("lineas", values, "_id=$fLinea", null)
+        lineaEnt.flag = queFlag
+        lineaEnt.flag3 = queFlag3
+
+        lineasDao?.actualizar(lineaEnt)
+
         // Actualizamos el stock del artículo
-        if (fControlarStock && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN)) fArticulos.actualizarStock(
-            fArticulo,
-            fEmpresa,
-            fCantidad - fOldCantidad,
-            fCajas - fOldCajas,
-            false
-        )
+        if (fControlarStock && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN))
+            fArticulos.actualizarStock(fArticulo, fEmpresa, fCantidad - fOldCantidad, fCajas - fOldCajas,false)
 
         // Actualizamos el stock del lote.
-        if (fUsarTrazabilidad && fLote != null && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN)) fLotes.actStockLote(
-            fArticulo,
-            fCantidad,
-            fLote,
-            fEmpresa
-        )
-        if (fUsarTrazabilidad && fOldLote != null && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN)) fLotes.actStockLote(
-            fArticulo,
-            -fOldCantidad,
-            fOldLote,
-            fEmpresa
-        )
-        if (fBases.fIvaIncluido) fBases.calcularBase(
-            fCodigoIva,
-            -fOldImpteII
-        ) else fBases.calcularBase(fCodigoIva, -fOldImpte)
-        if (fBases.fIvaIncluido) fBases.calcularBase(
-            fCodigoIva,
-            fImpteII
-        ) else fBases.calcularBase(fCodigoIva, fImporte)
+        if (fUsarTrazabilidad && fLote != "" && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN))
+            fLotes.actStockLote(fArticulo, fCantidad, fLote, fEmpresa)
+
+        if (fUsarTrazabilidad && fOldLote != "" && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN))
+            fLotes.actStockLote(fArticulo, -fOldCantidad, fOldLote, fEmpresa)
+
+        if (fBases.fIvaIncluido) fBases.calcularBase(fCodigoIva, -fOldImpteII)
+        else fBases.calcularBase(fCodigoIva, -fOldImpte)
+
+        if (fBases.fIvaIncluido) fBases.calcularBase(fCodigoIva, fImpteII)
+        else fBases.calcularBase(fCodigoIva, fImporte)
+
         refrescarLineas()
     }
 
-    fun terminarDoc(DocNuevo: Boolean, queEstado: String) {
-        val values = ContentValues()
-        if (DocNuevo) {
-            values.put("tipodoc", fTipoDoc)
-            values.put("tipoPedido", fTipoPedido)
+    fun terminarDoc(docNuevo: Boolean, queEstado: String) {
+        val cabeceraEnt: CabecerasEnt
+
+        if (docNuevo) {
+            cabeceraEnt = CabecerasEnt()
+
+            cabeceraEnt.tipoDoc = fTipoDoc
+            cabeceraEnt.tipoPedido = fTipoPedido
             // Por ahora el campo Facturado irá a falso.
-            values.put("facturado", "F")
-            values.put("alm", fAlmacen)
-            values.put("serie", serie)
-            values.put("numero", numero)
-            values.put("ejer", fEjercicio)
-            values.put("empresa", fEmpresa)
-            values.put("fecha", fFecha)
-            values.put("hora", fHora)
-            values.put("cliente", fCliente)
-            values.put("ruta", fClientes.getRuta())
+            cabeceraEnt.facturado = "F"
+            cabeceraEnt.almacen = fAlmacen
+            cabeceraEnt.serie = serie
+            cabeceraEnt.numero = numero
+            cabeceraEnt.ejercicio = fEjercicio
+            cabeceraEnt.empresa = fEmpresa
+            cabeceraEnt.fecha = fFecha
+            cabeceraEnt.hora = fHora
+            cabeceraEnt.clienteId = fCliente
+            cabeceraEnt.ruta = fClientes.fRuta
+        } else {
+            cabeceraEnt = cabActualEnt
         }
-        values.put("fechaentrega", fFEntrega)
-        values.put("apliva", logicoACadena(fAplicarIva))
-        values.put("aplrec", logicoACadena(fAplicarRe))
-        values.put("dto", fDtoPie1)
-        values.put("dto2", fDtoPie2)
-        values.put("dto3", fDtoPie3)
-        values.put("dto4", fDtoPie4)
-        values.put("fpago", fPago)
-        values.put("bruto", fBases.totalBruto)
-        values.put("base", fBases.totalBases)
-        values.put("iva", fBases.totalIva)
-        values.put("recargo", fBases.totalRe)
-        values.put("total", fBases.totalConImptos)
-        if (queEstado == "") values.put("estado", "N") else values.put("estado", queEstado)
+        cabeceraEnt.fechaEntrega = fFEntrega
+        cabeceraEnt.aplicarIva = logicoACadena(fAplicarIva)
+        cabeceraEnt.aplicarRe = logicoACadena(fAplicarRe)
+        cabeceraEnt.dto = fDtoPie1.toString()
+        cabeceraEnt.dto2 = fDtoPie2.toString()
+        cabeceraEnt.dto3 = fDtoPie3.toString()
+        cabeceraEnt.dto4 = fDtoPie4.toString()
+        cabeceraEnt.fPago = fPago
+        cabeceraEnt.bruto = fBases.totalBruto.toString()
+        cabeceraEnt.base = fBases.totalBases.toString()
+        cabeceraEnt.iva = fBases.totalIva.toString()
+        cabeceraEnt.recargo = fBases.totalRe.toString()
+        cabeceraEnt.total = fBases.totalConImptos.toString()
+        if (queEstado == "") cabeceraEnt.estado = "N"
+        else cabeceraEnt.estado = queEstado
 
         // Por ahora el flag "AplicarIvaCliente" no se usa, ya que no viene en la configuración.
-        if (fConfiguracion.ivaIncluido(fEmpresa.toString().toInt())) values.put(
-            "flag",
-            FLAGCABECERAVENTA_PRECIOS_IVA_INCLUIDO
-        ) else values.put("flag", 0)
-        values.put("obs1", fObs1)
-        values.put("obs2", fObs2)
-        values.put("tipoincidencia", fIncidenciaDoc)
-        values.put("textoincidencia", fTextoIncidencia)
+        if (fConfiguracion.ivaIncluido(fEmpresa.toInt()))
+            cabeceraEnt.flag = FLAGCABECERAVENTA_PRECIOS_IVA_INCLUIDO
+        else
+            cabeceraEnt.flag = 0
+
+        cabeceraEnt.observ1 = fObs1
+        cabeceraEnt.observ2 = fObs2
+        cabeceraEnt.tipoIncidencia = fIncidenciaDoc
+        cabeceraEnt.textoIncidencia = fTextoIncidencia
         // Dirección para el pedido
-        values.put("almDireccion", fAlmDireccion)
-        values.put("ordenDireccion", fOrdenDireccion)
+        cabeceraEnt.almDireccion = fAlmDireccion
+        cabeceraEnt.ordenDireccion = fOrdenDireccion
 
         // Si el documento es un pedido de Bionat grabamos si hemos aplicado las ofertas o no. Para ello aprovechamos
         // el campo 'Hoja', ya que Bionat no lo utiliza
-        if (DocNuevo && fTipoDoc == TIPODOC_PEDIDO && fConfiguracion.codigoProducto() == "UY6JK-6KAYw-PO0Py-6OX9B-OJOPY") {
-            if (fAplOftEnPed) values.put("hoja", 1) else values.put("hoja", 0)
+        if (docNuevo && fTipoDoc == TIPODOC_PEDIDO && fConfiguracion.codigoProducto() == "UY6JK-6KAYw-PO0Py-6OX9B-OJOPY") {
+            if (fAplOftEnPed)
+                cabeceraEnt.hojaReparto = 1
+            else
+                cabeceraEnt.hojaReparto = 0
         }
-        if (DocNuevo) {
-            // TODO
-            //fIdDoc = dbAlba.insert("cabeceras", null, values).toInt()
+        if (docNuevo) {
+            fIdDoc = cabeceraDao?.insertar(cabeceraEnt)?.toInt() ?: -1
 
             // En las líneas del nuevo documento hemos ido guardando cabeceraId a -1 y ahora lo actualizamos
-            actualizarIdCabecera()
+            lineasDao?.actualizarCabId(fIdDoc)
 
             // Actualizamos el contador.
             actualizarNumero()
+
             // Si estamos haciendo un pedido actualizaremos el pendiente del cliente.
             if (fTipoDoc == TIPODOC_PEDIDO) actualizarPendiente(true)
+
         } else {
-            // TODO
-            //dbAlba.update("cabeceras", values, "_id=$fIdDoc", null)
+            cabeceraDao?.actualizar(cabeceraEnt)
+
             // Si estamos haciendo un pedido actualizaremos el pendiente del cliente.
             if (fTipoDoc == TIPODOC_PEDIDO) actualizarPendiente(false)
         }
     }
 
+
     private fun actualizarPendiente(docNuevo: Boolean) {
         val fTotalDoc = fBases.totalConImptos
-        if (docNuevo) fClientes.actualizarPendiente(
-            fCliente,
-            fTotalDoc
-        ) else fClientes.actualizarPendiente(fCliente, fTotalDoc - fTotalAnterior)
+        if (docNuevo)
+            fClientes.actualizarPendiente(fCliente, fTotalDoc)
+        else
+            fClientes.actualizarPendiente(fCliente, fTotalDoc - fTotalAnterior)
     }
 
     fun calcularDtosPie() {
         fBases.calcularDtosPie(fDtoPie1, fDtoPie2, fDtoPie3, fDtoPie4)
     }
 
-    @SuppressLint("Range")
     fun verOftVolumen() {
         val lOftVol = ArrayList<ListOftVol>()
         var queArticulo: Int
@@ -1385,16 +1156,15 @@ class Documento(private val fContexto: Context) {
                 queTarifaLin = linea.tarifaId
 
                 // Buscamos si el artículo tiene oferta por volumen e insertamos en la lista.
-                val lista: List<ListOftVol> =
-                    ofertasDao?.getOftVolArt(queArticulo, fEmpresa, queTarifaLin, fechaEnJulian(fFecha)) ?: emptyList()
+                val lista: List<ListOftVol> = ofertasDao?.getOftVolArt(queArticulo, fEmpresa, queTarifaLin,
+                    fechaEnJulian(fFecha)) ?: emptyList()
 
                 for (oferta in lista) {
                     oListOftVol = ListOftVol()
                     oListOftVol.idOferta = oferta.idOferta
                     oListOftVol.articuloDesct = oferta.articuloDesct
                     oListOftVol.tarifa = oferta.tarifa
-                    oListOftVol.importe =
-                        cLineas.getString(cLineas.getColumnIndex("importe")).toDouble()
+                    oListOftVol.importe = linea.importe.toDouble()
                     indice = localizaId(lOftVol, oListOftVol.idOferta)
                     if (indice > -1) lOftVol[indice].importe =
                         lOftVol[indice].importe + oListOftVol.importe else lOftVol.add(oListOftVol)
@@ -1405,152 +1175,113 @@ class Documento(private val fContexto: Context) {
         if (lOftVol.isNotEmpty()) anyadirOftVol(lOftVol)
     }
 
+
     private fun anyadirOftVol(lista: ArrayList<ListOftVol>) {
-        var cArticuloDto: Cursor
         var dDto: Double
         for (oftVol in lista) {
-
             // Tendremos que averiguar si el importe acumulado para cada oferta está entre algún rango
             val queDescto: String = ofVolRangosDao?.getDescuento(oftVol.idOferta, oftVol.importe) ?: "0.0"
             if (queDescto != "") {
                 dDto = queDescto.replace(',', '.').toDouble()
-                // TODO
-                /*
-                cArticuloDto = dbAlba.rawQuery(
-                    "SELECT articulo FROM articulos WHERE articulo = " + oftVol.articuloDesct,
-                    null
-                )
-                if (cArticuloDto.moveToFirst()) {
+
+                val articEnt = articulosDao?.existeArticulo(oftVol.articuloDesct) ?: DatosArticulo()
+                if (articEnt.articuloId > 0) {
                     insertarLineaOftVol(dDto, oftVol)
                     // Marcamos las líneas del documento que pertenezcan a esta oferta con el flag 4096 (linea con oferta),
                     // siempre que no tengan cambio de precio
                     marcarLinComoOfta(oftVol.idOferta)
                 } else MsjAlerta(fContexto).alerta("No se encontró el artículo para los descuentos de la oferta")
-                cArticuloDto.close()
-                */
+
             } else  // Si no hemos llegado a completar la oferta marcamos las líneas como posible oferta.
                 marcarLinComoPosibleOfta(oftVol.idOferta)
         }
     }
 
-    @SuppressLint("Range")
     private fun marcarLinComoPosibleOfta(queIdOfta: Int) {
-        val values = ContentValues()
-
         // Cargamos una lista con todos los artículos de la oferta
         val lArtOfta: List<Int> = ofertasDao?.getAllArtOftaId(queIdOfta) ?: emptyList()
         for (queArticulo in lArtOfta) {
             // Buscamos el artículo en concreto dentro del documento, excluyendo las lineas con cambio de precio
-            // TODO
-            /*
-            val cIdLinea = dbAlba.rawQuery(
-                "SELECT _id, flag FROM lineas WHERE articulo = " + queArticulo
-                        + " AND flag & " + FLAGLINEAVENTA_CAMBIAR_PRECIO + " = 0"
-                        + " AND cabeceraId = " + fIdDoc, null
-            )
-            // Actualizamos la línea con el flag 16384 (artículo en posible oferta)
-            if (cIdLinea.moveToFirst()) {
-                val queLinea = cIdLinea.getInt(cIdLinea.getColumnIndex("_id"))
-                values.put("flag", FLAGLINEAVENTA_POSIBLE_OFERTA)
-                dbAlba.update("lineas", values, "_id=$queLinea", null)
+            val lLineasArt = lineasDao?.getArticNoCambPr(queArticulo, fIdDoc) ?: emptyList<LineasEnt>().toMutableList()
+
+            // Actualizamos las líneas con el flag 16384 (artículo en posible oferta)
+            if (lLineasArt.count() > 0) {
+                for (lineaEnt in lLineasArt) {
+                    lineasDao?.marcarComoPosOfta(lineaEnt.lineaId)
+                }
             }
-            cIdLinea.close()
-            */
         }
     }
 
-    @SuppressLint("Range")
     private fun marcarLinComoOfta(queIdOfta: Int) {
-        val values = ContentValues()
         // Cargamos una lista con todos los artículos de la oferta
         val lArtOfta: List<Int> = ofertasDao?.getAllArtOftaId(queIdOfta) ?: emptyList()
         for (queArticulo in lArtOfta) {
             // Buscamos el artículo en concreto dentro del documento, excluyendo las lineas con cambio de precio
-            // TODO
-            /*
-            val cIdLinea = dbAlba.rawQuery(
-                "SELECT _id, flag FROM lineas WHERE articulo = " + queArticulo
-                        + " AND flag & " + FLAGLINEAVENTA_CAMBIAR_PRECIO + " = 0"
-                        + " AND cabeceraId = " + fIdDoc, null
-            )
-            // Actualizamos la línea con el flag 4096 (artículo en oferta)
-            if (cIdLinea.moveToFirst()) {
-                val queLinea = cIdLinea.getInt(cIdLinea.getColumnIndex("_id"))
-                values.put("flag", FLAGLINEAVENTA_POSIBLE_OFERTA)
-                dbAlba.update("lineas", values, "_id=$queLinea", null)
+            val lLineasArt = lineasDao?.getArticNoCambPr(queArticulo, fIdDoc) ?: emptyList<LineasEnt>().toMutableList()
+
+            // Actualizamos la línea con el flag 16384 (posible oferta)
+            if (lLineasArt.count() > 0) {
+                for (lineaEnt in lLineasArt) {
+                    lineasDao?.marcarComoPosOfta(lineaEnt.lineaId)
+                }
             }
-            cIdLinea.close()
-            */
         }
     }
 
-    @SuppressLint("Range")
+
     private fun insertarLineaOftVol(dDto: Double, oftVol: ListOftVol) {
         val fFtoDecImpBase = fConfiguracion.formatoDecImptesBase()
-        val values = ContentValues()
-        values.put("tipodoc", fTipoDoc)
-        values.put("alm", fAlmacen)
-        values.put("serie", serie)
-        values.put("numero", numero)
-        values.put("ejer", fEjercicio)
-        values.put("linea", siguienteLinea())
-        values.put("articulo", oftVol.articuloDesct)
-        // TODO
-        /*
-        val cArticulos = dbAlba.rawQuery(
-            "SELECT A.codigo, A.descr, I.codigo codiva, I.iva FROM articulos A" +
-                    " LEFT JOIN ivas I ON I.tipo = A.tipoiva" +
-                    " WHERE A.articulo = " + oftVol.articuloDesct, null
-        )
-        if (cArticulos.moveToFirst()) {
-            values.put("codigo", cArticulos.getString(cArticulos.getColumnIndex("codigo")))
-            values.put(
-                "descr",
-                "[DTO " + String.format(
-                    Locale.getDefault(),
-                    "%.2f",
-                    dDto
-                ) + "% sobre " + String.format(fFtoDecImpBase, oftVol.importe) + " €] " +
-                        cArticulos.getString(cArticulos.getColumnIndex("descr"))
-            )
+        val lineaEnt = LineasEnt()
+        lineaEnt.cabeceraId = fIdDoc
+        lineaEnt.articuloId = oftVol.articuloDesct
+        lineaEnt.tarifaId = oftVol.tarifa.toShort()
+
+        //values.put("linea", siguienteLinea())
+        val datArtDesctOftVol = articulosDao?.datosArtDesctOftVol(oftVol.articuloDesct) ?: DatosArtDesctOftVol()
+        if (datArtDesctOftVol.codigo != "") {
+            lineaEnt.codArticulo = datArtDesctOftVol.codigo
+            lineaEnt.descripcion = "[DTO " + String.format(Locale.getDefault(), "%.2f", dDto) + "% sobre " +
+                    String.format(fFtoDecImpBase, oftVol.importe) + " €] " +
+                    datArtDesctOftVol.descripcion
         }
 
-        values.put("tarifa", oftVol.tarifa)
         fPrecio = oftVol.importe * dDto / 100
-        fCodigoIva = cArticulos.getShort(cArticulos.getColumnIndex("codiva"))
-        fPorcIva = cArticulos.getDouble(cArticulos.getColumnIndex("iva"))
+        fCodigoIva = datArtDesctOftVol.codigoIva
+        fPorcIva = datArtDesctOftVol.porcIva.toDouble()
         fDtoImp = 0.0
         fImporte = fPrecio * -1
-        values.put("precio", fPrecio)
+
         calculaPrecioII()
         calcularDtoImpII()
         calcularImpteII(true)
-        values.put("precioii", fPrecioII)
-        values.put("codigoiva", fCodigoIva)
-        values.put("cajas", 0)
-        values.put("piezas", 0)
+
+        lineaEnt.precio = fPrecio.toString()
+        lineaEnt.precioII = fPrecioII.toString()
+        lineaEnt.codigoIva = fCodigoIva
+        lineaEnt.cajas = "0.0"
+        lineaEnt.piezas = "0.0"
+
         fCantidad = -1.0
-        values.put("cantidad", fCantidad)
-        values.put("importe", fImporte)
-        values.put("importeii", fImpteII)
-        values.put("dto", 0)
-        values.put("dtoi", fDtoImp)
-        values.put("dtoiii", 0)
-        values.put("lote", "")
-        values.put("flag", 16) // Cambiar descripción
-        values.put("flag3", 128) // Ajuste por oferta
-        values.put("idOferta", oftVol.idOferta)
-        values.put("dtoOftVol", dDto)
-        cArticulos.close()
-        dbAlba.insert("lineas", null, values)
-        */
+        lineaEnt.cantidad = fCantidad.toString()
+        lineaEnt.importe = fImporte.toString()
+        lineaEnt.importeII = fImpteII.toString()
+        lineaEnt.dto = "0.0"
+        lineaEnt.dtoImpte = fDtoImp.toString()
+        lineaEnt.dtoImpteII = "0.0"
+        lineaEnt.lote = ""
+        lineaEnt.flag = 16      // Cambiar descripción
+        lineaEnt.flag3 = 128    // Ajuste por oferta
+        lineaEnt.ofertaId = oftVol.idOferta
+        lineaEnt.dtoOftVol = dDto.toString()
+
+        lineasDao?.insertar(lineaEnt)
 
         // Recalculamos las bases
-        if (fBases.fIvaIncluido) fBases.calcularBase(
-            fCodigoIva,
-            fImpteII
-        ) else fBases.calcularBase(fCodigoIva, fImporte)
+        if (fBases.fIvaIncluido) fBases.calcularBase(fCodigoIva, fImpteII)
+        else fBases.calcularBase(fCodigoIva, fImporte)
     }
+
 
     fun hayOftVolumen(): Boolean {
         val queLinea = lineasDao?.hayOftVolumen(fIdDoc) ?: 0
@@ -1558,17 +1289,9 @@ class Documento(private val fContexto: Context) {
         return queLinea > 0
     }
 
-    fun cargarCursorOftVol(): Cursor {
-        // TODO
-        /*
-        val cLinOftVol = dbAlba.rawQuery(
-            "SELECT _id, descr, importe FROM lineas"
-                    + " WHERE flag3 = 128 AND cabeceraId = " + fIdDoc, null
-        )
-        cLinOftVol.moveToFirst()
-        return cLinOftVol
-        */
-        return cLineas
+
+    fun cargarListaOftVol(): List<DatosOftVol> {
+        return lineasDao?.cargarOftVol(fIdDoc) ?: emptyList<DatosOftVol>().toMutableList()
     }
 
     private fun localizaId(lista: ArrayList<ListOftVol>, queId: Int): Int {
@@ -1579,7 +1302,6 @@ class Documento(private val fContexto: Context) {
         return result
     }
 
-    @SuppressLint("Range")
     fun borrarArticuloDeDoc(queArticulo: Int) {
         for (linea in lLineas) {
             if (linea.articuloId == queArticulo) {
@@ -1598,9 +1320,8 @@ class Documento(private val fContexto: Context) {
         abrirLineas()
     }
 
+    /*
     private fun siguienteLinea(): Int {
-        // TODO
-        /*
         dbAlba.rawQuery(
             "SELECT MAX(linea) linea FROM lineas"
                     + " WHERE cabeceraId = " + fIdDoc, null
@@ -1610,9 +1331,9 @@ class Documento(private val fContexto: Context) {
                 cUltLinea.getInt(columna) + 1
             } else 1
         }
-        */
-        return 1
     }
+    */
+
 
     fun setCliente(queCliente: Int) {
         fCliente = queCliente
@@ -1642,10 +1363,7 @@ class Documento(private val fContexto: Context) {
     }
 
     fun marcarComoImprimido(queId: Int) {
-        val values = ContentValues()
-        values.put("imprimido", "T")
-        // TODO
-        //dbAlba.update("cabeceras", values, "_id=$queId", null)
+        cabeceraDao?.marcarComoImprimido(queId)
     }
 
     fun marcarComoEntregado(queId: Int, queCliente: Int, queEmpresa: Int, refrescar: Boolean) {
@@ -1653,64 +1371,38 @@ class Documento(private val fContexto: Context) {
         val tim = System.currentTimeMillis()
         val df = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val dfHora = SimpleDateFormat("HH:mm", Locale.getDefault())
-        val values = ContentValues()
-        values.put("firmado", "T")
-        values.put("fechafirma", df.format(tim))
-        values.put("horafirma", dfHora.format(tim))
-        // TODO
-        //dbAlba.update("cabeceras", values, "_id=$queId", null)
+
+        cabeceraDao?.marcarComoEntregado(queId, df.format(tim), dfHora.format(tim))
+
         if (refrescar) {
             // Refresco el cursor cerrándolo y volviéndolo a abrir.
-            cDocumentos.close()
             abrirTodos(queCliente, queEmpresa, 0)
         }
     }
 
-    fun setTextoIncidencia(
-        queId: Int,
-        queTexto: String?,
-        queCliente: Int,
-        queEmpresa: Int,
-        queTipoIncid: Int
-    ) {
-        val values = ContentValues()
-        values.put("tipoincidencia", queTipoIncid)
-        values.put("textoincidencia", queTexto)
-        // TODO
-        //dbAlba.update("cabeceras", values, "_id=$queId", null)
+    fun setTextoIncidencia(queId: Int, queTexto: String, queCliente: Int, queEmpresa: Int, queTipoIncid: Int) {
+
+        cabeceraDao?.setTextoIncidencia(queId, queTipoIncid, queTexto)
 
         // Refresco el cursor cerrándolo y volviéndolo a abrir.
-        cDocumentos.close()
         abrirTodos(queCliente, queEmpresa, 0)
     }
 
-    @SuppressLint("Range")
-    fun reenviar(QueID: Int, QueCliente: Int, empresaActual: Int) {
-        val queAlmacen: Short
-        val queEjercicio: Short
-        val queEmpresa: Short
-        val queNumero: Int
-        val queSerie: String
-        val values = ContentValues()
-        values.put("estado", "R")
-        // TODO
-        //dbAlba.update("cabeceras", values, "_id=$QueID", null)
-        val queTipoDoc: Byte = cDocumentos.getString(cDocumentos.getColumnIndex("tipodoc")).toByte()
-        if (queTipoDoc.toShort() == TIPODOC_FACTURA) {
-            queAlmacen = cDocumentos.getShort(cDocumentos.getColumnIndex("alm"))
-            queSerie = cDocumentos.getString(cDocumentos.getColumnIndex("serie"))
-            queNumero = cDocumentos.getInt(cDocumentos.getColumnIndex("numero"))
-            queEjercicio = cDocumentos.getShort(cDocumentos.getColumnIndex("ejer"))
-            queEmpresa = cDocumentos.getShort(cDocumentos.getColumnIndex("empresa"))
 
+    fun reenviar(dataActual: DatosVerDocs) {     //queId: Int, queCliente: Int, empresaActual: Int) {
+
+        cabeceraDao?.reenviarDoc(dataActual.cabeceraId)
+
+        if (dataActual.tipoDoc == TIPODOC_FACTURA) {
             // Si marcamos para reenviar una factura también tendremos que reenviar el pendiente.
-            val pendienteDao = myBD?.pendienteDao()
-            pendienteDao?.reenviar(queTipoDoc, queEmpresa, queAlmacen, queSerie, queNumero, queEjercicio)
+            pendienteDao?.reenviar(dataActual.tipoDoc, dataActual.empresa, dataActual.almacen, dataActual.serie,
+                               dataActual.numero, dataActual.ejercicio)
         }
+
         // Refresco el cursor cerrándolo y volviéndolo a abrir.
-        cDocumentos.close()
-        abrirTodos(QueCliente, empresaActual, 0)
+        abrirTodos(dataActual.clienteId, dataActual.empresa.toInt(), 0)
     }
+
 
     fun calculaPrecioYDto(pGrupo: Short, pDpto: Short, pProv: Int, porcIva: Double) {
         // El orden para obtener el precio y el dto. del artículo será el siguiente:
@@ -1941,45 +1633,29 @@ class Documento(private val fContexto: Context) {
     }
 
     private fun tomaPrecioHco() {
-        // TODO
-        /*
         // Si estamos vendiendo con formatos tomaremos del histórico el precio del formato seleccionado
-        val cPrecio: Cursor = if (fFormatoLin > 0) {
-            dbAlba.rawQuery(
-                "SELECT precio, dto FROM historico WHERE cliente = "
-                        + fCliente + " AND articulo = " + fArticulo + " AND formato = " + fFormatoLin,
-                null
-            )
+        val datosPrecios: DatosPrecios = if (fFormatoLin > 0) {
+            historicoDao?.getPrecioFto(fCliente, fArticulo, fFormatoLin) ?: DatosPrecios()
         } else {
-            dbAlba.rawQuery(
-                "SELECT precio, dto FROM historico WHERE cliente = "
-                        + fCliente + " AND articulo = " + fArticulo, null
-            )
+            historicoDao?.getPrecio(fCliente, fArticulo) ?: DatosPrecios()
         }
-        if (cPrecio.moveToFirst()) {
-            val sPrecio = cPrecio.getString(0).replace(',', '.')
-            val sDto = cPrecio.getString(1).replace(',', '.')
+
+        if (datosPrecios.precio != "") {
+            val sPrecio = datosPrecios.precio.replace(',', '.')
+            val sDto = datosPrecios.dto.replace(',', '.')
             fPrecio = Redondear(sPrecio.toDouble(), fDecPrBase)
             fDtoLin = Redondear(sDto.toDouble(), 2)
         }
-        cPrecio.close()
-        */
     }
 
-    @SuppressLint("Range")
+
     private fun tomaPrecioOferta() {
         val ofertaEnt: OfertasEnt = if (fFormatoLin > 0) {
-            ofertasDao?.getOftaVtaFto(
-                fArticulo,
-                fEmpresa.toInt(),
-                fTarifaLin.toShort(),
-                fFormatoLin.toShort(),
-                fechaEnJulian(fFecha)
-            ) ?: OfertasEnt()
+            ofertasDao?.getOftaVtaFto(fArticulo, fEmpresa.toInt(), fTarifaLin, fFormatoLin, fechaEnJulian(fFecha)) ?: OfertasEnt()
         } else {
-            ofertasDao?.getOftaVtaArt(fArticulo, fEmpresa.toInt(), fTarifaLin.toShort(), fechaEnJulian(fFecha)) ?: OfertasEnt()
+            ofertasDao?.getOftaVtaArt(fArticulo, fEmpresa.toInt(), fTarifaLin, fechaEnJulian(fFecha)) ?: OfertasEnt()
         }
-        if (ofertaEnt != null && ofertaEnt.articuloId > 0) {
+        if (ofertaEnt.articuloId > 0) {
             val sPrecio = ofertaEnt.precio.replace(',', '.')
             val sDto = ofertaEnt.dto.replace(',', '.')
             val queTipoOfta = ofertaEnt.tipoOferta.toInt()
@@ -1988,26 +1664,20 @@ class Documento(private val fContexto: Context) {
                 fArtEnOferta = true
                 if (fDtoLin == 0.0) fDtoLin = Redondear(sDto.toDouble(), 2)
 
-                // Comprobamos si hay alguna oferta de escalado de precios
+            // Comprobamos si hay alguna oferta de escalado de precios
             } else {
                 var quePrecOfta: Double
-                // TODO
-                /*
-                val cOftPorCant = dbAlba.rawQuery(
-                    "SELECT * FROM oftCantRangos WHERE articulo = $fArticulo",
-                    null
-                )
+
+                val lOftasCant = oftCantRangosDao?.getAllOftArt(fArticulo) ?: emptyList<OftCantRangosEnt>().toMutableList()
+
                 var hayEscalado = false
                 var desdeCantidad: Double
                 var hastaCantidad: Double
-                cOftPorCant.moveToFirst()
-                while (!cOftPorCant.isAfterLast) {
 
+                for (oftCant in lOftasCant) {
                     // Vemos si la cantidad está entre alguno de los escalados.
-                    desdeCantidad =
-                        cOftPorCant.getDouble(cOftPorCant.getColumnIndex("desdeCantidad"))
-                    hastaCantidad =
-                        cOftPorCant.getDouble(cOftPorCant.getColumnIndex("hastaCantidad"))
+                    desdeCantidad = oftCant.desdeCantidad.toDouble()
+                    hastaCantidad = oftCant.hastaCantidad.toDouble()
                     // ¿Por qué hago lo que viene a continuación? Para que funcione la oferta por escalado porque,
                     // tal y como están definidos éstos, podemos tener un primer escalado que sea desde 0 hasta X y
                     // si fCantidad es 0 no entraría en éste, ya que la condición es fCantidad > desdeCantidad.
@@ -2017,30 +1687,24 @@ class Documento(private val fContexto: Context) {
                         hayEscalado = true
                         fArtEnOferta = true
                         // Si el precio de la oferta es 0 significa que aplicaremos el precio de tarifa
-                        quePrecOfta =
-                            cOftPorCant.getString(cOftPorCant.getColumnIndex("precioBase"))
-                                .replace(',', '.').toDouble()
+                        quePrecOfta = oftCant.precioBase.replace(',', '.').toDouble()
                         fPrecio = if (quePrecOfta > 0) quePrecOfta else 0.0
                     }
                     // Vemos si la cantidad está en el escalado infinito (si es que lo tenemos definido)
                     if (!hayEscalado) {
                         if (desdeCantidad == 0.0 && hastaCantidad == 0.0) {
-                            quePrecOfta =
-                                cOftPorCant.getString(cOftPorCant.getColumnIndex("precioBase"))
-                                    .replace(',', '.').toDouble()
+                            quePrecOfta = oftCant.precioBase.replace(',', '.').toDouble()
                             if (quePrecOfta > 0) {
                                 fPrecio = quePrecOfta
                                 fArtEnOferta = true
                             }
                         }
                     }
-                    cOftPorCant.moveToNext()
                 }
-                cOftPorCant.close()
-                */
             }
         }
     }
+
 
     private fun tomaPrecioTarifa() {
         // Vemos si tenemos formato para la línea, en cuyo caso tomamos el precio de la tabla "trfformatos".
@@ -2079,61 +1743,41 @@ class Documento(private val fContexto: Context) {
         return "$queAnyo-$queMes-$queDia"
     }
 
-    @SuppressLint("Range")
     private fun tomaPrecioRating(queGrupo: Short, queDpto: Short, queProv: Int) {
-        // TODO
-        /*
         val ratingGrDao: RatingGruposDao? = getInstance(fContexto)?.ratingGruposDao()
+        var quePrec = DatosPrecRat()
 
         var existe = false
         var formatoEncontrado = false
-        var cPrecio = dbAlba.rawQuery(
-            "SELECT precio FROM ratingart",
-            null
-        ) // Hago esto para que no me dé el error al compilar por no estar bien inicializado.
 
         // Rating por artículo. Si estamos vendiendo con formato, buscaremos primero el rating para ese formato.
         if (fFormatoLin > 0) {
-            cPrecio = dbAlba.rawQuery(
-                "SELECT precio, dto, flag FROM ratingart"
-                        + " WHERE articulo = " + fArticulo + " AND alm = " + fAlmacen
-                        + " AND Cliente = " + fCliente + " AND formato = " + fFormatoLin + " AND julianday(inicio) <= julianday('"
-                        + fechaEnJulian(fFecha) + "') AND julianday(fin) >= julianday('" + fechaEnJulian(
-                    fFecha
-                ) + "')", null
-            )
+            quePrec = ratingArtDao?.getPrecioFto(fArticulo, fAlmacen, fCliente,
+                        fFormatoLin, fechaEnJulian(fFecha)) ?: DatosPrecRat()
 
             // Si no hemos encontrado el precio para el formato lo buscamos para el artículo y cliente.
-            if (cPrecio.moveToFirst()) {
+            if (quePrec.precio != "") {
                 formatoEncontrado = true
             }
         }
         if (!formatoEncontrado) {
-            cPrecio = dbAlba.rawQuery(
-                "SELECT precio, dto, flag FROM ratingart"
-                        + " WHERE articulo = " + fArticulo + " AND alm = " + fAlmacen
-                        + " AND Cliente = " + fCliente + " AND formato = 0 AND julianday(inicio) <= julianday('"
-                        + fechaEnJulian(fFecha) + "') AND julianday(fin) >= julianday('" + fechaEnJulian(
-                    fFecha
-                ) + "')", null
-            )
+            quePrec = ratingArtDao?.getPrecio(fArticulo, fAlmacen, fCliente, fechaEnJulian(fFecha)) ?: DatosPrecRat()
         }
-        if (cPrecio.moveToFirst()) {
-            val sPrecio = cPrecio.getString(0).replace(',', '.')
-            val sDto = cPrecio.getString(1).replace(',', '.')
+
+        if (quePrec.precio != "" || quePrec.dto != "") {
+            val sPrecio = quePrec.precio.replace(',', '.')
+            val sDto = quePrec.dto.replace(',', '.')
             // Vemos si el descuento es por importe o por porcentaje
-            val queFlag = cPrecio.getInt(cPrecio.getColumnIndex("flag"))
-            if (queFlag and FLAGRATING_DESCUENTOIMPORTE > 0) fDtoRatingImp =
-                java.lang.Double.valueOf(sDto) else fDtoLin = Redondear(sDto.toDouble(), 2)
+            val queFlag = quePrec.flag
+            if (queFlag and FLAGRATING_DESCUENTOIMPORTE > 0) fDtoRatingImp = sDto.toDouble()
+            else fDtoLin = Redondear(sDto.toDouble(), 2)
             fPrecio = Redondear(sPrecio.toDouble(), fDecPrBase)
             existe = true
         }
-        cPrecio.close()
 
         // Rating por grupo.
-        if (!existe && queGrupo != "" && queDpto != "") {
-            var sDto = ratingGrDao?.getDescuento(queGrupo.toShort(), queDpto.toShort(), fAlmacen, fCliente,
-                                    fechaEnJulian(fFecha)) ?: ""
+        if (!existe && queGrupo > 0 && queDpto > 0) {
+            var sDto = ratingGrDao?.getDescuento(queGrupo, queDpto, fAlmacen, fCliente, fechaEnJulian(fFecha)) ?: ""
 
             if (sDto != "") {
                 sDto = sDto.replace(',', '.')
@@ -2143,44 +1787,32 @@ class Documento(private val fContexto: Context) {
         }
 
         // Rating por ramo.
-        if (!existe && fClientes.getRamo() != "") {
-            var queRamo = fClientes.getRamo()
-            if (queRamo == "") queRamo = "0"
-            val iRamo = queRamo.toInt()
+        if (!existe && fClientes.fRamo > 0) {
+            val iRamo = fClientes.fRamo
             if (iRamo > 0) {
-                cPrecio = dbAlba.rawQuery(
-                    "SELECT precio, dto, flag FROM ratingart"
-                            + " WHERE articulo = " + fArticulo + " AND alm = " + fAlmacen + " AND ramo = " + queRamo
-                            + " AND julianday(inicio) <= julianday('" + fechaEnJulian(fFecha) + "') AND julianday(fin) >= julianday('" + fechaEnJulian(
-                        fFecha
-                    ) + "')", null
-                )
-                if (cPrecio.moveToFirst()) {
-                    val sPrecio = cPrecio.getString(0).replace(',', '.')
-                    val sDto = cPrecio.getString(1).replace(',', '.')
+                quePrec = ratingArtDao?.getPrecioRamo(fArticulo, fAlmacen, iRamo, fechaEnJulian(fFecha)) ?: DatosPrecRat()
+                if (quePrec.precio != "" || quePrec.dto != "") {
+                    val sPrecio = quePrec.precio.replace(',', '.')
+                    val sDto = quePrec.dto.replace(',', '.')
                     // Vemos si el descuento es por importe o por porcentaje
-                    val queFlag = cPrecio.getInt(cPrecio.getColumnIndex("flag"))
-                    if (queFlag and FLAGRATING_DESCUENTOIMPORTE > 0) fDtoRatingImp =
-                        java.lang.Double.valueOf(sDto) else fDtoLin = Redondear(sDto.toDouble(), 2)
+                    val queFlag = quePrec.flag
+                    if (queFlag and FLAGRATING_DESCUENTOIMPORTE > 0)
+                        fDtoRatingImp = sDto.toDouble()
+                    else fDtoLin = Redondear(sDto.toDouble(), 2)
                     fPrecio = Redondear(sPrecio.toDouble(), fDecPrBase)
                     existe = true
                 }
-                cPrecio.close()
             }
         }
 
         // Rating por grupo/tarifa
-        if (!existe && queGrupo != "" && queDpto != "") {
-            var queRamo = fClientes.getRamo()
-            if (queRamo == "") queRamo = "0"
-            val iRamo = queRamo.toInt()
+        if (!existe && queGrupo > 0 && queDpto > 0) {
+            val iRamo = fClientes.fRamo
             if (iRamo > 0) {
-                var sDto = ratingGrDao?.getDtoRamoTarifa(queGrupo.toShort(), queDpto.toShort(), fAlmacen,
-                                    queRamo.toShort(), fTarifaLin.toShort(), fechaEnJulian(fFecha)) ?: ""
-
+                var sDto = ratingGrDao?.getDtoRamoTarifa(queGrupo, queDpto, fAlmacen, iRamo, fTarifaLin, fechaEnJulian(fFecha)) ?: ""
 
                 if (sDto != "") {
-                    sDto = cPrecio.getString(0).replace(',', '.')
+                    sDto = sDto.replace(',', '.')
                     fDtoLin = Redondear(sDto.toDouble(), 2)
                     existe = true
                 }
@@ -2188,8 +1820,8 @@ class Documento(private val fContexto: Context) {
         }
 
         // Rating por clientes/proveedor
-        if (!existe && queProv != "") {
-            var sDto = ratingProvDao?.getDtoClteProv(queProv.toInt(), fAlmacen, fCliente, fechaEnJulian(fFecha)) ?: ""
+        if (!existe && queProv > 0) {
+            var sDto = ratingProvDao?.getDtoClteProv(queProv, fAlmacen, fCliente, fechaEnJulian(fFecha)) ?: ""
 
             if (sDto != "") {
                 sDto =  sDto.replace(',', '.')
@@ -2199,13 +1831,10 @@ class Documento(private val fContexto: Context) {
         }
 
         // Rating por ramo/tarifa/proveedor
-        if (!existe && queProv != "") {
-            var queRamo = fClientes.getRamo()
-            if (queRamo == "") queRamo = "0"
-            val iRamo = queRamo.toInt()
+        if (!existe && queProv > 0) {
+            val iRamo = fClientes.fRamo
             if (iRamo > 0) {
-                var sDto = ratingProvDao?.getDtoRamoTrfProv(queProv.toInt(), fAlmacen, queRamo.toShort(),
-                                    fTarifaLin.toShort(), fechaEnJulian(fFecha)) ?: ""
+                var sDto = ratingProvDao?.getDtoRamoTrfProv(queProv, fAlmacen, iRamo, fTarifaLin, fechaEnJulian(fFecha)) ?: ""
 
                 if (sDto != "") {
                     sDto = sDto.replace(',', '.')
@@ -2213,50 +1842,42 @@ class Documento(private val fContexto: Context) {
                 }
             }
         }
-        */
     }
+
 
     fun hayStockLote(): Boolean {
         val stockLote = fLotes.dimeStockLote(fArticulo, fLote)
         return stockLote - fCantidad >= 0
     }
 
-    val numLinea: Int
-        @SuppressLint("Range")
-        get() = cLineas.getInt(cLineas.getColumnIndex("_id"))
 
-    @SuppressLint("Range")
     fun existeLineaArticulo(queArticulo: Int): Int {
         var iArticulo: Int
         var queLinea = 0
-        cLineas.moveToFirst()
-        while (!cLineas.isAfterLast) {
-            iArticulo = cLineas.getInt(cLineas.getColumnIndex("articulo"))
+
+        for (linea in lLineas) {
+            iArticulo = linea.articuloId
             if (iArticulo == queArticulo) {
-                queLinea = cLineas.getInt(cLineas.getColumnIndex("_id"))
+                queLinea = linea.lineaId
                 break
             }
-            cLineas.moveToNext()
         }
         return queLinea
     }
 
-    @SuppressLint("Range")
     fun artNumVecesEnDoc(queArticulo: Int): Int {
         var iArticulo: Int
         var numVeces = 0
-        cLineas.moveToFirst()
-        while (!cLineas.isAfterLast) {
-            iArticulo = cLineas.getInt(cLineas.getColumnIndex("articulo"))
+
+        for (linea in lLineas) {
+            iArticulo = linea.articuloId
             if (iArticulo == queArticulo) {
                 numVeces++
             }
-            cLineas.moveToNext()
         }
         return numVeces
     }
 
-    @SuppressLint("Range")
     fun datosArtEnCatLineas(queArticulo: Int): Array<String> {
         val catLineasDao: CatalogoLineasDao? = getInstance(fContexto)?.catalogoLineasDao()
         val lDatosCat = catLineasDao?.getDatosArt(queArticulo) ?: emptyList<CatalogoLineasEnt>().toMutableList()
@@ -2275,21 +1896,17 @@ class Documento(private val fContexto: Context) {
     }
 
 
-    @SuppressLint("Range")
     fun existeArtYLote(queArticulo: Int, queLote: String): Boolean {
         var iArticulo: Int
         var sLote: String
-        cLineas.moveToFirst()
-        while (!cLineas.isAfterLast) {
-            iArticulo = cLineas.getInt(cLineas.getColumnIndex("articulo"))
-            if (cLineas.getString(cLineas.getColumnIndex("lote")) != null)
-                sLote = cLineas.getString(cLineas.getColumnIndex("lote"))
-            else
-                sLote = ""
+
+        for (linea in lLineas) {
+            iArticulo = linea.articuloId
+            sLote = linea.lote
+
             if (iArticulo == queArticulo && sLote == queLote) {
                 return true
             }
-            cLineas.moveToNext()
         }
         return false
     }
@@ -2298,14 +1915,16 @@ class Documento(private val fContexto: Context) {
         // Buscamos si existe la tarifa que tenemos configurada como tarifa de cajas. Si es así podremos aplicar tarifa de cajas
         // en el documento, en caso contrario no.
         val queTrfCajas = fConfiguracion.tarifaCajas()
-        // TODO
-        //dbAlba.rawQuery("SELECT codigo FROM cnftarifas WHERE codigo = $queTrfCajas", null)
-        //    .use { buscaTrfCajas -> fPuedoAplTrfCajas = buscaTrfCajas.moveToFirst() }
+
+        val cnfTarifasDao: CnfTarifasDao? = getInstance(fContexto)?.cnfTarifasDao()
+        val queCodigo = cnfTarifasDao?.existeCodigo(queTrfCajas) ?: 0
+
+        fPuedoAplTrfCajas = (queCodigo > 0)
     }
 
-    @SuppressLint("Range")
+
     fun getTipoIncidencia(queIncidencia: Int): String {
-        val tiposIncDao: TiposIncDao? = MyDatabase.getInstance(fContexto)?.tiposIncDao()
+        val tiposIncDao: TiposIncDao? = getInstance(fContexto)?.tiposIncDao()
         val tipoInc = tiposIncDao?.getIncidencia(queIncidencia) ?: TiposIncEnt()
 
         return if (tipoInc.tipoIncId > 0)
@@ -2313,51 +1932,33 @@ class Documento(private val fContexto: Context) {
         else ""
     }
 
-    @SuppressLint("Range")
+
     fun getTextoIncidencia(queId: Int): String {
-        // TODO
-        /*
-        dbAlba.rawQuery("SELECT textoincidencia FROM cabeceras WHERE _id = $queId", null)
-            .use { buscaTextoInc ->
-                if (buscaTextoInc.moveToFirst()) {
-                    if (buscaTextoInc.getString(buscaTextoInc.getColumnIndex("textoincidencia")) != null)
-                        return buscaTextoInc.getString(buscaTextoInc.getColumnIndex("textoincidencia"))
-                    else
-                        return ""
-                } else
-                    return ""
-            }
-        */
-        return ""
+        return cabeceraDao?.getTextoIncidencia(queId) ?: ""
     }
 
-    @SuppressLint("Range")
+
     fun dimeCantCajasArticulo(queArticulo: Int): Array<String> {
         var iArticulo: Int
         val sCantCajas = arrayOf("0.0", "0.0")
-        // TODO
-        /*
-        dbAlba.rawQuery("SELECT * FROM tmphco", null).use { cTmpHco ->
-            cTmpHco.moveToFirst()
-            while (!cTmpHco.isAfterLast) {
-                iArticulo = cTmpHco.getInt(cTmpHco.getColumnIndex("articulo"))
-                if (iArticulo == queArticulo) {
-                    sCantCajas[0] = cTmpHco.getString(cTmpHco.getColumnIndex("cantidad"))
-                    sCantCajas[1] = cTmpHco.getString(cTmpHco.getColumnIndex("cajas"))
-                    break
-                }
-                cTmpHco.moveToNext()
+
+        val lineasTmpHco = tmpHcoDao?.getAllLineas() ?: emptyList<TmpHcoEnt>().toMutableList()
+
+        for (linTmpHco in lineasTmpHco) {
+            iArticulo = linTmpHco.articuloId
+            if (iArticulo == queArticulo) {
+                sCantCajas[0] = linTmpHco.cantidad
+                sCantCajas[1] = linTmpHco.cajas
+                break
             }
         }
-        */
+
         return sCantCajas
     }
 
     fun hayArtHabituales(): Boolean {
-        // TODO
-        //dbAlba.rawQuery("SELECT articulo FROM arthabituales", null)
-        //    .use { cursor -> return cursor.moveToFirst() }
-        return false
+        val queArticulo = artHabitDao?.hayArtHabituales() ?: 0
+        return (queArticulo > 0)
     }
 
 }

@@ -148,8 +148,8 @@ class DocPDF(contexto: Context) {
 
     @SuppressLint("Range")
     private fun pdfLineas() {
-        var sCodigo: String?
-        var sDescr: String?
+        var sCodigo: String
+        var sDescr: String
         var sCajas: String
         var sCant: String
         var sPrecio: String
@@ -158,13 +158,14 @@ class DocPDF(contexto: Context) {
         var sLote: String
         var fHayDtoLinea = false
         var x: Byte = 1
-        var numLineas = fDocumento.cLineas.count
+        var numLineas = fDocumento.lLineas.count()
         val anchosFilas = floatArrayOf(0.5f, 2f, 0.3f, 0.5f, 0.5f, 0.3f, 0.5f)
         val anchosFila2 = floatArrayOf(3f)
         val tablaCabecera = PdfPTable(anchosFilas)
         var tabla = PdfPTable(anchosFilas)
         var tablaFila2 = PdfPTable(anchosFila2)
         var cell: PdfPCell
+
         // Porcentaje que ocupa a lo ancho de la pagina del PDF
         tablaCabecera.widthPercentage = 100f
         tabla.widthPercentage = 100f
@@ -175,34 +176,24 @@ class DocPDF(contexto: Context) {
         // Añadimos líneas en blanco para situar la tabla.
         agregarLineasEnBlanco(parrafo, 9)
         try {
-            fDocumento.cLineas.moveToFirst()
-            while (!fDocumento.cLineas.isAfterLast) {
-                sDto = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("dto"))
-                    .replace(',', '.')
+            for (linea in fDocumento.lLineas) {
+                sDto = linea.dto.replace(',', '.')
                 val dDto = sDto.toDouble()
                 if (dDto != 0.0) fHayDtoLinea = true
-                fDocumento.cLineas.moveToNext()
             }
             cabeceraLineas(tablaCabecera, fHayDtoLinea)
             parrafo.add(tablaCabecera)
 
             // Iterar mientras haya una fila siguiente
-            fDocumento.cLineas.moveToFirst()
-            while (!fDocumento.cLineas.isAfterLast) {
-
+            for (linea in fDocumento.lLineas) {
                 // Agregar 9 celdas
-                sCodigo = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("codigo"))
-                sDescr = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("descr"))
-                sCajas = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cajas"))
-                    .replace(',', '.')
-                sCant = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cantidad"))
-                    .replace(',', '.')
-                sPrecio = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("precio"))
-                    .replace(',', '.')
-                sDto = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("dto"))
-                    .replace(',', '.')
-                sImpte = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("importe"))
-                    .replace(',', '.')
+                sCodigo = linea.codArticulo
+                sDescr = linea.descripcion
+                sCajas = linea.cajas.replace(',', '.')
+                sCant = linea.cantidad.replace(',', '.')
+                sPrecio = linea.precio.replace(',', '.')
+                sDto = linea.dto.replace(',', '.')
+                sImpte = linea.importe.replace(',', '.')
                 val dCajas = sCajas.toDouble()
                 sCajas = if (dCajas != 0.0) String.format(fFtoCant, dCajas) else ""
                 val dCant = sCant.toDouble()
@@ -241,10 +232,8 @@ class DocPDF(contexto: Context) {
                 tabla.addCell(cell)
                 x++
                 // Si la línea tiene número de lote lo imprimimos. También si tiene descuento por línea.
-                if (fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("lote")) != null &&
-                    fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("lote")) != ""
-                ) {
-                    sLote = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("lote"))
+                if (linea.lote!= "") {
+                    sLote = linea.lote
                     cell = PdfPCell(Paragraph("Numero lote: $sLote", fntHelv8))
                     cell.border = 0
                     tablaFila2.addCell(cell)
@@ -273,7 +262,6 @@ class DocPDF(contexto: Context) {
                     }
                     x = 1
                 }
-                fDocumento.cLineas.moveToNext()
             }
             // Agregar la tabla con los datos al parrafo.
             documPDF.add(parrafo)
@@ -486,7 +474,7 @@ class DocPDF(contexto: Context) {
             val canvas = writer.directContent
 
             // Añadimos la cabecera con una fuente personalizada.
-            if (cabeceraDoc != null) {
+            if (cabeceraDoc != "") {
                 val c = Chunk(cabeceraDoc)
                 mostrarChunk(canvas, c, 40f, y.toFloat(), fntCabecera)
             }
@@ -510,25 +498,23 @@ class DocPDF(contexto: Context) {
             c = Chunk("Vendedor: " + fConfiguracion.vendedor())
             mostrarChunk(canvas, c, 400f, y.toFloat(), fntHelv8)
             y = (y - 10).toShort()
-            c = Chunk(fDocumento.fClientes.getDireccion())
+            c = Chunk(fDocumento.fClientes.fDireccion)
             mostrarChunk(canvas, c, 40f, y.toFloat(), fntHelv8)
             c = Chunk("Hora: " + fDocumento.fHora)
             mostrarChunk(canvas, c, 400f, y.toFloat(), fntHelv8)
             y = (y - 10).toShort()
-            c = Chunk(
-                fDocumento.fClientes.getCodPostal() + " "
-                        + fDocumento.fClientes.getPoblacion()
+            c = Chunk(fDocumento.fClientes.fCodPostal + " " + fDocumento.fClientes.fPoblacion
             )
             mostrarChunk(canvas, c, 40f, y.toFloat(), fntHelv8)
             c = Chunk("Fecha: " + fDocumento.fFecha)
             mostrarChunk(canvas, c, 400f, y.toFloat(), fntHelv8)
             y = (y - 10).toShort()
-            c = Chunk(fDocumento.fClientes.getProvincia())
+            c = Chunk(fDocumento.fClientes.fProvincia)
             mostrarChunk(canvas, c, 40f, y.toFloat(), fntHelv8)
             c = Chunk("Doc: " + tipoDocAsString(fDocumento.fTipoDoc))
             mostrarChunk(canvas, c, 400f, y.toFloat(), fntHelv8)
             y = (y - 10).toShort()
-            c = Chunk("C.I.F.: " + fDocumento.fClientes.getCIF())
+            c = Chunk("C.I.F.: " + fDocumento.fClientes.fCif)
             mostrarChunk(canvas, c, 40f, y.toFloat(), fntHelv8)
             c = Chunk("Num.: " + fDocumento.serie + "/" + fDocumento.numero)
             mostrarChunk(canvas, c, 400f, y.toFloat(), fntHelv8)

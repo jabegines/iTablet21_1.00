@@ -7,8 +7,6 @@ import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.database.Cursor
-import android.database.sqlite.SQLiteDatabase
 import android.os.Handler
 import android.os.Message
 import android.os.SystemClock
@@ -232,10 +230,10 @@ import java.util.*
          result = ajustarCadena(ponerCeros(fDocumento.fClientes.fCodigo.toString(), ancho_codclte) + " " +
                  fDocumento.fClientes.fNombre, sLongDatosClte.toInt(), true) + fCR + fLF
          result = result + ajustarCadena(fDocumento.fClientes.fNomComercial, sLongDatosClte.toInt(), true) + fCR + fLF
-         result = result + ajustarCadena(fDocumento.fClientes.getDireccion(), sLongDatosClte.toInt(), true) + fCR + fLF
-         result = result + ajustarCadena(fDocumento.fClientes.getCodPostal() + " " + fDocumento.fClientes.getPoblacion(), sLongDatosClte.toInt(), true) + fCR + fLF
-         result = result + ajustarCadena(fDocumento.fClientes.getProvincia(), sLongDatosClte.toInt(), true) + fCR + fLF
-         result = result + ajustarCadena("C.I.F.: " + fDocumento.fClientes.getCIF(), sLongDatosClte.toInt(), true) + fCR + fLF
+         result = result + ajustarCadena(fDocumento.fClientes.fDireccion, sLongDatosClte.toInt(), true) + fCR + fLF
+         result = result + ajustarCadena(fDocumento.fClientes.fCodPostal + " " + fDocumento.fClientes.fPoblacion, sLongDatosClte.toInt(), true) + fCR + fLF
+         result = result + ajustarCadena(fDocumento.fClientes.fProvincia, sLongDatosClte.toInt(), true) + fCR + fLF
+         result = result + ajustarCadena("C.I.F.: " + fDocumento.fClientes.fCif, sLongDatosClte.toInt(), true) + fCR + fLF
          result = result + fCR + fLF
          result = result + "Vendedor: " + fConfiguracion.vendedor() + " " + fConfiguracion.nombreVendedor() + fCR + fLF
          result = result + "Fecha: " + fDocumento.fFecha + "     Hora: " + fDocumento.fHora + fCR + fLF
@@ -258,17 +256,17 @@ import java.util.*
          result += "^FD" + ajustarCadena(fDocumento.fClientes.fNomComercial, sLongDatosClte.toInt(), true) + "^FS" + fCR + fLF
 
          result += "^FT0,75^AKN,20$fCR$fLF"
-         result += "^FD" + ajustarCadena(fDocumento.fClientes.getDireccion(), sLongDatosClte.toInt(), true) + "^FS" + fCR + fLF
+         result += "^FD" + ajustarCadena(fDocumento.fClientes.fDireccion, sLongDatosClte.toInt(), true) + "^FS" + fCR + fLF
 
          result += "^FT0,100^AKN,20$fCR$fLF"
-         result += "^FD" + ajustarCadena(fDocumento.fClientes.getCodPostal() + " " +
-                 fDocumento.fClientes.getPoblacion(), sLongDatosClte.toInt(), true) + "^FS" + fCR + fLF
+         result += "^FD" + ajustarCadena(fDocumento.fClientes.fCodPostal + " " +
+                 fDocumento.fClientes.fPoblacion, sLongDatosClte.toInt(), true) + "^FS" + fCR + fLF
 
          result += "^FT0,125^AKN,20$fCR$fLF"
-         result += "^FD" + ajustarCadena(fDocumento.fClientes.getProvincia(), sLongDatosClte.toInt(), true) + "^FS" + fCR + fLF
+         result += "^FD" + ajustarCadena(fDocumento.fClientes.fProvincia, sLongDatosClte.toInt(), true) + "^FS" + fCR + fLF
 
          result += "^FT0,150^AKN,20$fCR$fLF"
-         result += "^FD" + ajustarCadena("C.I.F.: " + fDocumento.fClientes.getCIF(), sLongDatosClte.toInt(), true) + "^FS" + fCR + fLF + fCR + fLF
+         result += "^FD" + ajustarCadena("C.I.F.: " + fDocumento.fClientes.fCif, sLongDatosClte.toInt(), true) + "^FS" + fCR + fLF + fCR + fLF
 
          result += "^FT0,190^AKN,20$fCR$fLF"
          result += "^FD" + "Vendedor: " + fConfiguracion.vendedor() + " " + fConfiguracion.nombreVendedor() + "^FS" + fCR + fLF
@@ -350,20 +348,19 @@ import java.util.*
 
          val tiposIncDao = MyDatabase.getInstance(fContexto)?.tiposIncDao()
 
-         fDocumento.cLineas.moveToFirst()
-         while (!fDocumento.cLineas.isAfterLast) {
-             sCodigo = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("codigo"))
-             sDescr = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("descr"))
-             sCajas = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cajas")).replace(",", ".")
-             sCant = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cantidad")).replace(",", ".")
+         for (linea in fDocumento.lLineas) {
+             sCodigo = linea.codArticulo
+             sDescr = linea.descripcion
+             sCajas = linea.cajas.replace(",", ".")
+             sCant = linea.cantidad.replace(",", ".")
              val dCant = sCant.toDouble()
              if (dCant >= 0.0) {
                  if (fVtaIvaIncluido) {
-                     sPrecio = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("precioii")).replace(",", ".")
-                     sImpte = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("importeii")).replace(",", ".")
+                     sPrecio = linea.precioII.replace(",", ".")
+                     sImpte = linea.importeII.replace(",", ".")
                  } else {
-                     sPrecio = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("precio")).replace(",", ".")
-                     sImpte = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("importe")).replace(",", ".")
+                     sPrecio = linea.precio.replace(",", ".")
+                     sImpte = linea.importe.replace(",", ".")
                  }
                  result.append(ajustarCadena(sCodigo, lCodigo, true)).append(" ").append(ajustarCadena(sDescr, lDescr, true))
                  val dCajas = sCajas.toDouble()
@@ -375,7 +372,7 @@ import java.util.*
                  val dImpte = sImpte.toDouble()
 
                  // Si la línea es sin cargo lo indicamos
-                 if (fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("flag")) and FLAGLINEAVENTA_SIN_CARGO > 0) {
+                 if (linea.flag and FLAGLINEAVENTA_SIN_CARGO > 0) {
                      sPrecio = "SIN"
                      sImpte = "CARGO"
                  } else {
@@ -388,25 +385,23 @@ import java.util.*
                  result.append(fCR).append(fLF)
 
                  // Si la línea tiene cajas las imprimimos
-                 if (fDocumento.cLineas.getDouble(fDocumento.cLineas.getColumnIndex("cajas")) != 0.0) {
+                 if (linea.cajas.toDouble() != 0.0) {
                      result.append("Cajas: ").append(ajustarCadena(sCajas, lCajas, false)).append(fCR).append(fLF)
                  }
                  // Si la línea tiene descuento lo imprimimos
-                 if (fDocumento.cLineas.getDouble(fDocumento.cLineas.getColumnIndex("dto")) != 0.0) {
-                     sDto = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("dto"))
+                 if (linea.dto.toDouble() != 0.0) {
+                     sDto = linea.dto
                      result.append("% dto.: ").append(ajustarCadena(sDto, 5, false)).append(fCR).append(fLF)
                  }
                  // Si la línea tiene número de lote lo imprimimos.
-                 if (fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("lote")) != null
-                     && fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("lote")) != ""
-                 ) {
-                     sLote = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("lote"))
+                 if (linea.lote != "") {
+                     sLote = linea.lote
                      result.append("Numero lote: ").append(ajustarCadena(sLote, lLote, true))
                      result.append(fCR).append(fLF)
                  }
                  // Si la línea tiene incidencia la imprimimos
-                 if (fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("incidencia")) > 0) {
-                     fIncidencia = fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("incidencia"))
+                 if (linea.tipoIncId > 0) {
+                     fIncidencia = linea.tipoIncId
                      val queDescrInc = tiposIncDao?.dimeDescripcion(fIncidencia) ?: ""
                      if (queDescrInc != "") {
                          result.append("Incidencia: ").append(fIncidencia).append(" ").append(queDescrInc)
@@ -414,7 +409,6 @@ import java.util.*
                      }
                  }
              }
-             fDocumento.cLineas.moveToNext()
          }
          result.append(fCR).append(fLF)
          // Pausa.
@@ -448,10 +442,9 @@ import java.util.*
          var y = 0
          var primeraLinea = true
 
-         fDocumento.cLineas.moveToFirst()
-         while (!fDocumento.cLineas.isAfterLast) {
-             sCajas = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cajas")).replace(",", ".")
-             sCant = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cantidad")).replace(",", ".")
+         for (linea in fDocumento.lLineas) {
+             sCajas = linea.cajas.replace(",", ".")
+             sCant = linea.cantidad.replace(",", ".")
              val dCant = sCant.toDouble()
              if (dCant >= 0.0) {
                  val dCajas = sCajas.toDouble()
@@ -460,8 +453,8 @@ import java.util.*
                  sCajas = String.format(fFtoCant, dCajas)
                  sCant = String.format(fFtoCant, dCant)
 
-                 imprimirLinea(result, y, sCant)
-                 y = imprimirSigLineas(result, y, sCajas)
+                 imprimirLinea(linea, result, y, sCant)
+                 y = imprimirSigLineas(linea, result, y, sCajas)
 
                  if (primeraLinea) {
                      y += 40
@@ -469,7 +462,6 @@ import java.util.*
                  }
                  else y += 25
              }
-             fDocumento.cLineas.moveToNext()
          }
          // Pausa.
          SystemClock.sleep(200)
@@ -487,10 +479,9 @@ import java.util.*
          var y = 0
          var primeraLinea = true
 
-         fDocumento.cLineas.moveToFirst()
-         while (!fDocumento.cLineas.isAfterLast) {
-             sCajas = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cajas")).replace(",", ".")
-             sCant = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cantidad")).replace(",", ".")
+         for (linea in fDocumento.lLineas) {
+             sCajas = linea.cajas.replace(",", ".")
+             sCant = linea.cantidad.replace(",", ".")
              val dCant = sCant.toDouble()
              if (dCant < 0.0) {
                  val dCajas = sCajas.toDouble()
@@ -499,8 +490,8 @@ import java.util.*
                  sCajas = String.format(fFtoCant, dCajas)
                  sCant = String.format(fFtoCant, dCant)
 
-                 imprimirLinea(result, y, sCant)
-                 y = imprimirSigLineas(result, y, sCajas)
+                 imprimirLinea(linea, result, y, sCant)
+                 y = imprimirSigLineas(linea, result, y, sCajas)
 
                  if (primeraLinea) {
                      y += 40
@@ -508,7 +499,6 @@ import java.util.*
                  }
                  else y += 25
              }
-             fDocumento.cLineas.moveToNext()
          }
          // Pausa.
          SystemClock.sleep(200)
@@ -745,11 +735,11 @@ import java.util.*
 
 
 
-     private fun imprimirLinea(result: java.lang.StringBuilder, y: Int, sCant: String) {
-         val sCodigo = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("codigo"))
-         val sDescr = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("descr"))
-         val sPrecio = dimePrecioLinea()
-         val sImpte = dimeImpteLinea()
+     private fun imprimirLinea(linea: DatosLinVtas, result: java.lang.StringBuilder, y: Int, sCant: String) {
+         val sCodigo = linea.codArticulo
+         val sDescr = linea.descripcion
+         val sPrecio = dimePrecioLinea(linea)
+         val sImpte = dimeImpteLinea(linea)
 
          val lCodigo = 7
          val lDescr = 18
@@ -775,7 +765,7 @@ import java.util.*
      }
 
 
-     private fun imprimirSigLineas(result: java.lang.StringBuilder, y: Int, sCajas: String): Int {
+     private fun imprimirSigLineas(linea: DatosLinVtas, result: java.lang.StringBuilder, y: Int, sCajas: String): Int {
          val sDto: String
          val sLote: String
          val fIncidencia: Int
@@ -784,33 +774,31 @@ import java.util.*
 
          var x = y
          // Si la línea tiene cajas las imprimimos
-         if (fDocumento.cLineas.getDouble(fDocumento.cLineas.getColumnIndex("cajas")) != 0.0) {
+         if (linea.cajas.toDouble() != 0.0) {
              x += 20
              result.append("^FT0,$x^AKN,20")
              result.append("^FD").append("Cajas: ").append(ajustarCadena(sCajas, lCajas, false)).append("^FS")
              result.append(fCR).append(fLF)
          }
          // Si la línea tiene descuento lo imprimimos
-         if (fDocumento.cLineas.getDouble(fDocumento.cLineas.getColumnIndex("dto")) != 0.0) {
-             sDto = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("dto"))
+         if (linea.dto.toDouble() != 0.0) {
+             sDto = linea.dto
              x += 20
              result.append("^FT0,$x^AKN,20")
              result.append("^FD").append("% dto.: ").append(ajustarCadena(sDto, 5, false)).append("^FS")
              result.append(fCR).append(fLF)
          }
          // Si la línea tiene número de lote lo imprimimos.
-         if (fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("lote")) != null
-             && fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("lote")) != ""
-         ) {
-             sLote = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("lote"))
+         if (linea.lote != "") {
+             sLote = linea.lote
              x += 20
              result.append("^FT0,$x^AKN,20")
              result.append("^FD").append("Numero lote: ").append(ajustarCadena(sLote, lLote, true)).append("^FS")
              result.append(fCR).append(fLF)
          }
          // Si la línea tiene incidencia la imprimimos
-         if (fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("incidencia")) > 0) {
-             fIncidencia = fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("incidencia"))
+         if (linea.tipoIncId > 0) {
+             fIncidencia = linea.tipoIncId
              val tiposIncDao = MyDatabase.getInstance(fContexto)?.tiposIncDao()
              val queDescrInc = tiposIncDao?.dimeDescripcion(fIncidencia) ?: ""
              if (queDescrInc != "") {
@@ -824,16 +812,16 @@ import java.util.*
          return x
      }
 
-     private fun dimePrecioLinea(): String {
+     private fun dimePrecioLinea(linea: DatosLinVtas): String {
          var sPrecio: String = if (fVtaIvaIncluido) {
-             fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("precioii")).replace(",", ".")
+             linea.precioII.replace(",", ".")
          } else {
-             fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("precio")).replace(",", ".")
+             linea.precio.replace(",", ".")
          }
 
          val dPrecio = sPrecio.toDouble()
          // Si la línea es sin cargo lo indicamos
-         sPrecio = if (fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("flag")) and FLAGLINEAVENTA_SIN_CARGO > 0) {
+         sPrecio = if (linea.flag and FLAGLINEAVENTA_SIN_CARGO > 0) {
              "SIN"
          } else {
              String.format(fFtoPrBase, dPrecio)
@@ -842,16 +830,16 @@ import java.util.*
          return sPrecio
      }
 
-     private fun dimeImpteLinea(): String {
+     private fun dimeImpteLinea(linea: DatosLinVtas): String {
          var sImpte: String = if (fVtaIvaIncluido) {
-             fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("importeii")).replace(",", ".")
+             linea.importeII.replace(",", ".")
          } else {
-             fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("importe")).replace(",", ".")
+             linea.importe.replace(",", ".")
          }
 
          val dImpte = sImpte.toDouble()
          // Si la línea es sin cargo lo indicamos
-         sImpte = if (fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("flag")) and FLAGLINEAVENTA_SIN_CARGO > 0) {
+         sImpte = if (linea.flag and FLAGLINEAVENTA_SIN_CARGO > 0) {
              "CARGO"
          } else {
              String.format(fFtoImpBase, dImpte)

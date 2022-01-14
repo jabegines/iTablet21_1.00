@@ -3,25 +3,27 @@ package es.albainformatica.albamobileandroid.ventas
 import android.app.Activity
 import android.view.View.OnFocusChangeListener
 import android.os.Bundle
-import android.content.ContentValues
-import android.database.Cursor
 import android.view.KeyEvent
 import android.view.View
 import android.widget.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.*
+import es.albainformatica.albamobileandroid.entity.DtosLineasEnt
+import kotlinx.android.synthetic.main.dtos_cascada.*
 import java.util.*
 
 /**
  * Created by jabegines on 29/05/2014.
  */
-class EditarDtosCascada : Activity(), OnFocusChangeListener {
+class EditarDtosCascada: Activity(), OnFocusChangeListener {
     private lateinit var fDocumento: Documento
     private lateinit var fDtosCascada: DtosCascada
     private lateinit var fConfiguracion: Configuracion
+
     private var fNumLinea = 0
     private var fIdDto = 0
-    private var fOrden = 0
-    lateinit var adapterLineas: SimpleCursorAdapter
+    private var fOrden: Short = 0
     private var fFtoCantidad: String = ""
     private var fFtoImpBase: String = ""
     private var fDecPrBase = 0
@@ -32,7 +34,10 @@ class EditarDtosCascada : Activity(), OnFocusChangeListener {
     private lateinit var fImpDto: EditText
     private lateinit var fCant1: EditText
     private lateinit var fCant2: EditText
-    private lateinit var lvDtosC: ListView
+
+    private lateinit var fRecyclerView: RecyclerView
+    private lateinit var fAdapter: DtosCascRvAdapter
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +50,7 @@ class EditarDtosCascada : Activity(), OnFocusChangeListener {
         val intent = intent
         fNumLinea = intent.getIntExtra("numerolinea", -1)
         fDtosCascada.abrir(fNumLinea)
+
         inicializarControles()
     }
 
@@ -56,13 +62,14 @@ class EditarDtosCascada : Activity(), OnFocusChangeListener {
         // llamo a aceptarDtCasc() para grabar el descuento. De esta forma consigo que si el usuario introduce algún descuento
         // y pulsa el botón Siguiente en el teclado, se grabe el descuento que ha introducido y vuelva a pedir otro nuevo.
         if (hasFocus) {
-            if (v === fImpDto && fPorcDto.text.toString() != "") aceptarDtCasc(null) else if (v === fCant1 && fPorcDto.text.toString() != "")
-                aceptarDtCasc(null)
-            else if (v === fCant1 && fImpDto.text.toString() != "") aceptarDtCasc(null) else if (v === fCant2 && fPorcDto.text.toString() != "")
-                aceptarDtCasc(null)
+            if (v === fImpDto && fPorcDto.text.toString() != "") aceptarDtCasc(null)
+            else if (v === fCant1 && fPorcDto.text.toString() != "") aceptarDtCasc(null)
+            else if (v === fCant1 && fImpDto.text.toString() != "") aceptarDtCasc(null)
+            else if (v === fCant2 && fPorcDto.text.toString() != "") aceptarDtCasc(null)
             else if (v === fCant2 && fImpDto.text.toString() != "") aceptarDtCasc(null)
         }
     }
+
 
     private fun inicializarControles() {
         fEstado = est_Vl_Nueva
@@ -80,15 +87,13 @@ class EditarDtosCascada : Activity(), OnFocusChangeListener {
         fFtoImpBase = fConfiguracion.formatoDecImptesBase()
 
         // Configuramos el objeto de los dtos. en cascada
-        fDtosCascada.fIvaIncluido =
-            fConfiguracion.ivaIncluido(fDocumento.fEmpresa.toString().toInt())
+        fDtosCascada.fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa.toString().toInt())
         fDtosCascada.fAplicarIva = fDocumento.fClientes.fAplIva
         fDtosCascada.fPorcIva = fDocumento.fPorcIva
         fDtosCascada.fDecPrBase = fConfiguracion.decimalesPrecioBase()
-        fDtosCascada.fExentoIva = fDocumento.fClientes.fAplIva
 
         // Si el dto. en cascada viene a través de un rating no permitiremos editar ni borrar ni crear, sólo ver.
-        fPuedoEditar = !fDtosCascada.desdeRating
+        fPuedoEditar = !fDtosCascada.desdeRating()
         if (!fPuedoEditar) {
             val btnModificar = findViewById<Button>(R.id.btnModificar)
             val btnBorrar = findViewById<Button>(R.id.btnBorrar)
@@ -97,122 +102,80 @@ class EditarDtosCascada : Activity(), OnFocusChangeListener {
             btnBorrar.isEnabled = false
             btnAceptar.isEnabled = false
         }
-        lvDtosC = findViewById(R.id.lvDtosC)
-        prepararListView()
+
+        fRecyclerView = rvDtosC
+        fRecyclerView.layoutManager = LinearLayoutManager(this)
+        prepararRecyclerView()
     }
 
-    private fun prepararListView() {
-        val columnas = arrayOf("descuento", "importe", "cantidad1", "cantidad2")
-        val to =
-            intArrayOf(R.id.ly_dc_porcentaje, R.id.ly_dc_impte, R.id.ly_dc_cant1, R.id.ly_dc_cant2)
-        adapterLineas = SimpleCursorAdapter(
-            this,
-            R.layout.ly_dtos_cascada,
-            fDtosCascada.cursor,
-            columnas,
-            to,
-            0
-        )
-        lvDtosC.adapter = adapterLineas
 
-        // Formateamos las columnas
-        formatearColumnas()
-        lvDtosC.onItemClickListener =
-            AdapterView.OnItemClickListener { listView: AdapterView<*>, _: View?, position: Int, _: Long ->
-                // Tomamos el campo _id de la fila en la que hemos pulsado.
-                val cursor = listView.getItemAtPosition(position) as Cursor
-                fIdDto = cursor.getInt(cursor.getColumnIndexOrThrow("_id"))
+    private fun prepararRecyclerView() {
+        fAdapter = DtosCascRvAdapter(getDtosCascada(), this, object: DtosCascRvAdapter.OnItemClickListener {
+            override fun onClick(view: View, data: DtosLineasEnt) {
+                fIdDto = data.descuentoId
             }
+        })
+
+        fRecyclerView.adapter = fAdapter
     }
 
-    private fun formatearColumnas() {
-        adapterLineas.viewBinder =
-            SimpleCursorAdapter.ViewBinder { view: View, cursor: Cursor, column: Int ->
-                val tv = view as TextView
-
-                // Formateamos el % de descuento
-                if (column == 3) {
-                    val sDto =
-                        cursor.getString(cursor.getColumnIndex("descuento")).replace(',', '.')
-                    val dDto = sDto.toDouble()
-                    tv.text = String.format(Locale.getDefault(), "%.2f", dDto)
-                    return@ViewBinder true
-                }
-                // Formateamos el importe de descuento
-                if (column == 4) {
-                    val sDto = cursor.getString(cursor.getColumnIndex("importe")).replace(',', '.')
-                    val dDto = sDto.toDouble()
-                    tv.text = String.format(fFtoImpBase, dDto)
-                    return@ViewBinder true
-                }
-                // Cantidad1
-                if (column == 5) {
-                    val sCajas =
-                        cursor.getString(cursor.getColumnIndex("cantidad1")).replace(',', '.')
-                    val dCantidad = sCajas.toDouble()
-                    tv.text = String.format(fFtoCantidad, dCantidad)
-                    return@ViewBinder true
-                }
-                // Cantidad2
-                if (column == 6) {
-                    val sCajas =
-                        cursor.getString(cursor.getColumnIndex("cantidad2")).replace(',', '.')
-                    val dCantidad = sCajas.toDouble()
-                    tv.text = String.format(fFtoCantidad, dCantidad)
-                    return@ViewBinder true
-                }
-                false
-            }
+    private fun getDtosCascada(): List<DtosLineasEnt> {
+        return fDtosCascada.lDescuentos
     }
+
+
 
     fun cancelarDtCasc(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
         // Calculamos el descuento equivalente
-        if (fDtosCascada.cursor.count > 0) {
-            fDocumento.fDtoLin = fDtosCascada.calcularDtoEquiv(fDocumento.fPrecio, fDecPrBase)
-                .toDouble()
+        if (fDtosCascada.lDescuentos.count() > 0) {
+            fDocumento.fDtoLin = fDtosCascada.calcularDtoEquiv(fDocumento.fPrecio, fDecPrBase).toDouble()
             // Le decimos al documento que la línea tiene descuentos en cascada.
             fDocumento.fLineaConDtCasc = true
+
         } else fDocumento.fDtoLin = 0.0
+
         finish()
     }
+
 
     fun aceptarDtCasc(view: View?) {
         view?.getTag(0)          // Para que no dé warning el compilador
 
         if (fPuedoEditar) {
             if (datosCorrectos()) {
-                val values = ContentValues()
+                val dtoLinEnt = DtosLineasEnt()
+
                 val sPorcDto = fPorcDto.text.toString().replace(',', '.')
-                if (sPorcDto == "") values.put("descuento", 0.0) else values.put(
-                    "descuento",
-                    sPorcDto.toDouble()
-                )
+                if (sPorcDto == "") dtoLinEnt.descuento = "0.0"
+                else dtoLinEnt.descuento = sPorcDto
+
                 val sImpDto = fImpDto.text.toString().replace(',', '.')
-                if (sImpDto == "") values.put("importe", 0.0) else values.put(
-                    "importe",
-                    sImpDto.toDouble()
-                )
+                if (sImpDto == "") dtoLinEnt.importe = "0.0"
+                else dtoLinEnt.importe = sImpDto
+
                 val sCant1 = fCant1.text.toString().replace(',', '.')
-                if (sCant1 == "") values.put("cantidad1", 0.0) else values.put(
-                    "cantidad1",
-                    sCant1.toDouble()
-                )
+                if (sCant1 == "") dtoLinEnt.cantidad1 = "0.0"
+                else dtoLinEnt.cantidad1 = sCant1
+
                 val sCant2 = fCant2.text.toString().replace(',', '.')
-                if (sCant2 == "") values.put("cantidad2", 0.0) else values.put(
-                    "cantidad2",
-                    sCant2.toDouble()
-                )
+                if (sCant2 == "") dtoLinEnt.cantidad2 = "0.0"
+                else dtoLinEnt.cantidad2 = sCant2
+
                 if (fEstado == est_Vl_Nueva) {
-                    values.put("linea", fNumLinea)
-                    values.put("orden", fOrden)
-                    fDocumento.insertarDtoCasc(values)
+                    dtoLinEnt.lineaId = fNumLinea
+                    dtoLinEnt.orden = fOrden
+                    dtoLinEnt.desdeRating = "F"
+
+                    fDocumento.insertarDtoCasc(dtoLinEnt)
                     fOrden++
+
                 } else if (fEstado == est_Vl_Editar) {
-                    fDocumento.editarDtoCasc(values, fIdDto)
+                    fDocumento.editarDtoCasc(fIdDto, dtoLinEnt)
                     fEstado = est_Vl_Nueva
                 }
+
                 limpiarControles()
                 refrescarListView()
                 fImpDto.clearFocus()
@@ -222,6 +185,7 @@ class EditarDtosCascada : Activity(), OnFocusChangeListener {
             }
         }
     }
+
 
     private fun datosCorrectos(): Boolean {
         var continuar = true
@@ -237,9 +201,8 @@ class EditarDtosCascada : Activity(), OnFocusChangeListener {
     }
 
     private fun refrescarListView() {
-        fDtosCascada.cursor.close()
         fDtosCascada.abrir(fNumLinea)
-        adapterLineas.changeCursor(fDtosCascada.cursor)
+        prepararRecyclerView()
     }
 
     private fun limpiarControles() {
@@ -250,19 +213,19 @@ class EditarDtosCascada : Activity(), OnFocusChangeListener {
     }
 
 
-    private fun llenarControles() {
+    private fun llenarControles(dto: DtosLineasEnt) {
         when {
-            fDtosCascada.porcDto != 0.0 -> {
-                fPorcDto.setText(String.format(Locale.getDefault(), "%.2f", fDtosCascada.porcDto))
+            dto.descuento.toDouble() != 0.0 -> {
+                fPorcDto.setText(String.format(Locale.getDefault(), "%.2f", dto.descuento.toDouble()))
                 fPorcDto.requestFocus()
             }
-            fDtosCascada.impDto != 0.0 -> {
-                fImpDto.setText(String.format(Locale.getDefault(), "%.2f", fDtosCascada.impDto))
+            dto.importe.toDouble() != 0.0 -> {
+                fImpDto.setText(String.format(Locale.getDefault(), "%.2f", dto.importe.toDouble()))
                 fImpDto.requestFocus()
             }
-            fDtosCascada.cant1 != 0.0 -> {
-                fCant1.setText(String.format(fFtoCantidad, fDtosCascada.cant1))
-                fCant2.setText(String.format(fFtoCantidad, fDtosCascada.cant2))
+            dto.cantidad1.toDouble() != 0.0 -> {
+                fCant1.setText(String.format(fFtoCantidad, dto.cantidad1.toDouble()))
+                fCant2.setText(String.format(fFtoCantidad, dto.cantidad2.toDouble()))
                 fCant1.requestFocus()
             }
         }
@@ -271,15 +234,24 @@ class EditarDtosCascada : Activity(), OnFocusChangeListener {
     fun borrarDtCasc(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
-        fDtosCascada.borrar(fIdDto)
-        refrescarListView()
+        if (fIdDto > 0) {
+            fDtosCascada.borrar(fIdDto)
+            refrescarListView()
+        }
     }
 
     fun modificarDtCasc(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
-        fEstado = est_Vl_Editar
-        llenarControles()
+        if (fIdDto > 0) {
+            fEstado = est_Vl_Editar
+
+            // Nos situamos en el item  correspondiente de la lista de descuentos
+            for (dto in fDtosCascada.lDescuentos) {
+                if (dto.descuentoId == fIdDto)
+                    llenarControles(dto)
+            }
+        }
     }
 
     // Manejo los eventos del teclado en la actividad.

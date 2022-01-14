@@ -599,8 +599,7 @@ class DocsReparto: AppCompatActivity() {
                 fDocumento.cargarDocumento(fIdDocumento, false)
                 val altbld = AlertDialog.Builder(this)
                 altbld.setTitle("Escoger incidencia")
-                val queTipoInc =
-                    fDocumento.cDocumentos.getInt(fDocumento.cDocumentos.getColumnIndexOrThrow("tipoincidencia"))
+                val queTipoInc = fDocumento.cabActualEnt.tipoIncidencia
                 val queItem: Int = localizarIncid(queTipoInc)
                 altbld.setSingleChoiceItems(chsIncidencias, queItem) { dialog: DialogInterface, item: Int ->
                     val sIncidencia: String = chsIncidencias[item].toString()

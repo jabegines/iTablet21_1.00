@@ -44,7 +44,6 @@ class CatalogoGruposDep: Activity() {
     override fun onDestroy() {
         guardarPreferencias()
         fDepartamentos.close()
-        fGrupos.close()
         fArticulosGrv.close()
         super.onDestroy()
     }
@@ -73,35 +72,30 @@ class CatalogoGruposDep: Activity() {
     private fun verGrupos() {
         if (fGrupos.abrir()) {
             val inflater = this.getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            while (!fGrupos.cursor.isAfterLast) {
+            for (grupo in fGrupos.lGrupos) {
                 // Usamos un layout donde tenemos una imagen y una etiqueta.
                 val vi = inflater.inflate(R.layout.ly_cat_grupos, null)
                 val imageView = vi.findViewById<ImageView>(R.id.imvLyClasific)
                 imageView.scaleType = ImageView.ScaleType.FIT_CENTER
-                val queFichero = carpetaImagenes + fGrupos.imagen
+                val queFichero = carpetaImagenes + "GRP_" + grupo.codigo + ".jpg"
                 val file = File(queFichero)
-                if (file.exists()) imageView.setImageURI(Uri.parse(queFichero)) else imageView.setImageDrawable(
-                    null
-                )
-                imageView.tag =
-                    ponerCeros(fGrupos.codigo.toString(), ancho_grupo) + fGrupos.descripcion
+                if (file.exists())
+                    imageView.setImageURI(Uri.parse(queFichero)) else imageView.setImageDrawable(null)
+
+                imageView.tag = ponerCeros(grupo.codigo.toString(), ancho_grupo) + grupo.descripcion
                 imageView.setOnClickListener { v: View ->
                     val queTag = v.tag.toString()
                     val sGrupo = queTag.substring(0, ancho_grupo.toInt())
                     fGrupo = sGrupo.toInt()
-                    //String sDescr = queTag.substring(Constantes.ancho_grupo);
+
                     cambiarAlpha(fGrupo, false)
                     verDepartamentos(fGrupo)
                 }
                 val tvDescr = vi.findViewById<TextView>(R.id.tvLyClasific)
-                tvDescr.tag =
-                    ponerCeros(fGrupos.codigo.toString(), ancho_grupo) + fGrupos.descripcion
-                tvDescr.text = fGrupos.descripcion
+                tvDescr.tag = ponerCeros(grupo.codigo.toString(), ancho_grupo) + grupo.descripcion
+                tvDescr.text = grupo.descripcion
                 lyScrollGrupos.addView(vi)
-                fGrupos.cursor.moveToNext()
             }
-            // Mostramos los departamentos del primer grupo.
-            fGrupos.cursor.moveToFirst()
         }
     }
 

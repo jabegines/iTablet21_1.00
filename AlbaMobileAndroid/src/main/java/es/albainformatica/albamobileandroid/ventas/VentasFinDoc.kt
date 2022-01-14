@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.cobros.CobrosActivity
+import es.albainformatica.albamobileandroid.dao.CabecerasDao
+import es.albainformatica.albamobileandroid.dao.DtosCltesDao
 import es.albainformatica.albamobileandroid.dao.TiposIncDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.entity.TiposIncEnt
@@ -33,6 +35,8 @@ import java.util.*
  * Created by jabegines on 14/10/13.
  */
 class VentasFinDoc: AppCompatActivity() {
+    private val dtosCltesDao: DtosCltesDao? = MyDatabase.getInstance(this)?.dtosCltesDao()
+    private val cabecerasDao: CabecerasDao? = MyDatabase.getInstance(this)?.cabecerasDao()
     private lateinit var fConfiguracion: Configuracion
     private lateinit var fFPago: FormasPagoClase
     private lateinit var fPendiente: PendienteClase
@@ -177,7 +181,7 @@ class VentasFinDoc: AppCompatActivity() {
             if (queFPago != "")
                 sFPago = queFPago
             else
-                sFPago = fDocumento.fClientes.getFPago()
+                sFPago = fDocumento.fClientes.fPago
 
             for (i in 0 until sca.count) {
                 val cursor = sca.getItem(i) as Cursor
@@ -206,49 +210,32 @@ class VentasFinDoc: AppCompatActivity() {
     }
 
     private fun cargarDtosClte() {
-        // TODO
-        /*
-        val cDtos = dbAlba.rawQuery(
-            "SELECT dto FROM dtoscltes WHERE cliente = " + fDocumento.fCliente +
-                    " ORDER BY iddescuento", null
-        )
-        if (cDtos.moveToFirst()) edtDtoPie1.setText(cDtos.getString(cDtos.getColumnIndex("dto")))
-        cDtos.moveToNext()
-        if (!cDtos.isAfterLast) edtDtoPie2.setText(cDtos.getString(cDtos.getColumnIndex("dto")))
-        cDtos.moveToNext()
-        if (!cDtos.isAfterLast) edtDtoPie3.setText(cDtos.getString(cDtos.getColumnIndex("dto")))
-        cDtos.moveToNext()
-        if (!cDtos.isAfterLast) edtDtoPie4.setText(cDtos.getString(cDtos.getColumnIndex("dto")))
-        cDtos.close()
-        */
+
+        val lDtosClte = dtosCltesDao?.getDtosClte(fDocumento.fCliente) ?: emptyList<String>().toMutableList()
+
+        if (lDtosClte.count() > 0) edtDtoPie1.setText(lDtosClte[0])
+        if (lDtosClte.count() > 1) edtDtoPie2.setText(lDtosClte[1])
+        if (lDtosClte.count() > 2) edtDtoPie3.setText(lDtosClte[2])
+        if (lDtosClte.count() > 3) edtDtoPie4.setText(lDtosClte[3])
     }
 
     private fun cargarDatos() {
-        // TODO
-        /*
-        val cDocumento = dbAlba.rawQuery(
-            "SELECT obs1, obs2, dto, dto2, dto3, dto4, fpago"
-                    + " FROM cabeceras WHERE _id=" + fIdDoc, null
-        )
-        if (cDocumento.moveToFirst()) {
-            edtObs1.setText(cDocumento.getString(cDocumento.getColumnIndex("obs1")))
-            edtObs2.setText(cDocumento.getString(cDocumento.getColumnIndex("obs2")))
-            edtDtoPie1.setText(cDocumento.getString(cDocumento.getColumnIndex("dto")))
-            edtDtoPie2.setText(cDocumento.getString(cDocumento.getColumnIndex("dto2")))
-            edtDtoPie3.setText(cDocumento.getString(cDocumento.getColumnIndex("dto3")))
-            edtDtoPie4.setText(cDocumento.getString(cDocumento.getColumnIndex("dto4")))
-            // Esto nos sirve sólo para pedidos.
-            if (fDocumento.fTipoDoc == TIPODOC_PEDIDO)
-                queFPago = cDocumento.getString(cDocumento.getColumnIndex("fpago"))
-        }
-        cDocumento.close()
+
+        val datosCabFinDoc = cabecerasDao?.getDatosFinDoc(fIdDoc) ?: DatosCabFinDoc()
+
+        edtObs1.setText(datosCabFinDoc.observ1)
+        edtObs2.setText(datosCabFinDoc.observ2)
+        edtDtoPie1.setText(datosCabFinDoc.dto)
+        edtDtoPie2.setText(datosCabFinDoc.dto2)
+        edtDtoPie3.setText(datosCabFinDoc.dto3)
+        edtDtoPie4.setText(datosCabFinDoc.dto4)
+        // Esto nos sirve sólo para pedidos.
+        if (fDocumento.fTipoDoc == TIPODOC_PEDIDO)
+            queFPago = datosCabFinDoc.fPago
+
         if (fDocumento.fTipoDoc == TIPODOC_FACTURA) {
-            queFPago = fPendiente.getFPagoDoc(
-                fDocumento.fAlmacen, fDocumento.serie,
-                fDocumento.numero, fDocumento.fEjercicio
-            )
+            queFPago = fPendiente.getFPagoDoc(fDocumento.fAlmacen, fDocumento.serie, fDocumento.numero, fDocumento.fEjercicio)
         }
-        */
     }
 
     private fun prepararBases() {

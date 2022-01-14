@@ -36,16 +36,16 @@ interface SeriesDao {
 
 
     @Query("UPDATE Series SET Factura = :queNumero WHERE Serie = :queSerie AND Ejercicio = :queEjercicio")
-    fun setNumFactura(queSerie: String, queEjercicio: Int, queNumero: Int)
+    fun setNumFactura(queSerie: String, queEjercicio: Short, queNumero: Int)
 
     @Query("UPDATE Series SET Albaran = :queNumero WHERE Serie = :queSerie AND Ejercicio = :queEjercicio")
-    fun setNumAlbaran(queSerie: String, queEjercicio: Int, queNumero: Int)
+    fun setNumAlbaran(queSerie: String, queEjercicio: Short, queNumero: Int)
 
     @Query("UPDATE Series SET Pedido = :queNumero WHERE Serie = :queSerie AND Ejercicio = :queEjercicio")
-    fun setNumPedido(queSerie: String, queEjercicio: Int, queNumero: Int)
+    fun setNumPedido(queSerie: String, queEjercicio: Short, queNumero: Int)
 
     @Query("UPDATE Series SET Presupuesto = :queNumero WHERE Serie = :queSerie AND Ejercicio = :queEjercicio")
-    fun setNumPresupuesto(queSerie: String, queEjercicio: Int, queNumero: Int)
+    fun setNumPresupuesto(queSerie: String, queEjercicio: Short, queNumero: Int)
 
 
     @Query("SELECT Serie FROM Series WHERE empresa = :queEmpresa AND ejercicio = :queEjercicio")

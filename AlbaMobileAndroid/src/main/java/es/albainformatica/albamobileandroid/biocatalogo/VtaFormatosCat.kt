@@ -2,7 +2,6 @@ package es.albainformatica.albamobileandroid.biocatalogo
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -17,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.dao.FtosLineasDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
+import es.albainformatica.albamobileandroid.entity.DtosLineasEnt
 import es.albainformatica.albamobileandroid.entity.FtosLineasEnt
 import es.albainformatica.albamobileandroid.maestros.ArticulosClase
 import es.albainformatica.albamobileandroid.maestros.Formatos
@@ -284,16 +284,17 @@ class VtaFormatosCat: AppCompatActivity() {
 
 
     private fun anyadirDtoCascada() {
-        val values = ContentValues()
+        val dtoLineaEnt = DtosLineasEnt()
 
-        values.put("descuento", 0.0)
-        values.put("importe", fDocumento.fDtoRatingImp)
-        values.put("cantidad1", 0.0)
-        values.put("cantidad2", 0.0)
-        values.put("linea", -1)
-        values.put("orden", 1)
-        values.put("desderating", "T")
-        fDocumento.insertarDtoCasc(values)
+        dtoLineaEnt.lineaId = -1
+        dtoLineaEnt.orden = 1
+        dtoLineaEnt.descuento = "0.0"
+        dtoLineaEnt.importe = fDocumento.fDtoRatingImp.toString()
+        dtoLineaEnt.cantidad1 = "0.0"
+        dtoLineaEnt.cantidad2 = "0.0"
+        dtoLineaEnt.desdeRating = "T"
+
+        fDocumento.insertarDtoCasc(dtoLineaEnt)
 
         fDtosCascada.abrir(-1)
         // Configuramos el objeto de los dtos. en cascada
@@ -301,7 +302,6 @@ class VtaFormatosCat: AppCompatActivity() {
         fDtosCascada.fAplicarIva = fDocumento.fClientes.fAplIva
         fDtosCascada.fPorcIva = fDocumento.fPorcIva
         fDtosCascada.fDecPrBase = fConfiguracion.decimalesPrecioBase()
-        fDtosCascada.fExentoIva = !fDocumento.fClientes.fAplIva
 
         fDocumento.fDtoLin = fDtosCascada.calcularDtoEquiv(fDocumento.fPrecio, fDecPrBase).toDouble()
         fDocumento.fLineaConDtCasc = true

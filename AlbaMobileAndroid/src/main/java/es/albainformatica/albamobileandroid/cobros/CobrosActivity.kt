@@ -538,8 +538,8 @@ class CobrosActivity: AppCompatActivity() {
             edtCodClte.setText(ponerCeros(fCodClte.toString(), ancho_codclte))
             tvNombre.text = fNombreClte
             tvNomCom.text = fNomComClte
-            tvFPagoClte.text = fClientes.nombreFPago(fClientes.getFPago())
-            tvRiesgo.text = String.format(fFtoDecImpIva, fClientes.getRiesgo())
+            tvFPagoClte.text = fClientes.nombreFPago(fClientes.fPago)
+            tvRiesgo.text = String.format(fFtoDecImpIva, fClientes.fRiesgo)
             tvSaldo.text = String.format(fFtoDecImpIva, fClientes.getSaldo())
             fClientes.close()
             fPendiente.abrir(fCliente)

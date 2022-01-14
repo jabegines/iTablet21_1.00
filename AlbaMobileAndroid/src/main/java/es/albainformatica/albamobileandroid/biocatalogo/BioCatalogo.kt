@@ -438,7 +438,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
                 if (fCatalogos.cursor.count > 0)
                     prepararLVCatalogos()
                 else {
-                    if (fGrupos.cursor.count > 0) {
+                    if (fGrupos.lGrupCat.count() > 0) {
                         prepararLVGrupos()
                     } else {
                         alert("No tiene ningún catálogo ni tampoco ningún grupo.\nNo podrá vender en el modo Catálogo Visual.") {
@@ -448,7 +448,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
                     }
                 }
             } else {
-                if (fGrupos.cursor.count > 0)
+                if (fGrupos.lGrupCat.count() > 0)
                     prepararLVGrupos()
                 else {
                     if (fCatalogos.cursor.count > 0) {
@@ -514,16 +514,19 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
 
     private fun prepararLVGrupos() {
-        if (fGrupos.cursor.count > 0) {
+        if (fGrupos.lGrupCat.count() > 0) {
             fModoVtaCat = 2
-            val mDrawerList = findViewById<View>(R.id.left_drawer) as ListView
+            val lvDrawerList = findViewById<View>(R.id.left_drawer) as ListView
             nhTvTipoCatalogo.text = resources.getString(R.string.grupos)
+
+
+
 
             val columns = arrayOf("descr", "numdepartamentos")
             val to = intArrayOf(R.id.tvBioDescr, R.id.tvBioNumArt)
-            mDrawerList.adapter = SimpleCursorAdapter(this, R.layout.layout_biogrupos, fGrupos.cursor, columns, to, 0)
+            lvDrawerList.adapter = SimpleCursorAdapter(this, R.layout.layout_biogrupos, fGrupos.cursor, columns, to, 0)
 
-            mDrawerList.onItemClickListener = AdapterView.OnItemClickListener { adapter, _, position, _ ->
+            lvDrawerList.onItemClickListener = AdapterView.OnItemClickListener { adapter, _, position, _ ->
                 val cursor = adapter.getItemAtPosition(position) as Cursor
                 fIdGrupo = cursor.getInt(cursor.getColumnIndexOrThrow("_id"))
                 val fDescrGrupo = cursor.getString(cursor.getColumnIndexOrThrow("descr"))
@@ -751,64 +754,58 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
             3 -> continuar = fArticulos.abrirBioHistorico(fDocumento.fCliente, fOrdenacion)
         }
 
-        // TODO
-        /*
+
         if (continuar) {
             // Insertamos en aImages todos los artículos que pertenezcan al catálogo o departamento seleccionado
-            do {
-                val idArticulo = fArticulos.cursor.getInt(fArticulos.cursor.getColumnIndex("articulo"))
-                aImages.add(idArticulo)
-
-            } while (fArticulos.cursor.moveToNext())
+            for (articuloId in fArticulos.lArticulos) {
+                aImages.add(articuloId)
+            }
 
             // Añadiremos un elemento en la tabla temporal catalogoLineas por cada línea del documento. De esta forma
             // esta tabla no tendrá tantos elementos como aImages, sino solamente los que insertemos en
             // las lineas del documento. Si usamos formatos no usaremos ésta sino la tabla temporal ftosLineas.
-            if (fDocumento.cLineas.moveToFirst()) {
+            for (linea in fDocumento.lLineas) {
+                if (fUsarFormatos) {
+                    val ftosLineasEnt = FtosLineasEnt()
 
-                do {
-                    if (fUsarFormatos) {
-                        val ftosLineasEnt = FtosLineasEnt()
+                    ftosLineasEnt.lineaId = linea.lineaId
+                    ftosLineasEnt.articuloId = linea.articuloId
+                    ftosLineasEnt.cajas = linea.cajas
+                    ftosLineasEnt.piezas = linea.piezas
+                    ftosLineasEnt.cantidad = linea.cantidad
+                    ftosLineasEnt.precio = linea.precio
+                    ftosLineasEnt.dto = linea.dto
+                    ftosLineasEnt.textoLinea = linea.textoLinea
+                    ftosLineasEnt.flag5 = linea.flag5
+                    ftosLineasEnt.flag = linea.flag
+                    ftosLineasEnt.borrar = "F"
+                    ftosLineasEnt.formatoId = linea.formatoId
 
-                        ftosLineasEnt.lineaId = fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("_id"))
-                        ftosLineasEnt.articuloId = fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("articulo"))
-                        ftosLineasEnt.cajas = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cajas"))
-                        ftosLineasEnt.piezas = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("piezas"))
-                        ftosLineasEnt.cantidad = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cantidad"))
-                        ftosLineasEnt.precio = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("precio"))
-                        ftosLineasEnt.dto = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("dto"))
-                        ftosLineasEnt.textoLinea = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("textolinea"))
-                        ftosLineasEnt.flag5 = fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("flag5"))
-                        ftosLineasEnt.flag = fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("flag"))
-                        ftosLineasEnt.borrar = "F"
-                        ftosLineasEnt.formatoId = fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("formato")).toShort()
+                    ftosLineasDao?.insertar(ftosLineasEnt)
 
-                        ftosLineasDao?.insertar(ftosLineasEnt)
+                } else {
+                    val catLineasEnt = CatalogoLineasEnt()
+                    catLineasEnt.linea = linea.lineaId
+                    catLineasEnt.articuloId = linea.articuloId
+                    catLineasEnt.cajas = linea.cajas
+                    catLineasEnt.piezas = linea.piezas
+                    catLineasEnt.cantidad = linea.cantidad
+                    catLineasEnt.precio = linea.precio
+                    catLineasEnt.dto = linea.dto
+                    catLineasEnt.textoLinea = linea.textoLinea
+                    catLineasEnt.flag5 = linea.flag5
+                    catLineasEnt.flag = linea.flag
+                    catLineasEnt.esEnlace = linea.esEnlace
+                    catLineasEnt.precioII = linea.precioII
+                    catLineasEnt.importe = linea.importe
+                    catLineasEnt.importeII = linea.importeII
 
-                    } else {
-                        val catLineasEnt = CatalogoLineasEnt()
-                        catLineasEnt.linea = fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("_id"))
-                        catLineasEnt.articuloId = fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("articulo"))
-                        catLineasEnt.cajas = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cajas"))
-                        catLineasEnt.piezas = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("piezas"))
-                        catLineasEnt.cantidad = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cantidad"))
-                        catLineasEnt.precio = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("precio"))
-                        catLineasEnt.dto =  fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("dto"))
-                        catLineasEnt.textoLinea = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("textolinea"))
-                        catLineasEnt.flag5 = fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("flag5"))
-                        catLineasEnt.flag = fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("flag"))
-                        catLineasEnt.esEnlace = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("esEnlace"))
-                        catLineasEnt.precioII = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("precioii"))
-                        catLineasEnt.importe = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("importe"))
-                        catLineasEnt.importeII = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("importeii"))
+                    catLineasDao?.insertar(catLineasEnt)
+                }
 
-                        catLineasDao?.insertar(catLineasEnt)
-                    }
-
-                } while (fDocumento.cLineas.moveToNext())
             }
         }
-        */
+
         return continuar
     }
 
@@ -1308,11 +1305,9 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
                 aImages = ArrayList()
                 // Por ahora mantenemos el array con los datos del documento tal y como está.
-                do {
-                    // Hacemos cursor.getInt(0) porque el cursor sólo tiene un campo: el id de cada artículo
-                    aImages.add(fArticulos.cursor.getInt(0))
-
-                } while (fArticulos.cursor.moveToNext())
+                for (articuloId in fArticulos.lArticulos) {
+                    aImages.add(articuloId)
+                }
 
                 // Reiniciamos el adaptador y demás controles
                 reiniciarAdaptador(false)
@@ -1525,7 +1520,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
     private fun venderEnlace(dCajas: Double, sPiezas: String, dCantidad: Double) {
 
-        val idArticulo = fArticulos.cursor.getInt(fArticulos.cursor.getColumnIndex("enlace"))
+        val idArticulo = fArticulos.fEnlace
         // Comprobamos que el artículo a enlazar no esté ya en catalogoLineas
         if (!enlaceEnCatLineas(idArticulo)) {
             if (fArticulos.existeArticulo(idArticulo)) {

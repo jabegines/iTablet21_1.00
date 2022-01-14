@@ -6,7 +6,6 @@ import es.albainformatica.albamobileandroid.ventas.Documento
 import es.albainformatica.albamobileandroid.cobros.FormasPagoClase
 import es.albainformatica.albamobileandroid.cobros.PendienteClase
 import android.content.SharedPreferences
-import android.database.sqlite.SQLiteDatabase
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import android.app.ProgressDialog
 import android.bluetooth.BluetoothAdapter
@@ -388,24 +387,19 @@ class ImprIntermecPB51(contexto: Context): Runnable {
 
         val tiposIncDao = myBD?.tiposIncDao()
 
-        fDocumento.cLineas.moveToFirst()
-        while (!fDocumento.cLineas.isAfterLast) {
-            sCodigo = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("codigo"))
-            sDescr = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("descr"))
-            sCajas = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cajas"))
-            sCant = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cantidad"))
+        for (linea in fDocumento.lLineas) {
+            sCodigo = linea.codArticulo
+            sDescr = linea.descripcion
+            sCajas = linea.cajas
+            sCant = linea.cantidad
             val dCant = sCant.toDouble()
             if (dCant < 0.0) {
                 if (fVtaIvaIncluido) {
-                    sPrecio =
-                        fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("precioii"))
-                    sImpte =
-                        fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("importeii"))
+                    sPrecio = linea.precioII
+                    sImpte = linea.importeII
                 } else {
-                    sPrecio =
-                        fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("precio"))
-                    sImpte =
-                        fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("importe"))
+                    sPrecio = linea.precio
+                    sImpte = linea.importe
                 }
                 result.append(fMargenIzq).append(ajustarCadena(sCodigo, lCodigo, true)).append(" ")
                     .append(ajustarCadena(sDescr, lDescr, true))
@@ -426,17 +420,15 @@ class ImprIntermecPB51(contexto: Context): Runnable {
                 fLineasImpr++
 
                 // Si la línea tiene número de lote lo imprimimos.
-                if (fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("lote")) != "") {
-                    sLote =
-                        fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("lote"))
-                    result.append(fMargenIzq).append("Numero lote: ")
-                        .append(ajustarCadena(sLote, lLote, true))
+                if (linea.lote != "") {
+                    sLote = linea.lote
+                    result.append(fMargenIzq).append("Numero lote: ").append(ajustarCadena(sLote, lLote, true))
                     result.append(ccSaltoLinea)
                     fLineasImpr++
                 }
                 // Si la línea tiene incidencia la imprimimos
-                if (fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("incidencia")) > 0) {
-                    fIncidencia = fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("incidencia"))
+                if (linea.tipoIncId > 0) {
+                    fIncidencia = linea.tipoIncId
                     val queDescrInc = tiposIncDao?.dimeDescripcion(fIncidencia) ?: ""
                     if (queDescrInc != "") {
                         result.append(fMargenIzq).append("Incidencia: ").append(fIncidencia).append(" ").append(queDescrInc)
@@ -444,7 +436,6 @@ class ImprIntermecPB51(contexto: Context): Runnable {
                     }
                 }
             }
-            fDocumento.cLineas.moveToNext()
         }
         result.append(ccSaltoLinea)
         if (sumaCajas != 0.0 || sumaCant != 0.0) {
@@ -489,24 +480,19 @@ class ImprIntermecPB51(contexto: Context): Runnable {
 
         val tiposIncDao = myBD?.tiposIncDao()
 
-        fDocumento.cLineas.moveToFirst()
-        while (!fDocumento.cLineas.isAfterLast) {
-            sCodigo = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("codigo"))
-            sDescr = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("descr"))
-            sCajas = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cajas"))
-            sCant = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cantidad"))
+        for (linea in fDocumento.lLineas) {
+            sCodigo = linea.codArticulo
+            sDescr = linea.descripcion
+            sCajas = linea.cajas
+            sCant = linea.cantidad
             val dCant = sCant.toDouble()
             if (dCant >= 0.0) {
                 if (fVtaIvaIncluido) {
-                    sPrecio =
-                        fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("precioii"))
-                    sImpte =
-                        fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("importeii"))
+                    sPrecio = linea.precioII
+                    sImpte = linea.importeII
                 } else {
-                    sPrecio =
-                        fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("precio"))
-                    sImpte =
-                        fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("importe"))
+                    sPrecio = linea.precio
+                    sImpte = linea.importe
                 }
                 result.append(fMargenIzq).append(ajustarCadena(sCodigo, lCodigo, true)).append(" ")
                     .append(ajustarCadena(sDescr, lDescr, true))
@@ -519,7 +505,7 @@ class ImprIntermecPB51(contexto: Context): Runnable {
                 val dImpte = sImpte.toDouble()
 
                 // Si la línea es sin cargo lo indicamos
-                if (fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("flag")) and FLAGLINEAVENTA_SIN_CARGO > 0) {
+                if (linea.flag and FLAGLINEAVENTA_SIN_CARGO > 0) {
                     sPrecio = "SIN"
                     sImpte = "CARGO"
                 } else {
@@ -534,17 +520,16 @@ class ImprIntermecPB51(contexto: Context): Runnable {
                 fLineasImpr++
 
                 // Si la línea tiene número de lote lo imprimimos.
-                if (fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("lote")) != "") {
-                    sLote =
-                        fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("lote"))
+                if (linea.lote != "") {
+                    sLote = linea.lote
                     result.append(fMargenIzq).append("Numero lote: ")
                         .append(ajustarCadena(sLote, lLote, true))
                     result.append(ccSaltoLinea)
                     fLineasImpr++
                 }
                 // Si la línea tiene incidencia la imprimimos
-                if (fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("incidencia")) > 0) {
-                    fIncidencia = fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("incidencia"))
+                if (linea.tipoIncId > 0) {
+                    fIncidencia = linea.tipoIncId
                     val queDescrInc = tiposIncDao?.dimeDescripcion(fIncidencia) ?: ""
                     if (queDescrInc != "") {
                         result.append(fMargenIzq).append("Incidencia: ").append(fIncidencia).append(" ").append(queDescrInc)
@@ -553,16 +538,14 @@ class ImprIntermecPB51(contexto: Context): Runnable {
                     fLineasImpr++
                 }
                 // Si la línea tiene descuento lo imprimimos
-                if (fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("dto")) != "") {
-                    sDto =
-                        fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("dto"))
+                if (linea.dto != "") {
+                    sDto = linea.dto
                     result.append(fMargenIzq).append("% dto.: ")
                         .append(ajustarCadena(sDto, 5, false))
                     result.append(ccSaltoLinea)
                     fLineasImpr++
                 }
             }
-            fDocumento.cLineas.moveToNext()
         }
         result.append(ccSaltoLinea)
         sCajas = String.format(fFtoCant, sumaCajas)
@@ -636,45 +619,26 @@ class ImprIntermecPB51(contexto: Context): Runnable {
         var result: String
         var cCadena: String
         val sLongDatosClte: Short = 50
-        cCadena = ajustarCadena(fMargenIzq + ponerCeros(fDocumento.fClientes.fCodigo.toString(), ancho_codclte) + " " +
+        cCadena = ajustarCadena(fMargenIzq + ponerCeros(fDocumento.fClientes.fCodigo, ancho_codclte) + " " +
                 fDocumento.fClientes.fNombre, sLongDatosClte.toInt(), true)
         result = cCadena
         cCadena = StringOfChar(" ", 5) + "Vendedor: " + fConfiguracion.vendedor()
         result = result + cCadena + ccSaltoLinea
         cCadena = ajustarCadena(fMargenIzq + fDocumento.fClientes.fNomComercial, sLongDatosClte.toInt(), true)
         result = result + cCadena + ccSaltoLinea
-        result += ajustarCadena(
-            fMargenIzq + fDocumento.fClientes.getDireccion(),
-            sLongDatosClte.toInt(),
-            true
-        )
+        result += ajustarCadena(fMargenIzq + fDocumento.fClientes.fDireccion, sLongDatosClte.toInt(), true)
         cCadena = StringOfChar(" ", 5) + "Hora: " + fDocumento.fHora
         result += cCadena
         result += ccSaltoLinea
-        result += ajustarCadena(
-            fMargenIzq + fDocumento.fClientes.getCodPostal() + " " + fDocumento.fClientes.getPoblacion(),
-            sLongDatosClte.toInt(),
-            true
-        )
+        result += ajustarCadena(fMargenIzq + fDocumento.fClientes.fCodPostal + " " + fDocumento.fClientes.fPoblacion, sLongDatosClte.toInt(), true)
         cCadena = StringOfChar(" ", 5) + "Fecha: " + fDocumento.fFecha
         result += cCadena
         result += ccSaltoLinea
-        result += ajustarCadena(
-            fMargenIzq + fDocumento.fClientes.getProvincia(),
-            sLongDatosClte.toInt(),
-            true
-        )
+        result += ajustarCadena(fMargenIzq + fDocumento.fClientes.fProvincia, sLongDatosClte.toInt(), true)
         result = result + StringOfChar(" ", 5) + "Doc: " + tipoDocAsString(fDocumento.fTipoDoc)
         result += ccSaltoLinea
-        result += ajustarCadena(
-            fMargenIzq + "C.I.F.: " + fDocumento.fClientes.getCIF(),
-            sLongDatosClte.toInt(),
-            true
-        )
-        result = result + StringOfChar(
-            " ",
-            5
-        ) + "Num.: " + fDocumento.serie + "/" + fDocumento.numero
+        result += ajustarCadena(fMargenIzq + "C.I.F.: " + fDocumento.fClientes.fCif, sLongDatosClte.toInt(), true)
+        result = result + StringOfChar(" ", 5) + "Num.: " + fDocumento.serie + "/" + fDocumento.numero
         result = result + ccSaltoLinea + ccSaltoLinea + ccSaltoLinea
         return result
     }

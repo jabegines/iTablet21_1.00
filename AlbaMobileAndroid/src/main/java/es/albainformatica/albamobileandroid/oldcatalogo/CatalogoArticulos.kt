@@ -22,7 +22,7 @@ import android.widget.*
 import es.albainformatica.albamobileandroid.*
 import java.util.*
 
-class CatalogoArticulos : Activity(), Dlg2Listener {
+class CatalogoArticulos: Activity(), Dlg2Listener {
     private lateinit var gridView: GridView
     private lateinit var fArticulosGrv: ArticulosClase
     private lateinit var fHistorico: Historico
@@ -30,8 +30,8 @@ class CatalogoArticulos : Activity(), Dlg2Listener {
     private lateinit var fConfiguracion: Configuracion
     private lateinit var prefs: SharedPreferences
 
-    private var fGrupo = 0
-    private var fDepart = 0
+    private var fGrupo: Short = 0
+    private var fDepart: Short = 0
     private var queBuscar: String = ""
     private var dondeBuscar: Short = 0 // 0-> buscar en el catálogo, 1-> buscar en todos los artículos
     private var queOrdenacion: Short = 0 // 0-> por descripción, 1-> por código
@@ -65,8 +65,8 @@ class CatalogoArticulos : Activity(), Dlg2Listener {
         fDesde = i.getIntExtra("modoVisArtic", GRUPOS_Y_DEP)
         when (fDesde) {
             GRUPOS_Y_DEP -> {
-                fGrupo = i.getIntExtra("grupo", 0)
-                fDepart = i.getIntExtra("departamento", 0)
+                fGrupo = i.getShortExtra("grupo", 0)
+                fDepart = i.getShortExtra("departamento", 0)
             }
             CLASIFICADORES -> {
                 fClasificador = i.getIntExtra("clasificador", 0)
@@ -162,17 +162,9 @@ class CatalogoArticulos : Activity(), Dlg2Listener {
 
         // Tendremos más de un constructor para la clase GrvImageArticulosAdapter.
         when (fDesde) {
-            GRUPOS_Y_DEP -> gridView.adapter = GrvImageArticulosAdapter(
-                this,
-                fGrupo,
-                fDepart,
-                queBuscar,
-                dondeBuscar,
-                queOrdenacion,
-                fSoloOftas,
-                fTarifa,
-                fVendiendo
-            )
+            GRUPOS_Y_DEP -> gridView.adapter = GrvImageArticulosAdapter(this, fGrupo, fDepart, queBuscar,
+                dondeBuscar, queOrdenacion, fSoloOftas, fTarifa, fVendiendo)
+
             CLASIFICADORES -> gridView.adapter = GrvImageArticulosAdapter(
                 this,
                 fClasificador,

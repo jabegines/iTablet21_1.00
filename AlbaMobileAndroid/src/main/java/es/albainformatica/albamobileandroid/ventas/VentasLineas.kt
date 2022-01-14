@@ -14,9 +14,6 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.app.DialogFragment
-import android.database.Cursor
-import android.graphics.Color
-import android.net.Uri
 import android.view.*
 import es.albainformatica.albamobileandroid.biocatalogo.BioCatalogo
 import es.albainformatica.albamobileandroid.historicos.CargarHcoPorDoc
@@ -40,7 +37,6 @@ import es.albainformatica.albamobileandroid.entity.ContactosCltesEnt
 import es.albainformatica.albamobileandroid.impresion_informes.ImprDocFormato2
 import kotlinx.android.synthetic.main.clientes_activity.*
 import kotlinx.android.synthetic.main.ventas_lineas.*
-import java.io.File
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.ParseException
@@ -55,7 +51,7 @@ class VentasLineas : Activity() {
     private lateinit var fPendiente: PendienteClase
     private lateinit var fCobros: CobrosClase
     private lateinit var fHistorico: Historico
-    private lateinit var adapterLineas: SimpleCursorAdapter
+
     private var fEstado: Byte = 0
     private var fIvaIncluido: Boolean = false
 
@@ -147,7 +143,7 @@ class VentasLineas : Activity() {
         if (fDocNuevo) {
             fDocumento.setCliente(intent.getIntExtra("cliente", 0))
             fDocumento.fTipoDoc = intent.getShortExtra("tipodoc", 0.toShort())
-            fDocumento.fTipoPedido = intent.getIntExtra("tipopedido", 0)
+            fDocumento.fTipoPedido = intent.getShortExtra("tipopedido", 0)
             fSerie = intent.getStringExtra("serie") ?: ""
             if (!fDocumento.setSerieNumero(fSerie)) {
                 val returnIntent = Intent()
@@ -282,7 +278,7 @@ class VentasLineas : Activity() {
     private fun prepararRecyclerView() {
         fAdapter = LineasVtasRvAdapter(getLineasDoc(), this, object: LineasVtasRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: DatosLinVtas) {
-
+                fLinea = data.lineaId
             }
         })
 
@@ -368,20 +364,7 @@ class VentasLineas : Activity() {
     */
 
 
-    private fun formatearListVOftVolDoc(adapter: SimpleCursorAdapter) {
-        adapter.viewBinder =
-            SimpleCursorAdapter.ViewBinder { view: View, cursor: Cursor, column: Int ->
-                val tv = view as TextView
-                if (column == 2) {
-                    val sImpte = cursor.getString(cursor.getColumnIndex("importe")).replace(',', '.')
-                    val dImpte = sImpte.toDouble()
-                    tv.text = String.format(fFtoDecImpBase, dImpte)
-                    return@ViewBinder true
-                }
-                false
-            }
-    }
-
+    /*
     private fun formatearColumnas() {
         // Las columnas se empiezan a contar desde la cero y estarán en el orden que tienen en el cursor.
         adapterLineas.viewBinder =
@@ -459,7 +442,9 @@ class VentasLineas : Activity() {
                 false
             }
     }
+    */
 
+    /*
     @SuppressLint("SetTextI18n")
     private fun formatearTasas(view: View, cursor: Cursor, column: Int) {
         val tv = view as TextView
@@ -502,7 +487,8 @@ class VentasLineas : Activity() {
             } else tv.text = ""
         }
     }
-
+    */
+    /*
     private fun formatearPrecio(view: View, cursor: Cursor) {
         val tv = view as TextView
         val sPrecio: String
@@ -530,6 +516,7 @@ class VentasLineas : Activity() {
             tv.text = String.format(fFtoDecPrBase, dPrecio)
         }
     }
+    */
 
     private fun prepararBases() {
         tvTotal = findViewById(R.id.tvVL_Total)
@@ -543,7 +530,7 @@ class VentasLineas : Activity() {
         fRecBases.layoutManager = LinearLayoutManager(this)
         fRecBases.adapter = fAdpBases
     }
-
+    /*
     private fun formatearImporte(view: View, cursor: Cursor) {
         val tv = view as TextView
         val sImpte: String
@@ -580,6 +567,7 @@ class VentasLineas : Activity() {
             }
         }
     }
+    */
 
     private fun refrescarLineas() {
         //adapterLineas.changeCursor(fDocumento.cLineas)
@@ -611,7 +599,7 @@ class VentasLineas : Activity() {
     fun editarLinea(view: View) {
         view.getTag(0)              // Para que no dé warning el compilador
 
-        if (fEstado == est_Vl_Browse && fDocumento.cLineas.count > 0) {
+        if (fEstado == est_Vl_Browse && fDocumento.lLineas.count() > 0) {
             if (fLinea > 0) {
 
                 // Desactivo el adapter del listView porque he detectado que al movernos
@@ -682,7 +670,7 @@ class VentasLineas : Activity() {
         // Lo primero que debemos hacer es rescatar el layout creado para el prompt.
         val li = LayoutInflater.from(this)
         val prompt = li.inflate(R.layout.mostrar_oft_vol_doc, null)
-        prepararListVOftVolDoc(prompt)
+        prepararRecVOftVolDoc(prompt)
 
         // Luego, creamos un constructor de Alert Dialog que nos ayudará a utilizar nuestro layout.
         val alertDialogBuilder = AlertDialog.Builder(this)
@@ -701,16 +689,48 @@ class VentasLineas : Activity() {
         alertDialog.show()
     }
 
+    private fun prepararRecVOftVolDoc(prompt: View) {
+        val rvOftVolDoc = prompt.findViewById<RecyclerView>(R.id.rvOftVolDoc)
+        rvOftVolDoc.layoutManager = LinearLayoutManager(this)
+
+        val fAdpOftVol = OftVolDocRvAdapter(getOftVolDoc(), this, object: OftVolDocRvAdapter.OnItemClickListener {
+            override fun onClick(view: View, data: DatosOftVol) {
+            }
+        })
+
+        rvOftVolDoc.adapter = fAdpOftVol
+    }
+
+    private fun getOftVolDoc(): List<DatosOftVol> {
+        return fDocumento.cargarListaOftVol()
+    }
+
+
+    /*
     private fun prepararListVOftVolDoc(prompt: View) {
         val columnas = arrayOf("descr", "importe")
         val to = intArrayOf(R.id.tvLinOftVolDescr, R.id.tvLinOftVolImpte)
         val cursor = fDocumento.cargarCursorOftVol()
         val adapter = SimpleCursorAdapter(this, R.layout.ly_lineas_oftvol, cursor, columnas, to, 0)
-        val lvOftVolDoc =
-            prompt.findViewById<ListView>(es.albainformatica.albamobileandroid.R.id.lvOftVolDoc)
+        val lvOftVolDoc = prompt.findViewById<ListView>(es.albainformatica.albamobileandroid.R.id.lvOftVolDoc)
         lvOftVolDoc.adapter = adapter
         formatearListVOftVolDoc(adapter)
     }
+
+    private fun formatearListVOftVolDoc(adapter: SimpleCursorAdapter) {
+        adapter.viewBinder =
+            SimpleCursorAdapter.ViewBinder { view: View, cursor: Cursor, column: Int ->
+                val tv = view as TextView
+                if (column == 2) {
+                    val sImpte = cursor.getString(cursor.getColumnIndex("importe")).replace(',', '.')
+                    val dImpte = sImpte.toDouble()
+                    tv.text = String.format(fFtoDecImpBase, dImpte)
+                    return@ViewBinder true
+                }
+                false
+            }
+    }
+    */
 
     @SuppressLint("SetTextI18n")
     private fun indicarTipoDoc() {
@@ -846,20 +866,11 @@ class VentasLineas : Activity() {
                     val btnNoImpr = alertDialog.findViewById<Button>(es.albainformatica.albamobileandroid.R.id.btnNoImpr)
                     btnNoImpr.visibility = View.GONE
                     chkSinValorar.visibility = View.GONE
-                    comenzarImprDoc(
-                        chkSinValorar.isChecked,
-                        imprDocDtmApex2,
-                        imprDocIntermec,
-                        imprDocBixolon,
-                        imprZebra,
-                        imprDoc,
-                        alertDialog,
-                        btnImpr
-                    )
+                    comenzarImprDoc(chkSinValorar.isChecked, imprDocDtmApex2, imprDocIntermec, imprDocBixolon,
+                        imprZebra, imprDoc, alertDialog, btnImpr)
                 }
             } else btnImpr.visibility = View.GONE
-            val btnNoImpr =
-                alertDialog.findViewById<Button>(es.albainformatica.albamobileandroid.R.id.btnNoImpr)
+            val btnNoImpr = alertDialog.findViewById<Button>(es.albainformatica.albamobileandroid.R.id.btnNoImpr)
             btnNoImpr.setOnClickListener {
                 alertDialog.cancel()
                 finalizarVenta()
@@ -1052,6 +1063,7 @@ class VentasLineas : Activity() {
                     fDocumento.fEmpresa.toInt()
                 ))
         } else continuar = true
+
         if (continuar) {
             terminaGrabarPieDoc()
         } else {

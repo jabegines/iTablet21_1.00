@@ -9,6 +9,9 @@ import es.albainformatica.albamobileandroid.entity.DtosCltesEnt
 @Dao
 interface DtosCltesDao {
 
+    @Query("SELECT dto FROM DtosCltes WHERE clienteId = :queCliente " +
+            " ORDER BY idDescuento")
+    fun getDtosClte(queCliente: Int): List<String>
 
     @Query("DELETE FROM DtosCltes")
     fun vaciar()

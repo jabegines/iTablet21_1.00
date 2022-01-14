@@ -489,18 +489,14 @@ class ServicioRecibir: AppCompatActivity() {
 
 
     private fun borrarDocAsociados(queArticulo: Int) {
-        // TODO
-        /*
-        dbAlba.use {
-            val articDatAdicDao: ArticDatAdicDao? = MyDatabase.getInstance(this)?.articDatAdicDao()
-            val lDatAdic = articDatAdicDao?.getDatosArticulo(queArticulo) ?: emptyList<String>().toMutableList()
 
-            for (datAdic in lDatAdic) {
-                val fichero = File(localDirDocAsoc + datAdic)
-                fichero.delete()
-            }
+        val articDatAdicDao: ArticDatAdicDao? = MyDatabase.getInstance(this)?.articDatAdicDao()
+        val lDatAdic = articDatAdicDao?.getDatosArticulo(queArticulo) ?: emptyList<String>().toMutableList()
+
+        for (datAdic in lDatAdic) {
+            val fichero = File(localDirDocAsoc + datAdic)
+            fichero.delete()
         }
-        */
     }
 
 

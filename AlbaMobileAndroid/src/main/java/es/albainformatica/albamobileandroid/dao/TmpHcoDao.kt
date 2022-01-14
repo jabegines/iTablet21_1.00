@@ -10,6 +10,9 @@ import es.albainformatica.albamobileandroid.entity.TmpHcoEnt
 interface TmpHcoDao {
 
 
+    @Query("SELECT * FROM TmpHco")
+    fun getAllLineas(): List<TmpHcoEnt>
+
     @Query("DELETE FROM TmpHco")
     fun vaciar()
 

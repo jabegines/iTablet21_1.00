@@ -47,7 +47,7 @@ interface PendienteDao {
 
     @Query("UPDATE Pendiente SET enviar = 'T' WHERE tipoDoc = :queTipoDoc AND empresa = :queEmpresa" +
             " AND Almacen = :queAlmacen AND Serie = :queSerie AND Numero = :queNumero AND ejercicio = :queEjercicio")
-    fun reenviar(queTipoDoc: Byte, queEmpresa: Short, queAlmacen: Short, queSerie: String, queNumero: Int, queEjercicio: Short)
+    fun reenviar(queTipoDoc: Short, queEmpresa: Short, queAlmacen: Short, queSerie: String, queNumero: Int, queEjercicio: Short)
 
 
     @Query("SELECT FechaDoc FROM Pendiente WHERE clienteId = :queCliente AND empresa = :queEmpresa" +

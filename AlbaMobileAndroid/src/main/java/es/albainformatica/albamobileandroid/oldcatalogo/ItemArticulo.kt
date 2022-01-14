@@ -44,8 +44,8 @@ class ItemArticulo {
     var fechaHco: String = ""
         private set
 
-    constructor(queArticulo: Int, queCodigo: String, descr: String, queUndCaja: String, quePrClte: String?,
-        queDto: String?, quePrCajas: String?, queDtoCajas: String?, quePrOfta: String, queDtoOfta: String,
+    constructor(queArticulo: Int, queCodigo: String, descr: String, queUndCaja: String, quePrClte: String,
+        queDto: String, quePrCajas: String, queDtoCajas: String, quePrOfta: String, queDtoOfta: String,
         quePorcIva: Double, conOferta: Boolean, queCantidad: String, queCajas: String , queStock: Double,
         tieneHco: Boolean, queDescrFto: String) {
         articulo = queArticulo

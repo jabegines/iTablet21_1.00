@@ -70,7 +70,7 @@ class VerRiesgo: AppCompatActivity() {
             val queTexto = "Movimientos pendientes superiores a $diasRiesgo días:"
             tvRgMovPdtes.text = queTexto
 
-            tvRgMaxAut.text = String.format("%.2f", fClientes.getRiesgo())
+            tvRgMaxAut.text = String.format("%.2f", fClientes.fRiesgo)
             tvRgSaldo.text = String.format("%.2f", fClientes.getSaldo())
             tvRgAlcanzado.text = String.format("%.2f", fClientes.getSaldo() + fTotalDoc)
 
@@ -78,7 +78,7 @@ class VerRiesgo: AppCompatActivity() {
                 var numDias = 0
                 do {
                     val fEsDocNuevo = fPendiente.cursor?.getString(0)?.contains("/") ?: false
-                    val strFechaDoc = fPendiente.cursor?.getString(0)?.replace('-', '/')
+                    val strFechaDoc = fPendiente.cursor?.getString(0)?.replace('-', '/') ?: ""
                     // Si el registro de la tabla Pendiente lo hemos hecho nuevo en la tablet, el formato de la fecha
                     // será dd/MM/yyyy. En cambio, si el registro viene de la gestión el formato será yyyy/MM/dd
                     var formatoFechaDoc = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
@@ -87,8 +87,8 @@ class VerRiesgo: AppCompatActivity() {
                     val tim = System.currentTimeMillis()
                     val strFechaAct = formatoFechaAct.format(tim)
                     try {
-                        val fFechaDoc = formatoFechaDoc.parse(strFechaDoc)
-                        val fFechaAct = formatoFechaAct.parse(strFechaAct)
+                        val fFechaDoc = formatoFechaDoc.parse(strFechaDoc) ?: Date()
+                        val fFechaAct = formatoFechaAct.parse(strFechaAct) ?: Date()
                         val dias = ((fFechaAct.time - fFechaDoc.time) / 86400000).toInt()
                         if (dias >= diasRiesgo) numDias++
 

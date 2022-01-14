@@ -3,7 +3,6 @@ package es.albainformatica.albamobileandroid.ventas
 import android.app.*
 import android.content.DialogInterface
 import android.content.Intent
-import android.database.Cursor
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
@@ -19,24 +18,27 @@ import es.albainformatica.albamobileandroid.reparto.FirmarDoc
 import java.io.File
 import java.util.ArrayList
 import android.net.Uri
-import androidx.core.content.FileProvider
-import android.content.pm.PackageManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.dao.ContactosCltesDao
 import es.albainformatica.albamobileandroid.dao.TiposIncDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.queBDRoom
 import es.albainformatica.albamobileandroid.entity.ContactosCltesEnt
 import es.albainformatica.albamobileandroid.entity.TiposIncEnt
+import kotlinx.android.synthetic.main.ver_documentos.*
 
 
 class VerDocumentosActivity: Activity() {
     private lateinit var fDocumento: Documento
     private lateinit var adapterLineas: SimpleCursorAdapter
     private lateinit var fConfiguracion: Configuracion
+
     private var fIdDocumento = 0
     private var fEstado: String = ""
     private var fFirmado: String = ""
-    private var fTipoDoc: Byte = 0
+    private var fTipoDoc: Short = 0
+
     private lateinit var tvEstado: TextView
     private lateinit var tvNombreClte: TextView
     private lateinit var tvNombreComClte: TextView
@@ -47,12 +49,17 @@ class VerDocumentosActivity: Activity() {
     private lateinit var Dialogo: ProgressDialog
     private var fCliente = 0
     private var fClteDoc = 0
-    private lateinit var lvDocumentos: ListView
+
     private lateinit var chsIncidencias: Array<CharSequence>
     private var fTipoIncidencia = 0
     private var fRutaFirmas: String = ""
     private var fTipoFiltrar = 0
     private var fEmpresaActual = 0
+
+    private lateinit var fRecyclerView: RecyclerView
+    private lateinit var fAdapter: VerDocsRvAdapter
+    private var fDataActual = DatosVerDocs()
+
 
     private val fRequestVenta = 1
     private val fRequestFirmarDoc = 2
@@ -63,8 +70,10 @@ class VerDocumentosActivity: Activity() {
     override fun onCreate(savedInstance: Bundle?) {
         super.onCreate(savedInstance)
         setContentView(R.layout.ver_documentos)
+
         val intent = intent
         fCliente = intent.getIntExtra("cliente", 0)
+
         fDocumento = Documento(this)
         fConfiguracion = Comunicador.fConfiguracion
         inicializarControles()
@@ -72,7 +81,7 @@ class VerDocumentosActivity: Activity() {
 
 
     override fun onDestroy() {
-        if (fDocumento != null) fDocumento.close()
+        fDocumento.close()
         super.onDestroy()
     }
 
@@ -83,10 +92,10 @@ class VerDocumentosActivity: Activity() {
         fEmpresaActual = prefs.getInt("ultima_empresa", 0)
         fRutaFirmas = prefs.getString("rutacomunicacion", "") ?: ""
         fRutaFirmas = if (fRutaFirmas == "") {
-            if (usarMultisistema) "/storage/sdcard0/alba/firmas/" + queBDRoom
+            if (usarMultisistema) "/storage/sdcard0/alba/firmas/$queBDRoom"
             else "/storage/sdcard0/alba/firmas/"
         } else {
-            if (usarMultisistema) fRutaFirmas + "/firmas/" + queBDRoom
+            if (usarMultisistema) "$fRutaFirmas/firmas/$queBDRoom"
             else "$fRutaFirmas/firmas/"
         }
 
@@ -124,10 +133,14 @@ class VerDocumentosActivity: Activity() {
         fEstado = ""
         fTipoDoc = 0
         fTipoFiltrar = 0
-        fDocumento.abrirTodos(fCliente, fEmpresaActual, fTipoFiltrar)
-        prepararListView()
+        //fDocumento.abrirTodos(fCliente, fEmpresaActual, fTipoFiltrar)
+
+        fRecyclerView = rvVerDoc
+        fRecyclerView.layoutManager = LinearLayoutManager(this)
+        prepararRecyclerView()
+
         //  Si tenemos algún documento presentamos los datos del primero
-        if (!fDocumento.cDocumentos.isBeforeFirst) nuevoClick(0)
+        if (fAdapter.documentos.isNotEmpty()) nuevoClick(fAdapter.documentos[0])
 
         // Preparamos el array de incidencias por si las usamos para el documento.
         prepararIncidencias()
@@ -136,56 +149,35 @@ class VerDocumentosActivity: Activity() {
     }
 
 
-    private fun prepararListView() {
-        val columnas: Array<String> =
-            arrayOf("fecha", "tipodoc", "serie", "numero", "total", "firmado", "tipoincidencia")
-        val to = intArrayOf(
-            R.id.lyvdFecha,
-            R.id.lyvdTipoDoc,
-            R.id.lyvdSerie,
-            R.id.lyvdNumero,
-            R.id.lyvdTotal,
-            R.id.lyvdDocFdo,
-            R.id.lyvdDocIncid
-        )
-        adapterLineas = SimpleCursorAdapter(
-            this,
-            R.layout.ly_ver_documentos,
-            fDocumento.cDocumentos,
-            columnas,
-            to
-        )
-        formatearColumnas()
-        lvDocumentos = findViewById(R.id.lvVerDoc)
-        lvDocumentos.choiceMode = ListView.CHOICE_MODE_SINGLE
-        lvDocumentos.adapter = adapterLineas
-
-        // Establecemos el evento on click del ListView.
-        lvDocumentos.onItemClickListener =
-            AdapterView.OnItemClickListener { _: AdapterView<*>?, _: View?, position: Int, _: Long ->
-                nuevoClick(position)
+    private fun prepararRecyclerView() {
+        fAdapter = VerDocsRvAdapter(getDocs(), this, object: VerDocsRvAdapter.OnItemClickListener {
+            override fun onClick(view: View, data: DatosVerDocs) {
+                fDataActual = data
+                nuevoClick(data)
             }
+        })
+
+        fRecyclerView.adapter = fAdapter
+    }
+
+    private fun getDocs(): List<DatosVerDocs> {
+        return fDocumento.abrirTodos(fCliente, fEmpresaActual, fTipoFiltrar)
     }
 
 
-    private fun nuevoClick(position: Int) {
+    private fun nuevoClick(data: DatosVerDocs) {
         // Tomamos el campo _id de la fila en la que hemos pulsado.
-        val cursor = lvDocumentos.getItemAtPosition(position) as Cursor
-        fIdDocumento = cursor.getInt(cursor.getColumnIndexOrThrow("_id"))
-        fEstado = cursor.getString(cursor.getColumnIndexOrThrow("estado"))
-        fFirmado = if (cursor.getString(cursor.getColumnIndexOrThrow("firmado")) != null)
-            cursor.getString(cursor.getColumnIndexOrThrow("firmado"))
-        else "F"
-        val fImprimido = if (cursor.getString(cursor.getColumnIndexOrThrow("imprimido")) != null)
-            cursor.getString(cursor.getColumnIndexOrThrow("imprimido"))
-            else "F"
+        fIdDocumento = data.cabeceraId
+        fEstado = data.estado
+        fFirmado = if (data.firmado != "") data.firmado else "F"
+        val fImprimido = if (data.imprimido != "") data.imprimido else "F"
 
-        fTipoDoc = cursor.getString(cursor.getColumnIndexOrThrow("tipodoc")).toByte()
-        fClteDoc = cursor.getInt(cursor.getColumnIndexOrThrow("cliente"))
+        fTipoDoc = data.tipoDoc
+        fClteDoc = data.clienteId
 
         // Si el documento es factura o albarán no permitiremos la modificación en ningún caso.
         // Si es pedido o presupuesto la permitiremos si no está firmado, ni imprimido ni comunicado.
-        if (fTipoDoc.toShort() == TIPODOC_FACTURA || fTipoDoc.toShort() == TIPODOC_ALBARAN) {
+        if (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN) {
             btnEditar.isEnabled = false
         } else {
             if (fFirmado == "T" || fImprimido == "T") btnEditar.isEnabled = false
@@ -197,19 +189,15 @@ class VerDocumentosActivity: Activity() {
         else
             btnEditar.setTextColor(Color.LTGRAY)
 
-        val bFacturado = cadenaALogico(cursor.getString(cursor.getColumnIndex("facturado")))
+        val bFacturado = cadenaALogico(data.facturado)
         if (bFacturado) {
-            val queTexto =
-                nombreEstado(cursor.getString(cursor.getColumnIndex("estado"))) + ". Facturado."
+            val queTexto = nombreEstado(data.estado) + ". Facturado."
             tvEstado.text = queTexto
-        } else tvEstado.text = nombreEstado(cursor.getString(cursor.getColumnIndex("estado")))
-        tvNombreClte.text = cursor.getString(cursor.getColumnIndex("nomfi"))
-        tvNombreComClte.text = cursor.getString(cursor.getColumnIndex("nomco"))
-        if (cursor.getInt(cursor.getColumnIndexOrThrow("tipoincidencia")) > 0) {
-            val queTexto =
-                """
-            ${fDocumento.getTipoIncidencia(cursor.getInt(cursor.getColumnIndexOrThrow("tipoincidencia")))}
-            ${fDocumento.getTextoIncidencia(fIdDocumento)}
+        } else tvEstado.text = nombreEstado(data.estado)
+        tvNombreClte.text = data.nombre
+        tvNombreComClte.text = data.nombreComercial
+        if (data.tipoIncidencia > 0) {
+            val queTexto = """ ${fDocumento.getTipoIncidencia(data.tipoIncidencia)}${fDocumento.getTextoIncidencia(fIdDocumento)}
             """.trimIndent()
             tvIncidencia.text = queTexto
         } else tvIncidencia.text = ""
@@ -228,15 +216,16 @@ class VerDocumentosActivity: Activity() {
             when (fEstado) {
                 "X" -> {
                     // Vemos la posición del item del listView seleccionado, para poder seleccionarlo después.
-                    val quePosicion = lvDocumentos.checkedItemPosition
-                    fDocumento.reenviar(fIdDocumento, fCliente, fEmpresaActual)
-                    adapterLineas.changeCursor(fDocumento.cDocumentos)
+                    //val quePosicion = lvDocumentos.checkedItemPosition
+                    fDocumento.reenviar(fDataActual) //fIdDocumento, fCliente, fEmpresaActual)
 
+                    //adapterLineas.changeCursor(fDocumento.cDocumentos)
                     // Volvemos a señalar la fila en la que habíamos pulsado, ya que el listView, al perder el foco, no deja ninguna fila señalada.
-                    lvDocumentos.requestFocusFromTouch()
-                    lvDocumentos.setSelection(quePosicion)
+                    //lvDocumentos.requestFocusFromTouch()
+                    //lvDocumentos.setSelection(quePosicion)
+
                     // Llamamos a nuevoClick para refrescar los textView inferiores.
-                    nuevoClick(quePosicion)
+                    nuevoClick(fDataActual)
                     fEstado = ""
                 }
                 "P" -> {
@@ -249,19 +238,17 @@ class VerDocumentosActivity: Activity() {
 
 
     private fun marcarParaEnviar() {
-        val aldDialog = NuevoAlertBuilder(
-            this, getString(R.string.tit_marcarenv),
-            getString(R.string.msj_MarcarEnviar), false
-        )
+        val aldDialog = NuevoAlertBuilder(this, getString(R.string.tit_marcarenv), getString(R.string.msj_MarcarEnviar), false)
         aldDialog.setPositiveButton(android.R.string.yes) { _: DialogInterface?, _: Int ->
             fDocumento.marcarParaEnviar(fIdDocumento)
             refrescarLineas()
-            if (fDocumento.cDocumentos.count > 0) nuevoClick(0)
+            if (fAdapter.documentos.isNotEmpty()) nuevoClick(fAdapter.documentos[0])
         }
         val alert = aldDialog.create()
         alert.show()
     }
 
+    /*
     private fun formatearColumnas() {
         adapterLineas.viewBinder =
             SimpleCursorAdapter.ViewBinder { view: View, cursor: Cursor, column: Int ->
@@ -308,7 +295,7 @@ class VerDocumentosActivity: Activity() {
                 false
             }
     }
-
+    */
 
     fun modificarDoc(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
@@ -329,50 +316,46 @@ class VerDocumentosActivity: Activity() {
         if (requestCode == fRequestVenta) {
             if (resultCode == RESULT_OK) {
                 refrescarLineas()
-                nuevoClick(0)
+                nuevoClick(fDataActual)
             }
         } else if (requestCode == fRequestFirmarDoc) {
             if (resultCode == RESULT_OK) {
                 if (fConfiguracion.hayReparto()) {
                     fDocumento.marcarComoEntregado(fIdDocumento, fClteDoc, fEmpresaActual, true)
-                    adapterLineas.changeCursor(fDocumento.cDocumentos)
+                    //adapterLineas.changeCursor(fDocumento.cDocumentos)
+                    refrescarLineas()
                 } else {
-                    // Vemos la posición del item del listView seleccionado, para poder seleccionarlo después.
-                    val quePosicion = lvDocumentos.checkedItemPosition
                     // Volvemos a señalar la fila en la que habíamos pulsado, ya que el listView, al perder el foco, no deja ninguna fila señalada.
-                    lvDocumentos.requestFocusFromTouch()
-                    lvDocumentos.setSelection(quePosicion)
+                    //lvDocumentos.requestFocusFromTouch()
+                    //lvDocumentos.setSelection(quePosicion)
                     fDocumento.marcarComoEntregado(fIdDocumento, fClteDoc, fEmpresaActual, true)
-                    adapterLineas.changeCursor(fDocumento.cDocumentos)
+                    //adapterLineas.changeCursor(fDocumento.cDocumentos)
+                    refrescarLineas()
                     // Llamamos a nuevoClick para refrescar los textView inferiores.
-                    nuevoClick(quePosicion)
+                    nuevoClick(fDataActual)
                 }
             }
         } else if (requestCode == fRequestModifDocReparto) {
-            //if (resultCode == RESULT_OK) {
-            fDocumento.cDocumentos.close()
+            //fDocumento.cDocumentos.close()
             fDocumento.abrirTodos(fCliente, fEmpresaActual, fTipoFiltrar)
-            adapterLineas.changeCursor(fDocumento.cDocumentos)
-            //}
+            refrescarLineas()
+            //adapterLineas.changeCursor(fDocumento.cDocumentos)
+
         } else if (requestCode == fRequestIncidencia) {
             if (resultCode == RESULT_OK) {
-                val textoIncidencia = data.getStringExtra("textoincid")
-                fDocumento.setTextoIncidencia(
-                    fIdDocumento,
-                    textoIncidencia,
-                    fCliente,
-                    fEmpresaActual,
-                    fTipoIncidencia
-                )
-                adapterLineas.changeCursor(fDocumento.cDocumentos)
+                val textoIncidencia = data.getStringExtra("textoincid") ?: ""
+                fDocumento.setTextoIncidencia(fIdDocumento, textoIncidencia, fCliente, fEmpresaActual, fTipoIncidencia)
+                //adapterLineas.changeCursor(fDocumento.cDocumentos)
+                refrescarLineas()
             }
         }
     }
 
 
     private fun refrescarLineas() {
-        fDocumento.abrirTodos(fCliente, fEmpresaActual, fTipoFiltrar)
-        adapterLineas.changeCursor(fDocumento.cDocumentos)
+        prepararRecyclerView()
+        //fDocumento.abrirTodos(fCliente, fEmpresaActual, fTipoFiltrar)
+        //adapterLineas.changeCursor(fDocumento.cDocumentos)
     }
 
 
@@ -399,7 +382,7 @@ class VerDocumentosActivity: Activity() {
 
             fDocumento.marcarComoImprimido(fIdDocumento)
             refrescarLineas()
-            nuevoClick(0)
+            nuevoClick(fDataActual)
 
             Dialogo = ProgressDialog.show(this, "Exportar a PDF", "Creando PDF ...", true, true)
 
@@ -579,14 +562,14 @@ class VerDocumentosActivity: Activity() {
                     }
                     alertDialog.dismiss()
                     refrescarLineas()
-                    nuevoClick(0)
+                    nuevoClick(fDataActual)
                 }
 
                 // Establecemos la visibilidad del check 'Sin Valorar'
                 val chkSinValorar = alertDialog.findViewById<CheckBox>(R.id.chkSinValorar)
                 if (fConfiguracion.imprimir()) {
                     // Si el documento no es albarán ni pedido no presentaremos el botón para imprimir sin valorar
-                    if (fDocumento.fTipoDoc.toShort() != TIPODOC_ALBARAN && fDocumento.fTipoDoc.toShort() != TIPODOC_PEDIDO) {
+                    if (fDocumento.fTipoDoc != TIPODOC_ALBARAN && fDocumento.fTipoDoc != TIPODOC_PEDIDO) {
                         chkSinValorar.visibility = View.GONE
                     }
                 } else chkSinValorar.visibility = View.GONE
@@ -621,13 +604,9 @@ class VerDocumentosActivity: Activity() {
             } else {
                 val altbld = AlertDialog.Builder(this)
                 altbld.setTitle("Escoger incidencia")
-                val queTipoInc =
-                    fDocumento.cDocumentos.getInt(fDocumento.cDocumentos.getColumnIndexOrThrow("tipoincidencia"))
+                val queTipoInc = fDataActual.tipoIncidencia
                 val queItem: Int = localizarIncid(queTipoInc)
-                altbld.setSingleChoiceItems(
-                    chsIncidencias,
-                    queItem
-                ) { dialog: DialogInterface, item: Int ->
+                altbld.setSingleChoiceItems(chsIncidencias, queItem) { dialog: DialogInterface, item: Int ->
                     val sIncidencia = chsIncidencias[item].toString()
                     fTipoIncidencia = sIncidencia.substring(0, 2).toByte().toInt()
                     dialog.dismiss()
@@ -669,7 +648,7 @@ class VerDocumentosActivity: Activity() {
     fun filtrarDocs(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
-        // Creamos un objeto de la clase Bio_TipoPedido y lo mostramos para elegir el tipo de pedido
+        // Creamos un objeto de la clase FiltrarPorEstado y lo mostramos para elegir el tipo de documento
         val newFragment: DialogFragment = FiltrarPorEstado.newInstance(R.string.app_name)
         newFragment.show(fragmentManager, "dialog")
     }
@@ -677,6 +656,7 @@ class VerDocumentosActivity: Activity() {
 
     class FiltrarPorEstado : DialogFragment() {
         private var queOpcion = 0
+
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
             queOpcion = 0
             val items = arrayOfNulls<String>(4)
@@ -685,14 +665,10 @@ class VerDocumentosActivity: Activity() {
             items[2] = "Para enviar"
             items[3] = "Enviados"
             val builder = AlertDialog.Builder(activity)
-            builder.setTitle("Escoja el tipo de documento").setSingleChoiceItems(
-                items, 0
-            ) { _: DialogInterface?, item: Int ->
+            builder.setTitle("Escoja el tipo de documento").setSingleChoiceItems(items, 0) { _: DialogInterface?, item: Int ->
                 queOpcion = item
             }
-            builder.setPositiveButton(
-                "Aceptar"
-            ) { _: DialogInterface?, _: Int ->
+            builder.setPositiveButton("Aceptar") { _: DialogInterface?, _: Int ->
                 (activity as VerDocumentosActivity).filtrar(queOpcion)
             }
             return builder.create()
@@ -715,7 +691,7 @@ class VerDocumentosActivity: Activity() {
         if (item < 0) item = 0
         fTipoFiltrar = item
         refrescarLineas()
-        if (fDocumento.cDocumentos.count > 0) nuevoClick(0)
+        if (fAdapter.documentos.isNotEmpty()) nuevoClick(fAdapter.documentos[0])
     }
 
 

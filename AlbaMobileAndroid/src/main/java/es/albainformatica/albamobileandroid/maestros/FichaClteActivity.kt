@@ -157,11 +157,9 @@ class FichaClteActivity: AppCompatActivity() {
     fun mapaDirPrincipal(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
-        if (fClientes.getDireccion() != "") {
-            buscarDireccion(
-                fClientes.getDireccion() + ',' + fClientes.getCodPostal()
-                        + ',' + fClientes.getPoblacion() + ',' + fClientes.getProvincia()
-            )
+        if (fClientes.fDireccion != "") {
+            buscarDireccion(fClientes.fDireccion + ',' + fClientes.fCodPostal
+                        + ',' + fClientes.fPoblacion + ',' + fClientes.fProvincia)
         }
     }
 
@@ -181,8 +179,7 @@ class FichaClteActivity: AppCompatActivity() {
             // Creamos una instancia del punto geográfico para mostrarlo en Google Maps.
             val latLng = LatLng(address.latitude, address.longitude)
             val cadenaIntent = ("geo:" + latLng.latitude + "," + latLng.longitude
-                    + "?q=" + latLng.latitude + "," + latLng.longitude + "("
-                    + fClientes.getDireccion() + ")")
+                    + "?q=" + latLng.latitude + "," + latLng.longitude + "(" + fClientes.fDireccion + ")")
             val i = Intent(Intent.ACTION_VIEW, Uri.parse(cadenaIntent))
             startActivity(i)
         }
@@ -264,7 +261,7 @@ class FichaClteActivity: AppCompatActivity() {
 
         // Hacemos un bucle para dejar seleccionada la forma de pago del cliente.
         if (fCliente > 0) {
-            val fPagoClte = fClientes.getFPago()
+            val fPagoClte = fClientes.fPago
             queFPago = fPagoClte
             for (i in 0 until spnFPago.count) {
                 spnFPago.getItemAtPosition(i)
@@ -333,9 +330,9 @@ class FichaClteActivity: AppCompatActivity() {
 
         // Seleccionamos la ruta del cliente
         if (fCliente > 0) {
-            val fRutaClte = fClientes.getRuta()
-            queRuta = fRutaClte
-            spnRutas.setSelection(getIndexRuta(spnRutas, fRutaClte))
+            val fRutaClte = fClientes.fRuta
+            queRuta = fRutaClte.toString()
+            spnRutas.setSelection(getIndexRuta(spnRutas, fRutaClte.toString()))
             if (fSoloVer) spnRutas.isEnabled = false
         }
 
@@ -405,12 +402,12 @@ class FichaClteActivity: AppCompatActivity() {
             edtCodigo.setText(fClientes.fCodigo)
             edtNFiscal.setText(fClientes.fNombre)
             edtNComercial.setText(fClientes.fNomComercial)
-            edtCIF.setText(fClientes.getCIF())
-            edtDirecc.setText(fClientes.getDireccion())
-            edtPoblac.setText(fClientes.getPoblacion())
-            edtCodP.setText(fClientes.getCodPostal())
-            edtProvincia.setText(fClientes.getProvincia())
-            edtRiesgo.setText(String.format(fConfiguracion.formatoDecImptesIva(), fClientes.getRiesgo()))
+            edtCIF.setText(fClientes.fCif)
+            edtDirecc.setText(fClientes.fDireccion)
+            edtPoblac.setText(fClientes.fPoblacion)
+            edtCodP.setText(fClientes.fCodPostal)
+            edtProvincia.setText(fClientes.fProvincia)
+            edtRiesgo.setText(String.format(fConfiguracion.formatoDecImptesIva(), fClientes.fRiesgo))
             edtSaldo.setText(String.format(fConfiguracion.formatoDecImptesIva(), fClientes.getSaldo()))
             chkAplIva.isChecked = fClientes.fAplIva
             chkAplRe.isChecked = fClientes.fAplRec
@@ -436,9 +433,8 @@ class FichaClteActivity: AppCompatActivity() {
                 edtNFiscal.requestFocus()
             if (fCliente > 0) {
                 // Si estamos modificando un cliente nuevo permitiremos modificar el CIF.
-                if (fClientes.getEstado() == "N") edtCIF.isFocusable = true else {
-                    edtCIF.isEnabled = false
-                }
+                if (fClientes.fEstado == "N") edtCIF.isFocusable = true
+                else  edtCIF.isEnabled = false
             }
         }
     }
@@ -573,7 +569,7 @@ class FichaClteActivity: AppCompatActivity() {
             if (fCliente == 0) aDatosClte.add("N")
             else {
                 // Si estamos modificando un cliente nuevo, mantenemos el estado a 'N' para que la gestión sepa que es un nuevo cliente.
-                if (fClientes.getEstado() == "N") aDatosClte.add("N") else aDatosClte.add("M")
+                if (fClientes.fEstado == "N") aDatosClte.add("N") else aDatosClte.add("M")
             }
             fClientes.aceptarCambios(aDatosClte, fCliente == 0)
 

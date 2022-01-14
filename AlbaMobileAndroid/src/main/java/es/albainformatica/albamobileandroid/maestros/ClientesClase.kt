@@ -10,10 +10,11 @@ import es.albainformatica.albamobileandroid.cobros.FormasPagoClase
 import es.albainformatica.albamobileandroid.cobros.PendienteClase
 import es.albainformatica.albamobileandroid.dao.ClientesDao
 import es.albainformatica.albamobileandroid.dao.ContactosCltesDao
+import es.albainformatica.albamobileandroid.dao.DireccCltesDao
 import es.albainformatica.albamobileandroid.dao.SaldosDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.entity.ClientesEnt
-import java.lang.Exception
+import es.albainformatica.albamobileandroid.entity.DireccCltesEnt
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -23,6 +24,7 @@ class ClientesClase(val contexto: Context) {
     private val clientesDao: ClientesDao? = MyDatabase.getInstance(contexto)?.clientesDao()
     private val saldosDao: SaldosDao? = MyDatabase.getInstance(contexto)?.saldosDao()
     private val contactosClteDao: ContactosCltesDao? = MyDatabase.getInstance(contexto)?.contactosCltesDao()
+    private val direccCltesDao: DireccCltesDao? = MyDatabase.getInstance(contexto)?.direccCltesDao()
     private var fConfiguracion: Configuracion = Comunicador.fConfiguracion
 
     lateinit var cursor: Cursor
@@ -33,15 +35,24 @@ class ClientesClase(val contexto: Context) {
     var fCodigo: String = ""
     var fNombre: String = ""
     var fNomComercial: String = ""
+    var fCif: String = ""
     var fAplIva: Boolean = true
     var fAplRec: Boolean = false
     private var fFlag: Int = 0
     var fTarifa: Short = 0
     var fTrfDto: Short = 0
     var fTrfPiezas: Short = 0
+    var fPago: String = ""
+    var fRuta: Short = 0
     private var fEmpresaActual = 0
     private var fMaxFrasPdtes: Int = 0
-
+    var fRiesgo: Double = 0.0
+    var fDireccion: String = ""
+    var fCodPostal: String = ""
+    var fPoblacion: String = ""
+    var fProvincia: String = ""
+    var fEstado: String = ""
+    var fRamo: Short = 0
 
 
 
@@ -67,6 +78,7 @@ class ClientesClase(val contexto: Context) {
             fCodigo = ponerCeros(clteEnt.codigo.toString(), ancho_codclte)
             fNombre = clteEnt.nombre
             fNomComercial = clteEnt.nombreComercial
+            fCif = clteEnt.cif
             fAplIva = (clteEnt.aplIva == "T")
             fAplRec = (clteEnt.aplRec == "T")
             fFlag = clteEnt.flag
@@ -74,6 +86,16 @@ class ClientesClase(val contexto: Context) {
             fTarifa = clteEnt.tarifaId
             fTrfDto = clteEnt.tarifaDtoId
             fTrfPiezas = clteEnt.tarifaPiezas
+            fPago = clteEnt.fPago
+            fRuta = clteEnt.rutaId
+            fRiesgo = if (clteEnt.riesgo != "") clteEnt.riesgo.replace(',', '.').toDouble()
+                        else 0.0
+            fDireccion = clteEnt.direccion
+            fCodPostal = clteEnt.cPostal
+            fPoblacion = clteEnt.localidad
+            fProvincia = clteEnt.provincia
+            fEstado = clteEnt.estado
+            fRamo = clteEnt.ramo
         }
 
         // TODO
@@ -112,19 +134,9 @@ class ClientesClase(val contexto: Context) {
     }
 
     fun variasDirecciones(queCliente: Int): Boolean {
-        // TODO
-        /*
-        return try {
-            cDirecciones = dbAlba.rawQuery("SELECT * FROM dirClientes WHERE cliente = $queCliente" +
-                    " AND (dirdoc = 'F' OR dirdoc IS NULL)", null)
-            if (cDirecciones.moveToFirst()) {
-                cDirecciones.count > 1
-            } else false
-        } finally {
-            cDirecciones.close()
-        }
-        */
-        return true
+
+        val lDirecciones = direccCltesDao?.getDirNoDocClte(queCliente) ?: emptyList<DireccCltesEnt>().toMutableList()
+        return (lDirecciones.count() > 1)
     }
 
     fun abrirDirParaEnviar(QueNumExportacion: Int) {
@@ -338,95 +350,21 @@ class ClientesClase(val contexto: Context) {
 
     fun actualizarPendiente(queCliente: Int, queImporte: Double) {
         var dImporte = queImporte
-        val values = ContentValues()
-        // TODO
-        /*
-        dbAlba.rawQuery("SELECT pendiente FROM clientes WHERE cliente = $queCliente", null)
-            .use { cPendiente ->
-                if (cPendiente.moveToFirst()) {
-                    if (cPendiente.getString(cPendiente.getColumnIndex("pendiente")) != null)
-                        dImporte = cPendiente.getString(cPendiente.getColumnIndex("pendiente")).replace(',', '.').toDouble() + dImporte
-                    values.put("pendiente", dImporte)
-                    dbAlba.update("clientes", values, "cliente=$queCliente", null)
-                }
-            }
-        */
+
+        var quePendiente = clientesDao?.getPendienteClte(queCliente) ?: "0.0"
+        if (quePendiente == "") quePendiente = "0.0"
+
+        dImporte += quePendiente.replace(',', '.').toDouble()
+        clientesDao?.actualizarPendiente(queCliente, dImporte.toString())
     }
 
 
 
-    fun getCIF(): String {
-        val columna = cursor.getColumnIndex("cif")
-        return cursor.getString(columna)
+
+    fun nombreFPago(queFPago: String): String {
+        return fFPago.getDescrFPago(queFPago)
     }
 
-    fun getDireccion(): String {
-        val columna = cursor.getColumnIndex("direcc")
-        return cursor.getString(columna)
-    }
-
-    fun getPoblacion(): String {
-        val columna = cursor.getColumnIndex("locali")
-        return cursor.getString(columna)
-    }
-
-    fun getCodPostal(): String {
-        val columna = cursor.getColumnIndex("cpostal")
-        return cursor.getString(columna)
-    }
-
-    fun getProvincia(): String {
-        val columna = cursor.getColumnIndex("provin")
-        return cursor.getString(columna)
-    }
-
-
-    fun getFlag(): Int {
-        val columna = cursor.getColumnIndex("flag")
-        return cursor.getInt(columna)
-    }
-
-
-
-    fun getFPago(): String {
-        val columna = cursor.getColumnIndex("fpago")
-        return cursor.getString(columna)
-    }
-
-    fun nombreFPago(queFPago: String?): String {
-        return fFPago.getDescrFPago(queFPago!!)
-    }
-
-
-    fun getRuta(): String {
-        val columna = cursor.getColumnIndex("ruta")
-        return cursor.getString(columna)
-    }
-
-    fun getRamo(): String {
-        return cursor.getString(cursor.getColumnIndex("ramo"))
-    }
-
-    fun getEstado(): String {
-        return try {
-            val sEstado = cursor.getString(cursor.getColumnIndex("estado"))
-            sEstado ?: ""
-        } catch (e: Exception) {
-            ""
-        }
-    }
-
-    fun getRiesgo(): Double {
-        val columna = cursor.getColumnIndex("riesgo")
-        var sRiesgo = cursor.getString(columna)
-        sRiesgo = sRiesgo.replace(',', '.')
-        if (sRiesgo == "") sRiesgo = "0"
-        return try {
-            java.lang.Double.valueOf(sRiesgo)
-        } catch (e: Exception) {
-            0.0
-        }
-    }
 
 
     fun getSaldo(): Double {
@@ -488,7 +426,7 @@ class ClientesClase(val contexto: Context) {
     }
 
 
-    fun controlarRiesgo(): Boolean {
+    private fun controlarRiesgo(): Boolean {
         return (fFlag and FLAGCLIENTE_CONTROLARRIESGO) > 0
     }
 
@@ -516,7 +454,7 @@ class ClientesClase(val contexto: Context) {
         if (fControlarRiesgo || fControlarFechas && !fContrFechasSiempre || fControlarFrasPdtes || fContrFechasSiempre) {
             val fTotalPendiente = getSaldo() + getPendiente(fCliente) + totalDoc
             // Si controlamos el riesgo del cliente y lo ha superado presentaremos la ventana
-            if (fControlarRiesgo && (fTotalPendiente > getRiesgo())) resultado = true
+            if (fControlarRiesgo && (fTotalPendiente > fRiesgo)) resultado = true
 
             // Vemos si ha superado el riesgo mediante la fecha. Para ello abrimos el vencimiento más antiguo del cliente
             // y comparamos la fecha del documento con los días de riesgo que tenemos configurado.

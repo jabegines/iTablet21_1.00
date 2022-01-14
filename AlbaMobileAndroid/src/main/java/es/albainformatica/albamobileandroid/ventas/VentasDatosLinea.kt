@@ -2,7 +2,6 @@ package es.albainformatica.albamobileandroid.ventas
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.ContentValues
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
@@ -23,9 +22,12 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import es.albainformatica.albamobileandroid.*
+import es.albainformatica.albamobileandroid.dao.CnfTarifasDao
 import es.albainformatica.albamobileandroid.dao.OftCantRangosDao
 import es.albainformatica.albamobileandroid.dao.TiposIncDao
 import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.getInstance
+import es.albainformatica.albamobileandroid.entity.CnfTarifasEnt
+import es.albainformatica.albamobileandroid.entity.DtosLineasEnt
 import es.albainformatica.albamobileandroid.entity.TiposIncEnt
 import es.albainformatica.albamobileandroid.historicos.VerHcoArtCliente
 import es.albainformatica.albamobileandroid.maestros.AlmacenesClase
@@ -42,7 +44,9 @@ import java.util.*
  * Created by jabegines on 06/06/2014.
  */
 class VentasDatosLinea: Activity() {
-    private var ofCantRangosDao: OftCantRangosDao? = null
+    private var ofCantRangosDao: OftCantRangosDao? = getInstance(this)?.oftCantRangosDao()
+    private val cnfTarifasDao: CnfTarifasDao? = getInstance(this)?.cnfTarifasDao()
+
     private lateinit var fDocumento: Documento
     private lateinit var fConfiguracion: Configuracion
     private lateinit var fArticulos: ArticulosClase
@@ -117,7 +121,6 @@ class VentasDatosLinea: Activity() {
         super.onCreate(savedInstance)
         setContentView(R.layout.ventas_datoslinea)
 
-        ofCantRangosDao = getInstance(this)?.oftCantRangosDao()
         fDocumento = Comunicador.fDocumento
         fConfiguracion = Comunicador.fConfiguracion
         fArticulos = ArticulosClase(this)
@@ -185,8 +188,7 @@ class VentasDatosLinea: Activity() {
         if (fPedirTarifa) prepararTarifas()
 
         // fEditAlmEnabled nos servirá para saber si tenemos el control edtAlmacen enabled o no
-        fEditAlmEnabled =
-            fConfiguracion.pedirAlmPorLinPresup() && fDocumento.fTipoDoc == TIPODOC_PRESUPUESTO
+        fEditAlmEnabled = fConfiguracion.pedirAlmPorLinPresup() && fDocumento.fTipoDoc == TIPODOC_PRESUPUESTO
         fPedirCajas = fConfiguracion.pedirCajas()
         fPedirPiezas = fConfiguracion.usarPiezas()
         fDecPrBase = fConfiguracion.decimalesPrecioBase()
@@ -425,7 +427,7 @@ class VentasDatosLinea: Activity() {
         if (fEstado == est_Vl_Nueva) {
             i.putExtra("numerolinea", -1)
         } else {
-            i.putExtra("numerolinea", fDocumento.numLinea)
+            i.putExtra("numerolinea", fLinea)
         }
 
         // Establecemos ahora el precio de la línea porque nos hará falta para calcular los dtos. en casdada
@@ -764,22 +766,23 @@ class VentasDatosLinea: Activity() {
     }
 
     private fun anyadirDtoCascada() {
-        val values = ContentValues()
-        values.put("descuento", 0.0)
-        values.put("importe", fDocumento.fDtoRatingImp)
-        values.put("cantidad1", 0.0)
-        values.put("cantidad2", 0.0)
-        values.put("linea", -1)
-        values.put("orden", 1)
-        values.put("desderating", "T")
-        fDocumento.insertarDtoCasc(values)
+        val dtoLineaEnt = DtosLineasEnt()
+        dtoLineaEnt.lineaId = -1
+        dtoLineaEnt.orden = 1
+        dtoLineaEnt.descuento = "0.0"
+        dtoLineaEnt.importe = fDocumento.fDtoRatingImp.toString()
+        dtoLineaEnt.cantidad1 = "0.0"
+        dtoLineaEnt.cantidad2 =  "0.0"
+        dtoLineaEnt.desdeRating = "T"
+
+        fDocumento.insertarDtoCasc(dtoLineaEnt)
+
         fDtosCascada.abrir(-1)
         // Configuramos el objeto de los dtos. en cascada
         fDtosCascada.fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa.toString().toInt())
         fDtosCascada.fAplicarIva = fDocumento.fClientes.fAplIva
         fDtosCascada.fPorcIva = fDocumento.fPorcIva
         fDtosCascada.fDecPrBase = fConfiguracion.decimalesPrecioBase()
-        fDtosCascada.fExentoIva = !fDocumento.fClientes.fAplIva
         fDocumento.fDtoLin = fDtosCascada.calcularDtoEquiv(fDocumento.fPrecio, fDecPrBase).toDouble()
         fDocumento.fLineaConDtCasc = true
     }
@@ -982,7 +985,6 @@ class VentasDatosLinea: Activity() {
                 fDtosCascada.fAplicarIva = fDocumento.fClientes.fAplIva
                 fDtosCascada.fPorcIva = fDocumento.fPorcIva
                 fDtosCascada.fDecPrBase = fConfiguracion.decimalesPrecioBase()
-                fDtosCascada.fExentoIva = !fDocumento.fClientes.fAplIva
                 fDocumento.fDtoLin = fDtosCascada.calcularDtoEquiv(fDocumento.fPrecio, fDecPrBase)
                         .toDouble()
             }
@@ -1355,34 +1357,21 @@ class VentasDatosLinea: Activity() {
         return (ofCantRangosDao?.getCountOftCant() ?: 0) > 0
     }
 
+
     private fun tarifasALista(listItems: MutableList<String>) {
-        // TODO
-        /*
-            val dbAlba = db.writableDatabase
-            dbAlba.rawQuery("SELECT codigo, tarifa FROM cnftarifas", null).use { cursor ->
-                cursor.moveToFirst()
-                while (!cursor.isAfterLast) {
-                    listItems.add(
-                        ponerCeros(cursor.getString(0), ancho_tarifa)
-                                + " " + cursor.getString(1)
-                    )
-                    cursor.moveToNext()
-                }
-            }
-        */
+
+        val lTarifas = cnfTarifasDao?.getAllCnfTarifas() ?: emptyList<CnfTarifasEnt>().toMutableList()
+
+        for (cnfTrfEnt in lTarifas) {
+            listItems.add(ponerCeros(cnfTrfEnt.codigo.toString(), ancho_tarifa) + " " + cnfTrfEnt.descrTarifa)
+        }
     }
 
+
     private fun esTarifaPiezas(queTarifa: Short): Boolean {
-        // TODO
-        /*
-            dbAlba.rawQuery("SELECT flag FROM cnftarifas WHERE codigo = $queTarifa", null)
-                .use { cursor ->
-                    return if (cursor.moveToFirst()) {
-                        cursor.getInt(0) and FLAGCNFTARIFAS_PARA_PIEZAS > 0
-                    } else false
-                }
-        */
-        return false
+
+        val queFlag = cnfTarifasDao?.getFlag(queTarifa) ?: 0
+        return (queFlag and FLAGCNFTARIFAS_PARA_PIEZAS > 0)
     }
 
 

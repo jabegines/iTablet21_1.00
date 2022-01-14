@@ -83,28 +83,26 @@ class VtaDetallesCat: AppCompatActivity() {
     private fun escogerLineaArt(fArticulo: Int) {
         val listItems: MutableList<String> = ArrayList()
 
-        // TODO
-        /*
-        if (fDocumento.cLineas.moveToFirst()) {
-            do {
-                if (fDocumento.cLineas.getInt(fDocumento.cLineas.getColumnIndex("articulo")) == fArticulo) {
+        if (fDocumento.lLineas.count() > 0) {
+            for (linea in fDocumento.lLineas) {
+                if (linea.articuloId == fArticulo) {
 
-                    if (fIvaIncluido && fDocumento.fClientes.getAplicarIva()) {
-                        listItems.add(fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("_id")) +
-                                " - Cantidad: " + fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cantidad")) +
-                                " - Precio: " + fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("precioii")) +
-                                " - Importe: " + fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("importeii")))
+                    if (fIvaIncluido && fDocumento.fClientes.fAplIva) {
+                        listItems.add(linea.lineaId.toString() +
+                                " - Cantidad: " + linea.cantidad +
+                                " - Precio: " + linea.precioII +
+                                " - Importe: " + linea.importeII)
 
                     } else {
-                        listItems.add(fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("_id")) +
-                                " - Cantidad: " + fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cantidad")) +
-                                " - Precio: " + fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("precio")) +
-                                " - Importe: " + fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("importe")))
+                        listItems.add(linea.lineaId.toString() +
+                                " - Cantidad: " + linea.cantidad +
+                                " - Precio: " + linea.precio +
+                                " - Importe: " + linea.importe)
                     }
                 }
-            } while (fDocumento.cLineas.moveToNext())
+            }
         }
-        */
+
         chsLineas = listItems.toTypedArray()
 
         val altbld = AlertDialog.Builder(this)

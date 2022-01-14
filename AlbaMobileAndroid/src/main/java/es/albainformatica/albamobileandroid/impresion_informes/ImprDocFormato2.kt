@@ -165,12 +165,12 @@ class ImprDocFormato2(contexto: Context): Runnable {
         val lDescr = 20
         val lCant = 30
         fNumLineas = 17
-        fDocumento.cLineas.moveToFirst()
-        while (!fDocumento.cLineas.isAfterLast) {
-            sCodigo = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("codigo"))
-            sDescr = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("descr"))
-            sCajas = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cajas"))
-            sCant = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cantidad"))
+
+        for (linea in fDocumento.lLineas) {
+            sCodigo = linea.codArticulo
+            sDescr = linea.descripcion
+            sCajas = linea.cajas
+            sCant = linea.cantidad
             result.append(ajustarCadena(sCodigo, lCodigo, true)).append(" ")
                 .append(ajustarCadena(sDescr, lDescr, true))
             val dCajas = sCajas.toDouble()
@@ -188,7 +188,6 @@ class ImprDocFormato2(contexto: Context): Runnable {
             } catch (e: Exception) {
                 //
             }
-            fDocumento.cLineas.moveToNext()
         }
     }
 
@@ -207,31 +206,23 @@ class ImprDocFormato2(contexto: Context): Runnable {
 
     private fun imprDatosClteYDoc(): String {
         var result: String
-        var cCadena: String = ajustarCadena(ponerCeros(fDocumento.fClientes.fCodigo.toString(), ancho_codclte) + " "
+        var cCadena: String = ajustarCadena(ponerCeros(fDocumento.fClientes.fCodigo, ancho_codclte) + " "
                     + fDocumento.fClientes.fNombre, 35, true)
         result = cCadena
         result += ccSaltoLinea
-        cCadena = ajustarCadena(fDocumento.fClientes.getDireccion(), 35, true)
+        cCadena = ajustarCadena(fDocumento.fClientes.fDireccion, 35, true)
         result += cCadena
         result = (result + StringOfChar(" ", 5) + "Hora: "
                 + StringOfChar(" ", 4) + fDocumento.fHora)
         result += ccSaltoLinea
-        result = (result
-                + ajustarCadena(
-            fDocumento.fClientes.getCodPostal() + " "
-                    + fDocumento.fClientes.getPoblacion(), 35, true
-        ))
-        result = (result + StringOfChar(" ", 5) + "Fecha: "
-                + StringOfChar(" ", 3) + fDocumento.fFecha)
+        result = (result + ajustarCadena(fDocumento.fClientes.fCodPostal + " " + fDocumento.fClientes.fPoblacion, 35, true))
+        result = (result + StringOfChar(" ", 5) + "Fecha: " + StringOfChar(" ", 3) + fDocumento.fFecha)
         result += ccSaltoLinea
-        result += ajustarCadena(fDocumento.fClientes.getProvincia(), 35, true)
+        result += ajustarCadena(fDocumento.fClientes.fProvincia, 35, true)
         result = result + StringOfChar(" ", 5) + "Doc: " + tipoDocAsString(fDocumento.fTipoDoc)
         result += ccSaltoLinea
-        result += ajustarCadena("C.I.F.: " + fDocumento.fClientes.getCIF(), 35, true)
-        result = result + StringOfChar(
-            " ",
-            5
-        ) + "Num.: " + fDocumento.serie + "/" + fDocumento.numero
+        result += ajustarCadena("C.I.F.: " + fDocumento.fClientes.fCif, 35, true)
+        result = result + StringOfChar(" ", 5) + "Num.: " + fDocumento.serie + "/" + fDocumento.numero
         result = result + ccSaltoLinea + ccSaltoLinea
         return result
     }

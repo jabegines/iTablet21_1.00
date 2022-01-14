@@ -455,7 +455,7 @@ class ViewPagerAdapter(queRutaImagenes: String, queImagPorPagina: Int, queEmpres
                 1 -> {
                     itemView.tvCodigo1.text = fArticulos.fCodigo
                     itemView.tvDescr1.text = fArticulos.fDescripcion
-                    itemView.tvCodAlt1.text = fArticulos.getCodAlternativo()
+                    itemView.tvCodAlt1.text = fArticulos.fCodAlternativo
 
                     if (fArticulos.artEnHistorico(fDocumento.fCliente, queArticulo)) itemView.imgArtEnHco1.visibility = View.VISIBLE
                     else itemView.imgArtEnHco1.visibility = View.GONE
@@ -466,7 +466,7 @@ class ViewPagerAdapter(queRutaImagenes: String, queImagPorPagina: Int, queEmpres
                 2 -> {
                     itemView.tvCodigo2.text = fArticulos.fCodigo
                     itemView.tvDescr2.text = fArticulos.fDescripcion
-                    itemView.tvCodAlt2.text = fArticulos.getCodAlternativo()
+                    itemView.tvCodAlt2.text = fArticulos.fCodAlternativo
 
                     if (fArticulos.artEnHistorico(fDocumento.fCliente, queArticulo)) itemView.imgArtEnHco2.visibility = View.VISIBLE
                     else itemView.imgArtEnHco2.visibility = View.GONE
@@ -477,7 +477,7 @@ class ViewPagerAdapter(queRutaImagenes: String, queImagPorPagina: Int, queEmpres
                 3 -> {
                     itemView.tvCodigo3.text = fArticulos.fCodigo
                     itemView.tvDescr3.text = fArticulos.fDescripcion
-                    itemView.tvCodAlt3.text = fArticulos.getCodAlternativo()
+                    itemView.tvCodAlt3.text = fArticulos.fCodAlternativo
 
                     if (fArticulos.artEnHistorico(fDocumento.fCliente, queArticulo)) itemView.imgArtEnHco3.visibility = View.VISIBLE
                     else itemView.imgArtEnHco3.visibility = View.GONE
@@ -488,7 +488,7 @@ class ViewPagerAdapter(queRutaImagenes: String, queImagPorPagina: Int, queEmpres
                 4 -> {
                     itemView.tvCodigo4.text = fArticulos.fCodigo
                     itemView.tvDescr4.text = fArticulos.fDescripcion
-                    itemView.tvCodAlt4.text = fArticulos.getCodAlternativo()
+                    itemView.tvCodAlt4.text = fArticulos.fCodAlternativo
 
                     if (fArticulos.artEnHistorico(fDocumento.fCliente, queArticulo)) itemView.imgArtEnHco4.visibility = View.VISIBLE
                     else itemView.imgArtEnHco4.visibility = View.GONE
@@ -499,7 +499,7 @@ class ViewPagerAdapter(queRutaImagenes: String, queImagPorPagina: Int, queEmpres
                 5 -> {
                     itemView.tvCodigo5.text = fArticulos.fCodigo
                     itemView.tvDescr5.text = fArticulos.fDescripcion
-                    itemView.tvCodAlt5.text = fArticulos.getCodAlternativo()
+                    itemView.tvCodAlt5.text = fArticulos.fCodAlternativo
 
                     if (fArticulos.artEnHistorico(fDocumento.fCliente, queArticulo)) itemView.imgArtEnHco5.visibility = View.VISIBLE
                     else itemView.imgArtEnHco5.visibility = View.GONE
@@ -510,7 +510,7 @@ class ViewPagerAdapter(queRutaImagenes: String, queImagPorPagina: Int, queEmpres
                 6 -> {
                     itemView.tvCodigo6.text = fArticulos.fCodigo
                     itemView.tvDescr6.text = fArticulos.fDescripcion
-                    itemView.tvCodAlt6.text = fArticulos.getCodAlternativo()
+                    itemView.tvCodAlt6.text = fArticulos.fCodAlternativo
 
                     if (fArticulos.artEnHistorico(fDocumento.fCliente, queArticulo)) itemView.imgArtEnHco6.visibility = View.VISIBLE
                     else itemView.imgArtEnHco6.visibility = View.GONE

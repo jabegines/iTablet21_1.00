@@ -167,6 +167,8 @@ class ModifDocReparto: Activity() {
 
 
     private fun prepararListView() {
+        // TODO
+        /*
         val columnas: Array<String> = if (fIvaIncluido) {
             arrayOf(
                 "descr",
@@ -218,14 +220,7 @@ class ModifDocReparto: Activity() {
             R.id.ly_vl_descrfto,
             R.id.ly_vl_textolinea
         )
-        adapterLineas = SimpleCursorAdapter(
-            this,
-            R.layout.ly_lineas_ventas,
-            fDocumento.cLineas,
-            columnas,
-            to,
-            0
-        )
+        adapterLineas = SimpleCursorAdapter(this, R.layout.ly_lineas_ventas, fDocumento.cLineas, columnas, to, 0)
         // Formateamos las columnas.
         formatearColumnas()
         lvLineas = findViewById(R.id.lvVL_LineasDoc)
@@ -239,6 +234,7 @@ class ModifDocReparto: Activity() {
                     listView.getItemAtPosition(position) as Cursor
                 fLinea = cursor.getInt(cursor.getColumnIndexOrThrow("_id"))
             }
+       */
     }
 
 
@@ -431,7 +427,8 @@ class ModifDocReparto: Activity() {
     }
 
     private fun refrescarLineas() {
-        adapterLineas.changeCursor(fDocumento.cLineas)
+        // TODO
+        //adapterLineas.changeCursor(fDocumento.cLineas)
     }
 
     fun borrarLinea(view: View) {
@@ -463,6 +460,8 @@ class ModifDocReparto: Activity() {
     fun editarLinea(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
+        // TODO
+        /*
         if (fEstado == est_Vl_Browse && fDocumento.cLineas.count > 0) {
             if (fLinea > 0) {
 
@@ -478,6 +477,7 @@ class ModifDocReparto: Activity() {
                 startActivityForResult(i, fRequestEditarLinea)
             } else MsjAlerta(this).alerta(resources.getString(R.string.msj_NoRegSelecc))
         }
+        */
     }
 
 
@@ -504,17 +504,15 @@ class ModifDocReparto: Activity() {
         fDocumento.abrirLineas()
 
         // Comprobamos que el documento tenga alguna línea.
-        if (fDocumento.cLineas.count > 0) {
+        if (fDocumento.lLineas.count() > 0) {
             val i = Intent(this, VentasFinDoc::class.java)
             i.putExtra("iddoc", fIdDocOriginal)
             i.putExtra("separarlineas", false)
             i.putExtra("terminar", true)
             startActivityForResult(i, fRequestPieDoc)
         } else {
-            val aldDialog =
-                NuevoAlertBuilder(this, "Terminar", "No ha realizado ninguna modificación", false)
-            aldDialog
-                .setPositiveButton("Ok") { _: DialogInterface?, _: Int ->
+            val aldDialog = NuevoAlertBuilder(this, "Terminar", "No ha realizado ninguna modificación", false)
+            aldDialog.setPositiveButton("Ok") { _: DialogInterface?, _: Int ->
                     // Borramos la cabecera del albarán
                     fDocumento.borrarDocumento(fDocumento.fIdDoc)
                     val returnIntent = Intent()

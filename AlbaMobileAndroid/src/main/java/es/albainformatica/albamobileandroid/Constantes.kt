@@ -1,5 +1,6 @@
 package es.albainformatica.albamobileandroid
 
+import androidx.room.ColumnInfo
 
 
 const val VERSION_PROGRAMA = "1.00"
@@ -216,6 +217,10 @@ class ListOftVol {
     var tarifa: String = ""
 }
 
+class DatosOftVol {
+    var descripcion: String = ""
+    var importe: Double = 0.0
+}
 
 class DatosCarga {
     var cargaId = 0
@@ -249,28 +254,158 @@ class DatosLinDocDif {
 
 class DatosLinVtas {
     var lineaId: Int = 0
+    var cabeceraId: Int = 0
+    var tipoDoc: Short = 0
     var articuloId: Int = 0
     var codArticulo: String = ""
     var descripcion: String = ""
     var tarifaId: Short = 0
     var codigoIva: Short = 0
     var cantidad: String = ""
+    var cantidadOrg: String = ""
     var cajas: String = ""
+    var cajasOrg: String = ""
+    var piezas: String = ""
+    var piezasOrg: String = ""
     var lote: String = ""
     var precio: String = ""
+    var precioII: String = ""
+    var precioTarifa: String = ""
     var importe: String = ""
     var importeII: String = ""
     var dto: String = ""
+    var dtoImpte: String = ""
+    var dtoImpteII: String = ""
+    var dtoTarifa: String = ""
     var tasa1: String = ""
     var tasa2: String = ""
     var porcIva: String = ""
+    var formatoId: Short = 0
     var descrFto: String? = ""
+    var tipoIncId: Int = 0
+    var textoLinea: String = ""
+    var modif_nueva: String = ""
+    var almacenPedido: String = ""
+    var ofertaId: Int = 0
+    var dtoOftVol: String = ""
+    var esEnlace: String = ""
     var flag: Int = 0
+    var flag3: Int = 0
+    var flag5: Int = 0
 }
+
+class DatosLinIva {
+    var codigoIva: Short = 0
+    var importe: String = ""
+    var importeII: String = ""
+    var porcIva: String = ""
+}
+
 
 class DatosPrecios {
     var precio: String = ""
     var dto: String = ""
 }
+
+class DatosPrecRat {
+    var precio: String = ""
+    var dto: String = ""
+    var flag: Int = 0
+}
+
+
+class DatosVerDocs {
+    var cabeceraId: Int = 0
+    var clienteId: Int = 0
+    var nombre: String = ""
+    var nombreComercial: String = ""
+    var empresa: Short = 0
+    var almacen: Short = 0
+    var ejercicio: Short = 0
+    var fecha: String = ""
+    var tipoDoc: Short = 0
+    var serie: String = ""
+    var numero: Int = 0
+    var total: String = ""
+    var firmado: String = ""
+    var imprimido: String = ""
+    var facturado: String = ""
+    var tipoIncidencia: Int = 0
+    var estado: String = ""
+}
+
+class DatosArtDesctOftVol {
+    var codigo: String = ""
+    var descripcion: String = ""
+    var codigoIva: Short = 0
+    var porcIva: String = ""
+}
+
+class DatosCabFinDoc {
+    var observ1: String = ""
+    var observ2: String = ""
+    var dto: String = ""
+    var dto2: String = ""
+    var dto3: String = ""
+    var dto4: String = ""
+    var fPago: String = ""
+}
+
+class DatosArticulo {
+    var articuloId: Int = 0
+    var codigo: String = ""
+    var descripcion: String = ""
+    var tipoIva: Short = 0
+    var grupoId: Short = 0
+    var departamentoId: Short = 0
+    var proveedorId: Int = 0
+    var costo: String = ""
+    var uCaja: String = ""
+    var medida: String = ""
+    var flag1: Int = 0
+    var flag2: Int = 0
+    var peso: String = ""
+    var tasa1: String = ""
+    var tasa2: String = ""
+    var enlace: Int = 0
+    var clave: String = ""
+    var codAlternativo: String = ""
+    var codigoIva: Short = 0
+    var porcIva: String = ""
+    var ent: String = ""
+    var sal: String = ""
+    var entc: String = ""
+    var salc: String = ""
+}
+
+class DatosGridView {
+    var articuloId: Int = 0
+    var codigo: String = ""
+    var descripcion: String = ""
+    var uCaja: String = ""
+    var artOfert: Int = 0
+    var precio: String = ""
+    var dto: String = ""
+    var prCajas: String = ""
+    var dtoCajas: String = ""
+    var porcIva: String = ""
+    var ent: String = ""
+    var sal: String = ""
+    var entc: String = ""
+    var salc: String = ""
+    var historicoId: Int = 0
+    var cantHco: String = ""
+    var cajasHco: String = ""
+    var precioHco: String = ""
+    var dtoHco: String = ""
+    var fecha: String = ""
+}
+
+class GruposParaCat {
+    var codigo: Int = 0
+    var descripcion: String = ""
+    var numDepartamentos: Int = 0
+}
+
 
 var fArtSeleccCat = 0

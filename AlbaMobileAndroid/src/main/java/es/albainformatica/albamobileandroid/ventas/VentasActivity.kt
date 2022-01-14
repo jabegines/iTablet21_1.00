@@ -21,6 +21,7 @@ import androidx.fragment.app.DialogFragment
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.cobros.CobrosActivity
 import es.albainformatica.albamobileandroid.comunicaciones.ServicioEnviar
+import es.albainformatica.albamobileandroid.dao.CabecerasDao
 import es.albainformatica.albamobileandroid.dao.EmpresasDao
 import es.albainformatica.albamobileandroid.dao.SeriesDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
@@ -30,6 +31,7 @@ import java.util.*
 
 
 class VentasActivity: AppCompatActivity() {
+    private val cabecerasDao: CabecerasDao? = MyDatabase.getInstance(this)?.cabecerasDao()
     private lateinit var fConfiguracion: Configuracion
     private lateinit var prefs: SharedPreferences
     private lateinit var fRutero: Rutero
@@ -131,17 +133,14 @@ class VentasActivity: AppCompatActivity() {
 
 
     private fun hayDocParaEnviar(): Boolean {
-        // Si tenemos rutero_reparto mandaremos también las cabeceras de los documentos que estén firmados o tengan alguna incidencia (sólo las cabeceras).
-        val sCondicion = if (fConfiguracion.hayReparto()) {
-            " WHERE estado = 'N' OR estado = 'R' OR " + "((firmado = 'T' OR tipoincidencia IS NOT NULL) AND estado <> 'X')"
-        } else {
-            " WHERE estado = 'N' OR estado = 'R'"
-        }
+        // Si tenemos rutero_reparto mandaremos también las cabeceras de los documentos
+        // que estén firmados o tengan alguna incidencia (sólo las cabeceras).
+        val queCabId: Int = if (fConfiguracion.hayReparto())
+            cabecerasDao?.hayDocsParaEnvRep() ?: 0
+        else
+            cabecerasDao?.hayDocsParaEnviar() ?: 0
 
-        // TODO
-        //val cDoc = dbAlba.rawQuery("SELECT * FROM cabeceras $sCondicion", null)
-        //cDoc.use { return (it.moveToFirst()) }
-        return false
+        return (queCabId > 0)
     }
 
 
@@ -562,22 +561,25 @@ class VentasActivity: AppCompatActivity() {
     fun verDocumentos(view: View) {
         view.getTag(0)              // Para que no dé warning el compilador
 
-        val queCliente: Int
-        if (fUsarRutero || fUsarCP) {
-            queCliente = if (fClteDoc > 0)
+        val queCliente: Int = if (fUsarRutero || fUsarCP) {
+            if (fClteDoc > 0)
                 fClteDoc
             else {
                 0
             }
         } else {
             val queCodClte = edtCodClte.text.toString()
-            //queCodClte = ponerCeros(queCodClte, ancho_codclte)
-            queCliente = fClientes.existeCodigo(queCodClte.toInt())
+            if (queCodClte != "")
+                fClientes.existeCodigo(queCodClte.toInt())
+            else
+                0
         }
 
-        val i = Intent(this, VerDocumentosActivity::class.java)
-        i.putExtra("cliente", queCliente)
-        startActivity(i)
+        if (queCliente > 0) {
+            val i = Intent(this, VerDocumentosActivity::class.java)
+            i.putExtra("cliente", queCliente)
+            startActivity(i)
+        }
     }
 
 
@@ -618,7 +620,7 @@ class VentasActivity: AppCompatActivity() {
 
     private fun mostrarCliente(queCliente: Int) {
         if (fClientes.abrirUnCliente(queCliente)) {
-            edtCodClte.setText(ponerCeros(fClientes.fCodigo.toString(), ancho_codclte))
+            edtCodClte.setText(ponerCeros(fClientes.fCodigo, ancho_codclte))
             tvNombreClte.text = fClientes.fNombre
             tvNombreCom.text = fClientes.fNomComercial
 

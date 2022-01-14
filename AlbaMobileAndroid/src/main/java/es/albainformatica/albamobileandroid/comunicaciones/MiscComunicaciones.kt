@@ -116,13 +116,22 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             // Así intentamos evitar tener problemas con los contadores, etc.
             if (fDesdeServicio || comprobarFechas(rutaLocal)) {
 
-                // Volvemos a crear todas las tablas si no estamos usando el servicio
+                // Vaciamos todas las tablas si no estamos usando el servicio
                 if (!fDesdeServicio) {
-                    MyDatabase.getInstance(fContext)?.beginTransaction()
-                    try {
-                        MyDatabase.getInstance(fContext)?.clearAllTables()
-                    } finally {
-                        MyDatabase.getInstance(fContext)?.endTransaction()
+                    val cursor = MyDatabase.getInstance(fContext)?.openHelper?.readableDatabase?.query("SELECT name FROM sqlite_master WHERE type = 'table'")
+                    val sqlDatabase = MyDatabase.getInstance(fContext)?.openHelper?.writableDatabase
+                    if (cursor != null) {
+                        if (cursor.moveToFirst()) {
+                            while (!cursor.isAfterLast) {
+                                val tableName = cursor.getString(0) ?: ""
+                                if (tableName != "android_metadata"
+                                    && tableName != "sqlite_sequence"
+                                    && tableName != "room_master_table") {
+                                    sqlDatabase?.delete(tableName, null, null)
+                                }
+                                cursor.moveToNext()
+                            }
+                        }
                     }
                 }
 

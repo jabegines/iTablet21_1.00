@@ -742,10 +742,10 @@ class Configuracion(queContexto: Context) {
 
     fun actualizarNumero(queSerie: String, queEjercicio: Short, queTipoDoc: Byte, fNumero: Int) {
         when (queTipoDoc) {
-            2.toByte() -> seriesDao?.setNumAlbaran(queSerie, queEjercicio.toInt(), fNumero + 1)
-            3.toByte() -> seriesDao?.setNumPedido(queSerie, queEjercicio.toInt(), fNumero + 1)
-            6.toByte() -> seriesDao?.setNumPresupuesto(queSerie, queEjercicio.toInt(), fNumero + 1)
-            else -> seriesDao?.setNumFactura(queSerie, queEjercicio.toInt(), fNumero + 1)
+            2.toByte() -> seriesDao?.setNumAlbaran(queSerie, queEjercicio, fNumero + 1)
+            3.toByte() -> seriesDao?.setNumPedido(queSerie, queEjercicio, fNumero + 1)
+            6.toByte() -> seriesDao?.setNumPresupuesto(queSerie, queEjercicio, fNumero + 1)
+            else -> seriesDao?.setNumFactura(queSerie, queEjercicio, fNumero + 1)
         }
     }
 

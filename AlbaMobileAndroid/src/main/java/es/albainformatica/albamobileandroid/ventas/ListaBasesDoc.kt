@@ -1,8 +1,10 @@
 package es.albainformatica.albamobileandroid.ventas
 
 import android.content.Context
+import es.albainformatica.albamobileandroid.DatosLinIva
 import es.albainformatica.albamobileandroid.Redondear
 import es.albainformatica.albamobileandroid.dao.IvasDao
+import es.albainformatica.albamobileandroid.dao.LineasDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.entity.IvasEnt
 import java.util.ArrayList
@@ -11,7 +13,7 @@ import java.util.ArrayList
  * Created by jabegines on 14/10/13.
  */
 class ListaBasesDoc(contexto: Context) {
-
+    private val lineasDao: LineasDao? = MyDatabase.getInstance(contexto)?.lineasDao()
     private val ivasDao: IvasDao? = MyDatabase.getInstance(contexto)?.ivasDao()
     var fLista: ArrayList<TBaseDocumento> = ArrayList()
     var fAplicarIva: Boolean = true
@@ -139,46 +141,30 @@ class ListaBasesDoc(contexto: Context) {
             return fTotal
         }
 
+
     fun cargarDesdeDoc(fIdDoc: Int) {
         var fCodigoIva: Short
         var fImporte: Double
         var fImporteII: Double
         var dPorcIva: Double
-        // TODO
-        /*
-        val cLineas = dbAlba.rawQuery(
-            "SELECT A.codigoiva, A.importe, A.importeii, B.iva porciva"
-                    + " FROM lineas A "
-                    + " LEFT OUTER JOIN ivas B ON B.codigo = A.codigoiva"
-                    + " WHERE A.cabeceraId = " + fIdDoc, null
-        )
-        cLineas.moveToFirst()
-        while (!cLineas.isAfterLast) {
-            fCodigoIva = cLineas.getShort(cLineas.getColumnIndex("codigoiva"))
-            fImporte =
-                cLineas.getString(cLineas.getColumnIndex("importe")).replace(',', '.').toDouble()
+
+        val lLineas = lineasDao?.cargarDatosIva(fIdDoc) ?: emptyList<DatosLinIva>().toMutableList()
+
+        for (linea in lLineas) {
+            fCodigoIva = linea.codigoIva
+            fImporte = linea.importe.replace(',', '.').toDouble()
             // Cuando el importe iva incluído es null lo recalculamos.
-            if (cLineas.getString(cLineas.getColumnIndex("importeii")) == null) {
-                fImporteII = cLineas.getString(cLineas.getColumnIndex("importe")).replace(',', '.')
-                    .toDouble()
-                if (cLineas.getString(cLineas.getColumnIndex("porciva")) != null) {
-                    dPorcIva =
-                        cLineas.getString(cLineas.getColumnIndex("porciva")).replace(',', '.')
-                            .toDouble()
+            if (linea.importeII == "") {
+                fImporteII = linea.importe.replace(',', '.').toDouble()
+                if (linea.porcIva != "") {
+                    dPorcIva = linea.porcIva.replace(',', '.').toDouble()
                     fImporteII += fImporteII * dPorcIva / 100
                 } else fImporteII = 0.0
-            } else fImporteII =
-                cLineas.getString(cLineas.getColumnIndex("importeii")).replace(',', '.').toDouble()
+            } else fImporteII = linea.importeII.replace(',', '.').toDouble()
 
-            //if (fAplicarIva) {
-            if (fIvaIncluido) calcularBase(fCodigoIva, fImporteII) else calcularBase(
-                fCodigoIva,
-                fImporte
-            )
-            cLineas.moveToNext()
+            if (fIvaIncluido) calcularBase(fCodigoIva, fImporteII)
+            else calcularBase(fCodigoIva, fImporte)
         }
-        cLineas.close()
-        */
     }
 
 

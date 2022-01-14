@@ -119,22 +119,18 @@ class ImprDocDatamaxApex2(contexto: Context): Runnable {
     }
 
     private fun imprDatosClteYDoc(docExPCL_LP: DocumentExPCL_LP) {
-        var cCadena: String = ajustarCadena(ponerCeros(fDocumento.fClientes.fCodigo.toString(), ancho_codclte) + " " +
+        var cCadena: String = ajustarCadena(ponerCeros(fDocumento.fClientes.fCodigo, ancho_codclte) + " " +
                 fDocumento.fClientes.fNombre, 35, true)
         docExPCL_LP.writeText(cCadena)
         cCadena = ajustarCadena(fDocumento.fClientes.fNomComercial, 35, true)
         docExPCL_LP.writeText(cCadena)
-        cCadena = ajustarCadena("C.I.F.: " + fDocumento.fClientes.getCIF(), 35, true)
+        cCadena = ajustarCadena("C.I.F.: " + fDocumento.fClientes.fCif, 35, true)
         docExPCL_LP.writeText(cCadena)
-        cCadena = ajustarCadena(fDocumento.fClientes.getDireccion(), 35, true)
+        cCadena = ajustarCadena(fDocumento.fClientes.fDireccion, 35, true)
         docExPCL_LP.writeText(cCadena)
-        cCadena = ajustarCadena(
-            fDocumento.fClientes.getCodPostal() + " " + fDocumento.fClientes.getPoblacion(),
-            35,
-            true
-        )
+        cCadena = ajustarCadena(fDocumento.fClientes.fCodPostal + " " + fDocumento.fClientes.fPoblacion, 35, true)
         docExPCL_LP.writeText(cCadena)
-        cCadena = ajustarCadena(fDocumento.fClientes.getProvincia(), 35, true)
+        cCadena = ajustarCadena(fDocumento.fClientes.fProvincia, 35, true)
         docExPCL_LP.writeText(cCadena)
         docExPCL_LP.writeText("")
         cCadena = "Doc: " + tipoDocAsString(fDocumento.fTipoDoc)
@@ -192,21 +188,16 @@ class ImprDocDatamaxApex2(contexto: Context): Runnable {
         val lPrecio = 6
         val lImpte = 7
 
-        fDocumento.cLineas.moveToFirst()
-        while (!fDocumento.cLineas.isAfterLast) {
-            sDescr = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("descr"))
-            sCajas = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cajas"))
-            sCant = fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("cantidad"))
+        for (linea in fDocumento.lLineas) {
+            sDescr = linea.descripcion
+            sCajas = linea.cajas
+            sCant = linea.cantidad
             if (fVtaIvaIncluido) {
-                sPrecio =
-                    fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("precioii"))
-                sImpte =
-                    fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("importeii"))
+                sPrecio = linea.precioII
+                sImpte = linea.importeII
             } else {
-                sPrecio =
-                    fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("precio"))
-                sImpte =
-                    fDocumento.cLineas.getString(fDocumento.cLineas.getColumnIndex("importe"))
+                sPrecio = linea.precio
+                sImpte = linea.importe
             }
             cCadena = ajustarCadena(sDescr, lDescr, true)
             docExPCL_LP.writeTextPartial(cCadena)
@@ -223,7 +214,6 @@ class ImprDocDatamaxApex2(contexto: Context): Runnable {
                     + ajustarCadena(sPrecio, lPrecio, false) + " "
                     + ajustarCadena(sImpte, lImpte, false))
             docExPCL_LP.writeText(cCadena)
-            fDocumento.cLineas.moveToNext()
         }
     }
 
