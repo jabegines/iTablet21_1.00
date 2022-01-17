@@ -280,15 +280,14 @@
 
             <include layout="@layout/nav_header_biocat"/>
 
-            <ListView
-                android:id="@+id/left_drawer"
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvLeftDrawer"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:choiceMode="singleChoice"
-                android:divider="@color/azul_alba"
-                android:dividerHeight="1dp"
-                android:listSelector="@drawable/listselect_catalogos"
-                android:textColor="#424242"/>
+                android:layout_height="match_parent">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
 
         </LinearLayout>
     </com.google.android.material.navigation.NavigationView>

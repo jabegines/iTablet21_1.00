@@ -9,7 +9,8 @@ data class LotesEnt(
 
     @PrimaryKey(autoGenerate = true)
     var loteId: Int = 0,
-    var empresa: Int = 0,
+
+    var empresa: Short = 0,
     var articuloId: Int = 0,
     var lote: String = "",
     var stock: String = "",

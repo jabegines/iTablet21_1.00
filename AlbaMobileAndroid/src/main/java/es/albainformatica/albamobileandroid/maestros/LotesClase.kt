@@ -10,6 +10,7 @@ import es.albainformatica.albamobileandroid.entity.LotesEnt
 class LotesClase(queContexto: Context) {
     private val lotesDao: LotesDao? = MyDatabase.getInstance(queContexto)?.lotesDao()
 
+    lateinit var lLotes: List<LotesEnt>
 
 
     fun actStockLote(queArticulo: Int, queCantidad: Double, queLote: String, queEmpresa: Short) {
@@ -23,7 +24,7 @@ class LotesClase(queContexto: Context) {
         if (loteEnt.loteId > 0) lotesDao?.actualizarStock(queArticulo, dStock.toString(), queLote, queEmpresa)
         else {
             loteEnt.articuloId = queArticulo
-            loteEnt.empresa = queEmpresa.toInt()
+            loteEnt.empresa = queEmpresa
             loteEnt.lote = queLote
             loteEnt.stock = dStock.toString()
             lotesDao?.insertar(loteEnt)
@@ -41,8 +42,11 @@ class LotesClase(queContexto: Context) {
         return lotesDao?.getAllLotesArticulo(queArticulo)
     }
 
-    fun getAllLotes(): Cursor? {
-        return lotesDao?.getAllLotes()
+
+    fun abrirLotesFinDia(): List<LotesEnt> {
+        lLotes = lotesDao?.getAllLotes() ?: emptyList<LotesEnt>().toMutableList()
+        return lLotes
     }
+
 
 }

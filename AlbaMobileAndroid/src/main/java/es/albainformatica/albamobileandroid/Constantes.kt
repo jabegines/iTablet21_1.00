@@ -222,13 +222,6 @@ class DatosOftVol {
     var importe: Double = 0.0
 }
 
-class DatosCarga {
-    var cargaId = 0
-    var empresa: Short = 0
-    var fecha: String = ""
-    var hora: String = ""
-    var finDeDia: String = ""
-}
 
 
 class DatosLinRecStock {
@@ -369,13 +362,13 @@ class DatosArticulo {
     var tasa2: String = ""
     var enlace: Int = 0
     var clave: String = ""
-    var codAlternativo: String = ""
+    var codAlternativo: String? = null
     var codigoIva: Short = 0
     var porcIva: String = ""
-    var ent: String = ""
-    var sal: String = ""
-    var entc: String = ""
-    var salc: String = ""
+    var ent: String? = null
+    var sal: String? = null
+    var entc: String? = null
+    var salc: String? = null
 }
 
 class DatosGridView {
@@ -384,15 +377,15 @@ class DatosGridView {
     var descripcion: String = ""
     var uCaja: String = ""
     var artOfert: Int = 0
-    var precio: String = ""
-    var dto: String = ""
-    var prCajas: String = ""
-    var dtoCajas: String = ""
+    var precio: String? = null
+    var dto: String? = null
+    var prCajas: String? = null
+    var dtoCajas: String? = null
     var porcIva: String = ""
-    var ent: String = ""
-    var sal: String = ""
-    var entc: String = ""
-    var salc: String = ""
+    var ent: String? = null
+    var sal: String? = null
+    var entc: String? = null
+    var salc: String? = null
     var historicoId: Int = 0
     var cantHco: String = ""
     var cajasHco: String = ""
@@ -405,6 +398,46 @@ class GruposParaCat {
     var codigo: Int = 0
     var descripcion: String = ""
     var numDepartamentos: Int = 0
+}
+
+
+class ClasifParaCat {
+    var clasificadorId: Int = 0
+    var descripcion: String = ""
+    var numArticulos: Int = 0
+}
+
+
+class DatosDetCarga {
+    var cargaLineaId: Int = 0
+    var articuloId: Int = 0
+    var codigo: String = ""
+    var descripcion: String = ""
+    var lote: String = ""
+    var cajas: String = ""
+    var cantidad: String = ""
+}
+
+
+class DatosHistorico {
+    var historicoId: Int = 0
+    var clienteId: Int = 0
+    var articuloId: Int = 0
+    var cajas: String = ""
+    var cantidad: String = ""
+    var piezas: String = ""
+    var precio: String = ""
+    var dto: String = ""
+    var formatoId: Short = 0
+    var fecha: String = ""
+    var codigo: String = ""
+    var descripcion: String = ""
+    var piezPedida: String? = null
+    var cantPedida: String? = null
+    var porcIva: String = ""
+    var stock: String? = null
+    var descrFto: String? = null
+    var texto: String? = null
 }
 
 

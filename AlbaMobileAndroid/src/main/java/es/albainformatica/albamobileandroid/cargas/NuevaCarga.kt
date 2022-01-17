@@ -2,26 +2,30 @@ package es.albainformatica.albamobileandroid.cargas
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ContentValues
 import android.content.Intent
 import android.content.SharedPreferences
-import android.database.Cursor
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
-import android.widget.AdapterView
 import android.widget.EditText
-import android.widget.SimpleCursorAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.*
+import es.albainformatica.albamobileandroid.dao.CargasDao
+import es.albainformatica.albamobileandroid.dao.CargasLineasDao
+import es.albainformatica.albamobileandroid.database.MyDatabase
+import es.albainformatica.albamobileandroid.entity.CargasEnt
+import es.albainformatica.albamobileandroid.entity.CargasLineasEnt
 import es.albainformatica.albamobileandroid.maestros.ArticulosActivity
 import es.albainformatica.albamobileandroid.maestros.ArticulosClase
 import es.albainformatica.albamobileandroid.maestros.LotesClase
 import es.albainformatica.albamobileandroid.ventas.BuscarLotes
+import kotlinx.android.synthetic.main.cargas.*
 import kotlinx.android.synthetic.main.nueva_carga.*
 import org.jetbrains.anko.alert
 import java.text.SimpleDateFormat
@@ -29,11 +33,15 @@ import java.util.*
 
 
 class NuevaCarga: AppCompatActivity() {
+    private var cargasDao: CargasDao? = MyDatabase.getInstance(this)?.cargasDao()
+    private var cargasLineasDao: CargasLineasDao? = MyDatabase.getInstance(this)?.cargasLineasDao()
     private lateinit var fLotes: LotesClase
     private lateinit var fArticulos: ArticulosClase
     private lateinit var fConfiguracion: Configuracion
 
-    private lateinit var adapterLineas: SimpleCursorAdapter
+    private lateinit var fRecyclerView: RecyclerView
+    private lateinit var fAdapter: NCargaRvAdapter
+
     private lateinit var prefs: SharedPreferences
 
     private var fCargaId = 0
@@ -83,8 +91,9 @@ class NuevaCarga: AppCompatActivity() {
         prepararCajas()
         prepararLote()
 
-        // TODO: cambiar esto
-        //prepararListView()
+        fRecyclerView = rvNCarga
+        fRecyclerView.layoutManager = LinearLayoutManager(this)
+        prepararRecyclerView()
     }
 
 
@@ -155,36 +164,23 @@ class NuevaCarga: AppCompatActivity() {
         edtCantidadNCarga.setText(dCantidad.toString())
     }
 
-    // TODO: cambiar el listView por un RecyclerView
-    /*
-    fun prepararListView() {
-        val columnas: Array<String> = arrayOf("codigo", "descr", "lote", "cajas", "cantidad")
-        val to: IntArray = intArrayOf(R.id.tvLNCCodigo, R.id.tvLNCDescr, R.id.tvLNCLote, R.id.tvLNCCajas, R.id.tvLNCCantidad)
 
-        cargarCursor()
+    private fun prepararRecyclerView() {
+        fAdapter = NCargaRvAdapter(getNCarga(), this, object: NCargaRvAdapter.OnItemClickListener {
+            override fun onClick(view: View, data: DatosDetCarga) {
+                // Tomamos el id de la fila en la que hemos pulsado.
+                fNumLinea = data.cargaLineaId
+            }
+        })
 
-        adapterLineas = SimpleCursorAdapter(this, R.layout.ly_nueva_carga, fCursor, columnas, to, 0)
+        fRecyclerView.adapter = fAdapter
+    }
 
-        lvNCarga.adapter = adapterLineas
-
-        // Establecemos el evento on click del ListView.
-        lvNCarga.onItemClickListener = AdapterView.OnItemClickListener { listView, _, position, _ ->
-            val cursor = listView.getItemAtPosition(position) as Cursor
-            // Tomamos el id de la fila en la que hemos pulsado.
-            fNumLinea = cursor.getInt(cursor.getColumnIndexOrThrow("_id"))
-        }
+    private fun getNCarga(): List<DatosDetCarga> {
+        return cargasLineasDao?.getCarga(fCargaId) ?: emptyList<DatosDetCarga>().toMutableList()
     }
 
 
-    private fun cargarCursor() {
-
-        fCursor = dbAlba.rawQuery("SELECT A.*, B.codigo, B.descr FROM cargasLineas A " +
-                " LEFT JOIN articulos B ON B.articulo = A.articulo" +
-                " WHERE A.cargaId = $fCargaId", null)
-
-        fCursor.moveToFirst()
-    }
-    */
 
     fun buscarArticulo(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
@@ -283,9 +279,8 @@ class NuevaCarga: AppCompatActivity() {
         startActivityForResult(i, fRequestBuscarLote)
     }
 
-    // TODO: terminar esto
-    /*
-    @SuppressLint("SimpleDateFormat")
+
+
     fun aceptarNCarga(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
@@ -299,44 +294,44 @@ class NuevaCarga: AppCompatActivity() {
             if (fCargaId == 0) {
                 // Obtenemos la fecha y hora actuales
                 val tim = System.currentTimeMillis()
-                val df = SimpleDateFormat("dd/MM/yyyy")
+                val df = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                 val fFecha = df.format(tim)
-                val dfHora = SimpleDateFormat("HH:mm")
+                val dfHora = SimpleDateFormat("HH:mm", Locale.getDefault())
                 val fHora = dfHora.format(tim)
 
-                val valuesCarga = ContentValues()
-                valuesCarga.put("empresa", fEmpresaActual)
-                valuesCarga.put("fecha", fFecha)
-                valuesCarga.put("hora", fHora)
-                valuesCarga.put("esFinDeDia", "F")
-                valuesCarga.put("estado", "N")
+                val cargaEnt = CargasEnt()
+                cargaEnt.empresa = fEmpresaActual.toShort()
+                cargaEnt.fecha = fFecha
+                cargaEnt.hora = fHora
+                cargaEnt.esFinDeDia = "F"
+                cargaEnt.estado = "N"
 
-                fCargaId = dbAlba.insert("cargas", null, valuesCarga).toInt()
+                fCargaId = cargasDao?.insertar(cargaEnt)?.toInt() ?: 0
             }
 
-            val values = ContentValues()
-            values.put("cargaId", fCargaId)
-            values.put("articulo", fArticulos.getArticulo())
-            values.put("lote", edtLoteNCarga.text.toString())
-            values.put("cajas", edtCajasNCarga.text.toString())
-            values.put("cantidad", edtCantidadNCarga.text.toString())
+            val cargaLinEnt = CargasLineasEnt()
+            cargaLinEnt.cargaId = fCargaId
+            cargaLinEnt.articuloId = fArticulos.fArticulo
+            cargaLinEnt.lote = edtLoteNCarga.text.toString()
+            cargaLinEnt.cajas = edtCajasNCarga.text.toString()
+            cargaLinEnt.cantidad = edtCantidadNCarga.text.toString()
 
-            dbAlba.insert("cargasLineas", null, values)
+            cargasLineasDao?.insertar(cargaLinEnt)
+
             // Actualizamos stocks en este momento, por si al usuario le da por cortar el programa desde el sistema
             if (fAlmacen.toInt() != 0) {
-                actualizarStockCarga(fArticulos.getArticulo(), edtCajasNCarga.text.toString(), edtCantidadNCarga.text.toString(), edtLoteNCarga.text.toString())
+                actualizarStockCarga(fArticulos.fArticulo, edtCajasNCarga.text.toString(), edtCantidadNCarga.text.toString(), edtLoteNCarga.text.toString())
             }
 
             activarControlesLinea(false)
             edtCodArtNCarga.setText("")
             tvDescrNCarga.text = ""
             edtCodArtNCarga.requestFocus()
-            // Volvemos a cargar el cursor para refrescar el listView
-            cargarCursor()
-            adapterLineas.changeCursor(fCursor)
+
+            prepararRecyclerView()
         }
     }
-    */
+
 
     private fun actualizarStockCarga(queArticulo: Int, queCajas: String, queCantidad: String, queLote: String) {
         val dCantidad = queCantidad.toDouble()
@@ -352,33 +347,32 @@ class NuevaCarga: AppCompatActivity() {
         }
     }
 
-    // TODO: terminar esto
-    /*
+
+
     fun borrarNCarga(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
         if (fNumLinea > 0) {
-
-            if (fAlmacen.toInt() != 0) {
-                val queArticulo = fCursor.getInt(fCursor.getColumnIndex("articulo"))
-                val dCajas = fCursor.getString(fCursor.getColumnIndex("cajas")).toDouble() * -1
-                val dCantidad = fCursor.getString(fCursor.getColumnIndex("cantidad")).toDouble() * -1
-                val queLote = fCursor.getString(fCursor.getColumnIndex("lote"))
+            if (fAlmacen != 0.toShort()) {
+                val datCargaLin = cargasLineasDao?.getDatosLinea(fNumLinea) ?: DatosDetCarga()
+                val dCajas = datCargaLin.cajas.toDouble() * -1
                 val queCajas = dCajas.toString()
+
+                val dCantidad = datCargaLin.cantidad.toDouble() * -1
                 val queCantidad = dCantidad.toString()
-                actualizarStockCarga(queArticulo, queCajas, queCantidad, queLote)
+
+                actualizarStockCarga(datCargaLin.articuloId, queCajas,  queCantidad, datCargaLin.lote)
             }
 
-            dbAlba.delete("cargasLineas", "_id=$fNumLinea", null)
+            cargasLineasDao?.borrarLinea(fNumLinea)
 
             fNumLinea = 0
             // Volvemos a cargar el cursor para refrescar el listView
-            cargarCursor()
-            adapterLineas.changeCursor(fCursor)
+            prepararRecyclerView()
         }
         else Toast.makeText(this, "No ha seleccionado ninguna línea", Toast.LENGTH_SHORT).show()
     }
-    */
+
 
     @SuppressLint("InflateParams")
     fun aceptarTodos(view: View) {
@@ -437,10 +431,7 @@ class NuevaCarga: AppCompatActivity() {
 
             alert("¿Abandonar la carga?" + "\nPerderá los datos que ha introducido") {
                 title = "Abandonar"
-                positiveButton("SI") {
-                    // TODO: terminar esto
-                    //abandonarCarga()
-                    }
+                positiveButton("SI") { abandonarCarga() }
                 negativeButton("NO") { }
             }.show()
 
@@ -451,31 +442,31 @@ class NuevaCarga: AppCompatActivity() {
         return super.onKeyDown(keyCode, event)
     }
 
-    // TODO: terminar esto
-    /*
+
+
     private fun abandonarCarga() {
 
-        if (fCursor.moveToFirst()) {
-            do {
-                val queArticulo = fCursor.getInt(fCursor.getColumnIndex("articulo"))
-                val dCajas = fCursor.getString(fCursor.getColumnIndex("cajas")).toDouble() * -1
-                val dCantidad = fCursor.getString(fCursor.getColumnIndex("cantidad")).toDouble() * -1
-                val queLote = fCursor.getString(fCursor.getColumnIndex("lote"))
+        if (fAdapter.lCargas.count() > 0) {
+            for (linea in fAdapter.lCargas) {
+                val queArticulo = linea.articuloId
+                var sCajas = linea.cajas
+                if (sCajas == "") sCajas = "0.0"
+                val dCajas = sCajas.toDouble() * -1
+                val dCantidad = linea.cantidad.toDouble() * -1
+                val queLote = linea.lote
                 val queCajas = dCajas.toString()
                 val queCantidad = dCantidad.toString()
                 actualizarStockCarga(queArticulo, queCajas, queCantidad, queLote)
-
-            } while (fCursor.moveToNext())
+            }
         }
 
-
-        dbAlba.delete("cargas", "cargaId=$fCargaId", null)
-        dbAlba.delete("cargasLineas", "cargaId=$fCargaId", null)
+        cargasDao?.borrarCarga(fCargaId)
+        cargasLineasDao?.borrarCarga(fCargaId)
 
         val returnIntent = Intent()
         setResult(Activity.RESULT_CANCELED, returnIntent)
         finish()
     }
-    */
+
 
 }

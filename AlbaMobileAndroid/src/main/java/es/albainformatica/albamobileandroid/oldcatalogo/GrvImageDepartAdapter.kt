@@ -15,23 +15,23 @@ import es.albainformatica.albamobileandroid.R
 import java.io.File
 import java.util.ArrayList
 
-class GrvImageDepartAdapter(private val activity: Activity, fGrupo: Int) : BaseAdapter() {
+class GrvImageDepartAdapter(private val activity: Activity, fGrupo: Short) : BaseAdapter() {
     private val carpetaImagenes: String = dimeRutaImagenes(activity)
     private val fDepartamentos: Departamentos = Departamentos(activity)
     private val itemsDepartam: ArrayList<ItemDepartam>
 
+
+    init {
+        fDepartamentos.abrir(fGrupo)
+        itemsDepartam = obtenerItems()
+    }
+
+
     private fun obtenerItems(): ArrayList<ItemDepartam> {
         val items = ArrayList<ItemDepartam>()
-        if (fDepartamentos.cursor.moveToFirst()) {
-            fDepartamentos.cursor.moveToPosition(-1)
-            while (fDepartamentos.cursor.moveToNext()) {
-                items.add(
-                    ItemDepartam(
-                        fDepartamentos.getGrupo(),
-                        fDepartamentos.getCodigo(),
-                        fDepartamentos.getDescripcion()
-                    )
-                )
+        if (fDepartamentos.lDepartamentos.count() > 0) {
+            for (departamento in fDepartamentos.lDepartamentos) {
+                items.add(ItemDepartam(departamento.grupoId, departamento.departamentoId, departamento.descripcion))
             }
         }
         return items
@@ -51,7 +51,7 @@ class GrvImageDepartAdapter(private val activity: Activity, fGrupo: Int) : BaseA
     }
 
     // Crear un nuevo ImageView para cada item referenciado por el Adapter
-    override fun getView(position: Int, contentView: View?, parent: ViewGroup?): View? {
+    override fun getView(position: Int, contentView: View?, parent: ViewGroup?): View {
         // Este método crea una nueva View para cada elemento añadido al ImageAdapter.
         // Se le pasa el View en el que se ha pulsado, contentView.
         // Si contentView es null, se instancia y configura un ImageView con las
@@ -77,8 +77,4 @@ class GrvImageDepartAdapter(private val activity: Activity, fGrupo: Int) : BaseA
         return vi
     }
 
-    init {
-        fDepartamentos.abrir(fGrupo)
-        itemsDepartam = obtenerItems()
-    }
 }

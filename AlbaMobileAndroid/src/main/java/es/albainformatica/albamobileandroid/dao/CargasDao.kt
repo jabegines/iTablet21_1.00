@@ -9,6 +9,10 @@ import es.albainformatica.albamobileandroid.entity.CargasEnt
 @Dao
 interface CargasDao {
 
+    @Query("SELECT * FROM Cargas")
+    fun getAllCargas(): List<CargasEnt>
+
+
     @Query("SELECT cargaId FROM Cargas WHERE estado = 'N' OR estado = 'R'")
     fun getPdtesEnviar(): List<Int>
 
@@ -32,6 +36,10 @@ interface CargasDao {
     @Query("SELECT * FROM Cargas WHERE estado = 'N' OR estado = 'R'")
     fun abrirParaEnviar(): MutableList<CargasEnt>
 
+
+    @Query("DELETE FROM Cargas WHERE cargaId = :queCarga")
+    fun borrarCarga(queCarga: Int)
+
     @Insert
-    fun insertar(carga: CargasEnt)
+    fun insertar(carga: CargasEnt): Long
 }

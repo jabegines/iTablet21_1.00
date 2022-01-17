@@ -20,21 +20,31 @@ class GrvImageCatalogosAdapter(private val activity: Activity): BaseAdapter() {
     private val fCatalogos: Clasificadores = Clasificadores(activity)
     private val itemsCatalogos: ArrayList<ItemCatalogo>
 
+
+    init {
+        fCatalogos.abrirCatalogos()
+        itemsCatalogos = obtenerItems()
+    }
+
+
+
     private fun obtenerItems(): ArrayList<ItemCatalogo> {
         val items = ArrayList<ItemCatalogo>()
-        if (fCatalogos.cursor.moveToFirst()) {
-            fCatalogos.cursor.moveToPosition(-1)
-            while (fCatalogos.cursor.moveToNext()) {
-                items.add(ItemCatalogo(fCatalogos.getCodigo(), fCatalogos.getDescripcion()))
+        if (fCatalogos.lClasificadores.count() > 0) {
+
+            for (catalogo in fCatalogos.lClasificadores) {
+                items.add(ItemCatalogo(catalogo.clasificadorId, catalogo.descripcion))
             }
         }
         return items
     }
 
+
     // Devuelve el número de elementos que se introducen en el adapter
     override fun getCount(): Int {
         return itemsCatalogos.size
     }
+
 
     override fun getItem(position: Int): Any {
         return itemsCatalogos[position]
@@ -69,8 +79,4 @@ class GrvImageCatalogosAdapter(private val activity: Activity): BaseAdapter() {
         return vi
     }
 
-    init {
-        fCatalogos.abrirCatalogos()
-        itemsCatalogos = obtenerItems()
-    }
 }

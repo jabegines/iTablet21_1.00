@@ -298,7 +298,7 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
     private fun prepararRecyclerView() {
         fAdapter = ArticulosRvAdapter(getArticulos(), this, object: ArticulosRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: ListaArticulos) {
-                if (fVendiendo) seleccionar(data.articuloId)
+                if (fVendiendo || fBuscando) seleccionar(data.articuloId)
                 else abrirFicha(data.articuloId)
             }
         })

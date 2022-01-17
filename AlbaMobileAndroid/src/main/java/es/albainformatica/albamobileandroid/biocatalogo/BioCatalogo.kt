@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
-import android.database.Cursor
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.media.AudioManager
@@ -22,6 +21,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationView
 import es.albainformatica.albamobileandroid.*
@@ -42,7 +43,6 @@ import es.albainformatica.albamobileandroid.ventas.Documento
 import es.albainformatica.albamobileandroid.ventas.VentasDatosLinea
 import kotlinx.android.synthetic.main.bio_catalogo.*
 import kotlinx.android.synthetic.main.bio_fragment_page.*
-import kotlinx.android.synthetic.main.nav_header_biocat.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.yesButton
 import java.io.File
@@ -56,6 +56,11 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
     private lateinit var viewPager: ViewPager2
     private lateinit var adapter: ViewPagerAdapter
     private lateinit var aImages: ArrayList<Int>
+
+    private lateinit var fRecyclerLeftD: RecyclerView
+    private lateinit var fAdpGrupos: GruposRvAdapter
+    private lateinit var fAdpCatalogos: CatalogosRvAdapter
+
 
     private lateinit var fArticulos: ArticulosClase
     private lateinit var fDocumento: Documento
@@ -179,11 +184,11 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
         txtDescrCat = findViewById(R.id.tvBioDescrCat)
         when (fModoVtaCat) {
-            1 -> if (fCatalogos.cursor.count > 0)
-                txtDescrCat.text = fCatalogos.cursor.getString(fCatalogos.cursor.getColumnIndexOrThrow("descr"))
+            1 -> if (fCatalogos.lClasCat.count() > 0)
+                txtDescrCat.text = fCatalogos.lClasCat[0].descripcion
             2 -> if (fViendoDep) {
-                if (fDepartamentos.cursor.count > 0)
-                    txtDescrCat.text = fDepartamentos.cursor.getString(fDepartamentos.cursor.getColumnIndexOrThrow("descr"))
+                if (fDepartamentos.lDepartamentos.count() > 0)
+                    txtDescrCat.text = fDepartamentos.lDepartamentos[0].descripcion
             }
             3 -> txtDescrCat.text = resources.getString(R.string.btn_hco)
         }
@@ -428,6 +433,9 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
     private fun inicializarNavViewCatalogos() {
         dwLayout = findViewById(R.id.dwlBioDrawer)
 
+        fRecyclerLeftD = rvLeftDrawer
+        fRecyclerLeftD.layoutManager = LinearLayoutManager(this)
+
         // Dejamos abiertos tanto los catálogos como los grupos, así podremos conmutar entre ellos sin tener
         // que estar abriendo y cerrando constantemente
         fCatalogos.abrirBioCatalogo()
@@ -435,11 +443,13 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
         if (fModoVtaCat < 3) {
             if (fModoVtaCat == 1) {
-                if (fCatalogos.cursor.count > 0)
-                    prepararLVCatalogos()
+                if (fCatalogos.lClasCat.count() > 0)
+                    prepararRvCatalogos()
+                    //prepararLVCatalogos()
                 else {
                     if (fGrupos.lGrupCat.count() > 0) {
-                        prepararLVGrupos()
+                        prepararRvGrupos()
+                        //prepararLVGrupos()
                     } else {
                         alert("No tiene ningún catálogo ni tampoco ningún grupo.\nNo podrá vender en el modo Catálogo Visual.") {
                             title = "Información"
@@ -449,10 +459,12 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
                 }
             } else {
                 if (fGrupos.lGrupCat.count() > 0)
-                    prepararLVGrupos()
+                    prepararRvGrupos()
+                    //prepararLVGrupos()
                 else {
-                    if (fCatalogos.cursor.count > 0) {
-                        prepararLVCatalogos()
+                    if (fCatalogos.lClasCat.count() > 0) {
+                        prepararRvCatalogos()
+                        //prepararLVCatalogos()
                     } else {
                         alert("No tiene ningún catálogo ni tampco ningún grupo.\nNo podrá vender en el modo Catálogo Visual.") {
                             title = "Información"
@@ -466,7 +478,19 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         }
     }
 
+    private fun prepararRvCatalogos() {
+        fAdpCatalogos = CatalogosRvAdapter(getCatalogos(), this, object: CatalogosRvAdapter.OnItemClickListener {
+            override fun onClick(view: View, data: ClasifParaCat) {
+            }
+        })
+    }
 
+
+    private fun getCatalogos(): List<ClasifParaCat> {
+        return fCatalogos.lClasCat
+    }
+
+    /*
     private fun prepararLVCatalogos() {
         if (fCatalogos.cursor.count > 0) {
             fModoVtaCat = 1
@@ -504,23 +528,37 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
             }
         }
         else {
-            prepararLVGrupos()
+            prepararRvGrupos()
+            //prepararLVGrupos()
             //    alert("No tiene ningún catálogo") {
             //        title = "Información"
             //        yesButton { }
             //    }.show()
         }
     }
+    */
+
+    private fun prepararRvGrupos() {
+        fAdpGrupos = GruposRvAdapter(getGrupos(), this, object: GruposRvAdapter.OnItemClickListener {
+            override fun onClick(view: View, data: GruposParaCat) {
+            }
+        })
+
+        fRecyclerLeftD.adapter = fAdpGrupos
+    }
 
 
+    private fun getGrupos(): List<GruposParaCat> {
+        return fGrupos.lGrupCat
+    }
+
+
+    /*
     private fun prepararLVGrupos() {
         if (fGrupos.lGrupCat.count() > 0) {
             fModoVtaCat = 2
             val lvDrawerList = findViewById<View>(R.id.left_drawer) as ListView
             nhTvTipoCatalogo.text = resources.getString(R.string.grupos)
-
-
-
 
             val columns = arrayOf("descr", "numdepartamentos")
             val to = intArrayOf(R.id.tvBioDescr, R.id.tvBioNumArt)
@@ -541,8 +579,10 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
             }.show()
         }
     }
+    */
 
 
+    /*
     private fun prepararLVDepartamentos(fDescrGrupo: String) {
         fViendoDep = true
         val mDrawerList = findViewById<View>(R.id.left_drawer) as ListView
@@ -574,6 +614,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
                 verImpte()
         }
     }
+    */
 
 
     fun cambiarTipoCatalogo(view: View) {
@@ -581,13 +622,16 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
         if (fViendoDep) {
             fViendoDep = false
-            prepararLVGrupos()
+            prepararRvGrupos()
+            //prepararLVGrupos()
         } else {
             fModoVtaCat = if (fModoVtaCat == 1) 2
             else 1
 
-            if (fModoVtaCat == 1) prepararLVCatalogos()
-            else prepararLVGrupos()
+            if (fModoVtaCat == 1) prepararRvCatalogos()
+                //prepararLVCatalogos()
+            else prepararRvGrupos()
+                //prepararLVGrupos()
         }
     }
 
@@ -691,8 +735,8 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         inicAdaptadorViewPager()
         // Reiniciamos el TextView con el contador
         when (fModoVtaCat) {
-            1 -> txtDescrCat.text = fCatalogos.cursor.getString(fCatalogos.cursor.getColumnIndexOrThrow("descr"))
-            2 -> if (fViendoDep) txtDescrCat.text = fDepartamentos.cursor.getString(fDepartamentos.cursor.getColumnIndexOrThrow("descr"))
+            1 -> txtDescrCat.text = fCatalogos.lClasCat[0].descripcion
+            2 -> if (fViendoDep) txtDescrCat.text = fDepartamentos.lDepartamentos[0].descripcion
             3 -> txtDescrCat.text = resources.getString(R.string.btn_hco)
         }
 
@@ -717,7 +761,8 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         view.getTag(0)          // Para que no dé warning el compilador
 
         if (!fBuscando) {
-            if (fModoVtaCat == 3) prepararLVCatalogos()
+            if (fModoVtaCat == 3) prepararRvCatalogos()
+                //prepararLVCatalogos()
             dwLayout.openDrawer(GravityCompat.START)
         }
         else

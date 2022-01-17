@@ -44,8 +44,8 @@ class ItemArticulo {
     var fechaHco: String = ""
         private set
 
-    constructor(queArticulo: Int, queCodigo: String, descr: String, queUndCaja: String, quePrClte: String,
-        queDto: String, quePrCajas: String, queDtoCajas: String, quePrOfta: String, queDtoOfta: String,
+    constructor(queArticulo: Int, queCodigo: String, descr: String, queUndCaja: String, quePrClte: String?,
+        queDto: String?, quePrCajas: String?, queDtoCajas: String?, quePrOfta: String, queDtoOfta: String,
         quePorcIva: Double, conOferta: Boolean, queCantidad: String, queCajas: String , queStock: Double,
         tieneHco: Boolean, queDescrFto: String) {
         articulo = queArticulo
@@ -53,10 +53,10 @@ class ItemArticulo {
         descrFto = queDescrFto
         codigo = queCodigo
         undCaja = queUndCaja
-        prClte = quePrClte
-        dto = queDto
-        prCajas = quePrCajas
-        dtoCajas = queDtoCajas
+        prClte = quePrClte ?: "0.0"
+        dto = queDto ?: "0.0"
+        prCajas = quePrCajas ?: "0.0"
+        dtoCajas = queDtoCajas ?: "0.0"
         prOfta = quePrOfta
         dtoOfta = queDtoOfta
         porcIva = quePorcIva
@@ -71,7 +71,7 @@ class ItemArticulo {
     }
 
     constructor(queArticulo: Int, queCodigo: String, descr: String, queUndCaja: String, queCantHco: Double,
-        queCajasHco: Double, quePrecioHco: String, queDtoHco: String, quePrecio: String, queDto: String,
+        queCajasHco: Double, quePrecioHco: String, queDtoHco: String, quePrecio: String?, queDto: String?,
         quePrOfta: String, queDtoOfta: String, quePorcIva: Double, conOferta: Boolean, queCantidad: String,
         queCajas: String, queFecha: String) {
         articulo = queArticulo
@@ -80,12 +80,12 @@ class ItemArticulo {
         undCaja = queUndCaja
         cantHco = queCantHco
         cajasHco = queCajasHco
-        prClte = quePrecio
+        prClte = quePrecio ?: "0.0"
         prHco = quePrecioHco
         // Entiendo que si en el histórico no tengo el precio por caja, tengo que aplicar en this.prCajas el mismo que en
         // this.prHco, para cuando vendamos cajas desde el histórico visual.
         prCajas = quePrecioHco
-        dto = queDto
+        dto = queDto ?: "0.0"
         dtoHco = queDtoHco
         // Idem que con this.dtoCajas.
         dtoCajas = queDtoHco

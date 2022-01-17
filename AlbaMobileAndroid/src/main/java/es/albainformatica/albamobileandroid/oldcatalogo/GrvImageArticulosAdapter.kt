@@ -209,12 +209,14 @@ class GrvImageArticulosAdapter: BaseAdapter {
                     )
                 } else {
                     if (!fSoloOftas || queArticulo > 0) {
+                        var queStock: Double = datoGridV.ent?.toDouble() ?: 0.0
+                        queStock -= (datoGridV.sal?.toDouble() ?: 0.0)
+
                         items.add(
                             ItemArticulo(datoGridV.articuloId, datoGridV.codigo, datoGridV.descripcion,
                                 datoGridV.uCaja, datoGridV.precio, datoGridV.dto, datoGridV.prCajas,
                                 datoGridV.dtoCajas, quePrOfta, queDtoOfta, datoGridV.porcIva.toDouble(),
-                                hayOferta, queCantidad, queCajas, (datoGridV.ent.toDouble() - datoGridV.sal.toDouble()),
-                                (datoGridV.historicoId > 0), "")
+                                hayOferta, queCantidad, queCajas, queStock, (datoGridV.historicoId > 0), "")
                         )
                     }
                 }

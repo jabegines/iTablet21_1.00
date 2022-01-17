@@ -8,14 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import es.albainformatica.albamobileandroid.DatosCarga
 import es.albainformatica.albamobileandroid.R
+import es.albainformatica.albamobileandroid.entity.CargasEnt
 import es.albainformatica.albamobileandroid.ponerCeros
 import kotlinx.android.synthetic.main.item_cargas_list.view.*
 
 
-class RecAdapCargas (var cargas: MutableList<DatosCarga>, val context: Context, var listener: OnItemClickListener):
-        RecyclerView.Adapter<RecAdapCargas.ViewHolder>() {
+class CargasRvAdapter(var cargas: List<CargasEnt>, val context: Context, var listener: OnItemClickListener):
+        RecyclerView.Adapter<CargasRvAdapter.ViewHolder>() {
 
     private var selectedPos: Int = RecyclerView.NO_POSITION
     var cargaId: Int = 0
@@ -24,7 +24,7 @@ class RecAdapCargas (var cargas: MutableList<DatosCarga>, val context: Context, 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val fPosicion = holder.adapterPosition
         val item = cargas[fPosicion]
-        holder.bind(item) ///, context)
+        holder.bind(item)
 
 
         if (selectedPos == fPosicion) {
@@ -83,7 +83,7 @@ class RecAdapCargas (var cargas: MutableList<DatosCarga>, val context: Context, 
     }
 
     interface OnItemClickListener {
-        fun onClick(view: View, data: DatosCarga)
+        fun onClick(view: View, data: CargasEnt)
     }
 
 
@@ -93,8 +93,9 @@ class RecAdapCargas (var cargas: MutableList<DatosCarga>, val context: Context, 
         private val tvwFechaCarga = itemView.findViewById(R.id.tvFechaCarga) as TextView
         private val tvwHoraCarga = itemView.findViewById(R.id.tvHoraCarga) as TextView
 
-        fun bind(carga: DatosCarga) { //}, context: Context) {
-            if (carga.finDeDia.equals("T", true)) tvwCargaId.text = "PC-" + carga.cargaId.toString()
+        fun bind(carga: CargasEnt) {
+            val queTexto = "PC-" + carga.cargaId.toString()
+            if (carga.esFinDeDia.equals("T", true)) tvwCargaId.text = queTexto
             else tvwCargaId.text = carga.cargaId.toString()
             tvEmpresaCarga.text = ponerCeros(carga.empresa.toString(), 3)
             tvwFechaCarga.text = carga.fecha

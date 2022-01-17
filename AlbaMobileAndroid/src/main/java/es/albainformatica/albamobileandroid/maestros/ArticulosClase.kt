@@ -27,7 +27,7 @@ class ArticulosClase(val contexto: Context) {
     var fCodigo: String = ""
     var fCodBarras: String = ""
     var fDescripcion: String = ""
-    var fEmpresa = 0
+    var fEmpresa: Short = 0
     var fCodIva: Short = 0
     var fPorcIva: Double = 0.0
     var fGrupo: Short = 0
@@ -57,9 +57,9 @@ class ArticulosClase(val contexto: Context) {
 
     // Por ahora, la diferencia entre abrirUnArticulo y existeArticulo es la empresa, que la tomamos
     // en cuenta en abrirUnArticulo para mostrar el stock del artículo en dicha empresa
-    fun abrirUnArticulo(queArticulo: Int, queEmpresa: Int): Boolean {
+    fun abrirUnArticulo(queArticulo: Int, queEmpresa: Short): Boolean {
 
-        val datosArticulo = articulosDao?.abrirUnArticulo(queArticulo, queEmpresa.toShort()) ?: DatosArticulo()
+        val datosArticulo = articulosDao?.abrirUnArticulo(queArticulo, queEmpresa) ?: DatosArticulo()
 
         return if (datosArticulo.articuloId > 0) {
             fArticulo = queArticulo
@@ -83,19 +83,15 @@ class ArticulosClase(val contexto: Context) {
             fFlag1 = datosArticulo.flag1
             fFlag2 = datosArticulo.flag2
             fEnlace = datosArticulo.enlace
-            fCodAlternativo = datosArticulo.codAlternativo
+            fCodAlternativo = datosArticulo.codAlternativo ?: ""
             fCodProv = datosArticulo.proveedorId
-            fPeso = if (datosArticulo.peso != "") datosArticulo.peso.replace(',', '.').toDouble()
-                    else 0.0
-            fUCaja = if (datosArticulo.uCaja != "") datosArticulo.uCaja.replace(',', '.').toDouble()
-                    else 0.0
-            entradas = if (datosArticulo.ent != "") datosArticulo.ent.replace(',', '.').toDouble()
-                    else 0.0
-            salidas = if (datosArticulo.sal != "") datosArticulo.sal.replace(',', '.').toDouble()
-                    else 0.0
+            fPeso = if (datosArticulo.peso != "") datosArticulo.peso.replace(',', '.').toDouble() else 0.0
+            fUCaja = if (datosArticulo.uCaja != "") datosArticulo.uCaja.replace(',', '.').toDouble() else 0.0
+            entradas = if (datosArticulo.ent != null) datosArticulo.ent?.replace(',', '.')?.toDouble() ?: 0.0 else 0.0
+            salidas = if (datosArticulo.sal != null) datosArticulo.sal?.replace(',', '.')?.toDouble() ?: 0.0 else 0.0
 
-            abrirTarifas(queArticulo)
-            cTarifas.moveToFirst()
+            //abrirTarifas(queArticulo)
+            //cTarifas.moveToFirst()
 
             return true
         }
@@ -114,30 +110,21 @@ class ArticulosClase(val contexto: Context) {
             fDescripcion = datosArticulo.descripcion
 
             fCodIva = datosArticulo.codigoIva
-            fPorcIva = if(datosArticulo.porcIva != "") datosArticulo.porcIva.replace(',', '.').toDouble()
-                        else 0.0
-
-            fTasa1 = if (datosArticulo.tasa1 != "") datosArticulo.tasa1.replace(',', '.').toDouble()
-                        else 0.0
-            fTasa2 = if (datosArticulo.tasa2 != "") datosArticulo.tasa2.replace(',', '.').toDouble()
-                        else 0.0
-
+            fPorcIva = if(datosArticulo.porcIva != "") datosArticulo.porcIva.replace(',', '.').toDouble() else 0.0
+            fTasa1 = if (datosArticulo.tasa1 != "") datosArticulo.tasa1.replace(',', '.').toDouble() else 0.0
+            fTasa2 = if (datosArticulo.tasa2 != "") datosArticulo.tasa2.replace(',', '.').toDouble() else 0.0
             fGrupo = datosArticulo.grupoId
             fDepartamento = datosArticulo.departamentoId
             fCodProv = datosArticulo.proveedorId
             fFlag1 = datosArticulo.flag1
             fFlag2 = datosArticulo.flag2
             fEnlace = datosArticulo.enlace
-            fCodAlternativo = datosArticulo.codAlternativo
+            fCodAlternativo = datosArticulo.codAlternativo ?: ""
             fCodProv = datosArticulo.proveedorId
-            fPeso = if (datosArticulo.peso != "") datosArticulo.peso.replace(',', '.').toDouble()
-                        else 0.0
-            fUCaja = if (datosArticulo.uCaja != "") datosArticulo.uCaja.replace(',', '.').toDouble()
-                        else 0.0
-            entradas = if (datosArticulo.ent != "") datosArticulo.ent.replace(',', '.').toDouble()
-                        else 0.0
-            salidas = if (datosArticulo.sal != "") datosArticulo.sal.replace(',', '.').toDouble()
-                        else 0.0
+            fPeso = if (datosArticulo.peso != "") datosArticulo.peso.replace(',', '.').toDouble() else 0.0
+            fUCaja = if (datosArticulo.uCaja != "") datosArticulo.uCaja.replace(',', '.').toDouble() else 0.0
+            entradas = if (datosArticulo.ent != null) datosArticulo.ent?.replace(',', '.')?.toDouble() ?: 0.0 else 0.0
+            salidas = if (datosArticulo.sal != null) datosArticulo.sal?.replace(',', '.')?.toDouble() ?: 0.0 else 0.0
 
             true
         }
@@ -318,22 +305,6 @@ class ArticulosClase(val contexto: Context) {
             articulosDao?.abrirSoloOftasPGV(queTarifa, queOrdenacion) ?: emptyList<DatosGridView>().toMutableList()
     }
 
-
-    fun abrirParaFinDeDia(): Boolean {
-        // TODO
-        //cursor = dbAlba.rawQuery("SELECT * FROM stock ORDER BY empresa", null)
-        // Tenemos que hacer moveToFirst, ya que la posición inicial de los cursores es -1.
-        //return cursor.moveToFirst()
-        return true
-    }
-
-
-    fun abrirLotesFinDia(): Boolean {
-        // TODO
-        //cursor = fLotes.getAllLotes()!!
-        //return if (cursor != null) cursor.moveToFirst() else false
-        return false
-    }
 
 
     fun datosAdicionales(queArticulo: Int): Boolean {

@@ -1,7 +1,5 @@
 package es.albainformatica.albamobileandroid.historicos
 
-import android.database.sqlite.SQLiteDatabase
-import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 
@@ -51,34 +49,8 @@ class Historico(contexto: Context)  {
                 " WHERE A.cliente = " + QueCliente
         if (fCadBusqueda != "") sql = "$sql AND B.descr LIKE('%$fCadBusqueda%')"
         sql = "$sql ORDER BY B.descr"
-        // TODO
-        //cHco = dbAlba.rawQuery(sql, null)
-        //cHco.moveToFirst()
     }
 
-    fun abrirConBusqueda(QueCliente: Int, artBuscar: String) {
-        fCadBusqueda = artBuscar
-        if (this::cHco.isInitialized)
-            cHco.close()
-
-        // TODO
-        /*
-        cHco = dbAlba.rawQuery(
-            "SELECT A._id, A.articulo, A.formato, A.cantidad, A.precio, A.dto, A.precio AS prneto, A.cajas, A.fecha," +
-                    " B.codigo, B.descr, C.piezas piezpedida, C.cantidad cantpedida, D.iva porciva," +
-                    " (E.ent - E.sal) stock, (F.descr) descrfto, G.texto FROM historico A" +
-                    " LEFT JOIN articulos B ON B.articulo = A.articulo" +
-                    " LEFT JOIN tmphco C ON C.linea = A._id" +
-                    " LEFT JOIN ivas D ON D.tipo = B.tipoiva" +
-                    " LEFT JOIN stock E ON E.articulo = A.articulo" +
-                    " LEFT JOIN formatos F ON F.codigo = A.formato" +
-                    " LEFT JOIN arthabituales G ON G.articulo = A.articulo AND G.formato = A.formato AND G.cliente = " + QueCliente +
-                    " WHERE A.cliente = " + QueCliente + " AND B.descr LIKE('%" + artBuscar + "%')" +
-                    " ORDER BY B.descr", null
-        )
-        cHco.moveToFirst()
-       */
-    }
 
     fun abrirHcoPorArtClte(queCliente: Int, queOrdenacion: Short) {
         if (this::cHco.isInitialized)
@@ -102,9 +74,6 @@ class Historico(contexto: Context)  {
                     " GROUP BY A.articulo" +
                     " ORDER BY B.codigo"
         }
-        // TODO
-        //cHco = dbAlba.rawQuery(queCadena, null)
-        //cHco.moveToFirst()
     }
 
     fun inicializarLinea() {

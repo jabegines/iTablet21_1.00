@@ -8,30 +8,33 @@ import android.content.Intent
 import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.content.DialogInterface
-import android.database.Cursor
-import android.graphics.Color
 import android.view.KeyEvent
 import android.view.View
 import android.widget.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.dao.HcoCompSemMesDao
+import es.albainformatica.albamobileandroid.dao.HistoricoDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
+import es.albainformatica.albamobileandroid.entity.HistoricoEnt
 import es.albainformatica.albamobileandroid.ventas.ListaPreciosEspeciales
 import es.albainformatica.albamobileandroid.ventas.AcumuladosMes
-import java.lang.Exception
-import java.text.SimpleDateFormat
-import java.util.*
+import kotlinx.android.synthetic.main.ventas_cargarhco.*
 
 /**
  * Created by jabegines on 14/10/13.
  */
 class CargarHco: Activity() {
+    private var historicoDao: HistoricoDao? = MyDatabase.getInstance(this)?.historicoDao()
     private lateinit var fConfiguracion: Configuracion
     private lateinit var fHistorico: Historico
-    private lateinit var adapterLineas: SimpleCursorAdapter
+
+    private lateinit var fRecyclerView: RecyclerView
+    private lateinit var fAdapter: HcoRvAdapter
 
     private var fLinea = 0
-    private lateinit var lvLineas: ListView
+
     private var fIvaIncluido: Boolean = false
     private var fAplicarIva: Boolean = true
     private var fCliente = 0
@@ -65,24 +68,26 @@ class CargarHco: Activity() {
 
     private fun inicializarControles() {
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        lvLineas = findViewById(R.id.lvHcoArticulos)
+        fRecyclerView = rvHcoArticulos
+        fRecyclerView.layoutManager = LinearLayoutManager(this)
+
         queBuscar = ""
         fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresaActual)
         fFtoDecPrIva = fConfiguracion.formatoDecPrecioIva()
         fFtoDecPrBase = fConfiguracion.formatoDecPrecioBase()
         fDiasAlerta = fConfiguracion.diasAlertaArtNoVend()
         fAlertarArtNoVend = fDiasAlerta > 0
-        val lyHco_Botones = findViewById<LinearLayout>(R.id.llyHco_Botones)
-        if (fDesdeCltes) lyHco_Botones.visibility = View.GONE
+
+        val lyHcoBotones = findViewById<LinearLayout>(R.id.llyHco_Botones)
+        if (fDesdeCltes) lyHcoBotones.visibility = View.GONE
         val btnAcumulados = findViewById<Button>(R.id.btnHco_Acumulados)
         if (btnAcumulados != null) {
-            if (prefs.getBoolean(
-                    "usar_acummes",
-                    false
-                ) || usarHcoCompSemMeses()
-            ) btnAcumulados.visibility = View.VISIBLE else btnAcumulados.visibility = View.GONE
+            if (prefs.getBoolean("usar_acummes", false) || usarHcoCompSemMeses())
+                btnAcumulados.visibility = View.VISIBLE else btnAcumulados.visibility = View.GONE
         }
-        prepararListView("")
+
+        prepararRecyclerView("")
+
         ocultarTeclado(this)
         val tvTitulo = findViewById<TextView>(R.id.tvNombreActivity)
         tvTitulo.setText(R.string.btn_hco)
@@ -98,12 +103,10 @@ class CargarHco: Activity() {
         builder.setView(dialogLayout)
         val editText = dialogLayout.findViewById<EditText>(R.id.editText)
         editText.requestFocus()
-        builder.setPositiveButton("OK") { dialog: DialogInterface?, id: Int ->
-            prepararListView(
-                editText.text.toString()
-            )
+        builder.setPositiveButton("OK") { _: DialogInterface?, _: Int ->
+            prepararRecyclerView(editText.text.toString())
         }
-        builder.setNegativeButton("Cancelar") { dialog: DialogInterface, id: Int -> dialog.cancel() }
+        builder.setNegativeButton("Cancelar") { dialog: DialogInterface, _: Int -> dialog.cancel() }
         val alert = builder.create()
         alert.show()
     }
@@ -116,42 +119,36 @@ class CargarHco: Activity() {
         startActivity(i)
     }
 
+
+    private fun prepararRecyclerView(queBuscar: String) {
+        fAdapter = HcoRvAdapter(getHco(queBuscar), fIvaIncluido, fAplicarIva, this, object: HcoRvAdapter.OnItemClickListener {
+            override fun onClick(view: View, data: DatosHistorico) {
+            }
+        })
+
+        fRecyclerView.adapter = fAdapter
+    }
+
+
+    private fun getHco(queBuscar: String): List<DatosHistorico> {
+        if (queBuscar != "")
+            return historicoDao?.abrirConBusqueda(fCliente, "%$queBuscar%") ?: emptyList<DatosHistorico>().toMutableList()
+        else
+            return historicoDao?.abrir(fCliente) ?: emptyList<DatosHistorico>().toMutableList()
+    }
+
+
+    /*
     private fun prepararListView(artBuscar: String) {
-        val columnas = arrayOf(
-            "codigo",
-            "descr",
-            "piezpedida",
-            "cantpedida",
-            "cantidad",
-            "precio",
-            "dto",
-            "prneto",
-            "cajas",
-            "fecha",
-            "stock",
-            "descrfto",
-            "texto"
-        )
-        val to = intArrayOf(
-            R.id.lyhcoCodigo,
-            R.id.lyhcoDescr,
-            R.id.lyhcoPiezPedida,
-            R.id.lyhcoCantPedida,
-            R.id.lyhcoCant,
-            R.id.lyhcoPrecio,
-            R.id.lyhcoDto,
-            R.id.lyhcoPrNeto,
-            R.id.lyhcoCajas,
-            R.id.lyhcoFecha,
-            R.id.lyhcoStock,
-            R.id.lyhcoFormato,
-            R.id.lyhcoTxtArtHab
-        )
+        val columnas = arrayOf("codigo", "descr", "piezpedida", "cantpedida", "cantidad", "precio",
+            "dto", "prneto", "cajas", "fecha", "stock", "descrfto", "texto")
+        val to = intArrayOf(R.id.lyhcoCodigo, R.id.lyhcoDescr, R.id.lyhcoPiezPedida, R.id.lyhcoCantPedida,
+            R.id.lyhcoCant, R.id.lyhcoPrecio, R.id.lyhcoDto, R.id.lyhcoPrNeto, R.id.lyhcoCajas, R.id.lyhcoFecha,
+            R.id.lyhcoStock, R.id.lyhcoFormato, R.id.lyhcoTxtArtHab)
 
         // Si queremos buscar una cadena dentro del histórico reabrimos el cursor con la cadena de búsqueda.
         fHistorico.abrirConBusqueda(fCliente, artBuscar)
-        adapterLineas =
-            SimpleCursorAdapter(this, R.layout.ly_hco_cliente, fHistorico.cHco, columnas, to, 0)
+        adapterLineas = SimpleCursorAdapter(this, R.layout.ly_hco_cliente, fHistorico.cHco, columnas, to, 0)
         // Formateamos las columnas.
         formatearColumnas()
         lvLineas.adapter = adapterLineas
@@ -170,7 +167,9 @@ class CargarHco: Activity() {
                 }
         }
     }
+    */
 
+    /*
     private fun formatearColumnas() {
         adapterLineas.viewBinder =
             SimpleCursorAdapter.ViewBinder { view: View, cursor: Cursor, column: Int ->
@@ -249,7 +248,9 @@ class CargarHco: Activity() {
                 false
             }
     }
+    */
 
+    /*
     private fun formatearPrecio(tv: TextView, cursor: Cursor, column: Int) {
         val sPrecio: String
         val sPorcIva: String
@@ -277,6 +278,7 @@ class CargarHco: Activity() {
             }
         }
     }
+    */
 
     fun editarHco(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
@@ -306,8 +308,10 @@ class CargarHco: Activity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         // Actividad editar historico.
         if (requestCode == fRequestEditarHco) {
-            if (resultCode == RESULT_OK) fHistorico.abrirConBusqueda(fCliente, queBuscar)
-            refrescarLineas()
+            if (resultCode == RESULT_OK)
+                prepararRecyclerView(queBuscar)
+                //fHistorico.abrirConBusqueda(fCliente, queBuscar)
+
         }
     }
 
@@ -339,16 +343,13 @@ class CargarHco: Activity() {
         finish()
     }
 
-    private fun refrescarLineas() {
-        adapterLineas.changeCursor(fHistorico.cHco)
-    }
 
     fun limpiarHco(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
         queBuscar = ""
-        fHistorico.abrirConBusqueda(fCliente, "")
-        refrescarLineas()
+        //fHistorico.abrirConBusqueda(fCliente, "")
+        prepararRecyclerView(queBuscar)
     }
 
     // Manejo los eventos del teclado en la actividad.

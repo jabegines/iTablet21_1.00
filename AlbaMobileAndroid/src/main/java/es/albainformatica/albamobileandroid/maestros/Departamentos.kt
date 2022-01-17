@@ -1,30 +1,25 @@
 package es.albainformatica.albamobileandroid.maestros
 
 import android.content.Context
-import android.database.Cursor
-import es.albainformatica.albamobileandroid.ponerCeros
-import es.albainformatica.albamobileandroid.ancho_departamento
-import es.albainformatica.albamobileandroid.ancho_grupo
+import es.albainformatica.albamobileandroid.dao.DepartamentosDao
+import es.albainformatica.albamobileandroid.database.MyDatabase
+import es.albainformatica.albamobileandroid.entity.DepartamentosEnt
 
 /**
  * Created by jabegines on 06/05/2014.
  */
 class Departamentos(contexto: Context) {
+    private val departamentosDao: DepartamentosDao? = MyDatabase.getInstance(contexto)?.departamentosDao()
 
-    lateinit var cursor: Cursor
+    lateinit var lDepartamentos: List<DepartamentosEnt>
 
 
-    fun close() {
-        if (this::cursor.isInitialized)
-            cursor.close()
+
+    fun abrir(fGrupo: Short): Boolean {
+        lDepartamentos = departamentosDao?.getGrupo(fGrupo) ?: emptyList<DepartamentosEnt>().toMutableList()
+        return (lDepartamentos.count() > 0)
     }
 
-    fun abrir(fGrupo: Int): Boolean {
-        // TODO
-        //cursor = dbAlba.rawQuery("SELECT * FROM departamentos WHERE grupo = $fGrupo", null)
-        //return cursor.moveToFirst()
-        return true
-    }
 
     fun abrirParaCatalogo(fGrupo: Int): Boolean {
         // TODO
@@ -41,22 +36,10 @@ class Departamentos(contexto: Context) {
         return true
     }
 
-    fun getCodigo(): Int {
-        return cursor.getInt(cursor.getColumnIndex("codigo") ?: 1)
-    }
 
-
-    fun getGrupo(): Int {
-        return cursor.getInt(cursor.getColumnIndex("grupo") ?: 0)
-    }
-
-    fun getDescripcion(): String {
-        return cursor.getString(cursor.getColumnIndex("descr") ?: 2)
-    }
-
-    fun getImagen(): String {
-        return "DPT_" + ponerCeros(getGrupo().toString(), ancho_grupo) +
-                ponerCeros(getCodigo().toString(), ancho_departamento) + ".jpg"
-    }
+    //fun getImagen(): String {
+    //    return "DPT_" + ponerCeros(getGrupo().toString(), ancho_grupo) +
+    //            ponerCeros(getCodigo().toString(), ancho_departamento) + ".jpg"
+    //}
 
 }

@@ -48,7 +48,7 @@ interface OfertasDao {
 
 
     @Query("SELECT articuloId FROM Ofertas WHERE articuloId = :queArticulo AND empresa = :queEmpresa LIMIT 1")
-    fun articuloEnOfta(queArticulo: Int, queEmpresa: Int): Int
+    fun articuloEnOfta(queArticulo: Int, queEmpresa: Short): Int
 
 
     @Query("DELETE FROM Ofertas")

@@ -27,7 +27,7 @@ interface LotesDao {
     fun getAllLotesArticulo(queArticulo: Int): Cursor
 
     @Query("SELECT * FROM Lotes ORDER BY Empresa")
-    fun getAllLotes(): Cursor
+    fun getAllLotes(): List<LotesEnt>
 
     @Query("DELETE FROM Lotes")
     fun vaciar()

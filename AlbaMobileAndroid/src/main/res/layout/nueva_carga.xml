@@ -248,7 +248,7 @@
 
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/mi_borde"
@@ -258,12 +258,13 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/llDatosCarga">
 
-        <ListView
-            android:id="@+id/lvNCarga"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvNCarga"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:listSelector="@drawable/listselect_catalogos"
-            />
+            android:layout_height="wrap_content" >
+
+        </androidx.recyclerview.widget.RecyclerView>
+
     </LinearLayout>
 
 

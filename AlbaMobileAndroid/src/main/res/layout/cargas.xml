@@ -79,13 +79,14 @@
 
         </androidx.recyclerview.widget.RecyclerView>
 
-        <ListView
-            android:id="@+id/lvCargas"
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvDetCarga"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.6"
-            android:padding="5dp" />
-
+            android:padding="5dp">
+        </androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
 
     <LinearLayout

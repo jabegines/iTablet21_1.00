@@ -20,7 +20,7 @@ class FichaArticuloActivity: AppCompatActivity() {
     private lateinit var fArticulos: ArticulosClase
     private lateinit var fConfiguracion: Configuracion
     private lateinit var carpetaImagenes: String
-    private var fEmpresaActual: Int = 0
+    private var fEmpresaActual: Short = 0
     private lateinit var prefs: SharedPreferences
 
     override fun onCreate(savedInstance: Bundle?) {
@@ -44,7 +44,7 @@ class FichaArticuloActivity: AppCompatActivity() {
     private fun inicializarControles() {
         carpetaImagenes = dimeRutaImagenes(this)
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        fEmpresaActual = prefs.getInt("ultima_empresa", 0)
+        fEmpresaActual = prefs.getInt("ultima_empresa", 0).toShort()
         mostrarFicha()
         val tvTitulo = findViewById<TextView>(R.id.tvNombreActivity)
         tvTitulo.setText(R.string.ficha_art)

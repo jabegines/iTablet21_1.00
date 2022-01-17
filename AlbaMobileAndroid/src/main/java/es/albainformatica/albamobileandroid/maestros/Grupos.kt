@@ -19,13 +19,12 @@ class Grupos(contexto: Context) {
 
 
     fun abrir(): Boolean {
-
         lGrupos = gruposDao?.getAllGrupos() ?: emptyList<GruposEnt>().toMutableList()
         return (lGrupos.count() > 0)
     }
 
-    fun abrirParaCatalogo(): Boolean {
 
+    fun abrirParaCatalogo(): Boolean {
         lGrupCat = gruposDao?.abrirParaCatalogo() ?: emptyList<GruposParaCat>().toMutableList()
         return (lGrupCat.count() > 0)
     }

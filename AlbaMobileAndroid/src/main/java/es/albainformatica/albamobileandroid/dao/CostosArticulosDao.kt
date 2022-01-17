@@ -10,7 +10,7 @@ import es.albainformatica.albamobileandroid.entity.CostosArticulosEnt
 interface CostosArticulosDao {
 
     @Query("SELECT costo FROM CostosArticulos WHERE articuloId = :queArticulo AND empresa = :queEmpresa")
-    fun getCostoArticulo(queArticulo: Int, queEmpresa: Int): Double
+    fun getCostoArticulo(queArticulo: Int, queEmpresa: Short): Double
 
 
 

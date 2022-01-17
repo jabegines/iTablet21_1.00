@@ -21,7 +21,7 @@ class CatalogoGruposDep: Activity() {
     private lateinit var lyScrollGrupos: LinearLayout
     private lateinit var grvDepartam: GridView
 
-    private var fGrupo = 0
+    private var fGrupo: Short = 0
     private var fVendiendo: Boolean = false
 
 
@@ -43,7 +43,6 @@ class CatalogoGruposDep: Activity() {
 
     override fun onDestroy() {
         guardarPreferencias()
-        fDepartamentos.close()
         fArticulosGrv.close()
         super.onDestroy()
     }
@@ -86,7 +85,7 @@ class CatalogoGruposDep: Activity() {
                 imageView.setOnClickListener { v: View ->
                     val queTag = v.tag.toString()
                     val sGrupo = queTag.substring(0, ancho_grupo.toInt())
-                    fGrupo = sGrupo.toInt()
+                    fGrupo = sGrupo.toShort()
 
                     cambiarAlpha(fGrupo, false)
                     verDepartamentos(fGrupo)
@@ -99,7 +98,7 @@ class CatalogoGruposDep: Activity() {
         }
     }
 
-    private fun cambiarAlpha(queGrupo: Int, todos: Boolean) {
+    private fun cambiarAlpha(queGrupo: Short, todos: Boolean) {
         // Recorremos el layout lyScrollGrupos y vamos cambiando el valor Alpha de los ImageView.
         for (i in 0 until lyScrollGrupos.childCount) {
             val rl = lyScrollGrupos.getChildAt(i) as LinearLayout
@@ -109,7 +108,7 @@ class CatalogoGruposDep: Activity() {
                 if (c == ImageView::class.java) {
                     val iv = v as ImageView
                     val sGrupo = iv.tag.toString().substring(0, 3)
-                    val iGrupo = sGrupo.toInt()
+                    val iGrupo = sGrupo.toShort()
                     if (todos) {
                         iv.imageAlpha = 255
                     } else {
@@ -118,7 +117,7 @@ class CatalogoGruposDep: Activity() {
                 } else if (c == TextView::class.java) {
                     val tv = v as TextView
                     val sText = tv.tag.toString().substring(0, 3)
-                    val iText = sText.toInt()
+                    val iText = sText.toShort()
                     if (todos) {
                         tv.alpha = 0.4f
                     } else {
@@ -129,7 +128,7 @@ class CatalogoGruposDep: Activity() {
         }
     }
 
-    private fun verArticulos(queGrupo: Int, queDepart: Int, fDescrDep: String) {
+    private fun verArticulos(queGrupo: Short, queDepart: Short, fDescrDep: String) {
         val i = Intent(this, CatalogoArticulos::class.java)
         i.putExtra("modoVisArtic", GRUPOS_Y_DEP)
         i.putExtra("grupo", queGrupo)
@@ -140,7 +139,7 @@ class CatalogoGruposDep: Activity() {
         startActivityForResult(i, REQUEST_CAT_ARTICULOS)
     }
 
-    private fun verDepartamentos(queGrupo: Int) {
+    private fun verDepartamentos(queGrupo: Short) {
         grvDepartam.adapter = GrvImageDepartAdapter(this, queGrupo)
 
         // Si el grupo no tiene departamentos iremos directamente a ver los artículos del grupo.
