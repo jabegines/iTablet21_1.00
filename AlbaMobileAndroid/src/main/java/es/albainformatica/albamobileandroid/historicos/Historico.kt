@@ -1,13 +1,21 @@
 package es.albainformatica.albamobileandroid.historicos
 
 import android.content.Context
-import android.database.Cursor
+import es.albainformatica.albamobileandroid.DatosHcArtClte
+import es.albainformatica.albamobileandroid.DatosHistorico
+import es.albainformatica.albamobileandroid.dao.HcoPorArticClteDao
+import es.albainformatica.albamobileandroid.dao.HistoricoDao
+import es.albainformatica.albamobileandroid.dao.TmpHcoDao
+import es.albainformatica.albamobileandroid.database.MyDatabase
+import es.albainformatica.albamobileandroid.entity.TmpHcoEnt
 
 /**
  * Created by jabegines on 14/10/13.
  */
 class Historico(contexto: Context)  {
-    lateinit var cHco: Cursor
+    private var historicoDao: HistoricoDao? = MyDatabase.getInstance(contexto)?.historicoDao()
+    private var tmpHcoDao: TmpHcoDao? = MyDatabase.getInstance(contexto)?.tmpHcoDao()
+    private var hcoPorArticClteDao: HcoPorArticClteDao? = MyDatabase.getInstance(contexto)?.hcoPorArticClteDao()
 
     private var fCliente = 0
     private var fCadBusqueda = ""
@@ -36,45 +44,23 @@ class Historico(contexto: Context)  {
     var fAlmacPedido: String = "0"
     var fIncidencia = 0
 
+    lateinit var lDatosHistorico: List<DatosHistorico>
+    lateinit var lDatHcoArtClte: List<DatosHcArtClte>
 
-    fun abrir(QueCliente: Int) {
-        fCliente = QueCliente
-        var sql = "SELECT A.*, B.codigo, B.descr, C.cantidad cantpedida, D.iva porciva," +
-                " (E.ent - E.sal) stock, (F.descr) descrfto FROM historico A" +
-                " LEFT OUTER JOIN articulos B ON B.articulo = A.articulo" +
-                " LEFT OUTER JOIN tmphco C ON C.linea = A._id" +
-                " LEFT OUTER JOIN ivas D ON D.tipo = B.tipoiva" +
-                " LEFT OUTER JOIN stock E ON E.articulo = A.articulo" +
-                " LEFT OUTER JOIN formatos F ON F.codigo = A.formato" +
-                " WHERE A.cliente = " + QueCliente
-        if (fCadBusqueda != "") sql = "$sql AND B.descr LIKE('%$fCadBusqueda%')"
-        sql = "$sql ORDER BY B.descr"
-    }
 
 
     fun abrirHcoPorArtClte(queCliente: Int, queOrdenacion: Short) {
-        if (this::cHco.isInitialized)
-            cHco.close()
-
-        val queCadena: String
-        queCadena = if (queOrdenacion.toInt() == 0) {
-            "SELECT A._id, A.articulo, B.codigo, B.descr, C.cantidad cantpedida, D.porcDevol FROM hcoPorArticClte A" +
-                    " LEFT JOIN articulos B ON B.articulo = A.articulo" +
-                    " LEFT JOIN tmphco C ON C.linea = A._id" +
-                    " LEFT JOIN estadDevoluc D ON D.cliente = " + queCliente + " AND D.articulo = A.articulo" +
-                    " WHERE A.cliente = " + queCliente +
-                    " GROUP BY A.articulo" +
-                    " ORDER BY B.descr"
-        } else {
-            "SELECT A._id, A.articulo, B.codigo, B.descr, C.cantidad cantpedida, D.porcDevol FROM hcoPorArticClte A" +
-                    " LEFT JOIN articulos B ON B.articulo = A.articulo" +
-                    " LEFT JOIN tmphco C ON C.linea = A._id" +
-                    " LEFT JOIN estadDevoluc D ON D.cliente = " + queCliente + " AND D.articulo = A.articulo" +
-                    " WHERE A.cliente = " + queCliente +
-                    " GROUP BY A.articulo" +
-                    " ORDER BY B.codigo"
-        }
+        lDatHcoArtClte = hcoPorArticClteDao?.abrirHcoPorArtClte(queCliente, queOrdenacion) ?: emptyList<DatosHcArtClte>().toMutableList()
     }
+
+    fun abrirConBusqueda(queCliente: Int, queBuscar: String) {
+        lDatosHistorico = historicoDao?.abrirConBusqueda(queCliente, "%$queBuscar%") ?: emptyList<DatosHistorico>().toMutableList()
+    }
+
+    fun abrir(queCliente: Int) {
+        lDatosHistorico = historicoDao?.abrir(queCliente) ?: emptyList<DatosHistorico>().toMutableList()
+    }
+
 
     fun inicializarLinea() {
         fArticulo = 0
@@ -102,47 +88,53 @@ class Historico(contexto: Context)  {
 
     fun aceptarCambios(fLinea: Int) {
         var fInsertando = true
-        // TODO
-        /*
-        dbAlba.rawQuery("SELECT * FROM tmphco", null).use { cTmpHco ->
-            cTmpHco.moveToFirst()
-            while (!cTmpHco.isAfterLast) {
-                if (cTmpHco.getInt(cTmpHco.getColumnIndex("linea") ?: 0) == fLinea) fInsertando = false
-                cTmpHco.moveToNext()
-            }
-            val values = ContentValues()
-            values.put("cajas", fCajas)
-            values.put("cantidad", fCantidad)
-            values.put("piezas", fPiezas)
-            values.put("precio", fPrecio)
-            values.put("precioii", fPrecioII)
-            values.put("dto", fDtoLin)
-            values.put("dtoi", fDtoImp)
-            values.put("dtoiii", fDtoImpII)
-            values.put("codigoiva", fCodigoIva)
-            values.put("tasa1", fTasa1)
-            values.put("tasa2", fTasa2)
-            values.put("lote", fLote)
-            values.put("almacenPedido", fAlmacPedido)
-            values.put("textolinea", fTextoLinea)
+        var fTmpHcoId = 0
 
-            // Si trabajamos con artículos habituales (p.ej. Pare Pere), grabaremos en el texto de la línea
-            // el texto que tenga el artículo para el cliente del documento y el formato de la línea.
-            if (fHayArtHabituales) values.put("textolinea", fTextoLinea)
-            values.put("flag", fFlag)
-            values.put("flag3", fFlag3)
-            values.put("flag5", fFlag5)
-            if (fInsertando) {
-                values.put("linea", fLinea)
-                values.put("articulo", fArticulo)
-                values.put("codigo", fCodigo)
-                values.put("descr", fDescr)
-                values.put("formato", fFormatoLin)
-                dbAlba.insert("tmphco", null, values)
-            } else dbAlba.update("tmphco", values, "linea=$fLinea", null)
-            refrescarHco()
+        val lTmpHco = tmpHcoDao?.getAllLineas() ?: emptyList<TmpHcoEnt>().toMutableList()
+        if (lTmpHco.count() > 0) {
+            for (tmpHco in lTmpHco) {
+                if (tmpHco.linea == fLinea) {
+                    fInsertando = false
+                    fTmpHcoId = tmpHco.tmpHcoId
+                }
+            }
         }
-        */
+
+        val tmpHcoEnt = TmpHcoEnt()
+        tmpHcoEnt.cajas = fCajas.toString()
+        tmpHcoEnt.cantidad = fCantidad.toString()
+        tmpHcoEnt.piezas = fPiezas.toString()
+        tmpHcoEnt.precio = fPrecio.toString()
+        tmpHcoEnt.precioII = fPrecioII.toString()
+        tmpHcoEnt.dto = fDtoLin.toString()
+        tmpHcoEnt.dtoImpte = fDtoImp.toString()
+        tmpHcoEnt.dtoImpteII = fDtoImpII.toString()
+        tmpHcoEnt.codigoIva = fCodigoIva
+        tmpHcoEnt.tasa1 = fTasa1.toString()
+        tmpHcoEnt.tasa2 = fTasa2.toString()
+        tmpHcoEnt.lote = fLote
+        if (fAlmacPedido != "") tmpHcoEnt.almacenPedido = fAlmacPedido.toShort()
+        else tmpHcoEnt.almacenPedido = 0
+        tmpHcoEnt.textoLinea = fTextoLinea
+        tmpHcoEnt.flag = fFlag
+        tmpHcoEnt.flag3 = fFlag3
+        tmpHcoEnt.flag5 = fFlag5
+
+        if (fInsertando) {
+            tmpHcoEnt.linea = fLinea
+            tmpHcoEnt.articuloId = fArticulo
+            tmpHcoEnt.codigo = fCodigo
+            tmpHcoEnt.descripcion = fDescr
+            tmpHcoEnt.formatoId = fFormatoLin
+
+            tmpHcoDao?.insertar(tmpHcoEnt)
+
+        } else {
+            tmpHcoDao?.actualizar(fTmpHcoId, tmpHcoEnt.cajas, tmpHcoEnt.cantidad, tmpHcoEnt.piezas,
+                    tmpHcoEnt.precio, tmpHcoEnt.precioII, tmpHcoEnt.dto, tmpHcoEnt.dtoImpte, tmpHcoEnt.dtoImpteII,
+                    tmpHcoEnt.codigoIva, tmpHcoEnt.tasa1, tmpHcoEnt.tasa2, tmpHcoEnt.lote, tmpHcoEnt.almacenPedido,
+                    tmpHcoEnt.textoLinea, tmpHcoEnt.flag, tmpHcoEnt.flag3, tmpHcoEnt.flag5)
+        }
     }
 
     fun aceptarDatosDevolucion(fLinea: Int) {
@@ -180,20 +172,12 @@ class Historico(contexto: Context)  {
          */
     }
 
-    private fun refrescarHco() {
-        cHco.close()
-        abrir(fCliente)
-    }
 
     fun borrar() {
         // TODO
         //dbAlba.delete("tmphco", "1=1", null)
     }
 
-
-    fun getTextoArtHabit(): String {
-        return cHco.getString(cHco.getColumnIndex("texto") ?: 0) ?: ""
-    }
 
 
     // Buscamos si el artículo está en el temporal y según el resultado, insertamos o editamos.

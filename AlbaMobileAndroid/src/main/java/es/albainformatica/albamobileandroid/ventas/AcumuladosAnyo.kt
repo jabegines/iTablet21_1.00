@@ -52,15 +52,19 @@ class AcumuladosAnyo: Activity() {
         var mesActual = 1
         fHistorico.cCursorHco.moveToFirst()
         while (!fHistorico.cCursorHco.isAfterLast) {
+            // TODO
+            /*
             val queMes = fHistorico.getMes()
             while (mesActual < queMes) {
                 drawChart(0, mesActual)
                 mesActual++
             }
+
             val queCantidad = fHistorico.getCantidad2Int()
             drawChart(queCantidad, fHistorico.getMes())
             mesActual++
             fHistorico.cCursorHco.moveToNext()
+            */
         }
         if (mesActual < 13) {
             while (mesActual < 13) {

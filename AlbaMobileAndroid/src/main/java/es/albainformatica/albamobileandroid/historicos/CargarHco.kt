@@ -15,9 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.dao.HcoCompSemMesDao
-import es.albainformatica.albamobileandroid.dao.HistoricoDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
-import es.albainformatica.albamobileandroid.entity.HistoricoEnt
 import es.albainformatica.albamobileandroid.ventas.ListaPreciosEspeciales
 import es.albainformatica.albamobileandroid.ventas.AcumuladosMes
 import kotlinx.android.synthetic.main.ventas_cargarhco.*
@@ -26,7 +24,6 @@ import kotlinx.android.synthetic.main.ventas_cargarhco.*
  * Created by jabegines on 14/10/13.
  */
 class CargarHco: Activity() {
-    private var historicoDao: HistoricoDao? = MyDatabase.getInstance(this)?.historicoDao()
     private lateinit var fConfiguracion: Configuracion
     private lateinit var fHistorico: Historico
 
@@ -123,6 +120,14 @@ class CargarHco: Activity() {
     private fun prepararRecyclerView(queBuscar: String) {
         fAdapter = HcoRvAdapter(getHco(queBuscar), fIvaIncluido, fAplicarIva, this, object: HcoRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: DatosHistorico) {
+                // Tomamos el campo historicoId de la fila en la que hemos pulsado.
+                fLinea = data.historicoId
+
+                val i = Intent(this@CargarHco, EditarHcoActivity::class.java)
+                i.putExtra("linea", fLinea)
+                i.putExtra("empresa", fEmpresaActual)
+                i.putExtra("posicion", fAdapter.selectedPos)
+                startActivityForResult(i, fRequestEditarHco)
             }
         })
 
@@ -131,154 +136,17 @@ class CargarHco: Activity() {
 
 
     private fun getHco(queBuscar: String): List<DatosHistorico> {
-        if (queBuscar != "")
-            return historicoDao?.abrirConBusqueda(fCliente, "%$queBuscar%") ?: emptyList<DatosHistorico>().toMutableList()
-        else
-            return historicoDao?.abrir(fCliente) ?: emptyList<DatosHistorico>().toMutableList()
-    }
-
-
-    /*
-    private fun prepararListView(artBuscar: String) {
-        val columnas = arrayOf("codigo", "descr", "piezpedida", "cantpedida", "cantidad", "precio",
-            "dto", "prneto", "cajas", "fecha", "stock", "descrfto", "texto")
-        val to = intArrayOf(R.id.lyhcoCodigo, R.id.lyhcoDescr, R.id.lyhcoPiezPedida, R.id.lyhcoCantPedida,
-            R.id.lyhcoCant, R.id.lyhcoPrecio, R.id.lyhcoDto, R.id.lyhcoPrNeto, R.id.lyhcoCajas, R.id.lyhcoFecha,
-            R.id.lyhcoStock, R.id.lyhcoFormato, R.id.lyhcoTxtArtHab)
-
-        // Si queremos buscar una cadena dentro del histórico reabrimos el cursor con la cadena de búsqueda.
-        fHistorico.abrirConBusqueda(fCliente, artBuscar)
-        adapterLineas = SimpleCursorAdapter(this, R.layout.ly_hco_cliente, fHistorico.cHco, columnas, to, 0)
-        // Formateamos las columnas.
-        formatearColumnas()
-        lvLineas.adapter = adapterLineas
-
-        // Establecemos el evento on click del ListView.
-        if (!fDesdeCltes) {
-            lvLineas.onItemClickListener =
-                AdapterView.OnItemClickListener { listView: AdapterView<*>, _: View?, position: Int, _: Long ->
-                    // Tomamos el campo _id de la fila en la que hemos pulsado.
-                    val cursor = listView.getItemAtPosition(position) as Cursor
-                    fLinea = cursor.getInt(cursor.getColumnIndexOrThrow("_id"))
-                    val i = Intent(this@CargarHco, EditarHcoActivity::class.java)
-                    i.putExtra("linea", fLinea)
-                    i.putExtra("empresa", fEmpresaActual)
-                    startActivityForResult(i, fRequestEditarHco)
-                }
-        }
-    }
-    */
-
-    /*
-    private fun formatearColumnas() {
-        adapterLineas.viewBinder =
-            SimpleCursorAdapter.ViewBinder { view: View, cursor: Cursor, column: Int ->
-                val tv = view as TextView
-
-                // El orden de las columnas será el que tengan en el cursor que estemos utilizando
-                // (en este caso fHistorico.cHco), comenzando por la cero.
-                // Formateamos el precio.
-                if (column == 4 || column == 6) {
-                    formatearPrecio(tv, cursor, column)
-                    return@ViewBinder true
-                }
-                // Formateamos las cajas y la cantidad.
-                if (column == 3 || column == 7) {
-                    val sCajas: String = if (column == 7) cursor.getString(cursor.getColumnIndex("cajas"))
-                        .replace(',', '.') else cursor.getString(cursor.getColumnIndex("cantidad"))
-                        .replace(',', '.')
-                    val dCajas = sCajas.toDouble()
-                    tv.text = String.format(fConfiguracion.formatoDecCantidad(), dCajas)
-                    return@ViewBinder true
-                }
-                // Formateamos la cantidad pedida o piezas pedidas.
-                if (column == 11 || column == 12) {
-                    if (cursor.getString(column) != null) {
-                        val sCant = cursor.getString(column).replace(',', '.')
-                        val dCant = sCant.toDouble()
-                        tv.text = String.format(fConfiguracion.formatoDecCantidad(), dCant)
-                        return@ViewBinder true
-                    }
-                }
-                // Formateamos el % de descuento.
-                if (column == 5) {
-                    val sDto = cursor.getString(cursor.getColumnIndex("dto")).replace(',', '.')
-                    val dDto = sDto.toDouble()
-                    tv.text = String.format(Locale.getDefault(), "%.2f", dDto)
-                    return@ViewBinder true
-                }
-
-                // Formateamos el stock.
-                if (column == 14) {
-                    if (cursor.getString(14) != null) {
-                        val dStock = cursor.getString(14).toDouble()
-                        tv.text = String.format(fConfiguracion.formatoDecCantidad(), dStock)
-                        return@ViewBinder true
-                    }
-                }
-                // Formateamos el formato. Si la línea no tiene formato no lo presentaremos.
-                if (column == 15) {
-                    if (cursor.getString(15) != null) {
-                        tv.visibility = View.VISIBLE
-                    } else {
-                        tv.visibility = View.GONE
-                        return@ViewBinder true
-                    }
-                }
-                // Descripción. Si tenemos configurado alertar de artículos no vendidos y hemos sobrepasado los días la visualizamos en rojo
-                if (column == 10) {
-                    if (cursor.getString(column) != null) {
-                        if (fAlertarArtNoVend) {
-                            try {
-                                val queFecha = cursor.getString(8)
-                                val fechaMenor = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(queFecha) ?: Date()
-                                val diferenciaEnMs = System.currentTimeMillis() - fechaMenor.time
-                                val dias = diferenciaEnMs / (1000 * 60 * 60 * 24)
-                                tv.text = cursor.getString(column)
-                                if (dias > fDiasAlerta) tv.setTextColor(Color.RED) else tv.setTextColor(
-                                    Color.BLACK
-                                )
-                                return@ViewBinder true
-                            } catch (ex: Exception) {
-                                //
-                            }
-                        }
-                    }
-                }
-                false
-            }
-    }
-    */
-
-    /*
-    private fun formatearPrecio(tv: TextView, cursor: Cursor, column: Int) {
-        val sPrecio: String
-        val sPorcIva: String
-        var dPrecio: Double
-        val dPorcIva: Double
-        val sDto = cursor.getString(cursor.getColumnIndex("dto")).replace(',', '.')
-        val dDto = sDto.toDouble()
-        if (fIvaIncluido && fAplicarIva) {
-            // No tenemos un campo para el precio iva incluído, por eso lo calculamos.
-            sPrecio = cursor.getString(cursor.getColumnIndex("precio")).replace(',', '.')
-            sPorcIva = cursor.getString(cursor.getColumnIndex("porciva")).replace(',', '.')
-            dPrecio = sPrecio.toDouble()
-            dPorcIva = sPorcIva.toDouble()
-            dPrecio += dPrecio * dPorcIva / 100
-            if (column == 4) tv.text = String.format(fFtoDecPrIva, dPrecio) else {
-                val dPrNeto = dPrecio - dPrecio * dDto / 100
-                tv.text = String.format(fFtoDecPrIva, dPrNeto)
-            }
+        return if (queBuscar != "") {
+            fHistorico.abrirConBusqueda(fCliente, queBuscar)
+            fHistorico.lDatosHistorico
         } else {
-            sPrecio = cursor.getString(cursor.getColumnIndex("precio")).replace(',', '.')
-            dPrecio = sPrecio.toDouble()
-            if (column == 4) tv.text = String.format(fFtoDecPrBase, dPrecio) else {
-                val dPrNeto = dPrecio - dPrecio * dDto / 100
-                tv.text = String.format(fFtoDecPrBase, dPrNeto)
-            }
+            fHistorico.abrir(fCliente)
+            fHistorico.lDatosHistorico
         }
     }
-    */
+
+
+
 
     fun editarHco(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
@@ -310,7 +178,6 @@ class CargarHco: Activity() {
         if (requestCode == fRequestEditarHco) {
             if (resultCode == RESULT_OK)
                 prepararRecyclerView(queBuscar)
-                //fHistorico.abrirConBusqueda(fCliente, queBuscar)
 
         }
     }
@@ -335,6 +202,7 @@ class CargarHco: Activity() {
         }
     }
 
+
     fun salvarHco(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
@@ -348,7 +216,6 @@ class CargarHco: Activity() {
         view.getTag(0)          // Para que no dé warning el compilador
 
         queBuscar = ""
-        //fHistorico.abrirConBusqueda(fCliente, "")
         prepararRecyclerView(queBuscar)
     }
 

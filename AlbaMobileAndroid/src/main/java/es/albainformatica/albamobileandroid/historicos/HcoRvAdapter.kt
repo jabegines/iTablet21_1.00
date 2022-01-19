@@ -1,6 +1,8 @@
 package es.albainformatica.albamobileandroid.historicos
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,13 +12,15 @@ import es.albainformatica.albamobileandroid.Comunicador.Companion.fConfiguracion
 import es.albainformatica.albamobileandroid.DatosHistorico
 import es.albainformatica.albamobileandroid.R
 import es.albainformatica.albamobileandroid.entity.HistoricoEnt
+import kotlinx.android.synthetic.main.ly_hco_cliente.view.*
 
 
 class HcoRvAdapter(var lHistorico: List<DatosHistorico>, ivaIncluido: Boolean, aplicarIva: Boolean,
                    val context: Context, var listener: OnItemClickListener):
                     RecyclerView.Adapter<HcoRvAdapter.ViewHolder>() {
 
-    private var selectedPos: Int = RecyclerView.NO_POSITION
+    var selectedPos: Int = RecyclerView.NO_POSITION
+
     private var ftoDecCantidad = fConfiguracion.formatoDecCantidad()
     private var ftoDecPrBase = fConfiguracion.formatoDecPrecioBase()
     private var ftoDecPrIva = fConfiguracion.formatoDecPrecioIva()
@@ -30,29 +34,27 @@ class HcoRvAdapter(var lHistorico: List<DatosHistorico>, ivaIncluido: Boolean, a
 
 
         if (selectedPos == fPosicion) {
-            /*
-            holder.itemView.tvCargaId.setTextColor(Color.BLACK)
-            holder.itemView.tvCargaId.typeface = Typeface.DEFAULT_BOLD
-            holder.itemView.tvEmpresaCarga.setTextColor(Color.BLACK)
-            holder.itemView.tvEmpresaCarga.typeface = Typeface.DEFAULT_BOLD
-            holder.itemView.tvFechaCarga.setTextColor(Color.BLACK)
-            holder.itemView.tvFechaCarga.typeface = Typeface.DEFAULT_BOLD
-            holder.itemView.tvHoraCarga.setTextColor(Color.BLACK)
-            holder.itemView.tvHoraCarga.typeface = Typeface.DEFAULT_BOLD
-            */
+            holder.itemView.lyhcoCodigo.setTextColor(Color.BLACK)
+            holder.itemView.lyhcoCodigo.typeface = Typeface.DEFAULT_BOLD
+            holder.itemView.lyhcoDescr.setTextColor(Color.BLACK)
+            holder.itemView.lyhcoDescr.typeface = Typeface.DEFAULT_BOLD
+            holder.itemView.lyhcoStock.setTextColor(Color.BLACK)
+            holder.itemView.lyhcoStock.typeface = Typeface.DEFAULT_BOLD
+            holder.itemView.lyhcoFormato.setTextColor(Color.BLACK)
+            holder.itemView.lyhcoFormato.typeface = Typeface.DEFAULT_BOLD
+
         }
         else
         {
-            /*
-            holder.itemView.tvCargaId.setTextColor(Color.GRAY)
-            holder.itemView.tvCargaId.typeface = Typeface.DEFAULT
-            holder.itemView.tvEmpresaCarga.setTextColor(Color.GRAY)
-            holder.itemView.tvEmpresaCarga.typeface = Typeface.DEFAULT
-            holder.itemView.tvFechaCarga.setTextColor(Color.GRAY)
-            holder.itemView.tvFechaCarga.typeface = Typeface.DEFAULT
-            holder.itemView.tvHoraCarga.setTextColor(Color.GRAY)
-            holder.itemView.tvHoraCarga.typeface = Typeface.DEFAULT
-            */
+            holder.itemView.lyhcoCodigo.setTextColor(Color.GRAY)
+            holder.itemView.lyhcoCodigo.typeface = Typeface.DEFAULT
+            holder.itemView.lyhcoDescr.setTextColor(Color.GRAY)
+            holder.itemView.lyhcoDescr.typeface = Typeface.DEFAULT
+            holder.itemView.lyhcoStock.setTextColor(Color.GRAY)
+            holder.itemView.lyhcoStock.typeface = Typeface.DEFAULT
+            holder.itemView.lyhcoFormato.setTextColor(Color.GRAY)
+            holder.itemView.lyhcoFormato.typeface = Typeface.DEFAULT
+
         }
 
         holder.itemView.setOnClickListener {
@@ -111,7 +113,10 @@ class HcoRvAdapter(var lHistorico: List<DatosHistorico>, ivaIncluido: Boolean, a
 
             tvCodigo.text = hco.codigo
             tvDescr.text = hco.descripcion
-            tvStock.text = String.format(ftoDecCantidad, hco.stock?.toDouble())
+            if (hco.stock != null)
+                tvStock.text = String.format(ftoDecCantidad, hco.stock?.toDouble())
+            else tvStock.text = ""
+
             if (hco.formatoId > 0) {
                 tvFormato.visibility = View.VISIBLE
                 tvFormato.text = hco.descrFto

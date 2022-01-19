@@ -53,9 +53,10 @@ class RepartoDevoluciones: Activity() {
             R.id.lyDevRepCodigo, R.id.lyDevRepDescr, R.id.lyDevRepCantPedida, R.id.lyDevRepCant,
             R.id.lyDevRepCajas, R.id.lyhcoFecha
         )
+        // TODO
+        /*
         fHistorico.abrir(fCliente)
-        adapterLineas =
-            SimpleCursorAdapter(this, R.layout.ly_dev_reparto, fHistorico.cHco, columnas, to, 0)
+        adapterLineas = SimpleCursorAdapter(this, R.layout.ly_dev_reparto, fHistorico.cHco, columnas, to, 0)
         // Formateamos las columnas.
         formatearColumnas()
         lvLineas.adapter = adapterLineas
@@ -72,8 +73,11 @@ class RepartoDevoluciones: Activity() {
                 i.putExtra("descripcion", cursor.getString(cursor.getColumnIndex("descr")))
                 startActivityForResult(i, REQUEST_DATOS_DEVOLUCION)
             }
+        */
     }
 
+    // TODO
+    /*
     private fun formatearColumnas() {
         adapterLineas.viewBinder = SimpleCursorAdapter.ViewBinder { view, cursor, column ->
             val tv = view as TextView
@@ -110,14 +114,16 @@ class RepartoDevoluciones: Activity() {
             false
         }
     }
+    */
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         // Actividad editar linea
         if (requestCode == REQUEST_DATOS_DEVOLUCION) {
             if (resultCode == RESULT_OK) {
-                fHistorico.cHco.close()
-                fHistorico.abrir(fCliente)
-                adapterLineas.changeCursor(fHistorico.cHco)
+                // TODO
+                //fHistorico.cHco.close()
+                //fHistorico.abrir(fCliente)
+                //adapterLineas.changeCursor(fHistorico.cHco)
             }
         }
     }

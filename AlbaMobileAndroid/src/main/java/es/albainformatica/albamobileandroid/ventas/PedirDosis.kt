@@ -48,7 +48,7 @@ class PedirDosis: AppCompatActivity() {
     private fun prepararRecycler() {
         fAdapter = FormatosRvAdapter(getFormatos(), this, object : FormatosRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: DatosVtaFtos) {
-                fFormatoId = data.codigo
+                fFormatoId = data.formatoId
                 fDosis = data.dosis1
             }
         })
@@ -60,16 +60,13 @@ class PedirDosis: AppCompatActivity() {
     private fun getFormatos(): MutableList<DatosVtaFtos> {
         val lFormatos: MutableList<DatosVtaFtos> = arrayListOf()
         if (fFormatos.todosLosFormatos()) {
-            do {
+            for (formato in fFormatos.lFormatos) {
                 val dVtasFtos = DatosVtaFtos()
-                dVtasFtos.codigo = fFormatos.cursor.getShort(fFormatos.cursor.getColumnIndex("codigo"))
-                dVtasFtos.descripcion = fFormatos.cursor.getString(fFormatos.cursor.getColumnIndex("descr"))
-                dVtasFtos.dosis1 = fFormatos.cursor.getString(fFormatos.cursor.getColumnIndex("dosis1"))
+                dVtasFtos.formatoId = formato.formatoId
+                dVtasFtos.descripcion = formato.descripcion
+                dVtasFtos.dosis1 = formato.dosis1
                 lFormatos.add(dVtasFtos)
-
-            }  while (fFormatos.cursor.moveToNext())
-
-            fFormatos.cursor.moveToFirst()
+            }
         }
 
         return lFormatos

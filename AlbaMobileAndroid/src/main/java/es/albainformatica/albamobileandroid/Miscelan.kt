@@ -376,7 +376,7 @@ import java.util.*
     }
 
 
-    fun DimeNombreMesResum(queMes: Int): String {
+    fun dimeNombreMesResum(queMes: Int): String {
         var nombreMes = ""
         when (queMes) {
             0 -> nombreMes = "Enero"

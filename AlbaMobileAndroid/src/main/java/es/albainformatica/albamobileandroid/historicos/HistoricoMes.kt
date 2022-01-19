@@ -2,14 +2,18 @@ package es.albainformatica.albamobileandroid.historicos
 
 import android.content.Context
 import android.database.Cursor
-import android.database.sqlite.SQLiteDatabase
+import es.albainformatica.albamobileandroid.dao.HistMesDao
+import es.albainformatica.albamobileandroid.database.MyDatabase
+import es.albainformatica.albamobileandroid.entity.HistMesEnt
 import java.util.*
 
 
 class HistoricoMes(val contexto: Context) {
+    var histMesDao: HistMesDao? = MyDatabase.getInstance(contexto)?.histMesDao()
 
     lateinit var cCursorHco: Cursor
 
+    lateinit var lDatosHistMes: List<HistMesEnt>
 
 
     fun Abrir(queCliente: Int) {
@@ -48,15 +52,12 @@ class HistoricoMes(val contexto: Context) {
     }
 
 
-    fun AbrirClteArt(queCliente: Int, queArticulo: Int) {
+    fun abrirClteArt(queCliente: Int, queArticulo: Int) {
         // Obtenemos el mes de la fecha actual.
         val calendarNow: Calendar = GregorianCalendar()
         val month = calendarNow[Calendar.MONTH] + 1
-        val sql = "SELECT cantidadant, cantidad, (cantidad - cantidadant) diferencia, mes FROM histmes" +
-                    " WHERE cliente = " + queCliente + " AND mes = " + month + " AND articulo = " + queArticulo
-        // TODO
-        //cCursorHco = dbAlba.rawQuery(sql, null)
-        //cCursorHco.moveToFirst()
+
+        lDatosHistMes = histMesDao?.abrirClteArt(queCliente, queArticulo, month) ?: emptyList<HistMesEnt>().toMutableList()
     }
 
 
@@ -106,11 +107,6 @@ class HistoricoMes(val contexto: Context) {
         } else 0
     }
 
-
-    fun getMes(): Int {
-        val columna = cCursorHco.getColumnIndex("mes")
-        return if (cCursorHco.count > 0) cCursorHco.getInt(columna) else 0
-    }
 
 
 }

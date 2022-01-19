@@ -1,35 +1,28 @@
 package es.albainformatica.albamobileandroid.maestros
 
 import android.content.Context
-import android.database.Cursor
+import es.albainformatica.albamobileandroid.DatosVtaFtos
+import es.albainformatica.albamobileandroid.dao.FormatosDao
+import es.albainformatica.albamobileandroid.database.MyDatabase
+import es.albainformatica.albamobileandroid.entity.FormatosEnt
 
 
 class Formatos(val contexto: Context) {
+    val formatosDao: FormatosDao? = MyDatabase.getInstance(contexto)?.formatosDao()
 
-    lateinit var cursor: Cursor
-
+    lateinit var lFormatos: List<FormatosEnt>
+    lateinit var lFtosCat: List<DatosVtaFtos>
 
 
     fun abrirFormatos(queArticulo: Int, queCliente: Int): Boolean {
-        // TODO
-        /*
-        cursor = dbAlba.rawQuery("SELECT DISTINCT A.codigo, A.descr, C._id linFtoLin, C.borrar, D._id hcoId FROM formatos A" +
-                " JOIN trfformatos B ON B.formato = A.codigo AND B.articulo = " + queArticulo +
-                " LEFT JOIN ftosLineas C ON C.articulo = " + queArticulo + " AND C.formato = A.codigo" +
-                " LEFT JOIN historico D ON D.articulo = " + queArticulo + " AND D.cliente = " + queCliente + " AND D.formato = A.codigo" +
-                " ORDER BY A.codigo", null)
-
-        return cursor.moveToFirst()
-        */
-        return true
+        lFtosCat = formatosDao?.abrirFtosParaCat(queArticulo, queCliente) ?: emptyList<DatosVtaFtos>().toMutableList()
+        return (lFtosCat.count() > 0)
     }
 
 
     fun todosLosFormatos(): Boolean {
-        // TODO
-        //cursor = dbAlba.rawQuery("SELECT codigo, descr, dosis1 FROM formatos", null);
-        //return cursor.moveToFirst();
-        return true
+        lFormatos = formatosDao?.getAllFormatos() ?: emptyList<FormatosEnt>().toMutableList()
+        return (lFormatos.count() > 0)
     }
 
 

@@ -8,13 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import es.albainformatica.albamobileandroid.DatosHcoPorDoc
+import es.albainformatica.albamobileandroid.DatosDocsHcArtClte
 import es.albainformatica.albamobileandroid.R
 import kotlinx.android.synthetic.main.item_hcodoc_list.view.*
 
 
-class RecAdapHcoPorDoc (var docs: MutableList<DatosHcoPorDoc>, val context: Context, var listener: OnItemClickListener):
-        RecyclerView.Adapter<RecAdapHcoPorDoc.ViewHolder>() {
+class DocHcoDocRvAdapter(var docs: List<DatosDocsHcArtClte>, val context: Context, var listener: OnItemClickListener):
+    RecyclerView.Adapter<DocHcoDocRvAdapter.ViewHolder>() {
 
     private var selectedPos: Int = RecyclerView.NO_POSITION
     var articuloId: Int = 0
@@ -51,9 +51,9 @@ class RecAdapHcoPorDoc (var docs: MutableList<DatosHcoPorDoc>, val context: Cont
             //Seleccionamos el registro
             else
             {
-                articuloId = docs[fPosicion].articulo
-                idHco = docs[fPosicion].idHco
-                selectedPos = fPosicion
+                //articuloId = docs[fPosicion].articuloId
+                //idHco = docs[fPosicion].hcoPorcArticClteId
+                //selectedPos = fPosicion
             }
 
             notifyDataSetChanged()
@@ -78,7 +78,7 @@ class RecAdapHcoPorDoc (var docs: MutableList<DatosHcoPorDoc>, val context: Cont
     }
 
     interface OnItemClickListener {
-        fun onClick(view: View, data: DatosHcoPorDoc)
+        fun onClick(view: View, data: DatosDocsHcArtClte)
     }
 
 
@@ -89,11 +89,11 @@ class RecAdapHcoPorDoc (var docs: MutableList<DatosHcoPorDoc>, val context: Cont
         private val tvCantPedida = itemView.findViewById(R.id.tvHcoArtClCantPed) as TextView
 
         @SuppressLint("SetTextI18n")
-        fun bind(documento: DatosHcoPorDoc) {
-            tvCodArt.text = documento.codigo
-            tvDescr.text = documento.descr
-            tvPorcDev.text = documento.porcDev + "%"
-            tvCantPedida.text = documento.cantpedida
+        fun bind(documento: DatosDocsHcArtClte) {
+            //tvCodArt.text = documento.codigo
+            //tvDescr.text = documento.descripcion
+            //tvPorcDev.text = documento.porcDevol + "%"
+            //tvCantPedida.text = documento.cantPedida
         }
     }
 

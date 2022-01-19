@@ -154,11 +154,11 @@ class ListaPaquetes {
 
 
 class DatosVtaFtos {
-    var codigo: Short = 0
+    var formatoId: Short = 0
     var descripcion: String = ""
-    var idFtosLineas = 0
+    var ftoLineaId = 0
     var borrar: String = ""
-    var idHistorico = 0
+    var historicoId = 0
     var dosis1: String = ""
 }
 
@@ -197,15 +197,6 @@ class DatosInfCobros {
 class DatosResCobros {
     var descripcion: String = ""
     var cobro: Double = 0.0
-}
-
-class DatosHcoPorDoc {
-    var idHco = 0
-    var articulo = 0
-    var codigo: String = ""
-    var descr: String = ""
-    var porcDev: String = ""
-    var cantpedida: String = ""
 }
 
 
@@ -439,6 +430,25 @@ class DatosHistorico {
     var descrFto: String? = null
     var texto: String? = null
 }
+
+class DatosHcArtClte {
+    var hcoPorcArticClteId: Int = 0
+    var articuloId:  Int = 0
+    var codigo: String = ""
+    var descripcion: String = ""
+    var cantPedida: String = ""
+    var porcDevol: String = ""
+}
+
+
+class DatosDocsHcArtClte {
+    var tipoDoc: Short = 0
+    var serie: String = ""
+    var fecha: String = ""
+    var ventas: String = ""
+    var devoluciones: String = ""
+}
+
 
 
 var fArtSeleccCat = 0

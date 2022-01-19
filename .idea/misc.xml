@@ -5,6 +5,7 @@
       <map>
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/buscar_articulos.xml" value="0.33" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/clientes_activity.xml" value="0.30083333333333334" />
+        <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/editar_hco.xml" value="0.33" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/ly_hco_cliente.xml" value="0.26416666666666666" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/ly_lineas_ventas.xml" value="0.30083333333333334" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/ly_ver_documentos.xml" value="0.26416666666666666" />
@@ -24,6 +25,7 @@
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-normal/ver_documentos.xml" value="0.990625" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout/bio_alert_dialog_with_edittext.xml" value="0.26416666666666666" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout/bio_catalogo.xml" value="0.26416666666666666" />
+        <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout/cargar_hcopordoc.xml" value="0.30083333333333334" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout/cargas.xml" value="0.26416666666666666" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout/catalogo_gruposdep.xml" value="0.33" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout/dtos_cascada.xml" value="0.33" />

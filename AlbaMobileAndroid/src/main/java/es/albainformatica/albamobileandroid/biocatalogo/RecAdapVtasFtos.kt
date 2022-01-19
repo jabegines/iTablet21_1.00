@@ -45,7 +45,7 @@ class RecAdapVtasFtos (var formatos: MutableList<DatosVtaFtos>, val context: Con
             }
             else //Seleccionamos el registro
             {
-                formatoId = formatos[fPosicion].codigo
+                formatoId = formatos[fPosicion].formatoId
                 selectedPos = fPosicion
             }
 
@@ -83,12 +83,12 @@ class RecAdapVtasFtos (var formatos: MutableList<DatosVtaFtos>, val context: Con
         fun bind(formato: DatosVtaFtos) {
             tvDescr.text = formato.descripcion
             // Presentamos u ocultamos la imagen que nos indica que el formato está vendido
-            if (formato.idFtosLineas > 0 && formato.borrar != "T")
+            if (formato.ftoLineaId > 0 && formato.borrar != "T")
                 imvFto.visibility = View.VISIBLE
             else
                 imvFto.visibility = View.INVISIBLE
 
-            if (formato.idHistorico > 0)
+            if (formato.historicoId > 0)
                 imvHco.visibility = View.VISIBLE
             else
                 imvHco.visibility = View.INVISIBLE

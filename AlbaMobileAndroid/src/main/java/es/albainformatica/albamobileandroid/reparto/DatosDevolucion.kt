@@ -145,6 +145,8 @@ class DatosDevolucion: Activity() {
         fDocumento.fCodigoIva = fArticulos.fCodIva
         fDocumento.fPorcIva = fArticulos.fPorcIva
 
+        // TODO
+        /*
         // Si la línea del histórico tiene formato, mantenemos el mismo.
         if (fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("formato")) != null)
             fHistorico.fFormatoLin = fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("formato")).toShort()
@@ -157,8 +159,7 @@ class DatosDevolucion: Activity() {
             queTexto = tvArticulo.text.toString() + " " + fDescrFto
             tvArticulo.text = queTexto
         }
-        fDocumento.fPrecio =
-            fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("precio"))
+        fDocumento.fPrecio = fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("precio"))
                 .replace(',', '.').toDouble()
         fDocumento.calculaPrecioII()
         fHistorico.fPrecio = fDocumento.fPrecio
@@ -175,6 +176,7 @@ class DatosDevolucion: Activity() {
         fHistorico.fCodigoIva = fDocumento.fCodigoIva
         fHistorico.fCodigo = fDocumento.fCodArt
         fHistorico.fDescr = fDocumento.fDescr
+        */
     }
 
     fun incidenciaDatosDev(view: View) {

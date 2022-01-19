@@ -1,6 +1,6 @@
 package es.albainformatica.albamobileandroid.ventas
 
-import es.albainformatica.albamobileandroid.DimeNombreMesResum
+
 import android.app.Activity
 import es.albainformatica.albamobileandroid.historicos.HistoricoMes
 import es.albainformatica.albamobileandroid.Configuracion
@@ -14,6 +14,7 @@ import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.SimpleCursorAdapter
 import es.albainformatica.albamobileandroid.R
+import es.albainformatica.albamobileandroid.dimeNombreMesResum
 import java.util.*
 
 /**
@@ -47,7 +48,9 @@ class AcumuladosMes: Activity() {
         fHistorico.Abrir(fCliente)
         val fecha = Calendar.getInstance()
         val anyo = fecha[Calendar.YEAR]
-        val nombreMes = DimeNombreMesResum(fHistorico.getMes() - 1)
+        // TODO
+        /*
+        val nombreMes = dimeNombreMesResum(fHistorico.getMes() - 1)
 
         // Etiquetamos los nombres de los meses
         val tvCantAnt = findViewById<TextView>(R.id.tvacummesCantAnt)
@@ -59,6 +62,7 @@ class AcumuladosMes: Activity() {
         prepararListView()
         val tvTitulo = findViewById<TextView>(R.id.tvNombreActivity)
         tvTitulo.setText(R.string.acum_mes)
+        */
     }
 
     private fun prepararListView() {

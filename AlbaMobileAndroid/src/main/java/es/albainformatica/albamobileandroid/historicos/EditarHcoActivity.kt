@@ -28,6 +28,7 @@ class EditarHcoActivity: AppCompatActivity() {
     private var fConfiguracion = Comunicador.fConfiguracion
     private lateinit var fArticulos: ArticulosClase
     private var fAlmacenes = AlmacenesClase(this)
+
     private var fPedirCajas: Boolean = false
     private var fPedirDto: Boolean = false
     private var fPedirDtoEur: Boolean = false
@@ -35,6 +36,7 @@ class EditarHcoActivity: AppCompatActivity() {
     private var fUsarTasa1: Boolean = false
     private var fUsarTasa2: Boolean = false
     private var fLinea = 0
+    private var fPosicion = 0
     private var fFtoDecCantidad: String = ""
     private var fFtoDecPrBase: String = ""
     private var fFtoDecPrII: String = ""
@@ -73,7 +75,9 @@ class EditarHcoActivity: AppCompatActivity() {
         super.onCreate(savedInstance)
         setContentView(R.layout.editar_hco)
         val intent = intent
+
         fLinea = intent.getIntExtra("linea", 0)
+        fPosicion = intent.getIntExtra("posicion", 0)
         fDesdeHcoArtClte = intent.getBooleanExtra("desdeHcoArtClte", false)
         fEmpresaActual = intent.getIntExtra("empresa", 0)
         fVendTrfPiezas = false
@@ -85,12 +89,13 @@ class EditarHcoActivity: AppCompatActivity() {
         if (fDesdeHcoArtClte) {
             fArticulos.existeArticulo(intent.getIntExtra("articulo", 0))
         } else {
-            fArticulos.existeArticulo(fHistorico.cHco.getInt(fHistorico.cHco.getColumnIndex("articulo")))
+            fArticulos.existeArticulo(fHistorico.lDatosHistorico[fPosicion].articuloId)
         }
 
         // Vemos si tenemos que pedir las dosis
         val fPedirDosis = fConfiguracion.hayElaboracionLacteos() && fConfiguracion.usarPiezas() && fArticulos.venderPorDosis() && fArticulos.usarPiezas()
         inicializarControles()
+
         if (fPedirDosis) {
             val i = Intent(this, PedirDosis::class.java)
             i.putExtra("articulo", fArticulos.fArticulo)
@@ -144,8 +149,7 @@ class EditarHcoActivity: AppCompatActivity() {
         imgTrfPiezas.visibility = View.GONE
 
         // fEditAlmEnabled nos servirá para saber si tenemos el control edtAlmacen enabled o no
-        fEditAlmEnabled =
-            fConfiguracion.pedirAlmPorLinPresup() && fDocumento.fTipoDoc == TIPODOC_PRESUPUESTO
+        fEditAlmEnabled = fConfiguracion.pedirAlmPorLinPresup() && fDocumento.fTipoDoc == TIPODOC_PRESUPUESTO
         if (!fEditAlmEnabled) {
             val lyAlmacen = findViewById<LinearLayout>(R.id.lyHco_Almacen)
             lyAlmacen.visibility = View.GONE
@@ -156,8 +160,8 @@ class EditarHcoActivity: AppCompatActivity() {
         tvTxtArtHabit.text = ""
         if (!fDesdeHcoArtClte) {
             // Mostramos el posible texto de artículo habitual.
-            val txtArtHabit = fHistorico.getTextoArtHabit()
-            if (txtArtHabit != null && txtArtHabit != "") tvTxtArtHabit.text = txtArtHabit
+            val txtArtHabit = fHistorico.lDatosHistorico[fPosicion].texto
+            if (txtArtHabit != "") tvTxtArtHabit.text = txtArtHabit
         }
 
         // Mostramos los acumulados.
@@ -231,10 +235,15 @@ class EditarHcoActivity: AppCompatActivity() {
         val tvAcumCantAnt = findViewById<TextView>(R.id.edtHco_AcumCantAnt)
         val tvAcumCant = findViewById<TextView>(R.id.edtHco_AcumCant)
         val tvAcumDif = findViewById<TextView>(R.id.edtHco_AcumDiferencia)
-        fHistMes.AbrirClteArt(fDocumento.fCliente, fArticulos.fArticulo)
+
+        fHistMes.abrirClteArt(fDocumento.fCliente, fArticulos.fArticulo)
+
         val fecha = Calendar.getInstance()
         val anyo = fecha[Calendar.YEAR]
-        val nombreMes = DimeNombreMesResum(fHistMes.getMes() - 1)
+        val nombreMes: String = if (fHistMes.lDatosHistMes.count() > 0)
+            dimeNombreMesResum(fHistMes.lDatosHistMes[0].mes - 1)
+        else
+            dimeNombreMesResum(fecha[Calendar.MONTH])
 
         // Etiquetamos los nombres de los meses
         val tvCantAnt = findViewById<TextView>(R.id.edtHco_TitCantAnt)
@@ -249,26 +258,21 @@ class EditarHcoActivity: AppCompatActivity() {
         }
         var sCantidad: String
         var dCantidad = 0.0
-        if (!fHistMes.cCursorHco.isAfterLast) {
-            sCantidad =
-                fHistMes.cCursorHco.getString(fHistMes.cCursorHco.getColumnIndex("cantidadant"))
-                    .replace(',', '.')
+        var dCantidadAnt = 0.0
+        if (fHistMes.lDatosHistMes.count() > 0) {
+            sCantidad = fHistMes.lDatosHistMes[0].cantidadAnt.replace(',', '.')
+            dCantidadAnt = sCantidad.toDouble()
+            tvAcumCantAnt.text = String.format(fFtoDecCantidad, dCantidadAnt)
+
+            sCantidad = fHistMes.lDatosHistMes[0].cantidad.replace(',', '.')
             dCantidad = sCantidad.toDouble()
-            tvAcumCantAnt.text = String.format(fFtoDecCantidad, dCantidad)
-            sCantidad =
-                fHistMes.cCursorHco.getString(fHistMes.cCursorHco.getColumnIndex("cantidad"))
-                    .replace(',', '.')
-            dCantidad = sCantidad.toDouble()
-            tvAcumCant!!.text = String.format(fFtoDecCantidad, dCantidad)
-            sCantidad =
-                fHistMes.cCursorHco.getString(fHistMes.cCursorHco.getColumnIndex("diferencia"))
-                    .replace(',', '.')
-            dCantidad = sCantidad.toDouble()
+            tvAcumCant.text = String.format(fFtoDecCantidad, dCantidad)
+
         } else {
-            if (tvCantAnt != null) tvAcumCantAnt.text = String.format(fFtoDecCantidad, dCantidad)
+            if (tvCantAnt != null) tvAcumCantAnt.text = String.format(fFtoDecCantidad, dCantidadAnt)
             if (tvAcumCant != null) tvAcumCant.text = String.format(fFtoDecCantidad, dCantidad)
         }
-        if (tvAcumDif != null) tvAcumDif.text = String.format(fFtoDecCantidad, dCantidad)
+        if (tvAcumDif != null) tvAcumDif.text = String.format(fFtoDecCantidad, dCantidad - dCantidadAnt)
     }
 
 
@@ -438,14 +442,13 @@ class EditarHcoActivity: AppCompatActivity() {
             fDocumento.fFormatoLin = 0
         } else {
             // Si la línea del histórico tiene formato, mantenemos el mismo.
-            if (fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("formato")) != null) fHistorico.fFormatoLin =
-                fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("formato")).toShort()
+            if (fHistorico.lDatosHistorico[fPosicion].formatoId > 0)
+                fHistorico.fFormatoLin = fHistorico.lDatosHistorico[fPosicion].formatoId
             fDocumento.fFormatoLin = fHistorico.fFormatoLin
 
             // Si la línea tiene formato, adjuntaremos la descripción del mismo a la del artículo.
-            if (fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("descrfto")) != null) {
-                val fDescrFto =
-                    fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("descrfto"))
+            if (fHistorico.lDatosHistorico[fPosicion].descrFto != null) {
+                val fDescrFto = fHistorico.lDatosHistorico[fPosicion].descrFto ?: ""
                 val queDescrFto = tvArticulo.text.toString() + " " + fDescrFto
                 tvArticulo.text = queDescrFto
             }
@@ -462,32 +465,21 @@ class EditarHcoActivity: AppCompatActivity() {
         fDocumento.calculaPrecioYDto(fArticulos.fGrupo, fArticulos.fDepartamento, fArticulos.fCodProv, fArticulos.fPorcIva)
         // Mostramos precio y dto.
         if (fIvaIncluido) {
-            edtPrecio.setText(
-                String.format(
-                    fConfiguracion.formatoDecPrecioIva(),
-                    fDocumento.fPrecioII
-                )
-            )
-        } else edtPrecio.setText(
-            String.format(
-                fConfiguracion.formatoDecPrecioBase(),
-                fDocumento.fPrecio
-            )
-        )
+            edtPrecio.setText(String.format(fConfiguracion.formatoDecPrecioIva(), fDocumento.fPrecioII))
+        } else
+            edtPrecio.setText(String.format(fConfiguracion.formatoDecPrecioBase(), fDocumento.fPrecio))
 
         // Si tenemos un descuento por importe (desde el rating), lo añadiremos al control edtDtoI
         if (fDocumento.fDtoRatingImp != 0.0) {
             if (fIvaIncluido) {
                 edtDtoI.setText(String.format(fFtoDecPrII, fDocumento.fDtoRatingImp))
                 // Mostramos el precio neto.
-                var fDtoRatingImpII =
-                    fDocumento.fDtoRatingImp + fDocumento.fDtoRatingImp * fDocumento.fPorcIva / 100
+                var fDtoRatingImpII = fDocumento.fDtoRatingImp + fDocumento.fDtoRatingImp * fDocumento.fPorcIva / 100
                 fDtoRatingImpII = Redondear(fDtoRatingImpII, 2)
                 tvPrNeto.text = String.format(fFtoDecPrII, fDocumento.fPrecioII - fDtoRatingImpII)
             } else {
                 edtDtoI.setText(String.format(fFtoDecPrBase, fDocumento.fDtoRatingImp))
-                tvPrNeto.text =
-                    String.format(fFtoDecPrBase, fDocumento.fPrecio - fDocumento.fDtoRatingImp)
+                tvPrNeto.text = String.format(fFtoDecPrBase, fDocumento.fPrecio - fDocumento.fDtoRatingImp)
             }
         }
         edtDto.setText(String.format(Locale.getDefault(), "%.2f", fDocumento.fDtoLin))
@@ -506,12 +498,8 @@ class EditarHcoActivity: AppCompatActivity() {
             this, "Artículo y lote vendido",
             "El artículo con este lote ya está en el documento, ¿continuar?", true
         )
-        aldDialog.setPositiveButton(
-            getString(R.string.dlg_si)
-        ) { _: DialogInterface?, _: Int -> }
-        aldDialog.setNegativeButton(
-            getString(R.string.dlg_no)
-        ) { _: DialogInterface?, _: Int -> cancelarHco(null) }
+        aldDialog.setPositiveButton(getString(R.string.dlg_si)) { _: DialogInterface?, _: Int -> }
+        aldDialog.setNegativeButton(getString(R.string.dlg_no)) { _: DialogInterface?, _: Int -> cancelarHco(null) }
         val alert = aldDialog.create()
         alert.show()
         ColorDividerAlert(this, alert)
@@ -522,12 +510,8 @@ class EditarHcoActivity: AppCompatActivity() {
             this, "Artículo vendido",
             "El artículo ya está en el documento, ¿continuar?", true
         )
-        aldDialog.setPositiveButton(
-            getString(R.string.dlg_si)
-        ) { _: DialogInterface?, _: Int -> }
-        aldDialog.setNegativeButton(
-            getString(R.string.dlg_no)
-        ) { _: DialogInterface?, _: Int -> cancelarHco(null) }
+        aldDialog.setPositiveButton(getString(R.string.dlg_si)) { _: DialogInterface?, _: Int -> }
+        aldDialog.setNegativeButton(getString(R.string.dlg_no)) { _: DialogInterface?, _: Int -> cancelarHco(null) }
         val alert = aldDialog.create()
         alert.show()
         ColorDividerAlert(this, alert)
@@ -544,6 +528,7 @@ class EditarHcoActivity: AppCompatActivity() {
         if (sCantidad == "") sCantidad = "0.0"
         val dCantidad = sCantidad.toDouble()
         val continuar = dCantidad >= 0 || !fConfiguracion.noVenderNeg()
+
         if (continuar) {
             if (fEditAlmEnabled) {
                 fHistorico.fAlmacPedido = edtAlmacen.text.toString()
@@ -585,11 +570,12 @@ class EditarHcoActivity: AppCompatActivity() {
             fHistorico.fCodigo = fDocumento.fCodArt
             fHistorico.fDescr = fDocumento.fDescr
             fHistorico.fHayArtHabituales = fDocumento.fHayArtHabituales
-            if (fDocumento.fTextoLinea != null)
+            if (fDocumento.fTextoLinea != "")
                 fHistorico.fTextoLinea = fDocumento.fTextoLinea
             else
                 fHistorico.fTextoLinea = ""
             fHistorico.fLote = edtLote.text.toString()
+
             val sDto = edtDto.text.toString().replace(',', '.')
             if (sDto != "") fHistorico.fDtoLin = sDto.toDouble()
             val sDtoEur = edtDtoI.text.toString().replace(',', '.')
@@ -620,6 +606,7 @@ class EditarHcoActivity: AppCompatActivity() {
             fHistorico.fFlag3 = queFlag3
             fHistorico.fFlag5 = fFlag5
             fHistorico.aceptarCambios(fLinea)
+
             val returnIntent = Intent()
             setResult(RESULT_OK, returnIntent)
             finish()

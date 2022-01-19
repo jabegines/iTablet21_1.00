@@ -106,7 +106,7 @@ class VtaFormatosCat: AppCompatActivity() {
 
         fFormato = 0
         // Comprobamos si hay formatos o tenemos que trabajar sin ellos
-        if (fFormatos.cursor.count > 0)
+        if (fFormatos.lFtosCat.count() > 0)
             activarDesactivarEdits(false)
         else {
             activarDesactivarEdits(true)
@@ -125,11 +125,9 @@ class VtaFormatosCat: AppCompatActivity() {
 
         fAdapter = RecAdapVtasFtos(getFormatos(), this, object : RecAdapVtasFtos.OnItemClickListener {
             override fun onClick(view: View, data: DatosVtaFtos) {
-                //val quevista = view as LinearLayout
-                //val tv = view.findViewById<TextView>(R.id.tvDescrFto)
 
                 if (fFormato == 0.toShort()) {
-                    fFormato = data.codigo
+                    fFormato = data.formatoId
                     activarDesactivarEdits(true)
                     actualizarEdits()
                     if (fTextoLinea != "")
@@ -153,18 +151,15 @@ class VtaFormatosCat: AppCompatActivity() {
 
         val lFormatos: MutableList<DatosVtaFtos> = arrayListOf()
         if (fFormatos.abrirFormatos(fArticulo, fDocumento.fCliente)) {
-            do {
+            for (datoVtaFto in fFormatos.lFtosCat) {
                 val dVtasFtos = DatosVtaFtos()
-                dVtasFtos.codigo = fFormatos.cursor.getShort(fFormatos.cursor.getColumnIndex("codigo"))
-                dVtasFtos.descripcion = fFormatos.cursor.getString(fFormatos.cursor.getColumnIndex("descr"))
-                dVtasFtos.idFtosLineas = fFormatos.cursor.getInt(fFormatos.cursor.getColumnIndex("linFtoLin"))
-                dVtasFtos.borrar = fFormatos.cursor.getString(fFormatos.cursor.getColumnIndex("borrar"))
-                dVtasFtos.idHistorico = fFormatos.cursor.getInt(fFormatos.cursor.getColumnIndex("hcoId"))
+                dVtasFtos.formatoId = datoVtaFto.formatoId
+                dVtasFtos.descripcion = datoVtaFto.descripcion
+                dVtasFtos.ftoLineaId = datoVtaFto.ftoLineaId
+                dVtasFtos.borrar = datoVtaFto.borrar
+                dVtasFtos.historicoId = datoVtaFto.historicoId
                 lFormatos.add(dVtasFtos)
-
-            }  while (fFormatos.cursor.moveToNext())
-
-            fFormatos.cursor.moveToFirst()
+            }
         }
 
         return lFormatos
@@ -429,14 +424,14 @@ class VtaFormatosCat: AppCompatActivity() {
                 }
 
                 // Si no tenemos ningún formato para el artículo o sólo uno, salimos al pulsar en el botón
-                if (fFormatos.cursor.count > 1) {
+                if (fFormatos.lFtosCat.count() > 1) {
                     fFormato = 0
                     limpiarEdits()
                     activarDesactivarEdits(false)
                     bioImgCatTxtLinea.setBackgroundColor(Color.WHITE)
 
                     // Desmarcamos el formato del que acabamos de vender
-                    fAdapter.formatos[fAdapter.selectedPos].idFtosLineas = 1000
+                    fAdapter.formatos[fAdapter.selectedPos].ftoLineaId = 1000
                     fAdapter.formatos[fAdapter.selectedPos].borrar = "F"
                     fAdapter.selectedPos = RecyclerView.NO_POSITION
                     fAdapter.notifyDataSetChanged()
