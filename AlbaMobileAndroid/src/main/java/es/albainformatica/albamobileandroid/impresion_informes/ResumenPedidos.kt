@@ -3,11 +3,9 @@ package es.albainformatica.albamobileandroid.impresion_informes
 import android.content.Context
 import android.content.SharedPreferences
 import com.lowagie.text.pdf.PdfContentByte
-import android.database.sqlite.SQLiteDatabase
 import com.lowagie.text.pdf.PdfWriter
 import android.widget.Toast
 import android.content.Intent
-import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import androidx.core.content.FileProvider
@@ -17,6 +15,10 @@ import com.lowagie.text.pdf.ColumnText
 import android.preference.PreferenceManager
 import com.lowagie.text.*
 import es.albainformatica.albamobileandroid.*
+import es.albainformatica.albamobileandroid.dao.CabecerasDao
+import es.albainformatica.albamobileandroid.dao.CobrosDao
+import es.albainformatica.albamobileandroid.dao.LineasDao
+import es.albainformatica.albamobileandroid.database.MyDatabase
 import harmony.java.awt.Color
 import java.io.File
 import java.io.FileOutputStream
@@ -29,24 +31,25 @@ import java.util.ArrayList
 class ResumenPedidos(private val fContexto: Context) {
     private var prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(fContexto)
     private var fConfiguracion: Configuracion = Comunicador.fConfiguracion
+
+    private lateinit var lCabeceras: List<DatosResPedidos>
+    private lateinit var lCobros: List<DatosCobrResPedidos>
+    private lateinit var lLineas: List<DatosLinResPedidos>
+
     private lateinit var canvas: PdfContentByte
     private lateinit var documPDF: Document
     private var nombrePDF: String = "" // Me servirá para el envio por email.
-
-    private lateinit var fCursor: Cursor
-    private lateinit var cLineas: Cursor
 
     var y: Short = 0
     private var fFtoCant: String = fConfiguracion.formatoDecCantidad()
     private var fFtoPrBase: String = fConfiguracion.formatoDecPrecioBase()
     private var fFtoImpBase: String = fConfiguracion.formatoDecImptesBase()
 
+    private val fntHelv10: Font = Font(Font.HELVETICA, 10f, Font.NORMAL, Color.BLACK)
+    private val fntHelv10Bold: Font = Font(Font.HELVETICA, 10f, Font.BOLD, Color.BLACK)
+    private val fntHelv12Bold: Font = Font(Font.HELVETICA, 12f, Font.BOLD, Color.BLACK)
 
 
-    protected fun onDestroy() {
-        cLineas.close()
-        fCursor.close()
-    }
 
     fun crearResumen() {
         if (obtenerCabeceras()) {
@@ -72,10 +75,9 @@ class ResumenPedidos(private val fContexto: Context) {
                 // Imprimimos los pedidos
                 y = 560
                 tituloInforme(writer)
-                fCursor.moveToFirst()
-                while (!fCursor.isAfterLast) {
-                    event.pdfCabecera(fCursor, writer, y)
-                    obtenerLineas()
+                for (cabecera in lCabeceras) {
+                    event.pdfCabecera(cabecera, writer, y)
+                    obtenerLineas(cabecera)
                     y = (y - 30).toShort()
                     pdfLineas(writer)
                     y= (y - 40).toShort()
@@ -84,7 +86,6 @@ class ResumenPedidos(private val fContexto: Context) {
                         y = 560
                         tituloInforme(writer)
                     }
-                    fCursor.moveToNext()
                 }
 
                 // Imprimimos los cobros
@@ -155,68 +156,52 @@ class ResumenPedidos(private val fContexto: Context) {
         var c = Chunk("COBROS:")
         mostrarChunk(canvas, c, 10f, y.toFloat(), fntHelv12Bold, Element.ALIGN_LEFT)
         y = (y - 20).toShort()
-        fCursor.moveToFirst()
-        while (!fCursor.isAfterLast) {
+
+        for (cobro in lCobros) {
             c = Chunk("Cliente: ")
             mostrarChunk(canvas, c, 10f, y.toFloat(), fntHelv10Bold, Element.ALIGN_LEFT)
-            val lNombre = fCursor.getString(fCursor.getColumnIndex("nomfi")).length
+            val lNombre = cobro.nombre.length
             c = if (lNombre >= 40) {
-                Chunk(
-                    fCursor.getString(fCursor.getColumnIndex("codigo")) + " " + fCursor.getString(
-                        fCursor.getColumnIndex("nomfi")
-                    ).substring(0, 40)
-                )
+                Chunk(ponerCeros(cobro.codigo.toString(), ancho_codclte) + " " + cobro.nombre.substring(0, 40))
             } else {
-                Chunk(
-                    fCursor.getString(fCursor.getColumnIndex("codigo")) + " " + fCursor.getString(
-                        fCursor.getColumnIndex("nomfi")
-                    ).substring(0, lNombre)
-                )
+                Chunk(ponerCeros(cobro.codigo.toString(), ancho_codclte) + " " + cobro.nombre.substring(0, lNombre))
             }
             mostrarChunk(canvas, c, 50f, y.toFloat(), fntHelv10, Element.ALIGN_LEFT)
             c = Chunk("Fecha: ")
             mostrarChunk(canvas, c, 300f, y.toFloat(), fntHelv10Bold, Element.ALIGN_LEFT)
-            c = Chunk(fCursor.getString(fCursor.getColumnIndex("fechacobro")))
+            c = Chunk(cobro.fechaCobro)
             mostrarChunk(canvas, c, 340f, y.toFloat(), fntHelv10, Element.ALIGN_LEFT)
             c = Chunk("Forma pago: ")
             mostrarChunk(canvas, c, 420f, y.toFloat(), fntHelv10Bold, Element.ALIGN_LEFT)
-            c = Chunk(fCursor.getString(fCursor.getColumnIndex("formadepago")))
+            c = Chunk(cobro.descrFPago)
             mostrarChunk(canvas, c, 485f, y.toFloat(), fntHelv10, Element.ALIGN_LEFT)
             c = Chunk("Divisa: ")
             mostrarChunk(canvas, c, 540f, y.toFloat(), fntHelv10Bold, Element.ALIGN_LEFT)
-            c = Chunk(fCursor.getString(fCursor.getColumnIndex("divisa")))
+            c = Chunk(cobro.descrDivisa)
             mostrarChunk(canvas, c, 580f, y.toFloat(), fntHelv10, Element.ALIGN_LEFT)
             c = Chunk("Importe: ")
             mostrarChunk(canvas, c, 630f, y.toFloat(), fntHelv10Bold, Element.ALIGN_LEFT)
-            c = Chunk(fCursor.getString(fCursor.getColumnIndex("cobro")))
+            c = Chunk(cobro.cobro)
             mostrarChunk(canvas, c, 680f, y.toFloat(), fntHelv10, Element.ALIGN_LEFT)
             y = (y - 20).toShort()
             c = Chunk("Documento: ")
             mostrarChunk(canvas, c, 10f, y.toFloat(), fntHelv10Bold, Element.ALIGN_LEFT)
-            c = Chunk(
-                tipoDocAsString(
-                    fCursor.getInt(fCursor.getColumnIndex("tipodoc")).toShort()
-                )
+            c = Chunk(tipoDocAsString(cobro.tipoDoc)
             )
             mostrarChunk(canvas, c, 75f, y.toFloat(), fntHelv10, Element.ALIGN_LEFT)
             c = Chunk("Serie/Nº: ")
             mostrarChunk(canvas, c, 140f, y.toFloat(), fntHelv10Bold, Element.ALIGN_LEFT)
-            c = Chunk(
-                fCursor.getString(fCursor.getColumnIndex("serie")) + "/" + fCursor.getString(
-                    fCursor.getColumnIndex("numero")
-                )
-            )
+            c = Chunk(cobro.serie + "/" + cobro.numero.toString())
             mostrarChunk(canvas, c, 190f, y.toFloat(), fntHelv10, Element.ALIGN_LEFT)
             c = Chunk("F. doc.: ")
             mostrarChunk(canvas, c, 300f, y.toFloat(), fntHelv10Bold, Element.ALIGN_LEFT)
-            c = Chunk(fCursor.getString(fCursor.getColumnIndex("fechadoc")))
+            c = Chunk(cobro.fechaDoc)
             mostrarChunk(canvas, c, 340f, y.toFloat(), fntHelv10, Element.ALIGN_LEFT)
             c = Chunk("Anotación: ")
             mostrarChunk(canvas, c, 420f, y.toFloat(), fntHelv10Bold, Element.ALIGN_LEFT)
-            c = Chunk(fCursor.getString(fCursor.getColumnIndex("anotacion")))
+            c = Chunk(cobro.anotacion)
             mostrarChunk(canvas, c, 480f, y.toFloat(), fntHelv10, Element.ALIGN_LEFT)
             y = (y - 30).toShort()
-            fCursor.moveToNext()
         }
     }
 
@@ -231,22 +216,20 @@ class ResumenPedidos(private val fContexto: Context) {
         var sPrecio: String
         var sDto: String
         var sImpte: String
+
         cabeceraLineas(canvas)
         y = (y - 12).toShort()
-        cLineas.moveToFirst()
-        while (!cLineas.isAfterLast) {
-            sCodigo = cLineas.getString(cLineas.getColumnIndex("codigo"))
-            sDescr = cLineas.getString(cLineas.getColumnIndex("descr"))
-            sFormato =
-                if (cLineas.getInt(cLineas.getColumnIndex("formato")) > 0) cLineas.getString(
-                    cLineas.getColumnIndex("formato")
-                ) + " " + cLineas.getString(cLineas.getColumnIndex("descrfto")) else ""
-            sCajas = cLineas.getString(cLineas.getColumnIndex("cajas")).replace(',', '.')
-            sCant = cLineas.getString(cLineas.getColumnIndex("cantidad")).replace(',', '.')
-            sPiezas = cLineas.getString(cLineas.getColumnIndex("piezas")).replace(',', '.')
-            sPrecio = cLineas.getString(cLineas.getColumnIndex("precio")).replace(',', '.')
-            sDto = cLineas.getString(cLineas.getColumnIndex("dto")).replace(',', '.')
-            sImpte = cLineas.getString(cLineas.getColumnIndex("importe")).replace(',', '.')
+
+        for (linea in lLineas) {
+            sCodigo = linea.codArticulo
+            sDescr = linea.descripcion
+            sFormato = if (linea.formatoId > 0) linea.formatoId.toString() + " " + linea.descrFto else ""
+            sCajas = linea.cajas.replace(',', '.')
+            sCant = linea.cantidad.replace(',', '.')
+            sPiezas = linea.piezas.replace(',', '.')
+            sPrecio = linea.precio.replace(',', '.')
+            sDto = linea.dto.replace(',', '.')
+            sImpte = linea.importe.replace(',', '.')
             val dCajas = sCajas.toDouble()
             sCajas = if (dCajas != 0.0) String.format(fFtoCant, dCajas) else ""
             val dCant = sCant.toDouble()
@@ -283,7 +266,6 @@ class ResumenPedidos(private val fContexto: Context) {
                 y = 560
                 tituloInforme(writer)
             }
-            cLineas.moveToNext()
         }
     }
 
@@ -308,6 +290,7 @@ class ResumenPedidos(private val fContexto: Context) {
         mostrarChunk(canvas, c, 750f, y.toFloat(), fntHelv10Bold, Element.ALIGN_RIGHT)
     }
 
+
     internal class TableHeader : PdfPageEventHelper() {
         /** The template with the total number of pages.  */
         var total: PdfTemplate? = null
@@ -330,53 +313,41 @@ class ResumenPedidos(private val fContexto: Context) {
             )
         }
 
-        fun pdfCabecera(fCursor: Cursor, writer: PdfWriter, y: Short) {
+        fun pdfCabecera(cabecera: DatosResPedidos, writer: PdfWriter, y: Short) {
+            val fntHelv10 = Font(Font.HELVETICA, 10f, Font.NORMAL, Color.BLACK)
+            val fntHelv10Bold = Font(Font.HELVETICA, 10f, Font.BOLD, Color.BLACK)
+
             var i = y
             val canvas = writer.directContent
             var c = Chunk("Pedido nº: ")
+
             mostrarChunk(canvas, c, 10f, i.toFloat(), fntHelv10Bold)
-            c = Chunk(
-                fCursor.getString(fCursor.getColumnIndex("serie")) + "/" + fCursor.getString(
-                    fCursor.getColumnIndex("numero")
-                )
-            )
+            c = Chunk(cabecera.serie + "/" + cabecera.numero.toString())
             mostrarChunk(canvas, c, 65f, i.toFloat(), fntHelv10)
             c = Chunk("Fecha: ")
             mostrarChunk(canvas, c, 100f, i.toFloat(), fntHelv10Bold)
-            c = Chunk(fCursor.getString(fCursor.getColumnIndex("fecha")))
+            c = Chunk(cabecera.fecha)
             mostrarChunk(canvas, c, 135f, i.toFloat(), fntHelv10)
             c = Chunk("Cliente: ")
             mostrarChunk(canvas, c, 200f, i.toFloat(), fntHelv10Bold)
-            val lNombre = fCursor.getString(fCursor.getColumnIndex("nomfi")).length
+            val lNombre = cabecera.nombre.length
+
             c = if (lNombre >= 40) {
-                Chunk(
-                    fCursor.getString(fCursor.getColumnIndex("codigo")) + " " + fCursor.getString(
-                        fCursor.getColumnIndex("nomfi")
-                    ).substring(0, 40)
-                )
+                Chunk(ponerCeros(cabecera.codigo.toString(), ancho_codclte) + " " + cabecera.nombre.substring(0, 40))
             } else {
-                Chunk(
-                    fCursor.getString(fCursor.getColumnIndex("codigo")) + " " + fCursor.getString(
-                        fCursor.getColumnIndex("nomfi")
-                    ).substring(0, lNombre)
-                )
+                Chunk(ponerCeros(cabecera.codigo.toString(), ancho_codclte) + " " + cabecera.nombre.substring(0, lNombre))
             }
             mostrarChunk(canvas, c, 240f, i.toFloat(), fntHelv10)
             c = Chunk("Fecha entrega: ")
             mostrarChunk(canvas, c, 480f, i.toFloat(), fntHelv10Bold)
-            c = Chunk(fCursor.getString(fCursor.getColumnIndex("fechaentrega")))
+            c = Chunk(cabecera.fechaEntrega)
             mostrarChunk(canvas, c, 555f, i.toFloat(), fntHelv10)
             i = (i - 15).toShort()
             c = Chunk("Observaciones: ")
             mostrarChunk(canvas, c, 10f, i.toFloat(), fntHelv10Bold)
-            c = Chunk(
-                fCursor.getString(fCursor.getColumnIndex("obs1")) + fCursor.getString(
-                    fCursor.getColumnIndex("obs2")
-                )
-            )
+            c = Chunk(cabecera.observ1 + cabecera.observ2)
             mostrarChunk(canvas, c, 90f, i.toFloat(), fntHelv10)
         }
-
 
 
         private fun mostrarChunk(canvas: PdfContentByte, c: Chunk, x: Float, y: Float, fuente: Font) {
@@ -387,61 +358,29 @@ class ResumenPedidos(private val fContexto: Context) {
     }
 
     private fun obtenerCabeceras(): Boolean {
-        // TODO
-        /*
-        fCursor = dbAlba.rawQuery(
-            "SELECT A.tipodoc, A.alm, A.serie, A.numero, A.ejer, A.fecha, A.fechaentrega, A.obs1, A.obs2," +
-                    " B.codigo, B.nomfi FROM cabeceras A" +
-                    " LEFT JOIN clientes B ON B.cliente = A.cliente" +
-                    " WHERE A.tipodoc = " + TIPODOC_PEDIDO, null
-        )
-        return fCursor.moveToFirst()
-         */
-        return true
+        val cabecerasDao: CabecerasDao? = MyDatabase.getInstance(fContexto)?.cabecerasDao()
+        val lCabeceras = cabecerasDao?.getResumenPedidos() ?: emptyList<DatosResPedidos>().toMutableList()
+
+        return (lCabeceras.count() > 0)
     }
+
 
     private fun obtenerCobros(): Boolean {
-        fCursor.close()
-        // TODO
-        /*
-        fCursor = dbAlba.rawQuery(
-            "SELECT A.*, B.codigo, B.nomfi, C.divisa, D.formadepago, E.fecha fechadoc FROM cobros A"
-                    + " LEFT JOIN clientes B ON B.cliente = A.cliente"
-                    + " LEFT JOIN divisas C ON C.codigo = A.divisa"
-                    + " LEFT JOIN formaspago D ON D.codigo = A.fpago"
-                    + " LEFT JOIN cabeceras E ON E.tipodoc = A.tipodoc AND E.alm = A.alm AND E.serie = A.serie AND E.numero = A.numero AND E.ejer = A.ejer",
-            null
-        )
-        return fCursor.moveToFirst()
-         */
-        return true
+        val cobrosDao: CobrosDao? = MyDatabase.getInstance(fContexto)?.cobrosDao()
+        val lCobros = cobrosDao?.getResumenPedidos() ?: emptyList<DatosCobrResPedidos>().toMutableList()
+
+        return (lCobros.count() > 0)
     }
 
-    private fun obtenerLineas(): Boolean {
-        // TODO
-        /*
-        cLineas = dbAlba.rawQuery(
-            "SELECT A.*, C.descr descrfto FROM lineas A"
-                    + " LEFT OUTER JOIN formatos C ON C.codigo = A.formato"
-                    + " WHERE A.tipodoc = " + fCursor.getString(fCursor.getColumnIndex("tipodoc"))
-                    + " AND A.alm = " + fCursor.getString(fCursor.getColumnIndex("alm"))
-                    + " AND A.serie = '" + fCursor.getString(fCursor.getColumnIndex("serie"))
-                    + "' AND A.numero = " + fCursor.getString(fCursor.getColumnIndex("numero"))
-                    + " AND A.ejer = " + fCursor.getString(fCursor.getColumnIndex("ejer")), null
-        )
-        return cLineas.moveToFirst()
-         */
-        return true
+    private fun obtenerLineas(cabecera: DatosResPedidos): Boolean {
+        val lineasDao: LineasDao? = MyDatabase.getInstance(fContexto)?.lineasDao()
+        lLineas = lineasDao?.getResumenPedidos(cabecera.cabeceraId) ?: emptyList<DatosLinResPedidos>().toMutableList()
+
+        return (lLineas.count() > 0)
     }
 
-    private fun mostrarChunk(
-        canvas: PdfContentByte,
-        c: Chunk,
-        x: Float,
-        y: Float,
-        fuente: Font,
-        alineacion: Int
-    ) {
+
+    private fun mostrarChunk(canvas: PdfContentByte, c: Chunk, x: Float, y: Float, fuente: Font, alineacion: Int) {
         c.font = fuente
         val phrase = Phrase(c)
         //ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, phrase, x, y, 0);
@@ -458,16 +397,7 @@ class ResumenPedidos(private val fContexto: Context) {
         y = (y - 20).toShort()
     }
 
-    companion object {
-        private val fntHelv10: Font = Font(Font.HELVETICA, 10f, Font.NORMAL, Color.BLACK)
-        private val fntHelv10Bold: Font = Font(Font.HELVETICA, 10f, Font.BOLD, Color.BLACK)
-        private val fntHelv12Bold: Font = Font(Font.HELVETICA, 12f, Font.BOLD, Color.BLACK)
 
-        // Agrega las lineas en blanco especificadas a un parrafo especificado
-        private fun agregarLineasEnBlanco(parrafo: Paragraph, nLineas: Int) {
-            for (i in 0 until nLineas) parrafo.add(Paragraph(" "))
-        }
-    }
 
 
 }

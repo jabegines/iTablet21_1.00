@@ -1,7 +1,8 @@
 package es.albainformatica.albamobileandroid.historicos
 
 import android.content.Context
-import es.albainformatica.albamobileandroid.DatosHcArtClte
+import es.albainformatica.albamobileandroid.DatosArtHcArtClte
+import es.albainformatica.albamobileandroid.DatosDocsHcArtClte
 import es.albainformatica.albamobileandroid.DatosHistorico
 import es.albainformatica.albamobileandroid.dao.HcoPorArticClteDao
 import es.albainformatica.albamobileandroid.dao.HistoricoDao
@@ -45,12 +46,17 @@ class Historico(contexto: Context)  {
     var fIncidencia = 0
 
     lateinit var lDatosHistorico: List<DatosHistorico>
-    lateinit var lDatHcoArtClte: List<DatosHcArtClte>
+    lateinit var lDatArtHcoArtClte: List<DatosArtHcArtClte>
+    lateinit var lDatDocHcoArtClte: List<DatosDocsHcArtClte>
 
 
 
-    fun abrirHcoPorArtClte(queCliente: Int, queOrdenacion: Short) {
-        lDatHcoArtClte = hcoPorArticClteDao?.abrirHcoPorArtClte(queCliente, queOrdenacion) ?: emptyList<DatosHcArtClte>().toMutableList()
+    fun abrirArtsHcoPorArtClte(queCliente: Int, queOrdenacion: Short) {
+        lDatArtHcoArtClte = hcoPorArticClteDao?.abrirArtsHcoPorArtClte(queCliente, queOrdenacion) ?: emptyList<DatosArtHcArtClte>().toMutableList()
+    }
+
+    fun abrirDocsHcoPorArtClte(queArticulo: Int, queCliente: Int) {
+        lDatDocHcoArtClte = hcoPorArticClteDao?.abrirDocsHcoPorArtClte(queArticulo, queCliente) ?: emptyList<DatosDocsHcArtClte>().toMutableList()
     }
 
     fun abrirConBusqueda(queCliente: Int, queBuscar: String) {

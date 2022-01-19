@@ -1,8 +1,6 @@
 package es.albainformatica.albamobileandroid.impresion_informes
 
 import android.os.Bundle
-import android.widget.ListView
-import android.widget.SimpleCursorAdapter
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import es.albainformatica.albamobileandroid.Configuracion
@@ -11,12 +9,12 @@ import es.albainformatica.albamobileandroid.R
 import es.albainformatica.albamobileandroid.historicos.HistoricoMes
 
 
-class Graf_Hco_Clte: AppCompatActivity() {
-    private var fCliente: Int = 0
-    private lateinit var fHcoMes: HistoricoMes
-    private lateinit var lvLineas: ListView
-    private lateinit var adapterLineas: SimpleCursorAdapter
+class GrafHcoClte: AppCompatActivity() {
     private lateinit var fConfiguracion: Configuracion
+    private lateinit var fHcoMes: HistoricoMes
+
+    private var fCliente: Int = 0
+
 
 
 
@@ -35,10 +33,11 @@ class Graf_Hco_Clte: AppCompatActivity() {
 
 
     private fun inicializarControles() {
-        lvLineas = findViewById(R.id.lvGrafHcoClte)
         mostrarTotales()
 
-        prepararListView()
+        fHcoMes.abrirHcoClte(fCliente)
+        // TODO: hacer recyclerView
+        //prepararListView()
     }
 
 
@@ -49,20 +48,20 @@ class Graf_Hco_Clte: AppCompatActivity() {
         val tvImpte = findViewById<TextView>(R.id.tvgrhcoTotImpte)
 
         if (fHcoMes.totalesHcoClte(fCliente)) {
-            var sCantidad = fHcoMes.cCursorHco.getString(fHcoMes.cCursorHco.getColumnIndex("sumCantAnt"))
-            var dCantidad = java.lang.Double.parseDouble(sCantidad)
+            var sCantidad = fHcoMes.totalesHistMes.sumCantAnt
+            var dCantidad = sCantidad.toDouble()
             tvCantAnt.text = String.format(fConfiguracion.formatoDecCantidad(), dCantidad)
 
-            sCantidad = fHcoMes.cCursorHco.getString(fHcoMes.cCursorHco.getColumnIndex("sumCant"))
-            dCantidad = java.lang.Double.parseDouble(sCantidad)
+            sCantidad = fHcoMes.totalesHistMes.sumCant
+            dCantidad = sCantidad.toDouble()
             tvCant.text = String.format(fConfiguracion.formatoDecCantidad(), dCantidad)
 
-            var sImporte = fHcoMes.cCursorHco.getString(fHcoMes.cCursorHco.getColumnIndex("sumImpteAnt"))
-            var dImporte = java.lang.Double.parseDouble(sImporte)
+            var sImporte = fHcoMes.totalesHistMes.sumImpteAnt
+            var dImporte = sImporte.toDouble()
             tvImpteAnt.text = String.format(fConfiguracion.formatoDecImptesBase(), dImporte)
 
-            sImporte = fHcoMes.cCursorHco.getString(fHcoMes.cCursorHco.getColumnIndex("sumImpte"))
-            dImporte = java.lang.Double.parseDouble(sImporte)
+            sImporte = fHcoMes.totalesHistMes.sumImpte
+            dImporte = sImporte.toDouble()
             tvImpte.text = String.format(fConfiguracion.formatoDecImptesBase(), dImporte)
         } else {
             tvCantAnt.text = ""
@@ -75,12 +74,10 @@ class Graf_Hco_Clte: AppCompatActivity() {
     }
 
 
+    /*
     private fun prepararListView() {
         val columnas = arrayOf("codigo", "descr", "sumCantAnt", "sumCant", "sumImpteAnt", "sumImpte")
         val to = intArrayOf(R.id.lygrafhcoCodigo, R.id.lygrafhcoDescr, R.id.lygrafhcoCantAnt, R.id.lygrafhcoCant, R.id.lygrafhcoImpteAnt, R.id.lygrafhcoImpte)
-
-        // Si queremos buscar una cadena dentro del histórico reabrimos el cursor con la cadena de búsqueda.
-        fHcoMes.abrirHcoClte(fCliente)
 
         adapterLineas = SimpleCursorAdapter(this, R.layout.ly_graf_hco_clte, fHcoMes.cCursorHco, columnas, to, 0)
         // Formateamos las columnas.
@@ -126,5 +123,6 @@ class Graf_Hco_Clte: AppCompatActivity() {
             false
         }
     }
+    */
 
 }

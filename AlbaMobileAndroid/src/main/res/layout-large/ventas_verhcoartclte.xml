@@ -109,13 +109,12 @@
       android:layout_marginTop="10dp"
       android:background="#000000" />
 
-    <ListView
-      android:id="@+id/lvHcoArtClte"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:background="#FFFFFF"
-      android:listSelector="@drawable/list_selector"
-      android:headerDividersEnabled="false">
-    </ListView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvHcoArtClte"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </androidx.recyclerview.widget.RecyclerView>
+
 
 </LinearLayout>

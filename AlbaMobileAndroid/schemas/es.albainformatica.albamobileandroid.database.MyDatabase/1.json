@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "2d26dc6e23347877d949c020952a0f25",
+    "identityHash": "bd5640b0f04027f0a239092689226d91",
     "entities": [
       {
         "tableName": "Almacenes",
@@ -2226,11 +2226,11 @@
       },
       {
         "tableName": "HcoPorArticClte",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hcoPorcArticClteId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `articuloId` INTEGER NOT NULL, `clienteId` INTEGER NOT NULL, `tipoDoc` TEXT NOT NULL, `serie` TEXT NOT NULL, `numero` INTEGER NOT NULL, `ejercicio` INTEGER NOT NULL, `fecha` TEXT NOT NULL, `ventas` TEXT NOT NULL, `devoluciones` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hcoPorArticClteId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `articuloId` INTEGER NOT NULL, `clienteId` INTEGER NOT NULL, `tipoDoc` TEXT NOT NULL, `serie` TEXT NOT NULL, `numero` INTEGER NOT NULL, `ejercicio` INTEGER NOT NULL, `fecha` TEXT NOT NULL, `ventas` TEXT NOT NULL, `devoluciones` TEXT NOT NULL)",
         "fields": [
           {
-            "fieldPath": "hcoPorcArticClteId",
-            "columnName": "hcoPorcArticClteId",
+            "fieldPath": "hcoPorArticClteId",
+            "columnName": "hcoPorArticClteId",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -2291,7 +2291,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "hcoPorcArticClteId"
+            "hcoPorArticClteId"
           ],
           "autoGenerate": true
         },
@@ -4376,7 +4376,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2d26dc6e23347877d949c020952a0f25')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bd5640b0f04027f0a239092689226d91')"
     ]
   }
 }

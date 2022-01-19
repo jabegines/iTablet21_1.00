@@ -186,12 +186,14 @@ class DatosDivisa {
 
 
 class DatosInfCobros {
-    var clienteId: String = ""
+    var clienteId: Int = 0
     var fechaCobro: String = ""
     var tipoDoc: Short = 0
     var serie: String = ""
     var numero: String = ""
     var cobro: String = ""
+    var nombre: String = ""
+    var nombreComercial: String = ""
 }
 
 class DatosResCobros {
@@ -431,8 +433,8 @@ class DatosHistorico {
     var texto: String? = null
 }
 
-class DatosHcArtClte {
-    var hcoPorcArticClteId: Int = 0
+class DatosArtHcArtClte {
+    var hcoPorArticClteId: Int = 0
     var articuloId:  Int = 0
     var codigo: String = ""
     var descripcion: String = ""
@@ -442,6 +444,8 @@ class DatosHcArtClte {
 
 
 class DatosDocsHcArtClte {
+    var hcoPorArticClteId: Int = 0
+    var articuloId: Int = 0
     var tipoDoc: Short = 0
     var serie: String = ""
     var fecha: String = ""
@@ -449,6 +453,106 @@ class DatosDocsHcArtClte {
     var devoluciones: String = ""
 }
 
+
+class DatosHcoArtClte() {
+    var lineaId: Int = 0
+    var precio: String = ""
+    var precioII: String = ""
+    var cantidad: String = ""
+    var dto: String = ""
+    var tipoDoc: Short = 0
+    var serie: String = ""
+    var numero: Int = 0
+    var fecha: String = ""
+    var porcIva: String = ""
+}
+
+class DatosInfStock {
+    var empresa: Short = 0
+    var ent: String = ""
+    var sal: String = ""
+    var codigo: String = ""
+    var descripcion: String = ""
+}
+
+class DatosResPedidos {
+    var cabeceraId: Int = 0
+    var tipoDoc: Short = 0
+    var almacen: Short = 0
+    var serie: String = ""
+    var numero: Int = 0
+    var ejercicio: Short = 0
+    var fecha: String = ""
+    var fechaEntrega: String = ""
+    var observ1: String = ""
+    var observ2: String = ""
+    var codigo: Int = 0
+    var nombre: String = ""
+}
+
+class DatosCobrResPedidos {
+    var tipoDoc: Short = 0
+    var serie: String = ""
+    var numero: Int = 0
+    var fechaCobro: String = ""
+    var cobro: String = ""
+    var codigo: Int = 0
+    var nombre: String = ""
+    var descrDivisa: String = ""
+    var descrFPago: String = ""
+    var fechaDoc: String = ""
+    var anotacion: String = ""
+}
+
+class DatosLinResPedidos {
+    var codArticulo: String = ""
+    var descripcion: String = ""
+    var formatoId: Short = 0
+    var cajas: String = ""
+    var cantidad: String = ""
+    var piezas: String = ""
+    var precio: String = ""
+    var dto: String = ""
+    var importe: String = ""
+    var descrFto: String = ""
+}
+
+class DatosHistMesAnyo {
+    var articuloId: Int = 0
+    var codigo: String = ""
+    var descripcion: String = ""
+    var cantidad: String = ""
+    var mes: Int = 0
+}
+
+class DatosHistMesDif {
+    var histMesId: Int = 0
+    var articuloId: Int = 0
+    var codigo: String = ""
+    var descripcion: String = ""
+    var cantidadAnt: String = ""
+    var cantidad: String = ""
+    var diferencia: String = ""
+    var mes: Int = 0
+}
+
+class TotalesHistMes {
+    var sumCant: String = ""
+    var sumCantAnt: String = ""
+    var sumImpte: String = ""
+    var sumImpteAnt: String = ""
+}
+
+class DatosHistMesClte {
+    var histMesId: Int = 0
+    var articuloId: Int = 0
+    var codigo: String = ""
+    var descripcion: String = ""
+    var sumCant: String = ""
+    var sumCantAnt: String = ""
+    var sumImpte: String = ""
+    var sumImpteAnt: String = ""
+}
 
 
 var fArtSeleccCat = 0

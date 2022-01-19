@@ -19,6 +19,9 @@ import android.os.Handler
 import android.os.Message
 import android.os.SystemClock
 import es.albainformatica.albamobileandroid.*
+import es.albainformatica.albamobileandroid.dao.CargasDao
+import es.albainformatica.albamobileandroid.dao.CargasLineasDao
+import es.albainformatica.albamobileandroid.entity.CargasEnt
 import java.io.IOException
 import java.io.OutputStream
 import java.lang.Exception
@@ -648,25 +651,23 @@ class ImprimirDocumento(contexto: Context): Runnable {
         for (x in fLineasImpresas until fPrimeraLinea) {
             result.append(ccSaltoLinea)
         }
-        // TODO
-        /*
-        val cursor = dbAlba.rawQuery("SELECT * FROM cargas WHERE cargaId = $fCargaId", null)
-        if (cursor.moveToFirst()) {
+
+        val cargasDao: CargasDao? = getInstance(fContexto)?.cargasDao()
+        val cargaEnt = cargasDao?.getCarga(fCargaId) ?: CargasEnt()
+
+        if (cargaEnt.cargaId > 0) {
             for (x in 0..59) {
                 lineasDobles.append("=")
             }
             result.append("LISTADO DE CARGA").append(ccSaltoLinea).append(ccSaltoLinea)
             result.append("Nueva carga  ")
-            result.append(cursor.getString(cursor.getColumnIndex("fecha")))
-            result.append(StringOfChar(" ", 3))
-                .append(cursor.getString(cursor.getColumnIndex("hora")))
+            result.append(cargaEnt.fecha)
+            result.append(StringOfChar(" ", 3)).append(cargaEnt.hora)
             result.append(ccSaltoLinea)
             result.append("Terminal: ").append(fConfiguracion.codTerminal()).append(" ").append(
-                fConfiguracion.nombreTerminal()
-            ).append(ccSaltoLinea)
+                fConfiguracion.nombreTerminal()).append(ccSaltoLinea)
             result.append("Vendedor: ").append(fConfiguracion.vendedor()).append(" ").append(
-                fConfiguracion.nombreVendedor()
-            ).append(ccSaltoLinea)
+                fConfiguracion.nombreVendedor()).append(ccSaltoLinea)
             result.append(lineasDobles).append(StringOfChar(ccSaltoLinea, 3))
             result.append("Codigo").append(StringOfChar(" ", 2)).append("Descripcion")
                 .append(StringOfChar(" ", 16))
@@ -678,8 +679,7 @@ class ImprimirDocumento(contexto: Context): Runnable {
             }
             result.append(lineaSimple).append(ccSaltoLinea)
         }
-        cursor.close()
-        */
+
         return result.toString()
     }
 
@@ -698,22 +698,17 @@ class ImprimirDocumento(contexto: Context): Runnable {
         val lCant = 7
         var sumaCajas = 0.0
         var sumaCant = 0.0
-        // TODO
-        /*
-        val cursor = dbAlba.rawQuery(
-            "SELECT A.*, B.codigo, B.descr FROM cargasLineas A" +
-                    " LEFT JOIN articulos B ON B.articulo = A.articulo" +
-                    " WHERE A.cargaId = " + fCargaId +
-                    " ORDER BY B.codigo", null
-        )
-        if (cursor.moveToFirst()) {
-            cursor.moveToFirst()
-            while (!cursor.isAfterLast) {
-                sCodigo = cursor.getString(cursor.getColumnIndex("codigo"))
-                sDescr = cursor.getString(cursor.getColumnIndex("descr"))
-                sLote = cursor.getString(cursor.getColumnIndex("lote"))
-                sCajas = cursor.getString(cursor.getColumnIndex("cajas"))
-                sCant = cursor.getString(cursor.getColumnIndex("cantidad"))
+
+        val lineasCargas: CargasLineasDao? = getInstance(fContexto)?.cargasLineasDao()
+        val lLineas = lineasCargas?.getCarga(fCargaId) ?: emptyList<DatosDetCarga>().toMutableList()
+
+        if (lLineas.count() > 0) {
+            for (linea in lLineas) {
+                sCodigo = linea.codigo
+                sDescr = linea.descripcion
+                sLote = linea.lote
+                sCajas = linea.cajas
+                sCant = linea.cantidad
                 result.append(ajustarCadena(sCodigo, lCodigo, true)).append(" ")
                     .append(ajustarCadena(sDescr, lDescr, true))
                     .append(StringOfChar(" ", 3)).append(ajustarCadena(sLote, lLote, true))
@@ -729,11 +724,9 @@ class ImprimirDocumento(contexto: Context): Runnable {
                     .append(ajustarCadena(sCant, lCant, false))
                 result.append(ccSaltoLinea)
                 fLineasImpresas++
-                cursor.moveToNext()
             }
         }
-        cursor.close()
-        */
+
         sCajas = String.format(fFtoCant, sumaCajas)
         sCant = String.format(fFtoCant, sumaCant)
         result.append(ccSaltoLinea)

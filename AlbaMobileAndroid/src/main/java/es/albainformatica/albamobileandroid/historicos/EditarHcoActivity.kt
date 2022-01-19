@@ -354,14 +354,9 @@ class EditarHcoActivity: AppCompatActivity() {
         if (fDesdeHcoArtClte) {
             // Si el lote está visible buscaremos si el artículo y el lote ya están en el documento para presentar el mensaje.
             if (edtLote.visibility == View.VISIBLE) {
-                edtLote.onFocusChangeListener =
-                    OnFocusChangeListener { _: View?, hasFocus: Boolean ->
+                edtLote.onFocusChangeListener = OnFocusChangeListener { _: View?, hasFocus: Boolean ->
                         if (!hasFocus && edtLote.text.toString() != "") {
-                            if (fDocumento.existeArtYLote(
-                                    fArticulos.fArticulo,
-                                    edtLote.text.toString()
-                                )
-                            ) {
+                            if (fDocumento.existeArtYLote(fArticulos.fArticulo, edtLote.text.toString())) {
                                 avisoArtLoteEnDoc()
                             }
                         }

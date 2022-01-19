@@ -378,7 +378,7 @@
             />
 
         <activity
-            android:name=".impresion_informes.Graf_Vtas_Art"
+            android:name=".impresion_informes.GrafVtasArt"
             android:label=""
             android:screenOrientation="sensorPortrait"
             tools:ignore="LockedOrientationActivity"
@@ -386,7 +386,7 @@
             />
 
         <activity
-            android:name=".impresion_informes.Graf_Vtas_Clte"
+            android:name=".impresion_informes.GrafVtasClte"
             android:label=""
             android:screenOrientation="sensorPortrait"
             tools:ignore="LockedOrientationActivity"
@@ -402,7 +402,7 @@
             />
 
         <activity
-            android:name=".impresion_informes.Graf_Hco_Clte"
+            android:name=".impresion_informes.GrafHcoClte"
             android:label=""
             android:screenOrientation="sensorPortrait"
             tools:ignore="LockedOrientationActivity"

@@ -5,12 +5,8 @@ import android.app.Activity
 import es.albainformatica.albamobileandroid.historicos.HistoricoMes
 import es.albainformatica.albamobileandroid.Configuracion
 import android.os.Bundle
-import android.content.Intent
-import android.database.Cursor
-import android.view.View
 import es.albainformatica.albamobileandroid.Comunicador
 import android.widget.TextView
-import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.SimpleCursorAdapter
 import es.albainformatica.albamobileandroid.R
@@ -21,12 +17,12 @@ import java.util.*
  * Created by jabegines on 30/01/2017.
  */
 class AcumuladosMes: Activity() {
+    private lateinit var fHistorico: HistoricoMes
+    private lateinit var fConfiguracion: Configuracion
+
     private lateinit var lvLineas: ListView
     private var fCliente = 0
     private var fArticulo = 0
-    private lateinit var fHistorico: HistoricoMes
-    private lateinit var adapterLineas: SimpleCursorAdapter
-    private lateinit var fConfiguracion: Configuracion
     private var fFtoDecCantidad: String = ""
 
 
@@ -45,12 +41,12 @@ class AcumuladosMes: Activity() {
     private fun inicializarControles() {
         lvLineas = findViewById(R.id.lvAcumuladosMes)
         fFtoDecCantidad = fConfiguracion.formatoDecCantidad()
-        fHistorico.Abrir(fCliente)
+        fHistorico.abrir(fCliente)
+
         val fecha = Calendar.getInstance()
         val anyo = fecha[Calendar.YEAR]
-        // TODO
-        /*
-        val nombreMes = dimeNombreMesResum(fHistorico.getMes() - 1)
+
+        val nombreMes = dimeNombreMesResum(fHistorico.lDatosHMDif[0].mes - 1)
 
         // Etiquetamos los nombres de los meses
         val tvCantAnt = findViewById<TextView>(R.id.tvacummesCantAnt)
@@ -59,12 +55,15 @@ class AcumuladosMes: Activity() {
         tvCantAnt.text = queTexto
         queTexto = "$nombreMes $anyo"
         tvCantAct.text = queTexto
-        prepararListView()
+
+        // TODO: hacer RecyclerView
+        //prepararListView()
+
         val tvTitulo = findViewById<TextView>(R.id.tvNombreActivity)
         tvTitulo.setText(R.string.acum_mes)
-        */
     }
 
+    /*
     private fun prepararListView() {
         val columnas = arrayOf("codigo", "descr", "cantidadant", "cantidad", "diferencia")
         val to = intArrayOf(
@@ -127,4 +126,6 @@ class AcumuladosMes: Activity() {
                 false
             }
     }
+    */
+
 }

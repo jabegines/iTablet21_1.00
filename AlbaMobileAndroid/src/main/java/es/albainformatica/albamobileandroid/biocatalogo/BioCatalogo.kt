@@ -32,9 +32,9 @@ import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.queBDRoom
 import es.albainformatica.albamobileandroid.entity.CatalogoLineasEnt
 import es.albainformatica.albamobileandroid.entity.FtosLineasEnt
-import es.albainformatica.albamobileandroid.impresion_informes.Graf_Hco_Clte
-import es.albainformatica.albamobileandroid.impresion_informes.Graf_Vtas_Art
-import es.albainformatica.albamobileandroid.impresion_informes.Graf_Vtas_Clte
+import es.albainformatica.albamobileandroid.impresion_informes.GrafHcoClte
+import es.albainformatica.albamobileandroid.impresion_informes.GrafVtasArt
+import es.albainformatica.albamobileandroid.impresion_informes.GrafVtasClte
 import es.albainformatica.albamobileandroid.maestros.ArticulosClase
 import es.albainformatica.albamobileandroid.maestros.Clasificadores
 import es.albainformatica.albamobileandroid.maestros.Departamentos
@@ -692,7 +692,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
             R.id.mni_bioImgAcumArt -> {
                 if (aImages.isNotEmpty()) {
                     fArticulos.existeArticulo(aImages[fPosicion])
-                    val i = Intent(this, Graf_Vtas_Art::class.java)
+                    val i = Intent(this, GrafVtasArt::class.java)
                     i.putExtra("articulo", aImages[fPosicion])
                     i.putExtra("descripcion", fArticulos.fDescripcion)
                     i.putExtra("cliente", fDocumento.fCliente)
@@ -704,7 +704,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
             }
 
             R.id.mni_bioVtasClte -> {
-                val i = Intent(this, Graf_Vtas_Clte::class.java)
+                val i = Intent(this, GrafVtasClte::class.java)
                 i.putExtra("cliente", fDocumento.fCliente)
                 if (fConfiguracion.aconsNomComercial()) i.putExtra("nombre", fDocumento.fClientes.fNomComercial)
                 else i.putExtra("nombre", fDocumento.fClientes.fNombre)
@@ -714,7 +714,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
             }
 
             R.id.mni_bioHcoClte -> {
-                val i = Intent(this, Graf_Hco_Clte::class.java)
+                val i = Intent(this, GrafHcoClte::class.java)
                 i.putExtra("cliente", fDocumento.fCliente)
                 startActivity(i)
 

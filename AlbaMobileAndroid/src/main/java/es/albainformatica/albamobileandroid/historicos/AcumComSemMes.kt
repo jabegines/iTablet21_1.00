@@ -26,6 +26,8 @@ class AcumComSemMes: AppCompatActivity() {
     private var sHoyMenos13 = ""
     private var fFtoDecCantidad = ""
 
+
+
     public override fun onCreate(savedInstance: Bundle?) {
         super.onCreate(savedInstance)
         setContentView(R.layout.acum_comp_sem_mes)
@@ -86,7 +88,7 @@ class AcumComSemMes: AppCompatActivity() {
     fun porMeses(view: View?) {
         view?.getTag(0)          // Para que no dé warning el compilador
 
-        val df = SimpleDateFormat("dd/MM/yyyy")
+        val df = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val calendar = Calendar.getInstance()
         calendar.time = calendar.time
         sHoy = df.format(calendar.time)

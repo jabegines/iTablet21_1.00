@@ -19,7 +19,7 @@ import es.albainformatica.albamobileandroid.historicos.HistoricoMes
 import java.util.*
 
 
-class Graf_Vtas_Clte: AppCompatActivity() {
+class GrafVtasClte: AppCompatActivity() {
     private var fCliente: Int = 0
     private var fNombre: String = ""
     private lateinit var fHcoMes: HistoricoMes
@@ -84,10 +84,10 @@ class Graf_Vtas_Clte: AppCompatActivity() {
         for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
         for (c in ColorTemplate.COLORFUL_COLORS) colors.add(c)
         for (c in ColorTemplate.JOYFUL_COLORS) colors.add(c)
-        dataset.setColors(colors)
+        dataset.colors = colors
 
         val data = BarData(dataset)
-        chart.setData(data)
+        chart.data = data
         chart.animateY(2000)
 
         // Configuramos la leyenda del gráfico
@@ -116,22 +116,20 @@ class Graf_Vtas_Clte: AppCompatActivity() {
         var sImpte: String
         var fImpte = 0.0f
 
-        fHcoMes.cCursorHco.moveToFirst()
-        fHcoMes.cCursorHco.moveToPrevious()
-        while (fHcoMes.cCursorHco.moveToNext()) {
-            if (fHcoMes.cCursorHco.getInt(fHcoMes.cCursorHco.getColumnIndex("mes")) == queMes) {
-                if (estoyEnAnyoActual) {
-                    sImpte = fHcoMes.cCursorHco.getString(fHcoMes.cCursorHco.getColumnIndex("importe"))
+        for (hco in fHcoMes.lDatosHistMes) {
+            if (hco.mes == queMes) {
+                sImpte = if (estoyEnAnyoActual) {
+                    hco.importe
                 } else {
-                    sImpte = fHcoMes.cCursorHco.getString(fHcoMes.cCursorHco.getColumnIndex("importeant"))
+                    hco.importeAnt
                 }
 
-                fImpte = fImpte + java.lang.Float.parseFloat(sImpte)
+                fImpte += sImpte.toFloat()
             }
         }
         entriesImp.add(BarEntry(posicion, fImpte))
         // Calculamos los totales
-        fTotalImpte = fTotalImpte + fImpte
+        fTotalImpte += fImpte
 
         calculaLabel(queMes)
         posicion++
@@ -143,19 +141,21 @@ class Graf_Vtas_Clte: AppCompatActivity() {
     }
 
 
-    fun calculaLabel(queMes: Int) {
-        if (queMes == 1) labels[posicion.toInt()] = "EN"
-        else if (queMes == 2) labels[posicion.toInt()] = "FB"
-        else if (queMes == 3) labels[posicion.toInt()] = "MZ"
-        else if (queMes == 4) labels[posicion.toInt()] = "AB"
-        else if (queMes == 5) labels[posicion.toInt()] = "MY"
-        else if (queMes == 6) labels[posicion.toInt()] = "JN"
-        else if (queMes == 7) labels[posicion.toInt()] = "JL"
-        else if (queMes == 8) labels[posicion.toInt()] = "AG"
-        else if (queMes == 9) labels[posicion.toInt()] = "SP"
-        else if (queMes == 10) labels[posicion.toInt()] = "OC"
-        else if (queMes == 11) labels[posicion.toInt()] = "NV"
-        else if (queMes == 12) labels[posicion.toInt()] = "DC"
+    private fun calculaLabel(queMes: Int) {
+        when (queMes) {
+            1 -> labels[posicion.toInt()] = "EN"
+            2 -> labels[posicion.toInt()] = "FB"
+            3 -> labels[posicion.toInt()] = "MZ"
+            4 -> labels[posicion.toInt()] = "AB"
+            5 -> labels[posicion.toInt()] = "MY"
+            6 -> labels[posicion.toInt()] = "JN"
+            7 -> labels[posicion.toInt()] = "JL"
+            8 -> labels[posicion.toInt()] = "AG"
+            9 -> labels[posicion.toInt()] = "SP"
+            10 -> labels[posicion.toInt()] = "OC"
+            11 -> labels[posicion.toInt()] = "NV"
+            12 -> labels[posicion.toInt()] = "DC"
+        }
     }
 
 

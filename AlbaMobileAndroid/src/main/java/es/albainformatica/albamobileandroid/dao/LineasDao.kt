@@ -4,15 +4,28 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import es.albainformatica.albamobileandroid.DatosLinIva
-import es.albainformatica.albamobileandroid.DatosLinRecStock
-import es.albainformatica.albamobileandroid.DatosLinVtas
-import es.albainformatica.albamobileandroid.DatosOftVol
+import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.entity.LineasEnt
 
 
 @Dao
 interface LineasDao {
+
+    @Query("SELECT A.codArticulo, A.descripcion, A.formatoId, A.cajas, A.cantidad, A.piezas, A.precio, A.dto, " +
+            " A.importe, C.descripcion descrFto FROM Lineas A " +
+            " LEFT JOIN Formatos C ON C.formatoId = A.formatoId " +
+            " WHERE A.cabeceraId = :queIdDoc")
+    fun getResumenPedidos(queIdDoc: Int): List<DatosLinResPedidos>
+
+
+    @Query("SELECT A.lineaId, A.precio, A.precioII, A.cantidad, A.dto, " +
+            " B.tipoDoc, B.serie, B.numero, B.fecha, C.porcIva FROM Lineas A " +
+            " LEFT JOIN Cabeceras B ON B.cabeceraId = A.cabeceraId " +
+            " LEFT JOIN Ivas C ON C.codigo = A.codigoIva " +
+            " WHERE A.articuloId = :queArticulo AND B.clienteId = :queCliente " +
+            " ORDER BY substr(B.fecha, 7)||substr(B.fecha, 4, 2)||substr(B.fecha, 1, 2) DESC")
+    fun abrirHcoArtClte(queCliente: Int, queArticulo: Int): List<DatosHcoArtClte>
+
 
     @Query("UPDATE Lineas SET flag = 16384 WHERE lineaId = :queLinea")
     fun marcarComoPosOfta(queLinea: Int)
@@ -21,6 +34,7 @@ interface LineasDao {
             " AND flag & 32 = 0 " +
             " AND cabeceraId = :queIdDoc")
     fun getArticNoCambPr(queArticulo: Int, queIdDoc: Int): List<LineasEnt>
+
 
     @Query("UPDATE Lineas SET cabeceraId = :queIdDoc WHERE cabeceraId = -1")
     fun actualizarCabId(queIdDoc: Int)

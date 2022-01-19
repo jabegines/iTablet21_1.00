@@ -20,7 +20,7 @@ import es.albainformatica.albamobileandroid.Comunicador
 import java.util.*
 
 
-class Graf_Vtas_Art: AppCompatActivity() {
+class GrafVtasArt: AppCompatActivity() {
     private var fArticulo: Int = 0
     private var fDescr: String = ""
     private var fCliente: Int = 0
@@ -173,16 +173,14 @@ class Graf_Vtas_Art: AppCompatActivity() {
         var sCantidad: String
         var fCantidad = 0.0f
 
-        fHcoMes.cCursorHco.moveToFirst()
-        fHcoMes.cCursorHco.moveToPrevious()
-        while (fHcoMes.cCursorHco.moveToNext()) {
-            if (fHcoMes.cCursorHco.getInt(fHcoMes.cCursorHco.getColumnIndex("mes")) == queMes) {
+        for (hco in fHcoMes.lDatosHistMes) {
+            if (hco.mes == queMes) {
                 if (estoyEnAnyoActual) {
-                    sImpte = fHcoMes.cCursorHco.getString(fHcoMes.cCursorHco.getColumnIndex("importe"))
-                    sCantidad = fHcoMes.cCursorHco.getString(fHcoMes.cCursorHco.getColumnIndex("cantidad"))
+                    sImpte = hco.importe
+                    sCantidad = hco.cantidad
                 } else {
-                    sImpte = fHcoMes.cCursorHco.getString(fHcoMes.cCursorHco.getColumnIndex("importeant"))
-                    sCantidad = fHcoMes.cCursorHco.getString(fHcoMes.cCursorHco.getColumnIndex("cantidadant"))
+                    sImpte = hco.importeAnt
+                    sCantidad = hco.cantidadAnt
                 }
 
                 fImpte += java.lang.Float.parseFloat(sImpte)

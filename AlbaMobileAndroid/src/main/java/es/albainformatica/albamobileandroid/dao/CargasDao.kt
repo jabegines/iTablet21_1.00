@@ -9,6 +9,9 @@ import es.albainformatica.albamobileandroid.entity.CargasEnt
 @Dao
 interface CargasDao {
 
+    @Query("SELECT * FROM Cargas WHERE cargaId = :queCarga")
+    fun getCarga(queCarga: Int): CargasEnt
+
     @Query("SELECT * FROM Cargas")
     fun getAllCargas(): List<CargasEnt>
 

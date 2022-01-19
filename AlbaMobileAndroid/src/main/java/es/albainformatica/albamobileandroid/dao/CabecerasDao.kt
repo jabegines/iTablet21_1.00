@@ -5,12 +5,20 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import es.albainformatica.albamobileandroid.DatosCabFinDoc
+import es.albainformatica.albamobileandroid.DatosResPedidos
 import es.albainformatica.albamobileandroid.DatosVerDocs
 import es.albainformatica.albamobileandroid.entity.CabecerasEnt
 
 
 @Dao
 interface CabecerasDao {
+
+    @Query("SELECT A.cabeceraId, A.tipoDoc, A.almacen, A.serie, A.numero, A.ejercicio, A.fecha, A.fechaEntrega, " +
+            " A.observ1, A.observ2, B.codigo, B.nombre FROM Cabeceras A " +
+            " LEFT JOIN Clientes B ON B.clienteId = A.clienteId " +
+            " WHERE A.tipoDoc = 3")
+    fun getResumenPedidos(): List<DatosResPedidos>
+
 
     @Query("SELECT observ1, observ2, dto, dto2, dto3, dto4, fPago FROM Cabeceras " +
             " WHERE cabeceraId = :queIdDoc")
@@ -49,7 +57,7 @@ interface CabecerasDao {
     fun cargarDoc(queIdDoc: Int): CabecerasEnt
 
 
-    @Query("SELECT A.cabeceraId,  A.tipoDoc, A.almacen, A.serie, A.numero, A.ejercicio, A.empresa, A.fecha, " +
+    @Query("SELECT A.cabeceraId, A.tipoDoc, A.almacen, A.serie, A.numero, A.ejercicio, A.empresa, A.fecha, " +
             " A.clienteId, A.total, A.estado, A.facturado, B.nombre, B.nombreComercial, A.firmado, " +
             " A.imprimido, A.tipoIncidencia " +
             " FROM Cabeceras A " +
@@ -63,6 +71,21 @@ interface CabecerasDao {
             " END " +
             " ORDER BY substr(A.fecha, 7)||substr(A.fecha, 4, 2)||substr(A.fecha, 1, 2) DESC")
     fun abrirTodosClte(queCliente: Int, queEmpresa: Int, queFiltro: Int): List<DatosVerDocs>
+
+
+    @Query("SELECT A.cabeceraId, A.tipoDoc, A.almacen, A.serie, A.numero, A.ejercicio, A.empresa, A.fecha, " +
+            " A.clienteId, A.total, A.estado, A.facturado, B.nombre, B.nombreComercial, A.firmado, " +
+            " A.imprimido, A.tipoIncidencia " +
+            " FROM Cabeceras A " +
+            " LEFT JOIN Clientes B ON B.clienteId = A.clienteId " +
+            " WHERE (A.estado = 'N' OR A.estado = 'R') " +
+            " AND (julianday(substr(A.fecha, 7, 4) || '-' || substr(A.fecha, 4, 2) " +
+            " || '-' || substr(A.fecha, 1, 2)) >= julianday(:desdeFecha))" +
+            " AND (julianday(substr(A.fecha, 7, 4) || '-' || substr(A.fecha, 4, 2) " +
+            " || '-' || substr(A.fecha, 1, 2)) <= julianday(:hastaFecha))" +
+            " ORDER BY A.tipodoc, A.serie, A.numero")
+    fun getInfDocumentos(desdeFecha: String, hastaFecha: String): List<DatosVerDocs>
+
 
     @Query("SELECT A.cabeceraId,  A.tipoDoc, A.almacen, A.serie, A.numero, A.ejercicio, A.empresa, A.fecha, " +
             " A.clienteId, A.total, A.estado, A.facturado, B.nombre, B.nombreComercial, A.firmado, " +

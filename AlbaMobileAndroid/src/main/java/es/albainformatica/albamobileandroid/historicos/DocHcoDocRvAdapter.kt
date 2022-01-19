@@ -65,7 +65,7 @@ class DocHcoDocRvAdapter(var docs: List<DatosDocsHcArtClte>, val context: Contex
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         setOnItemClickListener(listener)
         val layoutInflater = LayoutInflater.from(parent.context)
-        return ViewHolder(layoutInflater.inflate(R.layout.item_hcodoc_list, parent, false))
+        return ViewHolder(layoutInflater.inflate(R.layout.ly_hco_doc, parent, false))
     }
 
     override fun getItemCount(): Int {

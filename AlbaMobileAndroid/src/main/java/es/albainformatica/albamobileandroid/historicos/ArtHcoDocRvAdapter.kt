@@ -8,12 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import es.albainformatica.albamobileandroid.DatosHcArtClte
+import es.albainformatica.albamobileandroid.DatosArtHcArtClte
 import es.albainformatica.albamobileandroid.R
 import kotlinx.android.synthetic.main.item_hcodoc_list.view.*
 
 
-class ArtHcoDocRvAdapter (var docs: List<DatosHcArtClte>, val context: Context, var listener: OnItemClickListener):
+class ArtHcoDocRvAdapter (var docs: List<DatosArtHcArtClte>, val context: Context, var listener: OnItemClickListener):
         RecyclerView.Adapter<ArtHcoDocRvAdapter.ViewHolder>() {
 
     private var selectedPos: Int = RecyclerView.NO_POSITION
@@ -52,7 +52,7 @@ class ArtHcoDocRvAdapter (var docs: List<DatosHcArtClte>, val context: Context, 
             else
             {
                 articuloId = docs[fPosicion].articuloId
-                idHco = docs[fPosicion].hcoPorcArticClteId
+                idHco = docs[fPosicion].hcoPorArticClteId
                 selectedPos = fPosicion
             }
 
@@ -78,7 +78,7 @@ class ArtHcoDocRvAdapter (var docs: List<DatosHcArtClte>, val context: Context, 
     }
 
     interface OnItemClickListener {
-        fun onClick(view: View, data: DatosHcArtClte)
+        fun onClick(view: View, data: DatosArtHcArtClte)
     }
 
 
@@ -89,7 +89,7 @@ class ArtHcoDocRvAdapter (var docs: List<DatosHcArtClte>, val context: Context, 
         private val tvCantPedida = itemView.findViewById(R.id.tvHcoArtClCantPed) as TextView
 
         @SuppressLint("SetTextI18n")
-        fun bind(documento: DatosHcArtClte) {
+        fun bind(documento: DatosArtHcArtClte) {
             tvCodArt.text = documento.codigo
             tvDescr.text = documento.descripcion
             tvPorcDev.text = documento.porcDevol + "%"

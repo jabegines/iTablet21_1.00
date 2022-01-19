@@ -1,6 +1,5 @@
 package es.albainformatica.albamobileandroid.impresion_informes
 
-import android.database.sqlite.SQLiteDatabase
 import es.albainformatica.albamobileandroid.cobros.CobrosClase
 import android.content.SharedPreferences
 import android.app.ProgressDialog
@@ -20,6 +19,9 @@ import android.os.Handler
 import android.os.Message
 import android.os.SystemClock
 import es.albainformatica.albamobileandroid.*
+import es.albainformatica.albamobileandroid.dao.CabecerasDao
+import es.albainformatica.albamobileandroid.dao.CobrosDao
+import es.albainformatica.albamobileandroid.database.MyDatabase
 import java.io.IOException
 import java.lang.Exception
 import java.lang.StringBuilder
@@ -214,72 +216,42 @@ class InfDocumentos(contexto: Context): Runnable {
         var queTipoDoc: String
         var queSerieNum: String
         var queNombre: String
-        var sQuery = "SELECT A.tipodoc, A.alm, A.serie, A.numero, A.ejer, A.total"
-        sQuery =
-            if (fConfiguracion.aconsNomComercial()) "$sQuery, B.nomco nombre" else "$sQuery, B.nomfi nombre"
-        sQuery = sQuery + " FROM cabeceras A" +
-                " LEFT OUTER JOIN clientes B ON B.cliente = A.cliente"
-        sQuery = "$sQuery WHERE (A.estado = 'N' OR A.estado = 'R')"
-        sQuery =
-            "$sQuery AND (julianday(substr(A.fecha, 7, 4) || '-' || substr(A.fecha, 4, 2) || '-' || substr(A.fecha, 1, 2)) >= julianday('" + fechaEnJulian(
-                fDesdeFecha
-            ) + "'))"
-        sQuery =
-            "$sQuery AND (julianday(substr(A.fecha, 7, 4) || '-' || substr(A.fecha, 4, 2) || '-' || substr(A.fecha, 1, 2)) <= julianday('" + fechaEnJulian(
-                fHastaFecha
-            ) + "'))"
-        sQuery = "$sQuery ORDER BY A.tipodoc, A.serie, A.numero"
-        // TODO
-        /*
-        dbAlba.rawQuery(sQuery, null).use { cursor ->
-            cursor.moveToFirst()
-            while (!cursor.isAfterLast) {
-                val fCobrado = fCobros.dimeCobrosDoc(
-                    cursor.getString(cursor.getColumnIndex("tipodoc")),
-                    cursor.getString(cursor.getColumnIndex("alm")),
-                    cursor.getString(cursor.getColumnIndex("serie")),
-                    cursor.getString(cursor.getColumnIndex("numero")),
-                    cursor.getString(cursor.getColumnIndex("ejer")),
-                    cursor.getString(cursor.getColumnIndex("empresa"))
-                )
-                queTipoDoc = cursor.getString(cursor.getColumnIndex("tipodoc"))
-                when (queTipoDoc) {
-                    "1" -> queTipoDoc = "F"
-                    "2" -> queTipoDoc = "A"
-                    "3" -> queTipoDoc = "P"
-                    "6" -> queTipoDoc = "R"
-                }
-                docExPCL_LP.writeTextPartial(queTipoDoc)
-                queSerieNum = cursor.getString(cursor.getColumnIndex("serie"))
-                    .trim { it <= ' ' } + "/" + cursor.getString(cursor.getColumnIndex("numero"))
-                    .trim { it <= ' ' }
-                if (queSerieNum.length < 8) queSerieNum += String(CharArray(8 - queSerieNum.length)).replace(
-                    "\u0000",
-                    " "
-                )
-                docExPCL_LP.writeTextPartial("$queSerieNum ")
-                queNombre = cursor.getString(cursor.getColumnIndex("nombre"))
-                queNombre =
-                    if (queNombre.length > 22) queNombre.substring(0, 22) else queNombre + String(
-                        CharArray(22 - queNombre.length)
-                    ).replace("\u0000", " ")
-                docExPCL_LP.writeTextPartial("$queNombre ")
-                var sTotal = cursor.getString(cursor.getColumnIndex("total")).replace(',', '.')
-                val dTotal = sTotal.toDouble()
-                sTotal = String.format(fFtoDecImpIva, dTotal)
-                if (sTotal.length < 7) sTotal =
-                    String(CharArray(7 - sTotal.length)).replace("\u0000", " ") + sTotal
-                docExPCL_LP.writeTextPartial("$sTotal ")
-                var sCobrado = String.format(fFtoDecImpIva, fCobrado)
-                if (sCobrado.length < 7) sCobrado =
-                    String(CharArray(7 - sCobrado.length)).replace("\u0000", " ") + sCobrado
-                docExPCL_LP.writeTextPartial(sCobrado)
-                docExPCL_LP.writeText("")
-                fElementosImpresos++
-                cursor.moveToNext()
+
+        val cabecerasDao: CabecerasDao? = MyDatabase.getInstance(fContexto)?.cabecerasDao()
+        val lDocumentos = cabecerasDao?.getInfDocumentos(fechaEnJulian(fDesdeFecha), fechaEnJulian(fHastaFecha))
+                        ?: emptyList<DatosVerDocs>().toMutableList()
+
+        for (doc in lDocumentos) {
+            val fCobrado = fCobros.dimeCobrosDoc(doc.tipoDoc.toString(), doc.almacen.toString(), doc.serie,
+                                doc.numero.toString(), doc.ejercicio.toString(), doc.empresa.toString())
+
+            queTipoDoc = doc.tipoDoc.toString()
+            when (queTipoDoc) {
+                "1" -> queTipoDoc = "F"
+                "2" -> queTipoDoc = "A"
+                "3" -> queTipoDoc = "P"
+                "6" -> queTipoDoc = "R"
             }
+            docExPCL_LP.writeTextPartial(queTipoDoc)
+            queSerieNum = doc.serie.trim { it <= ' ' } + "/" + doc.numero.toString().trim { it <= ' ' }
+            if (queSerieNum.length < 8) queSerieNum += String(CharArray(8 - queSerieNum.length)).replace("\u0000", " ")
+            docExPCL_LP.writeTextPartial("$queSerieNum ")
+            queNombre = if (fConfiguracion.aconsNomComercial()) doc.nombreComercial
+            else doc. nombre
+            queNombre = if (queNombre.length > 22) queNombre.substring(0, 22)
+                        else queNombre + String(CharArray(22 - queNombre.length)).replace("\u0000", " ")
+            docExPCL_LP.writeTextPartial("$queNombre ")
+            var sTotal = doc.total.replace(',', '.')
+            val dTotal = sTotal.toDouble()
+            sTotal = String.format(fFtoDecImpIva, dTotal)
+            if (sTotal.length < 7) sTotal = String(CharArray(7 - sTotal.length)).replace("\u0000", " ") + sTotal
+            docExPCL_LP.writeTextPartial("$sTotal ")
+            var sCobrado = String.format(fFtoDecImpIva, fCobrado)
+            if (sCobrado.length < 7) sCobrado = String(CharArray(7 - sCobrado.length)).replace("\u0000", " ") + sCobrado
+            docExPCL_LP.writeTextPartial(sCobrado)
+            docExPCL_LP.writeText("")
+            fElementosImpresos++
         }
-        */
     }
 
     @SuppressLint("Range")
@@ -295,8 +267,7 @@ class InfDocumentos(contexto: Context): Runnable {
             if (fConfiguracion.aconsNomComercial()) "$sQuery, B.nomco nombre" else "$sQuery, B.nomfi nombre"
         sQuery = sQuery + " FROM cobros A" +
                 " LEFT JOIN clientes B ON B.cliente = A.cliente" +
-                " LEFT JOIN cabeceras C ON C.tipodoc = A.tipodoc AND C.alm = A.alm AND C.serie = A.serie AND C.numero = A.numero AND C.ejer = A.ejer" +  // Enviaremos aquellos cobros que sean de documentos que vienen de la gestión (vapunte > 0) o de documentos realizados en la tablet
-                // que ya han sido exportados (estado del cobro = 'N' y estado del documento = 'X')
+                " LEFT JOIN cabeceras C ON C.tipodoc = A.tipodoc AND C.alm = A.alm AND C.serie = A.serie AND C.numero = A.numero AND C.ejer = A.ejer" +
                 " WHERE (A.vapunte > 0 OR (A.estado = 'N' AND C.estado = 'X'))"
         sQuery =
             "$sQuery AND (julianday(substr(A.fechacobro, 7, 4) || '-' || substr(A.fechacobro, 4, 2) || '-' || substr(A.fechacobro, 1, 2)) >= julianday('" + fechaEnJulian(
@@ -306,61 +277,53 @@ class InfDocumentos(contexto: Context): Runnable {
             "$sQuery AND (julianday(substr(A.fechacobro, 7, 4) || '-' || substr(A.fechacobro, 4, 2) || '-' || substr(A.fechacobro, 1, 2)) <= julianday('" + fechaEnJulian(
                 fHastaFecha
             ) + "'))"
-        // TODO
-        /*
-        dbAlba.rawQuery(sQuery, null).use { cCobros ->
-            cCobros.moveToFirst()
-            while (!cCobros.isAfterLast) {
-                queTipoDoc = cCobros.getString(cCobros.getColumnIndex("tipodoc"))
-                when (queTipoDoc) {
-                    "1" -> queTipoDoc = "F"
-                    "2" -> queTipoDoc = "A"
-                    "3" -> queTipoDoc = "P"
-                    "6" -> queTipoDoc = "R"
-                }
-                result.append(queTipoDoc).append(" ")
-                queSerieNum = cCobros.getString(cCobros.getColumnIndex("serie"))
-                    .trim { it <= ' ' } + "/" + cCobros.getString(cCobros.getColumnIndex("numero"))
-                    .trim { it <= ' ' }
-                if (queSerieNum.length < 10) queSerieNum += String(CharArray(10 - queSerieNum.length)).replace(
-                    "\u0000",
-                    " "
-                )
-                result.append(queSerieNum).append(" ")
-                queNombre = cCobros.getString(cCobros.getColumnIndex("nombre"))
-                if (queNombre.length > 30) result.append(queNombre.substring(0, 30)) else {
-                    queNombre += String(CharArray(30 - queNombre.length)).replace("\u0000", " ")
-                    result.append(queNombre)
-                }
-                result.append("  ")
-                var sCobrado = cCobros.getString(cCobros.getColumnIndex("cobro")).replace(',', '.')
-                val dCobrado = sCobrado.toDouble()
-                fTotalCobros += dCobrado
-                sCobrado = String.format(fFtoDecImpIva, dCobrado)
-                if (sCobrado.length < 9) sCobrado =
-                    String(CharArray(9 - sCobrado.length)).replace("\u0000", " ") + sCobrado
-                result.append(sCobrado)
-                result.append(ccSaltoLinea)
 
-                // Pausa.
-                SystemClock.sleep(500)
-                cCobros.moveToNext()
+        val cobrosDao: CobrosDao? = MyDatabase.getInstance(fContexto)?.cobrosDao()
+        val lCobros = cobrosDao?.getCobrosPorFechas(fechaEnJulian(fDesdeFecha), fechaEnJulian(fHastaFecha))
+                            ?: emptyList<DatosInfCobros>().toMutableList()
+
+        for (cobro in lCobros) {
+            queTipoDoc = cobro.tipoDoc.toString()
+            when (queTipoDoc) {
+                "1" -> queTipoDoc = "F"
+                "2" -> queTipoDoc = "A"
+                "3" -> queTipoDoc = "P"
+                "6" -> queTipoDoc = "R"
             }
-            val lineaSimple = StringBuilder()
-            for (x in 0..59) {
-                lineaSimple.append("-")
+            result.append(queTipoDoc).append(" ")
+            queSerieNum = cobro.serie.trim { it <= ' ' } + "/" + cobro.numero.trim { it <= ' ' }
+            if (queSerieNum.length < 10) queSerieNum += String(CharArray(10 - queSerieNum.length)).replace("\u0000", " ")
+            result.append(queSerieNum).append(" ")
+            queNombre = if (fConfiguracion.aconsNomComercial()) cobro.nombreComercial
+            else cobro.nombre
+            if (queNombre.length > 30) result.append(queNombre.substring(0, 30))
+            else { queNombre += String(CharArray(30 - queNombre.length)).replace("\u0000", " ")
+                result.append(queNombre)
             }
-            var sTotalCobros = String.format(fFtoDecImpIva, fTotalCobros)
-            if (sTotalCobros.length > 7) sTotalCobros = "*******"
-            sTotalCobros = StringOfChar(" ", 7 - sTotalCobros.length) + sTotalCobros
-            result.append(lineaSimple).append(ccSaltoLinea)
-            result.append("TOTAL COBROS:").append(StringOfChar(" ", 34)).append(sTotalCobros)
-                .append(
-                    ccSaltoLinea
-                )
-            result.append(lineaSimple).append(StringOfChar(ccSaltoLinea, 3))
+            result.append("  ")
+            var sCobrado = cobro.cobro.replace(',', '.')
+            val dCobrado = sCobrado.toDouble()
+            fTotalCobros += dCobrado
+            sCobrado = String.format(fFtoDecImpIva, dCobrado)
+            if (sCobrado.length < 9) sCobrado = String(CharArray(9 - sCobrado.length)).replace("\u0000", " ") + sCobrado
+            result.append(sCobrado)
+            result.append(ccSaltoLinea)
+
+            // Pausa.
+            SystemClock.sleep(500)
         }
-        */
+
+        val lineaSimple = StringBuilder()
+        for (x in 0..59) {
+            lineaSimple.append("-")
+        }
+        var sTotalCobros = String.format(fFtoDecImpIva, fTotalCobros)
+        if (sTotalCobros.length > 7) sTotalCobros = "*******"
+        sTotalCobros = StringOfChar(" ", 7 - sTotalCobros.length) + sTotalCobros
+        result.append(lineaSimple).append(ccSaltoLinea)
+        result.append("TOTAL COBROS:").append(StringOfChar(" ", 34)).append(sTotalCobros).append(ccSaltoLinea)
+        result.append(lineaSimple).append(StringOfChar(ccSaltoLinea, 3))
+
         return result.toString()
     }
 
@@ -370,34 +333,18 @@ class InfDocumentos(contexto: Context): Runnable {
         var queSerieNum: String
         var queNombre: String
         val result = StringBuilder()
-        var sQuery = "SELECT A.tipodoc, A.alm, A.serie, A.numero, A.ejer, A.empresa, A.total"
-        sQuery =
-            if (fConfiguracion.aconsNomComercial()) "$sQuery, B.nomco nombre" else "$sQuery, B.nomfi nombre"
-        sQuery = sQuery + " FROM cabeceras A" +
-                " LEFT JOIN clientes B ON B.cliente = A.cliente" +
-                " WHERE (A.estado = 'N' OR A.estado = 'R')" +
-                " AND (julianday(substr(A.fecha, 7, 4) || '-' || substr(A.fecha, 4, 2) || '-' || substr(A.fecha, 1, 2)) >= julianday('" + fechaEnJulian(
-            fDesdeFecha
-        ) + "'))" +
-                " AND (julianday(substr(A.fecha, 7, 4) || '-' || substr(A.fecha, 4, 2) || '-' || substr(A.fecha, 1, 2)) <= julianday('" + fechaEnJulian(
-            fHastaFecha
-        ) + "'))" +
-                " ORDER BY A.tipodoc, A.serie, A.numero"
+
         try {
-            // TODO
-            /*
-            val cursor = dbAlba.rawQuery(sQuery, null)
-            cursor.moveToFirst()
-            while (!cursor.isAfterLast) {
-                @SuppressLint("Range") val fCobrado = fCobros.dimeCobrosDoc(
-                    cursor.getString(cursor.getColumnIndex("tipodoc")),
-                    cursor.getString(cursor.getColumnIndex("alm")),
-                    cursor.getString(cursor.getColumnIndex("serie")),
-                    cursor.getString(cursor.getColumnIndex("numero")),
-                    cursor.getString(cursor.getColumnIndex("ejer")),
-                    cursor.getString(cursor.getColumnIndex("empresa"))
-                )
-                queTipoDoc = cursor.getString(cursor.getColumnIndex("tipodoc"))
+            val cabecerasDao: CabecerasDao? = MyDatabase.getInstance(fContexto)?.cabecerasDao()
+            val lDocumentos = cabecerasDao?.getInfDocumentos(fechaEnJulian(fDesdeFecha), fechaEnJulian(fHastaFecha))
+                ?: emptyList<DatosVerDocs>().toMutableList()
+
+            for (doc in lDocumentos) {
+                @SuppressLint("Range") val fCobrado = fCobros.dimeCobrosDoc(doc.tipoDoc.toString(),
+                    doc.almacen.toString(), doc.serie, doc.numero.toString(), doc.ejercicio.toString(),
+                    doc.empresa.toString())
+
+                queTipoDoc = doc.tipoDoc.toString()
                 when (queTipoDoc) {
                     "1" -> queTipoDoc = "F"
                     "2" -> queTipoDoc = "A"
@@ -405,21 +352,18 @@ class InfDocumentos(contexto: Context): Runnable {
                     "6" -> queTipoDoc = "R"
                 }
                 result.append(queTipoDoc).append(" ")
-                queSerieNum = cursor.getString(cursor.getColumnIndex("serie"))
-                    .trim { it <= ' ' } + "/" + cursor.getString(cursor.getColumnIndex("numero"))
-                    .trim { it <= ' ' }
-                if (queSerieNum.length < 10) queSerieNum += String(CharArray(10 - queSerieNum.length)).replace(
-                    "\u0000",
-                    " "
-                )
+                queSerieNum = doc.serie.trim { it <= ' ' } + "/" + doc.numero.toString().trim { it <= ' ' }
+                if (queSerieNum.length < 10) queSerieNum += String(CharArray(10 - queSerieNum.length)).replace("\u0000", " ")
                 result.append(queSerieNum).append(" ")
-                queNombre = cursor.getString(cursor.getColumnIndex("nombre"))
-                if (queNombre.length > 30) result.append(queNombre.substring(0, 30)) else {
+                queNombre = if (fConfiguracion.aconsNomComercial()) doc.nombreComercial
+                else doc.nombre
+                if (queNombre.length > 30) result.append(queNombre.substring(0, 30))
+                else {
                     queNombre += String(CharArray(30 - queNombre.length)).replace("\u0000", " ")
                     result.append(queNombre)
                 }
                 result.append("  ")
-                var sTotal = cursor.getString(cursor.getColumnIndex("total")).replace(',', '.')
+                var sTotal = doc.total.replace(',', '.')
                 val dTotal = sTotal.toDouble()
                 sTotal = String.format(fFtoDecImpIva, dTotal)
                 if (sTotal.length < 7) sTotal =
@@ -436,12 +380,8 @@ class InfDocumentos(contexto: Context): Runnable {
 
                 // Pausa.
                 SystemClock.sleep(500)
-                cursor.moveToNext()
             }
-            cursor.close()
-            */
 
-            //llenarArrayConCobros(documentos);
         } catch (e: Exception) {
             Toast.makeText(fContexto, e.message, Toast.LENGTH_LONG).show()
         }
@@ -546,17 +486,11 @@ class InfDocumentos(contexto: Context): Runnable {
     }
 
     private fun hayDocumentos(): Boolean {
-        val sQuery = "SELECT tipodoc FROM cabeceras" +
-                " WHERE (estado = 'N' OR estado = 'R')" +
-                " AND (julianday(substr(fecha, 7, 4) || '-' || substr(fecha, 4, 2) || '-' || substr(fecha, 1, 2)) >= julianday('" + fechaEnJulian(
-            fDesdeFecha
-        ) + "'))" +
-                " AND (julianday(substr(fecha, 7, 4) || '-' || substr(fecha, 4, 2) || '-' || substr(fecha, 1, 2)) <= julianday('" + fechaEnJulian(
-            fHastaFecha
-        ) + "'))"
-        // TODO
-        //dbAlba.rawQuery(sQuery, null).use { cursor -> return cursor.moveToFirst() }
-        return true
+        val cabecerasDao: CabecerasDao? = MyDatabase.getInstance(fContexto)?.cabecerasDao()
+        val lDocumentos = cabecerasDao?.getInfDocumentos(fechaEnJulian(fDesdeFecha), fechaEnJulian(fHastaFecha))
+            ?: emptyList<DatosVerDocs>().toMutableList()
+
+        return (lDocumentos.count() > 0)
     }
 
 }

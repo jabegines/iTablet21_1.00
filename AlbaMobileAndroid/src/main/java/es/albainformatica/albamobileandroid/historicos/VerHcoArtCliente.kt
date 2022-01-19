@@ -4,27 +4,32 @@ import android.app.Activity
 import es.albainformatica.albamobileandroid.maestros.ArticulosClase
 import android.os.Bundle
 import android.widget.TextView
-import android.database.Cursor
 import android.net.Uri
 import android.preference.PreferenceManager
 import android.view.View
 import android.widget.ImageView
-import android.widget.ListView
 import android.widget.SimpleCursorAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.*
+import es.albainformatica.albamobileandroid.dao.LineasDao
+import es.albainformatica.albamobileandroid.database.MyDatabase
+import kotlinx.android.synthetic.main.ventas_verhcoartclte.*
 import java.io.File
-import java.util.*
 
 /**
  * Created by jabegines on 26/11/13.
  */
 class VerHcoArtCliente: Activity() {
-    private var fCliente = 0
-    private var fArticulo = 0
-    private lateinit var fHistorico: HcoArtCliente
+    private var lineasDao: LineasDao? = MyDatabase.getInstance(this)?.lineasDao()
     private lateinit var fConfiguracion: Configuracion
     private lateinit var fArticulos: ArticulosClase
-    private lateinit var adapterLineas: SimpleCursorAdapter
+
+    private lateinit var fRecycler: RecyclerView
+    private lateinit var fAdapter: HcoArtClteRvAdapter
+
+    private var fCliente = 0
+    private var fArticulo = 0
 
     private var fFtoDecPrBase: String = ""
     private var fFtoDecPrII: String = ""
@@ -38,7 +43,6 @@ class VerHcoArtCliente: Activity() {
         super.onCreate(savedInstance)
         setContentView(R.layout.ventas_verhcoartclte)
 
-        fHistorico = HcoArtCliente(this)
         fConfiguracion = Comunicador.fConfiguracion
         fArticulos = ArticulosClase(this)
         val intent = intent
@@ -47,13 +51,8 @@ class VerHcoArtCliente: Activity() {
         inicializarControles()
     }
 
-    override fun onDestroy() {
-        if (fArticulos != null) fArticulos.close()
-        super.onDestroy()
-    }
 
     private fun inicializarControles() {
-        fHistorico.abrir(fCliente, fArticulo)
         fFtoDecPrBase = fConfiguracion.formatoDecPrecioBase()
         fFtoDecPrII = fConfiguracion.formatoDecPrecioIva()
         fFtoDecCant = fConfiguracion.formatoDecCantidad()
@@ -72,7 +71,10 @@ class VerHcoArtCliente: Activity() {
             mostrarImagen()
         }
 
-        prepararListView()
+        fRecycler = rvHcoArtClte
+        fRecycler.layoutManager = LinearLayoutManager(this)
+        prepararRecyclerView()
+
         val tvTitulo = findViewById<TextView>(R.id.tvNombreActivity)
         tvTitulo.setText(R.string.hco_art_clte)
     }
@@ -86,6 +88,20 @@ class VerHcoArtCliente: Activity() {
         }
     }
 
+
+    private fun prepararRecyclerView() {
+        fAdapter = HcoArtClteRvAdapter(getDatosHco(), this, object: HcoArtClteRvAdapter.OnItemClickListener {
+            override fun onClick(view: View, data: DatosHcoArtClte) {
+            }
+        })
+    }
+
+    private fun getDatosHco(): List<DatosHcoArtClte> {
+        return lineasDao?.abrirHcoArtClte(fCliente, fArticulo) ?: emptyList<DatosHcoArtClte>().toMutableList()
+    }
+
+
+    /*
     private fun prepararListView() {
         val lvLineas = findViewById<ListView>(R.id.lvHcoArtClte)
         val campos =
@@ -100,14 +116,7 @@ class VerHcoArtCliente: Activity() {
             R.id.lyhcoArtCl_PrecioII,
             R.id.lyhcoArtCl_Dto
         )
-        adapterLineas = SimpleCursorAdapter(
-            this,
-            R.layout.ly_hco_artic_clte,
-            fHistorico.cHcoArtClte,
-            campos,
-            vistas,
-            0
-        )
+        adapterLineas = SimpleCursorAdapter(this, R.layout.ly_hco_artic_clte, fHistorico.cHcoArtClte, campos, vistas, 0)
         formatearColumnas()
         lvLineas.adapter = adapterLineas
     }
@@ -171,6 +180,6 @@ class VerHcoArtCliente: Activity() {
                 false
             }
     }
-
+    */
 
 }

@@ -3,6 +3,7 @@ package es.albainformatica.albamobileandroid.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import es.albainformatica.albamobileandroid.DatosCobrResPedidos
 import es.albainformatica.albamobileandroid.DatosInfCobros
 import es.albainformatica.albamobileandroid.DatosResCobros
 import es.albainformatica.albamobileandroid.entity.CobrosEnt
@@ -10,6 +11,33 @@ import es.albainformatica.albamobileandroid.entity.CobrosEnt
 
 @Dao
 interface CobrosDao {
+
+
+    @Query("SELECT A.tipoDoc, A.serie, A.numero, A.fechaCobro, A.cobro, A.anotacion, B.codigo, B.nombre, " +
+            " C.descripcion descrDivisa, D.descripcion descrFPago, E.fecha fechaDoc FROM Cobros A" +
+            " LEFT JOIN Clientes B ON B.clienteId = A.clienteId" +
+            " LEFT JOIN Divisas C ON C.codigo = A.divisa" +
+            " LEFT JOIN FormasPago D ON D.codigo = A.fPago" +
+            " LEFT JOIN Cabeceras E ON E.tipoDoc = A.tipoDoc AND E.almacen = A.almacen AND E.serie = A.serie" +
+            " AND E.numero = A.numero AND E.ejercicio = A.ejercicio")
+    fun getResumenPedidos(): List<DatosCobrResPedidos>
+
+
+
+    // Enviaremos aquellos cobros que sean de documentos que vienen de la gestión (vapunte > 0) o de documentos realizados en la tablet
+    // que ya han sido exportados (estado del cobro = 'N' y estado del documento = 'X')
+    @Query("SELECT A.tipoDoc, A.serie, A.numero, A.cobro, B.nombre, B.nombreComercial, 0 clienteId, '' fechaCobro " +
+            " FROM Cobros A " +
+            " LEFT JOIN Clientes B ON B.clienteId = A.clienteId " +
+            " LEFT JOIN Cabeceras C ON C.tipoDoc = A.tipoDoc AND C.almacen = A.almacen " +
+            " AND c.serie = A.serie AND C.numero = A.numero AND C.ejercicio = A.ejercicio " +
+            " WHERE (A.vApunte > 0 OR (A.estado = 'N' AND C.estado = 'X')) " +
+            " AND (julianday(substr(A.fechacobro, 7, 4) || '-' || substr(A.fechacobro, 4, 2) " +
+            " || '-' || substr(A.fechacobro, 1, 2)) >= julianday(:desdeFecha)) " +
+            " AND (julianday(substr(A.fechacobro, 7, 4) || '-' || substr(A.fechacobro, 4, 2) " +
+            " || '-' || substr(A.fechacobro, 1, 2)) <= julianday(:hastaFecha))")
+    fun getCobrosPorFechas(desdeFecha: String, hastaFecha: String): List<DatosInfCobros>
+
 
     @Query("SELECT cobroId FROM Cobros WHERE estado = 'N'")
     fun hayCobros(): Int
@@ -66,7 +94,8 @@ interface CobrosDao {
     fun abrirParaExportar(): MutableList<CobrosEnt>
 
 
-    @Query("SELECT A.clienteId, A.tipoDoc, A.fechaCobro, A.cobro, A.serie, A.numero FROM Cobros A" +
+    @Query("SELECT A.clienteId, A.tipoDoc, A.fechaCobro, A.cobro, A.serie, A.numero, '' nombre, '' nombreComercial " +
+            " FROM Cobros A" +
             " WHERE (julianday(substr(A.fechaCobro, 7, 4) || '-' || substr(A.fechaCobro, 4, 2) || '-' ||" +
             " substr(A.fechacobro, 1, 2)) >= julianday(:queDesdeFecha))" +
             " AND (julianday(substr(A.fechacobro, 7, 4) || '-' || substr(A.fechacobro, 4, 2) || '-' || " +

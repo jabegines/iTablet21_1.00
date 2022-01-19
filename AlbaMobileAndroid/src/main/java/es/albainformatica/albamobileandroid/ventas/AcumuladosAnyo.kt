@@ -13,6 +13,7 @@ import android.graphics.drawable.shapes.RectShape
 import android.view.View
 import android.widget.ImageView
 import es.albainformatica.albamobileandroid.R
+import kotlin.math.roundToInt
 
 /**
  * Created by jabegines on 30/11/2017.
@@ -35,7 +36,7 @@ class AcumuladosAnyo: Activity() {
         fCodArt = i.getStringExtra("codart") ?: ""
         fDescrArt = i.getStringExtra("descrart") ?: ""
         fHistorico = HistoricoMes(this)
-        fHistorico.AbrirAnyo(fCliente, fArticulo)
+        fHistorico.abrirAnyo(fCliente, fArticulo)
         inicializarControles()
         mostrarGrafico()
     }
@@ -50,22 +51,23 @@ class AcumuladosAnyo: Activity() {
 
     private fun mostrarGrafico() {
         var mesActual = 1
-        fHistorico.cCursorHco.moveToFirst()
-        while (!fHistorico.cCursorHco.isAfterLast) {
-            // TODO
-            /*
-            val queMes = fHistorico.getMes()
+
+        for (hco in fHistorico.lDatosHMAnyo) {
+            val queMes = hco.mes
             while (mesActual < queMes) {
                 drawChart(0, mesActual)
                 mesActual++
             }
 
-            val queCantidad = fHistorico.getCantidad2Int()
-            drawChart(queCantidad, fHistorico.getMes())
+            val sCantidad = hco.cantidad.replace(',', '.')
+            val dCantidad = sCantidad.toDouble()
+            val queCantidad = dCantidad.roundToInt()
+
+            drawChart(queCantidad, hco.mes)
             mesActual++
             fHistorico.cCursorHco.moveToNext()
-            */
         }
+
         if (mesActual < 13) {
             while (mesActual < 13) {
                 drawChart(0, mesActual)
@@ -79,7 +81,6 @@ class AcumuladosAnyo: Activity() {
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        //params.bottomMargin=12;
         val llGrupo = LinearLayout(this)
         llGrupo.orientation = LinearLayout.VERTICAL
         params.leftMargin = 15

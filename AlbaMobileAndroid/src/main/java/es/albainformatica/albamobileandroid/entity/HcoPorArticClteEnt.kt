@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class HcoPorArticClteEnt (
 
     @PrimaryKey(autoGenerate = true)
-    var hcoPorcArticClteId: Int = 0,
+    var hcoPorArticClteId: Int = 0,
 
     var articuloId: Int = 0,
     var clienteId: Int = 0,

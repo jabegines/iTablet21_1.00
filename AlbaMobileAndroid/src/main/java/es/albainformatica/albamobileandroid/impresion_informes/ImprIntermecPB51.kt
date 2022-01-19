@@ -19,6 +19,9 @@ import android.os.Message
 import android.os.SystemClock
 import android.preference.PreferenceManager
 import es.albainformatica.albamobileandroid.*
+import es.albainformatica.albamobileandroid.dao.CargasDao
+import es.albainformatica.albamobileandroid.dao.CargasLineasDao
+import es.albainformatica.albamobileandroid.entity.CargasEnt
 import java.io.IOException
 import java.io.OutputStream
 import java.lang.Exception
@@ -706,32 +709,29 @@ class ImprIntermecPB51(contexto: Context): Runnable {
         var result = ""
         val lineasDobles = StringBuilder()
         val lineaSimple = StringBuilder()
-        // TODO
-        /*
-        val cursor = dbAlba.rawQuery("SELECT * FROM cargas WHERE cargaId = $fCargaId", null)
-        if (cursor.moveToFirst()) {
+
+        val cargasDao: CargasDao? = getInstance(fContexto)?.cargasDao()
+        val cargaEnt = cargasDao?.getCarga(fCargaId) ?: CargasEnt()
+
+        if (cargaEnt.cargaId > 0) {
             for (x in 0..62) {
                 lineasDobles.append("=")
             }
             result += StringOfChar(ccSaltoLinea, 3)
             result = result + fMargenIzq + ccDobleAncho + "Nueva carga  "
-            result += cursor.getString(cursor.getColumnIndex("fecha"))
-            result = result + StringOfChar(" ", 3) + cursor.getString(cursor.getColumnIndex("hora"))
+            result += cargaEnt.fecha
+            result = result + StringOfChar(" ", 3) + cargaEnt.hora
             result += ccSaltoLinea
             result = result + fMargenIzq + lineasDobles + StringOfChar(ccSaltoLinea, 4)
             result += ccNormal
-            result = result + fMargenIzq + "Codigo" + StringOfChar(
-                " ",
-                2
-            ) + "Descripcion" + StringOfChar(" ", 32) +
+            result = result + fMargenIzq + "Codigo" + StringOfChar(" ", 2) + "Descripcion" + StringOfChar(" ", 32) +
                     "Cajas" + StringOfChar(" ", 2) + "Cantidad" + ccSaltoLinea
             for (x in 0..65) {
                 lineaSimple.append("-")
             }
             result = result + fMargenIzq + lineaSimple + ccSaltoLinea
         }
-        cursor.close()
-        */
+
         return result
     }
 
@@ -748,20 +748,16 @@ class ImprIntermecPB51(contexto: Context): Runnable {
         val lCant = 9
         var sumaCajas = 0.0
         var sumaCant = 0.0
-        // TODO
-        /*
-        val cursor = dbAlba.rawQuery(
-            "SELECT A.*, B.codigo, B.descr FROM cargasLineas A" +
-                    " LEFT JOIN articulos B ON B.articulo = A.articulo" +
-                    " WHERE A.cargaId = " + fCargaId, null
-        )
-        if (cursor.moveToFirst()) {
-            cursor.moveToFirst()
-            while (!cursor.isAfterLast) {
-                sCodigo = cursor.getString(cursor.getColumnIndex("codigo"))
-                sDescr = cursor.getString(cursor.getColumnIndex("descr"))
-                sCajas = cursor.getString(cursor.getColumnIndex("cajas"))
-                sCant = cursor.getString(cursor.getColumnIndex("cantidad"))
+
+        val lineasCargas: CargasLineasDao? = getInstance(fContexto)?.cargasLineasDao()
+        val lLineas = lineasCargas?.getCarga(fCargaId) ?: emptyList<DatosDetCarga>().toMutableList()
+
+        if (lLineas.count() > 0) {
+            for (linea in lLineas) {
+                sCodigo = linea.codigo
+                sDescr = linea.descripcion
+                sCajas = linea.cajas
+                sCant = linea.cantidad
                 result.append(fMargenIzq).append(ajustarCadena(sCodigo, lCodigo, true)).append(" ")
                     .append(ajustarCadena(sDescr, lDescr, true))
                 var dCajas = 0.0
@@ -775,11 +771,9 @@ class ImprIntermecPB51(contexto: Context): Runnable {
                 result.append(" ").append(ajustarCadena(sCajas, lCajas, false)).append(" ")
                     .append(ajustarCadena(sCant, lCant, false))
                 result.append(ccSaltoLinea)
-                cursor.moveToNext()
             }
         }
-        cursor.close()
-        */
+
         sCajas = String.format(fFtoCant, sumaCajas)
         sCant = String.format(fFtoCant, sumaCant)
         result.append(ccSaltoLinea)

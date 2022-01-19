@@ -85,7 +85,7 @@ class CargarHcoPorDoc: AppCompatActivity() {
 
     private fun prepararRvArticulos() {
         fAdpArt = ArtHcoDocRvAdapter(getArticulos(), this, object: ArtHcoDocRvAdapter.OnItemClickListener {
-            override fun onClick(view: View, data: DatosHcArtClte) {
+            override fun onClick(view: View, data: DatosArtHcArtClte) {
                 prepararRvDocs()
             }
         })
@@ -94,9 +94,9 @@ class CargarHcoPorDoc: AppCompatActivity() {
     }
 
 
-    private fun getArticulos(): List<DatosHcArtClte> {
-        fHistorico.abrirHcoPorArtClte(fCliente, queOrdenacion)
-        return fHistorico.lDatHcoArtClte
+    private fun getArticulos(): List<DatosArtHcArtClte> {
+        fHistorico.abrirArtsHcoPorArtClte(fCliente, queOrdenacion)
+        return fHistorico.lDatArtHcoArtClte
     }
 
 
@@ -119,16 +119,22 @@ class CargarHcoPorDoc: AppCompatActivity() {
     private fun prepararRvDocs() {
         fAdpDocs = DocHcoDocRvAdapter(getDocs(), this, object: DocHcoDocRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: DatosDocsHcArtClte) {
+
+                val i = Intent(this@CargarHcoPorDoc, EditarHcoActivity::class.java)
+                i.putExtra("linea", data.hcoPorArticClteId)
+                i.putExtra("desdeHcoDoc", true)
+                i.putExtra("articulo", data.articuloId)
+                startActivityForResult(i, fRequestEditarHco)
             }
         })
 
-        //cargarCursor()
-
+        fRecDocs.adapter = fAdpDocs
     }
 
 
     private fun getDocs(): List<DatosDocsHcArtClte> {
-        aquí me quedé
+        fHistorico.abrirDocsHcoPorArtClte(fAdpArt.articuloId, fCliente)
+        return fHistorico.lDatDocHcoArtClte
     }
 
 
@@ -234,8 +240,7 @@ private fun cargarCursor() {
         if (requestCode == fRequestEditarHco) {
             if (resultCode == Activity.RESULT_OK) {
                 // Refrescamos el adaptador del recyclerView por si hemos indicado alguna cantidad a vender
-                fAdpArt.docs = getDocs()
-                fAdpArt.notifyDataSetChanged()
+                prepararRvArticulos()
             }
         }
     }
