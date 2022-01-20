@@ -20,7 +20,7 @@ class ArticulosClase(val contexto: Context) {
 
     lateinit var lArticulos: List<Int>
     lateinit var lArtGridView: List<DatosGridView>
-    lateinit var cTarifas: Cursor
+
     var cDatAdicionales: Cursor? = null
 
     var fArticulo = 0
@@ -50,8 +50,6 @@ class ArticulosClase(val contexto: Context) {
 
     fun close() {
         cDatAdicionales?.close()
-        if (this::cTarifas.isInitialized)
-            cTarifas.close()
     }
 
 
@@ -89,9 +87,6 @@ class ArticulosClase(val contexto: Context) {
             fUCaja = if (datosArticulo.uCaja != "") datosArticulo.uCaja.replace(',', '.').toDouble() else 0.0
             entradas = if (datosArticulo.ent != null) datosArticulo.ent?.replace(',', '.')?.toDouble() ?: 0.0 else 0.0
             salidas = if (datosArticulo.sal != null) datosArticulo.sal?.replace(',', '.')?.toDouble() ?: 0.0 else 0.0
-
-            //abrirTarifas(queArticulo)
-            //cTarifas.moveToFirst()
 
             return true
         }
@@ -154,10 +149,9 @@ class ArticulosClase(val contexto: Context) {
     }
 
 
+    /*
     private fun abrirTarifas(queArticulo: Int) {
         // Si el artículo tiene formatos el cursor cTarifas saldrá de la tabla "trfformatos".
-        // TODO
-        /*
         if (usarFormatos()) {
             // En la consulta repetimos el campo precio porque nos hará falta en FichaArticuloActivity.setViewBinder.
             cTarifas = dbAlba.rawQuery(
@@ -176,8 +170,8 @@ class ArticulosClase(val contexto: Context) {
                         + " WHERE A.articulo =" + queArticulo), null
             )
         }
-        */
     }
+    */
 
 
     // Catálogos Bionat

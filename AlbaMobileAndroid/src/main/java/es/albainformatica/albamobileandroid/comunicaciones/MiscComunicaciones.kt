@@ -3,7 +3,6 @@ package es.albainformatica.albamobileandroid.comunicaciones
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.database.Cursor
 import android.os.Environment
 import android.os.Handler
 import android.os.Message
@@ -3425,14 +3424,18 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                     enviarClientes(lClientes)
                 }
 
-                fClientes.abrirDirParaEnviar(queNumExportacion)
-                if (fClientes.cDirecciones.count > 0) {
+                val direccCltesDao: DireccCltesDao? = MyDatabase.getInstance(fContext)?.direccCltesDao()
+                val lDirecciones: List<DireccCltesEnt> = if (queNumExportacion > 0)
+                    direccCltesDao?.getDirParaEnvExp(queNumExportacion) ?: emptyList<DireccCltesEnt>().toMutableList()
+                else
+                    direccCltesDao?.getDirParaEnv() ?: emptyList<DireccCltesEnt>().toMutableList()
+                if (lDirecciones.isNotEmpty()) {
                     hayDirecc = true
-                    enviarDirecciones(fClientes)
+                    enviarDirecciones(lDirecciones)
                 }
 
                 val cTelfClteDao: ContactosCltesDao? = MyDatabase.getInstance(fContext)?.contactosCltesDao()
-                val lTelefonos: MutableList<ContactosCltesEnt> = if (queNumExportacion > 0)
+                val lTelefonos: List<ContactosCltesEnt> = if (queNumExportacion > 0)
                     cTelfClteDao?.getTlfsParaEnvExp(queNumExportacion) ?: emptyList<ContactosCltesEnt>().toMutableList()
                 else
                     cTelfClteDao?.getTlfsParaEnviar() ?: emptyList<ContactosCltesEnt>().toMutableList()
@@ -3701,8 +3704,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
         }
     }
 
-    private fun enviarDirecciones(fClientes: ClientesClase) {
-
+    private fun enviarDirecciones(lDirecciones: List<DireccCltesEnt>) {
         val msg = Message()
         msg.obj = "Preparando direcciones"
         puente.sendMessage(msg)
@@ -3717,21 +3719,19 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true)
 
             serializer.startTag("", "consulta")
-            fClientes.cDirecciones.moveToFirst()
-            while (!fClientes.cDirecciones.isAfterLast) {
+            for (direccion in lDirecciones) {
                 serializer.startTag("", "record")
-                serializer.attribute(null, "CLIENTE", fClientes.getDir_Cliente().toString())
-                serializer.attribute(null, "ORDEN", fClientes.getDir_Orden())
-                serializer.attribute(null, "DIRECC", fClientes.getDir_Direccion())
-                serializer.attribute(null, "POBLAC", fClientes.getDir_Poblac())
-                serializer.attribute(null, "CPOSTAL", fClientes.getDir_CP())
-                serializer.attribute(null, "PROVIN", fClientes.getDir_Provincia())
-                serializer.attribute(null, "PAIS", fClientes.getDir_Pais())
-                serializer.attribute(null, "DIRDOC", "F")
-                serializer.attribute(null, "DIRMER", "F")
-                serializer.attribute(null, "ESTADO", "N")
+                serializer.attribute(null, "Cliente", direccion.clienteId.toString())
+                serializer.attribute(null, "Orden", direccion.orden.toString())
+                serializer.attribute(null, "Direcc", direccion.direccion)
+                serializer.attribute(null, "Poblac", direccion.localidad)
+                serializer.attribute(null, "CPostal", direccion.cPostal)
+                serializer.attribute(null, "Provin", direccion.provincia)
+                serializer.attribute(null, "Pais", direccion.pais)
+                serializer.attribute(null, "DirDoc", "F")
+                serializer.attribute(null, "DirMer", "F")
+                serializer.attribute(null, "Estado", "N")
                 serializer.endTag("", "record")
-                fClientes.cDirecciones.moveToNext()
             }
             serializer.endTag("", "consulta")
 
@@ -3748,7 +3748,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
     }
 
 
-    private fun enviarContactos(lTelefonos: MutableList<ContactosCltesEnt>) {
+    private fun enviarContactos(lTelefonos: List<ContactosCltesEnt>) {
         val msg = Message()
         msg.obj = "Preparando contactos"
         puente.sendMessage(msg)
@@ -4239,8 +4239,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
         //val numCobros: Int = if (queNumExportacion == 0) cobrosDao?.hayCobrosParaEnviar() ?: 0
         //    else cobrosDao?.hayCobrosEnExport(queNumExportacion) ?: 0
 
-        val lCobros: List<CobrosEnt>
-        lCobros = if (queNumExportacion == 0) {
+        val lCobros: List<CobrosEnt> = if (queNumExportacion == 0) {
             cobrosDao?.abrirParaExportar() ?: emptyList<CobrosEnt>().toMutableList()
         } else {
             cobrosDao?.abrirExportacion(queNumExportacion) ?: emptyList<CobrosEnt>().toMutableList()

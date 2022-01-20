@@ -5,23 +5,30 @@ import es.albainformatica.albamobileandroid.Configuracion
 import android.os.Bundle
 import es.albainformatica.albamobileandroid.Comunicador
 import android.content.Intent
-import android.database.Cursor
 import android.view.View
 import android.widget.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.MsjAlerta
 import es.albainformatica.albamobileandroid.R
+import es.albainformatica.albamobileandroid.dao.DireccCltesDao
+import es.albainformatica.albamobileandroid.database.MyDatabase
+import es.albainformatica.albamobileandroid.entity.DireccCltesEnt
+import kotlinx.android.synthetic.main.ly_selecc_direc_clte.*
 import java.util.ArrayList
 
 
 class GetDireccClte: Activity() {
-    private lateinit var adapterDir: SimpleCursorAdapter
+    private val direccCltesDao: DireccCltesDao? = MyDatabase.getInstance(this)?.direccCltesDao()
     private lateinit var fClientes: ClientesClase
     private lateinit var fConfiguracion: Configuracion
 
+    private lateinit var fRecDirecciones: RecyclerView
+    private lateinit var fAdpDirecciones: DirCltesRvAdapter
+    private lateinit var fDatActDir: DireccCltesEnt
+
     private var fCliente = 0
-    private var fIdDireccion = 0
-    private var fAlmDireccion = ""
-    private var fOrdenDireccion = ""
+    private val fRequestEditarDir = 1
 
 
     public override fun onCreate(savedInstance: Bundle?) {
@@ -49,53 +56,46 @@ class GetDireccClte: Activity() {
         val queTexto = fClientes.fDireccion + "-" + fClientes.fCodPostal + "-" +
                 fClientes.fPoblacion + "-" + fClientes.fProvincia
         tvDirecc.text = queTexto
+
+        fRecDirecciones = rvSelecDirCltes
+        fRecDirecciones.layoutManager = LinearLayoutManager(this)
     }
 
     private fun mostrarDirecciones() {
-        val columns = arrayOf("direcc", "poblac")
-        val to = intArrayOf(R.id.ly_direcc, R.id.ly_poblac)
-        adapterDir = SimpleCursorAdapter(
-            this,
-            R.layout.layout_direcc_cltes,
-            fClientes.cDirecciones,
-            columns,
-            to,
-            0
-        )
-        val listViewDir = findViewById<ListView>(R.id.lvDirCltes)
-        listViewDir.adapter = adapterDir
-        mostrarDatosDirecc()
-        fIdDireccion = 0
-        fAlmDireccion = ""
-        fOrdenDireccion = ""
-        listViewDir.onItemClickListener =
-            AdapterView.OnItemClickListener { adapter: AdapterView<*>, _: View?, position: Int, _: Long ->
-                val cursor = adapter.getItemAtPosition(position) as Cursor
-                fIdDireccion = cursor.getInt(cursor.getColumnIndexOrThrow("_id"))
-                fAlmDireccion = cursor.getString(cursor.getColumnIndexOrThrow("alm"))
-                fOrdenDireccion = cursor.getString(cursor.getColumnIndexOrThrow("orden"))
+        fAdpDirecciones = DirCltesRvAdapter(getDirecciones(), this, object: DirCltesRvAdapter.OnItemClickListener {
+            override fun onClick(view: View, data: DireccCltesEnt) {
+                //fIdDir = data.direccionId
+                fDatActDir = data
                 mostrarDatosDirecc()
             }
+        })
+
+        fRecDirecciones.adapter = fAdpDirecciones
     }
+
+    private fun getDirecciones(): List<DireccCltesEnt> {
+        return direccCltesDao?.getDirClte(fCliente) ?: emptyList<DireccCltesEnt>().toMutableList()
+    }
+
 
     private fun mostrarDatosDirecc() {
         val edtDirDirecc = findViewById<View>(R.id.edtDir_Direcc) as EditText
         val edtDirPoblac = findViewById<View>(R.id.edtDir_Poblacion) as EditText
         val edtDirCP = findViewById<View>(R.id.edtDir_CPostal) as EditText
         val edtDirProv = findViewById<View>(R.id.edtDir_Provincia) as EditText
-        edtDirDirecc.setText(fClientes.getDir_Direccion())
-        edtDirPoblac.setText(fClientes.getDir_Poblac())
-        edtDirCP.setText(fClientes.getDir_CP())
-        edtDirProv.setText(fClientes.getDir_Provincia())
+        edtDirDirecc.setText(fDatActDir.direccion)
+        edtDirPoblac.setText(fDatActDir.localidad)
+        edtDirCP.setText(fDatActDir.cPostal)
+        edtDirProv.setText(fDatActDir.provincia)
     }
 
     fun aceptarDireccion(view: View) {
         view.getTag(0)              // Para que no dé warning el compilador
 
         val returnIntent = Intent()
-        returnIntent.putExtra("idDireccion", fIdDireccion)
-        returnIntent.putExtra("almDireccion", fAlmDireccion)
-        returnIntent.putExtra("ordenDireccion", fOrdenDireccion)
+        returnIntent.putExtra("idDireccion", fDatActDir.direccionId)
+        returnIntent.putExtra("almDireccion", fDatActDir.almacen)
+        returnIntent.putExtra("ordenDireccion", fDatActDir.orden)
         setResult(RESULT_OK, returnIntent)
         finish()
     }
@@ -105,11 +105,12 @@ class GetDireccClte: Activity() {
 
         val i = Intent(this, EditarDirClte::class.java)
         i.putExtra("nuevo", true)
-        startActivityForResult(i, REQUEST_EDITARDIR)
+        startActivityForResult(i, fRequestEditarDir)
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_EDITARDIR) {
+        if (requestCode == fRequestEditarDir) {
             if (resultCode == RESULT_OK) {
                 val aDatosDirecc = ArrayList<String>(7)
                 aDatosDirecc[0] = 0.toString()
@@ -132,11 +133,10 @@ class GetDireccClte: Activity() {
     }
 
     private fun refrescarDirecc() {
-        adapterDir.changeCursor(fClientes.cDirecciones)
+        mostrarDirecciones()
         mostrarDatosDirecc()
     }
 
-    companion object {
-        private const val REQUEST_EDITARDIR = 1
-    }
+
+
 }

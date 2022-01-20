@@ -12,6 +12,20 @@ import es.albainformatica.albamobileandroid.entity.TempCltesEnt
 @Dao
 interface ClientesDao {
 
+    @Query("UPDATE Clientes SET numExport = :queNumExportacion " +
+            " WHERE numExport = -1")
+    fun marcarNumExport(queNumExportacion: Int)
+
+    @Query("UPDATE Clientes SET estado = 'XN', numExport = :queNumExportacion " +
+            " WHERE estado = 'N'")
+    fun marcarComoExportados(queNumExportacion: Int)
+
+
+    @Query("UPDATE Clientes SET estado = 'XM', numExport = :queNumExportacion " +
+            " WHERE estado = 'M'")
+    fun marcarComoExpModif(queNumExportacion: Int)
+
+
     @Query("UPDATE Clientes SET pendiente = :queImporte WHERE clienteId = :queCliente")
     fun actualizarPendiente(queCliente: Int, queImporte: String)
 

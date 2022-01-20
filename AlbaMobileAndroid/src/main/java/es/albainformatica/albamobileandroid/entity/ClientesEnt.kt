@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "Clientes")
 data class ClientesEnt(
+
     @PrimaryKey
     var clienteId: Int = 0,
 

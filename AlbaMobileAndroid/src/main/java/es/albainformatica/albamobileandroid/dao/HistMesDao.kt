@@ -14,7 +14,7 @@ import es.albainformatica.albamobileandroid.entity.HistMesEnt
 interface HistMesDao {
 
     @Query("SELECT SUM(cantidad) sumCant, SUM(cantidadAnt) sumCantAnt, " +
-            " SUM(imorte) sumImpte, SUM(importeAnt) sumImpteAnt FROM HistMes " +
+            " SUM(importe) sumImpte, SUM(importeAnt) sumImpteAnt FROM HistMes " +
             " WHERE clienteId = :queCliente " +
             " GROUP BY clienteId")
     fun totalesHcoClte(queCliente: Int): TotalesHistMes
@@ -30,7 +30,7 @@ interface HistMesDao {
     fun abrirHcoClte(queCliente: Int): List<DatosHistMesClte>
 
 
-    @Query("SELECT A.histMesId, A.articuloId, B.codigo, B.descripcion, A.cantidadAnt, A.cantidad " +
+    @Query("SELECT A.histMesId, A.articuloId, B.codigo, B.descripcion, A.cantidadAnt, A.cantidad, " +
             " (A.cantidad - A.cantidadAnt) diferencia, A.mes FROM HistMes A " +
             " LEFT JOIN Articulos B ON B.articuloId = A.articuloId " +
             " WHERE A.clienteId = :queCliente AND A.mes = :queMes " +

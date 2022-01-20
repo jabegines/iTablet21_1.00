@@ -2,24 +2,24 @@ package es.albainformatica.albamobileandroid.historicos
 
 import android.os.Bundle
 import android.view.View
-import android.widget.ListView
-import android.widget.SimpleCursorAdapter
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import es.albainformatica.albamobileandroid.Configuracion
-import es.albainformatica.albamobileandroid.Comunicador
-import es.albainformatica.albamobileandroid.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import es.albainformatica.albamobileandroid.*
 import kotlinx.android.synthetic.main.acum_comp_sem_mes.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 class AcumComSemMes: AppCompatActivity() {
-    private lateinit var lvLineas: ListView
-    private var fCliente = 0
-    private lateinit var adapterLineas: SimpleCursorAdapter
-    private lateinit var fHistorico: HcoComSemMes
     private lateinit var fConfiguracion: Configuracion
+    private lateinit var fHistorico: HcoComSemMes
+
+    private lateinit var fRecyclerView: RecyclerView
+    private lateinit var fAdapter: AcumComSemMesRvAdapter
+
+
+    private var fCliente = 0
     private var sHoy = ""
     private var sHoyMenos6 = ""
     private var sHoyMenos7 = ""
@@ -44,39 +44,29 @@ class AcumComSemMes: AppCompatActivity() {
     private fun inicializarControles() {
         fFtoDecCantidad = fConfiguracion.formatoDecCantidad()
 
-        lvLineas = findViewById<View>(R.id.lvAcumCompSemMes) as ListView
-        prepararListView()
+        fRecyclerView = rvAcumCompSemMes
+        fRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        prepararRecyclerView()
         porSemanas(null)
     }
 
 
-    private fun prepararListView() {
-        val columnas = arrayOf("codigo", "descr", "suma1", "suma2")
-        val to = intArrayOf(R.id.lyhcoSemMesCodigo, R.id.lyhcoSemMesDescr, R.id.lyhcoSemMesCant1, R.id.lyhcoSemMesCant2)
-        adapterLineas = SimpleCursorAdapter(this, R.layout.ly_hco_com_sem_mes, fHistorico.cCursorHco, columnas, to, 0)
-        //        // Formateamos las columnas.
-        formatearColumnas()
-        lvLineas.adapter = adapterLineas
-    }
-
-
-    private fun formatearColumnas() {
-        adapterLineas.viewBinder = SimpleCursorAdapter.ViewBinder { view, cursor, column ->
-            val tv = view as TextView
-            // El orden de las columnas será el que tengan en el cursor que estemos utilizando
-            // (en este caso fHistorico.cCursorHco), comenzando por la cero.
-            // Formateamos las cantidades.
-            if (column == 1 || column == 2) {
-                val sCantidad = if (column == 1) cursor.getString(cursor.getColumnIndex("suma1")).replace(',', '.')
-                else cursor.getString(cursor.getColumnIndex("suma2")).replace(',', '.')
-                val dCantidad = sCantidad.toDouble()
-                tv.text = String.format(fFtoDecCantidad, dCantidad)
-
-                true
+    private fun prepararRecyclerView() {
+        fAdapter = AcumComSemMesRvAdapter(getAcumulados(), this, object: AcumComSemMesRvAdapter.OnItemClickListener {
+            override fun onClick(view: View, data: DatosHcoCompSemMes) {
             }
-            else false
-        }
+        })
+
+        fRecyclerView.adapter = fAdapter
     }
+
+
+    private fun getAcumulados(): List<DatosHcoCompSemMes> {
+        fHistorico.abrir(fCliente, sHoy, sHoyMenos6, sHoyMenos7, sHoyMenos13)
+        return fHistorico.lHcoCompSemMes
+    }
+
 
 
     fun cancelarHco(view: View?) {
@@ -104,13 +94,14 @@ class AcumComSemMes: AppCompatActivity() {
 
         val tvFecha1 = tvCompSemMesCant1
         val tvFecha2 = tvCompSemMesCant2
-        tvFecha1.text = sHoyMenos6.substring(0, 5) + "-" + sHoy.substring(0, 5)
-        tvFecha2.text = sHoyMenos13.substring(0, 5) + "-" + sHoyMenos7.substring(0, 5)
+        var queTexto = sHoyMenos6.substring(0, 5) + "-" + sHoy.substring(0, 5)
+        tvFecha1.text = queTexto
+        queTexto = sHoyMenos13.substring(0, 5) + "-" + sHoyMenos7.substring(0, 5)
+        tvFecha2.text = queTexto
 
-        fHistorico.abrir(fCliente, sHoy, sHoyMenos6, sHoyMenos7, sHoyMenos13)
-
-        adapterLineas.changeCursor(fHistorico.cCursorHco)
+        prepararRecyclerView()
     }
+
 
     fun porSemanas(view: View?) {
         view?.getTag(0)          // Para que no dé warning el compilador
@@ -131,12 +122,12 @@ class AcumComSemMes: AppCompatActivity() {
 
         val tvFecha1 = tvCompSemMesCant1
         val tvFecha2 = tvCompSemMesCant2
-        tvFecha1.text = sHoyMenos6.substring(0, 5) + "-" + sHoy.substring(0, 5)
-        tvFecha2.text = sHoyMenos13.substring(0, 5) + "-" + sHoyMenos7.substring(0, 5)
+        var queTexto = sHoyMenos6.substring(0, 5) + "-" + sHoy.substring(0, 5)
+        tvFecha1.text = queTexto
+        queTexto = sHoyMenos13.substring(0, 5) + "-" + sHoyMenos7.substring(0, 5)
+        tvFecha2.text = queTexto
 
-        fHistorico.abrir(fCliente, sHoy, sHoyMenos6, sHoyMenos7, sHoyMenos13)
-
-        adapterLineas.changeCursor(fHistorico.cCursorHco)
+        prepararRecyclerView()
     }
 
 }

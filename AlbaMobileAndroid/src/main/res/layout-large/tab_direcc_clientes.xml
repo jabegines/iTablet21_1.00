@@ -43,17 +43,16 @@
     </LinearLayout>
   </LinearLayout>
 
-  <ListView
-    android:id="@+id/lvDirCltes"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_marginLeft="5dp"
-    android:layout_marginRight="5dp"
-    android:layout_marginTop="10dp"
-    android:fastScrollEnabled="true"
-    android:listSelector="@drawable/list_selector"
-    android:layout_weight="0.3">
-  </ListView>
+
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/rvDirCltes"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="0.3"
+      android:layout_marginLeft="5dp"
+      android:layout_marginRight="5dp"
+      android:layout_marginTop="10dp" >
+  </androidx.recyclerview.widget.RecyclerView>
 
   <View
     android:layout_width="wrap_content"

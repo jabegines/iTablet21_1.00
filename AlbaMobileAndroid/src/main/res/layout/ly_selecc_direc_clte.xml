@@ -45,16 +45,15 @@
         </LinearLayout>
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/lvDirCltes"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSelecDirCltes"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_weight="0.6"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_marginTop="10dp"
-        android:layout_weight="0.6"
-        android:fastScrollEnabled="true"
-        android:listSelector="@drawable/list_selector"></ListView>
+        android:layout_marginTop="10dp" >
+    </androidx.recyclerview.widget.RecyclerView>
 
     <View
         android:layout_width="wrap_content"

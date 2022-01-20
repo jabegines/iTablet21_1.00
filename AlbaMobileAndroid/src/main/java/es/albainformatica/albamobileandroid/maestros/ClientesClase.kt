@@ -1,20 +1,18 @@
 package es.albainformatica.albamobileandroid.maestros
 
 import android.annotation.SuppressLint
-import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.preference.PreferenceManager
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.cobros.FormasPagoClase
 import es.albainformatica.albamobileandroid.cobros.PendienteClase
-import es.albainformatica.albamobileandroid.dao.ClientesDao
-import es.albainformatica.albamobileandroid.dao.ContactosCltesDao
-import es.albainformatica.albamobileandroid.dao.DireccCltesDao
-import es.albainformatica.albamobileandroid.dao.SaldosDao
+import es.albainformatica.albamobileandroid.dao.*
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.entity.ClientesEnt
+import es.albainformatica.albamobileandroid.entity.ContactosCltesEnt
 import es.albainformatica.albamobileandroid.entity.DireccCltesEnt
+import es.albainformatica.albamobileandroid.entity.RuterosEnt
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -25,11 +23,11 @@ class ClientesClase(val contexto: Context) {
     private val saldosDao: SaldosDao? = MyDatabase.getInstance(contexto)?.saldosDao()
     private val contactosClteDao: ContactosCltesDao? = MyDatabase.getInstance(contexto)?.contactosCltesDao()
     private val direccCltesDao: DireccCltesDao? = MyDatabase.getInstance(contexto)?.direccCltesDao()
+    private val ruterosDao: RuterosDao? = MyDatabase.getInstance(contexto)?.ruterosDao()
     private var fConfiguracion: Configuracion = Comunicador.fConfiguracion
+    private var fFPago: FormasPagoClase = FormasPagoClase(contexto)
 
     lateinit var cursor: Cursor
-    lateinit var cDirecciones: Cursor
-    private var fFPago: FormasPagoClase = FormasPagoClase(contexto)
 
     private var fCliente = 0
     var fCodigo: String = ""
@@ -63,8 +61,6 @@ class ClientesClase(val contexto: Context) {
 
 
     fun close() {
-        if (this::cDirecciones.isInitialized)
-            cDirecciones.close()
         if (this::cursor.isInitialized)
             cursor.close()
     }
@@ -98,27 +94,10 @@ class ClientesClase(val contexto: Context) {
             fRamo = clteEnt.ramo
         }
 
-        // TODO
-        /*
-        //cTelefonos = dbAlba.rawQuery("SELECT * FROM conclientes WHERE cliente = $queCliente ORDER BY orden", null)
-        cDirecciones = dbAlba.rawQuery("SELECT * FROM dirclientes WHERE cliente = $queCliente ORDER BY orden", null)
-
-        // Tenemos que hacer moveToFirst, ya que la posicion inicial de los cursores es -1.
-        if (cursor.moveToFirst()) {
-            //cTelefonos?.moveToFirst()
-            cDirecciones.moveToFirst()
-            return true
-        } else return false
-        */
-
         return (clteEnt.codigo > 0)
     }
 
 
-    fun Abrir() {
-        // TODO
-        //dbAlba = writableDatabase
-    }
 
 
     fun abrirParaEnviar(queNumExportacion: Int): List<ClientesEnt> {
@@ -139,183 +118,146 @@ class ClientesClase(val contexto: Context) {
         return (lDirecciones.count() > 1)
     }
 
-    fun abrirDirParaEnviar(QueNumExportacion: Int) {
-        val sCondicion: String = if (QueNumExportacion == 0) "WHERE estado = 'N' OR estado = 'M'" else " WHERE numexport = $QueNumExportacion"
-        // TODO
-        //cDirecciones = dbAlba.rawQuery("SELECT * FROM dirclientes $sCondicion", null)
-    }
-
-
 
     fun existeCodigo(queCodigo: Int): Int {
         return clientesDao?.existeCodigo(queCodigo) ?: 0
     }
 
     fun aceptarCambDirec(aDatosDirecc: ArrayList<String>, insertando: Boolean) {
-        val values = ContentValues()
-        values.put("direcc", aDatosDirecc[3])
-        values.put("poblac", aDatosDirecc[4])
-        values.put("cpostal", aDatosDirecc[5])
-        values.put("provin", aDatosDirecc[6])
+        val dirClteEnt = DireccCltesEnt()
+        dirClteEnt.direccion = aDatosDirecc[3]
+        dirClteEnt.localidad = aDatosDirecc[4]
+        dirClteEnt.provincia = aDatosDirecc[6]
+        dirClteEnt.cPostal = aDatosDirecc[5]
+
         if (insertando) {
-            values.put("cliente", aDatosDirecc[1])
-            values.put("alm", aDatosDirecc[2])
-            values.put("orden", dimeUltimoOrdenDir(aDatosDirecc[1].toInt()))
-            values.put("sucursal", "0")
-            values.put("estado", "N")
-            // TODO
-            //dbAlba.insert("dirclientes", null, values)
+            dirClteEnt.clienteId = aDatosDirecc[1].toInt()
+            dirClteEnt.almacen = aDatosDirecc[2].toShort()
+            dirClteEnt.orden = dimeUltimoOrdenDir(aDatosDirecc[1].toInt()).toShort()
+            dirClteEnt.sucursal = 0
+            dirClteEnt.estado = "N"
+
+            direccCltesDao?.insertar(dirClteEnt)
         } else {
-            values.put("estado", "M")
-            // TODO
-            //dbAlba.update("dirclientes", values, "_id=" + aDatosDirecc[0], null)
+            dirClteEnt.direccionId = aDatosDirecc[0].toInt()
+            dirClteEnt.estado =  "M"
+
+            direccCltesDao?.actualizar(dirClteEnt.direccionId, dirClteEnt.direccion, dirClteEnt.localidad,
+                        dirClteEnt.provincia, dirClteEnt.cPostal, dirClteEnt.estado)
         }
-        refrescarDirecc()
     }
 
+
+    fun aceptarCambTelf(aDatosTelf: ArrayList<String>, insertando: Boolean) {
+        val tlfClteEnt = ContactosCltesEnt()
+        tlfClteEnt.nombre = aDatosTelf[3]
+        tlfClteEnt.telefono1 = aDatosTelf[4]
+        tlfClteEnt.telefono2 = aDatosTelf[5]
+        tlfClteEnt.obs1 = aDatosTelf[7]
+        tlfClteEnt.eMail = aDatosTelf[6]
+
+        if (insertando) {
+            tlfClteEnt.clienteId = aDatosTelf[1].toInt()
+            tlfClteEnt.almacen = aDatosTelf[2].toShort()
+            tlfClteEnt.orden = dimeUltimoOrdenTelf(aDatosTelf[1].toInt()).toShort()
+            tlfClteEnt.sucursal = 0
+            tlfClteEnt.estado = "N"
+
+            contactosClteDao?.insertar(tlfClteEnt)
+        } else {
+            tlfClteEnt.contactoClteId = aDatosTelf[0].toInt()
+            tlfClteEnt.estado = "M"
+
+            contactosClteDao?.actualizar(tlfClteEnt.contactoClteId, tlfClteEnt.nombre, tlfClteEnt.telefono1,
+                        tlfClteEnt.telefono2, tlfClteEnt.obs1, tlfClteEnt.eMail, tlfClteEnt.estado)
+        }
+    }
+
+
+
     fun marcarComoExportados(iSigExportacion: Int) {
-        val values = ContentValues()
-        values.put("estado", "XN")
-        values.put("numexport", iSigExportacion)
-        // TODO
-        //dbAlba.update("clientes", values, "estado='N'", null)
-        //dbAlba.update("conclientes", values, "estado='N'", null)
-        //dbAlba.update("dirclientes", values, "estado='N'", null)
-        values.put("estado", "XM")
-        values.put("numexport", iSigExportacion)
-        //dbAlba.update("clientes", values, "estado='M'", null)
-        //dbAlba.update("conclientes", values, "estado='M'", null)
-        //dbAlba.update("dirclientes", values, "estado='M'", null)
+        clientesDao?.marcarComoExportados(iSigExportacion)
+        clientesDao?.marcarComoExpModif(iSigExportacion)
+        contactosClteDao?.marcarComoExportados(iSigExportacion)
+        contactosClteDao?.marcarComoExpModif(iSigExportacion)
+        direccCltesDao?.marcarComoExportados(iSigExportacion)
+        direccCltesDao?.marcarComoExpModif(iSigExportacion)
     }
 
 
     fun marcarNumExport(fNumPaquete: Int) {
-        val values = ContentValues()
-        values.put("numexport", fNumPaquete)
-        // TODO
-        //dbAlba.update("clientes", values, "numexport=-1", null)
-        //dbAlba.update("conclientes", values, "numexport=-1", null)
-        //dbAlba.update("dirclientes", values, "numexport=-1", null)
+        clientesDao?.marcarNumExport(fNumPaquete)
+        contactosClteDao?.marcarNumExport(fNumPaquete)
+        direccCltesDao?.marcarNumExport(fNumPaquete)
     }
 
-    fun borrarDirecc(QueId: String) {
-        // TODO
-        //dbAlba.delete("dirclientes", "_id=$QueId", null)
-        refrescarDirecc()
+
+    fun borrarDirecc(queId: Int) {
+        direccCltesDao?.borrar(queId)
     }
 
-    private fun refrescarDirecc() {
-        cDirecciones.close()
-        // TODO
-        //cDirecciones = dbAlba.rawQuery("SELECT * FROM dirclientes WHERE cliente = " + fCliente + " ORDER BY orden", null)
-        cDirecciones.moveToFirst()
-    }
 
-    private fun refrescarTelef() {
-    }
-
-    fun aceptarCambTelf(aDatosTelf: ArrayList<String>, insertando: Boolean) {
-        val values = ContentValues()
-        values.put("contacto", aDatosTelf[3])
-        values.put("tel1", aDatosTelf[4])
-        values.put("tel2", aDatosTelf[5])
-        values.put("email", aDatosTelf[6])
-        values.put("obs1", aDatosTelf[7])
-        if (insertando) {
-            values.put("cliente", aDatosTelf[1])
-            values.put("alm", aDatosTelf[2])
-            values.put("sucursal", "0")
-            values.put("orden", dimeUltimoOrdenTelf())
-            values.put("estado", "N")
-            // TODO
-            //dbAlba.insert("conclientes", null, values)
-        } else {
-            values.put("estado", "M")
-            // TODO
-            //dbAlba.update("conclientes", values, "_id=" + aDatosTelf[0], null)
-        }
-        refrescarTelef()
-    }
-
-    fun borrarTelf(QueId: String) {
-        // TODO
-        //dbAlba.delete("conclientes", "_id=$QueId", null)
-        refrescarTelef()
+    fun borrarTelf(queId: Int) {
+        contactosClteDao?.borrar(queId)
     }
 
 
     fun aceptarCambios(aDatosClte: ArrayList<String>, insertando: Boolean) {
-        val values = ContentValues()
-        values.put("codigo", aDatosClte[1])
-        values.put("nomfi", aDatosClte[2])
-        values.put("nomco", aDatosClte[3])
-        values.put("cif", aDatosClte[4])
-        values.put("direcc", aDatosClte[5])
-        values.put("locali", aDatosClte[6])
-        values.put("cpostal", aDatosClte[7])
-        values.put("provin", aDatosClte[8])
-        values.put("tarifa", aDatosClte[9])
-        values.put("tardto", aDatosClte[10])
-        values.put("fpago", aDatosClte[11])
-        values.put("ruta", aDatosClte[12])
-        values.put("riesgo", aDatosClte[13])
-        values.put("apliva", aDatosClte[14])
-        values.put("aplrec", aDatosClte[15])
-        values.put("tipoiva", "1")
-        /* Por ahora estos campos (flag, flag2) no los tocamos, dejamos los que vengan de la gestion (si estamos modificando) */if (insertando) {
-            values.put("flag", FLAGCLIENTE_APLICAROFERTAS) // Aplicar ofertas. Activaremos siempre este flag al dar de alta.
-            values.put("flag2", "0")
-        }
-        values.put("tipo", "")
-        values.put("ramo", "")
-        values.put("estado", aDatosClte[16])
+        val clteEnt = ClientesEnt()
+        clteEnt.codigo = aDatosClte[1].toInt()
+        clteEnt.nombre = aDatosClte[2]
+        clteEnt.nombreComercial = aDatosClte[3]
+        clteEnt.cif = aDatosClte[4]
+        clteEnt.direccion = aDatosClte[5]
+        clteEnt.localidad = aDatosClte[6]
+        clteEnt.cPostal = aDatosClte[7]
+        clteEnt.provincia = aDatosClte[8]
+        clteEnt.aplIva = aDatosClte[14]
+        clteEnt.aplRec = aDatosClte[15]
+        clteEnt.tipoIva = 1
+        clteEnt.tarifaId = aDatosClte[9].toShort()
+        clteEnt.tarifaDtoId = aDatosClte[10].toShort()
+        clteEnt.fPago = aDatosClte[11]
+        clteEnt.rutaId = aDatosClte[12].toShort()
+        clteEnt.riesgo = aDatosClte[13]
+        clteEnt.estado = aDatosClte[16]
+        clteEnt.ramo = 0
+
         if (insertando) {
-            values.put("cliente", dimeUltimoClte())
-            values.put("tieneincid", "F")
-            // TODO
-            //dbAlba.insert("clientes", null, values)
+            clteEnt.clienteId = dimeUltimoClte()
+            clteEnt.tarifaPiezas = 0
+            /* Por ahora estos campos (flag, flag2) no los tocamos, dejamos los que vengan de la gestion (si estamos modificando) */
+            clteEnt.flag = FLAGCLIENTE_APLICAROFERTAS // Aplicar ofertas. Activaremos siempre este flag al dar de alta.
+            clteEnt.flag2 = 0
+            clteEnt.tieneIncid = "F"
+
+            clientesDao?.insertar(clteEnt)
 
             // Si hemos indicado alguna ruta, incluimos el cliente al final del rutero
-            if (aDatosClte[12] != "") anyadirARutero(values.getAsString("cliente"), values.getAsString("ruta"))
+            if (aDatosClte[12].toShort() > 0) anyadirARutero(clteEnt.clienteId, clteEnt.rutaId)
         }
-        // TODO
-        //else dbAlba.update("clientes", values, "cliente=" + aDatosClte[0], null)
+        else {
+            clteEnt.clienteId = aDatosClte[0].toInt()
+            clientesDao?.actualizar(clteEnt)
+        }
     }
 
-    private fun anyadirARutero(queCliente: String, queRuta: String) {
-        val values = ContentValues()
-        values.put("ruta", queRuta)
-        values.put("orden", 9999)
-        values.put("cliente", queCliente)
-        // TODO
-        //dbAlba.insert("rutero", null, values)
+
+    private fun anyadirARutero(queCliente: Int, queRuta: Short) {
+        val ruteroEnt = RuterosEnt()
+        ruteroEnt.rutaId = queRuta
+        ruteroEnt.orden = 9999
+        ruteroEnt.clienteId = queCliente
+
+        ruterosDao?.insertar(ruteroEnt)
     }
 
-    private fun dimeUltimoOrdenTelf(): Int {
-        // TODO
-        /*
-        dbAlba.rawQuery("SELECT MAX(orden) orden FROM conclientes", null).use { cUltOrden ->
-            return if (cUltOrden.moveToFirst()) {
-                val columna = cUltOrden.getColumnIndex("orden")
-                cUltOrden.getInt(columna) + 1
-            } else 1
-        }
-        */
-        return 0
+    private fun dimeUltimoOrdenTelf(queCliente: Int): Int {
+        return (contactosClteDao?.getUltimoOrden(queCliente) ?: 0) + 1
     }
 
-    private fun dimeUltimoOrdenDir(QueCliente: Int): Int {
-        // TODO
-        /*
-        dbAlba.rawQuery("SELECT MAX(orden) orden FROM dirclientes WHERE cliente = $QueCliente", null
-        ).use { cUltOrden ->
-            return if (cUltOrden.moveToFirst()) {
-                val columna = cUltOrden.getColumnIndex("orden")
-                cUltOrden.getInt(columna) + 1
-            } else 1
-        }
-        */
-        return 0
+    private fun dimeUltimoOrdenDir(queCliente: Int): Int {
+        return (direccCltesDao?.getUltimoOrden(queCliente) ?: 0) + 1
     }
 
 
@@ -337,14 +279,10 @@ class ClientesClase(val contexto: Context) {
         return iProxClte
     }
 
-    private fun existeUltClte(QueClte: Int): Boolean {
-        return try {
-            // TODO
-            //cursor = dbAlba.rawQuery("SELECT cliente FROM clientes WHERE cliente = $QueClte", null)
-            cursor.moveToFirst()
-        } finally {
-            cursor.close()
-        }
+
+    private fun existeUltClte(queClte: Int): Boolean {
+        val queClteId = clientesDao?.existeClteId(queClte) ?: 0
+        return (queClteId > 0)
     }
 
 
@@ -378,52 +316,10 @@ class ClientesClase(val contexto: Context) {
 
 
 
-
     fun getAplicarOfertas(): Boolean {
         return (fFlag and FLAGCLIENTE_APLICAROFERTAS) > 0
     }
 
-
-
-    fun getDir_Cliente(): Int {
-        val columna = cDirecciones.getColumnIndex("cliente")
-        return if (cDirecciones.count > 0) cDirecciones.getInt(columna) else 0
-    }
-
-    fun getDir_Orden(): String {
-        val columna = cDirecciones.getColumnIndex("orden")
-        return if (cDirecciones.count > 0) cDirecciones.getString(columna) else ""
-    }
-
-    fun getDir_Direccion(): String {
-        val columna = cDirecciones.getColumnIndex("direcc")
-        return if (cDirecciones.count > 0) cDirecciones.getString(columna) else ""
-    }
-
-    fun getDir_Poblac(): String {
-        val columna = cDirecciones.getColumnIndex("poblac")
-        return if (cDirecciones.count > 0) cDirecciones.getString(columna) else ""
-    }
-
-    fun getDir_CP(): String {
-        val columna = cDirecciones.getColumnIndex("cpostal")
-        return if (cDirecciones.count > 0) cDirecciones.getString(columna) else ""
-    }
-
-    fun getDir_Provincia(): String {
-        val columna = cDirecciones.getColumnIndex("provin")
-        return if (cDirecciones.count > 0) cDirecciones.getString(columna) else ""
-    }
-
-    fun getDir_Pais(): String {
-        val columna = cDirecciones.getColumnIndex("pais")
-        if (cDirecciones.count > 0)
-            if (cDirecciones.getString(columna) != null)
-                return cDirecciones.getString(columna)
-            else
-                return ""
-        else return ""
-    }
 
 
     private fun controlarRiesgo(): Boolean {

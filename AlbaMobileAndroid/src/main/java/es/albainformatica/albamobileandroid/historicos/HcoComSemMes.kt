@@ -3,32 +3,23 @@ package es.albainformatica.albamobileandroid.historicos
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import es.albainformatica.albamobileandroid.DatosHcoCompSemMes
+import es.albainformatica.albamobileandroid.dao.HcoCompSemMesDao
+import es.albainformatica.albamobileandroid.database.MyDatabase
 
 class HcoComSemMes(contexto: Context) {
-    lateinit var cCursorHco: Cursor
+    private var hcoComSemMesDao: HcoCompSemMesDao? = MyDatabase.getInstance(contexto)?.hcoCompSemMesDao()
+
+    lateinit var lHcoCompSemMes: List<DatosHcoCompSemMes>
 
 
     fun abrir(queCliente: Int, sHoy: String, sHoyMenos6: String, sHoyMenos7: String, sHoyMenos13: String) {
-        val sql =
-            "SELECT codigo AS _id, SUM(suma1) AS suma1, SUM(suma2) AS suma2, codigo, descr FROM(" +
-                    " SELECT SUM(A.cantidad) AS suma1, 0 AS suma2, B.codigo, B.descr FROM hcoCompSemMes A" +
-                    " LEFT JOIN articulos B ON B.articulo = A.articulo" +
-                    " WHERE A.cliente = " + queCliente +
-                    " AND julianday(A.fecha) >= julianday('" + fechaEnJulian(sHoyMenos6) + "')" +
-                    " AND julianday(A.fecha) <= julianday('" + fechaEnJulian(sHoy) + "')" +
-                    " GROUP BY B.codigo, B.descr" +
-                    " UNION ALL" +
-                    " SELECT 0 AS suma1, SUM(A.cantidad) AS suma2, B.codigo, B.descr FROM hcoCompSemMes A" +
-                    " LEFT JOIN articulos B ON B.articulo = A.articulo" +
-                    " WHERE A.cliente = " + queCliente +
-                    " AND julianday(A.fecha) >= julianday('" + fechaEnJulian(sHoyMenos13) + "')" +
-                    " AND julianday(A.fecha) <= julianday('" + fechaEnJulian(sHoyMenos7) + "')" +
-                    " GROUP BY B.codigo, B.descr" +
-                    " ) AS consulta GROUP BY codigo"
-        // TODO
-        //cCursorHco = dbAlba.rawQuery(sql, null)
-        //cCursorHco.moveToFirst()
+
+        lHcoCompSemMes = hcoComSemMesDao?.abrir(queCliente, fechaEnJulian(sHoyMenos6), fechaEnJulian(sHoy),
+                                fechaEnJulian(sHoyMenos13), fechaEnJulian(sHoyMenos7))
+                            ?: emptyList<DatosHcoCompSemMes>().toMutableList()
     }
+
 
     private fun fechaEnJulian(queFecha: String): String {
         val queAnyo = queFecha.substring(6, 10)

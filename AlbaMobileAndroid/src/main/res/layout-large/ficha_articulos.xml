@@ -310,17 +310,15 @@
       android:layout_marginLeft="10dp"
       android:layout_marginRight="10dp"/>
 
-    <ListView
-      android:id="@+id/lvTarifArt"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_marginTop="10dp"
-      android:fastScrollEnabled="true"
-      android:listSelector="@drawable/list_selector"
-      android:paddingLeft="10dp"
-      android:paddingRight="10dp"
-      >
-    </ListView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTarifArt"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" >
+    </androidx.recyclerview.widget.RecyclerView>
+
   </LinearLayout>
 
 

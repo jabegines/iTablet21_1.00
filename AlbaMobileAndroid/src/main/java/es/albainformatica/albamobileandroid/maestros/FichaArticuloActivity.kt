@@ -2,23 +2,33 @@ package es.albainformatica.albamobileandroid.maestros
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.*
-import es.albainformatica.albamobileandroid.dao.ProveedoresDao
+import es.albainformatica.albamobileandroid.dao.*
 import es.albainformatica.albamobileandroid.database.MyDatabase
+import kotlinx.android.synthetic.main.ficha_articulos.*
 import java.io.File
 
 
 class FichaArticuloActivity: AppCompatActivity() {
-    private var fArticulo = 0
+    private var tarifasDao: TarifasDao? = MyDatabase.getInstance(this)?.tarifasDao()
+    private var trfFormatosDao: TrfFormatosDao? = MyDatabase.getInstance(this)?.trfFormatosDao()
+
     private lateinit var fArticulos: ArticulosClase
     private lateinit var fConfiguracion: Configuracion
+
+    private lateinit var fRecyclerView: RecyclerView
+    private lateinit var fAdapter: TrfArtRvAdapter
+
+
+    private var fArticulo = 0
     private lateinit var carpetaImagenes: String
     private var fEmpresaActual: Short = 0
     private lateinit var prefs: SharedPreferences
@@ -82,7 +92,7 @@ class FichaArticuloActivity: AppCompatActivity() {
             edtCBarras.setText(fArticulos.fCodBarras)
             if (fConfiguracion.verProveedores()) {
                 val provDao: ProveedoresDao? = MyDatabase.getInstance(this)?.proveedoresDao()
-                val queNombreProv = provDao?.getNombreProv(fArticulos.fCodProv.toInt()) ?: ""
+                val queNombreProv = provDao?.getNombreProv(fArticulos.fCodProv) ?: ""
                 val queTexto = ponerCeros(fArticulos.fCodProv.toString(), ancho_codprov) + " " + queNombreProv
                 edtProveedor.setText(queTexto)
 
@@ -94,81 +104,32 @@ class FichaArticuloActivity: AppCompatActivity() {
             edtUndCj.setText(String.format(fDecCantidad, fArticulos.fUCaja))
             edtExistencias.setText(String.format(fDecCantidad, fArticulos.getExistencias()))
             edtCajas.setText(String.format(fDecCantidad, fArticulos.getCajas()))
+
+            fRecyclerView = rvTarifArt
+            fRecyclerView.layoutManager = LinearLayoutManager(this)
             mostrarTarifas()
         }
     }
 
 
     private fun mostrarTarifas() {
-        val columnas: Array<String>
-        val to: IntArray
-        if (fArticulos.usarFormatos()) {
-            columnas = arrayOf("tarifa", "nombretrf", "nombrefto", "precio", "priva", "dto")
-            to = intArrayOf(
-                R.id.ly_tarifa,
-                R.id.ly_nombretrf,
-                R.id.ly_nombrefto,
-                R.id.ly_prbase,
-                R.id.ly_priva,
-                R.id.ly_dto
-            )
+        fAdapter = TrfArtRvAdapter(getTarifas(), fArticulos.usarFormatos(), fArticulos.fPorcIva, this,
+            object: TrfArtRvAdapter.OnItemClickListener {
+                override fun onClick(view: View, data: DatosTrfArt) {
+                }
+            })
+
+        fRecyclerView.adapter = fAdapter
+    }
+
+
+    private fun getTarifas(): List<DatosTrfArt> {
+        return if (fArticulos.usarFormatos()) {
+            trfFormatosDao?.getTarifasArt(fArticulos.fArticulo) ?: emptyList<DatosTrfArt>().toMutableList()
+
         } else {
-            columnas = arrayOf("tarifa", "nombretrf", "precio", "priva", "dto")
-            to = intArrayOf(R.id.ly_tarifa, R.id.ly_nombretrf, R.id.ly_prbase, R.id.ly_priva, R.id.ly_dto)
+            tarifasDao?.getTarifasArt(fArticulos.fArticulo) ?: emptyList<DatosTrfArt>().toMutableList()
         }
-        val adapterTarif = SimpleCursorAdapter(this, R.layout.layout_tarifas_artic, fArticulos.cTarifas, columnas, to, 0)
-
-        // Formateamos las columnas.
-        adapterTarif.viewBinder = SimpleCursorAdapter.ViewBinder { view: View, cursor: Cursor, column: Int ->
-
-            when (column) {
-                // Código tarifa
-                1 -> {
-                    val tv = view as TextView
-                    var tarifa = cursor.getString(cursor.getColumnIndex("tarifa"))
-                    tarifa = ponerCeros(tarifa, ancho_tarifa)
-                    tv.text = tarifa
-                    return@ViewBinder true
-
-                // Precio base
-                }
-                2 -> {
-                    formatearPrBase(view, cursor)
-                    return@ViewBinder true
-
-                // Precio Iva
-                }
-                3 -> {
-                    formatearPrIva(view, cursor)
-                    return@ViewBinder true
-                }
-            }
-                false
-            }
-        val lvTarifas = findViewById<ListView>(R.id.lvTarifArt)
-        lvTarifas.adapter = adapterTarif
     }
-
-
-    private fun formatearPrBase(view: View, cursor: Cursor) {
-        val tv = view as TextView
-        var sPrecio = cursor.getString(cursor.getColumnIndex("precio"))
-        sPrecio = sPrecio.replace(',', '.')
-        sPrecio = String.format(fConfiguracion.formatoDecPrecioBase(), sPrecio.toDouble())
-        tv.text = sPrecio
-    }
-
-
-    private fun formatearPrIva(view: View, cursor: Cursor) {
-        val tv = view as TextView
-        var sPrecio = cursor.getString(cursor.getColumnIndex("priva"))
-        sPrecio = sPrecio.replace(',', '.')
-        var dPrecio = sPrecio.toDouble()
-        val dImpIva = dPrecio * fArticulos.fPorcIva / 100
-        dPrecio += dImpIva
-        sPrecio = String.format(fConfiguracion.formatoDecPrecioIva(), dPrecio)
-        tv.text = sPrecio
-    }
-
 
 }

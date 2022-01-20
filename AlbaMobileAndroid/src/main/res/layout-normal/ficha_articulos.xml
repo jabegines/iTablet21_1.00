@@ -346,15 +346,15 @@
           android:layout_marginTop="2dp"
           android:background="#000000" />
 
-      <ListView
-          android:id="@+id/lvTarifArt"
+      <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/rvTarifArt"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:layout_marginBottom="10dp"
-          android:fastScrollEnabled="true"
-          android:listSelector="@drawable/list_selector"
+          android:layout_marginTop="10dp"
           android:paddingLeft="10dp"
-          android:paddingRight="10dp"></ListView>
+          android:paddingRight="10dp" >
+      </androidx.recyclerview.widget.RecyclerView>
+
     </LinearLayout>
 
 

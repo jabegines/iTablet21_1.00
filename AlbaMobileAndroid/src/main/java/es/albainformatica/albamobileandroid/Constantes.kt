@@ -555,4 +555,22 @@ class DatosHistMesClte {
 }
 
 
+class DatosHcoCompSemMes {
+    var suma1: String = ""
+    var suma2: String = ""
+    var codigo: String = ""
+    var descripcion: String= ""
+}
+
+
+class DatosTrfArt {
+    var articuloId: Int = 0
+    var tarifaId: Short = 0
+    var precio: String = ""
+    var dto: String = ""
+    var descrTarifa: String = ""
+    var descrFto: String = ""
+}
+
+
 var fArtSeleccCat = 0

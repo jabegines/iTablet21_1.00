@@ -22,8 +22,11 @@ import com.google.android.gms.maps.model.LatLng
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.cobros.FormasPagoClase
 import es.albainformatica.albamobileandroid.dao.ContactosCltesDao
+import es.albainformatica.albamobileandroid.dao.DireccCltesDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.entity.ContactosCltesEnt
+import es.albainformatica.albamobileandroid.entity.DireccCltesEnt
+import kotlinx.android.synthetic.main.tab_direcc_clientes.*
 import kotlinx.android.synthetic.main.tab_telefonos_clientes.*
 import java.io.IOException
 import java.util.ArrayList
@@ -31,6 +34,16 @@ import java.util.ArrayList
 
 class FichaClteActivity: AppCompatActivity() {
     private val telefonosDao: ContactosCltesDao? = MyDatabase.getInstance(this)?.contactosCltesDao()
+    private val direccCltesDao: DireccCltesDao? = MyDatabase.getInstance(this)?.direccCltesDao()
+
+    private lateinit var fRecDirecciones: RecyclerView
+    private lateinit var fAdpDirecciones: DirCltesRvAdapter
+    private lateinit var fDatActDir: DireccCltesEnt
+
+    private lateinit var fRecyclerTlfs: RecyclerView
+    private lateinit var fAdapterTlfs: TlfsClteRvAdapter
+    private lateinit var fDatActTlf: ContactosCltesEnt
+
 
     private var fCliente = 0
     private var fIdTelf = 0
@@ -45,11 +58,6 @@ class FichaClteActivity: AppCompatActivity() {
     private lateinit var fConfiguracion: Configuracion
     private var fEstTelef: Byte = est_Telef_Browse
     private var fEstDirecc: Byte = est_Direcc_Browse
-    private lateinit var adapterDir: SimpleCursorAdapter
-
-    private lateinit var fRecyclerTlfs: RecyclerView
-    private lateinit var fAdapterTlfs: TlfsClteRvAdapter
-    private lateinit var fDataActual: ContactosCltesEnt
 
     private lateinit var edtCodigo: EditText
     private lateinit var edtNFiscal: EditText
@@ -133,10 +141,11 @@ class FichaClteActivity: AppCompatActivity() {
         fShowBtFlotDir = false
         botonesFlotantesDir()
         prepararTabs()
+
         // Establecemos el ancho del código del cliente.
         editTextMaxLength(edtCodigo, ancho_codclte.toInt())
-        if (fCliente > 0) mostrarFicha() else {
-            fClientes.Abrir()
+        if (fCliente > 0) mostrarFicha()
+        else {
             edtCodigo.isEnabled = true
             edtCodigo.setText(fConfiguracion.getSiguCodClte())
             if (edtCodigo.text.toString() == "") edtCodigo.requestFocus() else edtNFiscal.requestFocus()
@@ -189,12 +198,10 @@ class FichaClteActivity: AppCompatActivity() {
         view.getTag(0)          // Para que no dé warning el compilador
 
         if (fIdDir > 0) {
-            if (fClientes.getDir_Direccion() != "") {
-                buscarDireccion(
-                    fClientes.getDir_Direccion() + ','
-                            + fClientes.getDir_CP() + ',' + fClientes.getDir_Poblac() + ','
-                            + fClientes.getDir_Provincia()
-                )
+            if (fDatActDir.direccion != "") {
+                buscarDireccion(fDatActDir.direccion + ','
+                            + fDatActDir.cPostal + ',' + fDatActDir.localidad + ','
+                            + fDatActDir.provincia)
             }
         } else MsjAlerta(this).alerta("Tiene que seleccionar una dirección")
     }
@@ -221,12 +228,13 @@ class FichaClteActivity: AppCompatActivity() {
         spec.setIndicator("Direcciones", null)
         tabs.addTab(spec)
 
-        //Establecemos las propiedades de las pestañas
+        // Establecemos las propiedades de las pestañas
         for (i in 0 until tabs.tabWidget.childCount) {
             val tv = tabs.tabWidget.getChildAt(i).findViewById<View>(android.R.id.title) as TextView
             tv.textSize = 14f
-            if (fConfiguracion.fTamanyoPantLargo) tabs.tabWidget.getChildAt(i).layoutParams.height =
-                50 else tabs.tabWidget.getChildAt(i).layoutParams.height = 70
+            if (fConfiguracion.fTamanyoPantLargo)
+                tabs.tabWidget.getChildAt(i).layoutParams.height = 50
+            else tabs.tabWidget.getChildAt(i).layoutParams.height = 70
         }
 
         // Si estamos dando de alta no veremos las pestañas de teléfonos y direcciones.
@@ -411,9 +419,17 @@ class FichaClteActivity: AppCompatActivity() {
             edtSaldo.setText(String.format(fConfiguracion.formatoDecImptesIva(), fClientes.getSaldo()))
             chkAplIva.isChecked = fClientes.fAplIva
             chkAplRe.isChecked = fClientes.fAplRec
+
+            fRecyclerTlfs = rvTlfCltes
+            fRecyclerTlfs.layoutManager = LinearLayoutManager(this)
             mostrarTelefonos()
+
+            fRecDirecciones = rvDirCltes
+            fRecDirecciones.layoutManager = LinearLayoutManager(this)
             mostrarDirecciones()
+
             edtCodigo.isFocusable = false
+
             if (fSoloVer) {
                 ocultarTeclado(this)
                 edtNFiscal.isFocusable = false
@@ -440,21 +456,21 @@ class FichaClteActivity: AppCompatActivity() {
     }
 
     private fun mostrarDirecciones() {
-        val columns = arrayOf("direcc", "poblac")
-        val to = intArrayOf(R.id.ly_direcc, R.id.ly_poblac)
-        adapterDir = SimpleCursorAdapter(this, R.layout.layout_direcc_cltes, fClientes.cDirecciones, columns, to, 0)
-        val listViewDir = findViewById<View>(R.id.lvDirCltes) as ListView
-        listViewDir.adapter = adapterDir
-        mostrarDatosDirecc()
-        // Ver comentarios en mostrarTelefonos().
-        fIdDir = 0
-        listViewDir.onItemClickListener =
-            AdapterView.OnItemClickListener { adapter: AdapterView<*>, _: View?, position: Int, _: Long ->
-                val cursor = adapter.getItemAtPosition(position) as Cursor
-                fIdDir = cursor.getInt(cursor.getColumnIndexOrThrow("_id"))
+        fAdpDirecciones = DirCltesRvAdapter(getDirecciones(), this, object: DirCltesRvAdapter.OnItemClickListener {
+            override fun onClick(view: View, data: DireccCltesEnt) {
+                fIdDir = data.direccionId
+                fDatActDir = data
                 mostrarDatosDirecc()
             }
+        })
+
+        fRecDirecciones.adapter = fAdpDirecciones
     }
+
+    private fun getDirecciones(): List<DireccCltesEnt> {
+        return direccCltesDao?.getDirClte(fCliente) ?: emptyList<DireccCltesEnt>().toMutableList()
+    }
+
 
 
     private fun mostrarTelefonos() {
@@ -462,39 +478,13 @@ class FichaClteActivity: AppCompatActivity() {
         fAdapterTlfs = TlfsClteRvAdapter(getContactos(), this, object: TlfsClteRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: ContactosCltesEnt) {
                 fIdTelf = data.contactoClteId
-                fDataActual = data
+                fDatActTlf = data
                 mostrarDatosTlf()
             }
         })
 
-        fRecyclerTlfs = rvTlfCltes
-        fRecyclerTlfs.layoutManager = LinearLayoutManager(this)
         fRecyclerTlfs.adapter = fAdapterTlfs
         fIdTelf = 0
-
-        /*
-        val columnas = arrayOf("contacto", "tel1", "tel2")
-        val to = intArrayOf(R.id.ly_contacto, R.id.ly_telf1, R.id.ly_telf2)
-        adapterTlf = SimpleCursorAdapter(this, R.layout.layout_telf_cltes, fClientes.cTelefonos, columnas, to, 0)
-        val lvTelefonos = findViewById<View>(R.id.lvTlfCltes) as ListView
-        lvTelefonos.adapter = adapterTlf
-        // Mostramos los datos del primer contacto.
-        mostrarDatosTlf()
-
-        // Pongo fIdTelf a cero para estar seguro de que hemos pulsado sobre algún contacto antes de editarlo o borrarlo.
-        // Si no hago esto y hago fIdTelf = fClientes.getIdTelf() he comprobado que, cuando intento editar, fClientes.getIdTelf() está
-        // apuntando al último registro del cursor y, por lo tanto, no vale lo mismo que fIdTelf.
-        fIdTelf = 0
-
-        // Establecemos el evento on click del ListView.
-        lvTelefonos.onItemClickListener =
-            AdapterView.OnItemClickListener { adapter: AdapterView<*>, _: View?, position: Int, _: Long ->
-                val cursor = adapter.getItemAtPosition(position) as Cursor
-                // Tomamos el campo _id de la fila en la que hemos pulsado
-                fIdTelf = cursor.getInt(cursor.getColumnIndexOrThrow("_id"))
-                mostrarDatosTlf()
-            }
-        */
     }
 
     private fun getContactos(): MutableList<ContactosCltesEnt> {
@@ -502,7 +492,7 @@ class FichaClteActivity: AppCompatActivity() {
     }
 
     private fun refrescarDirecc() {
-        adapterDir.changeCursor(fClientes.cDirecciones)
+        mostrarDirecciones()
         mostrarDatosDirecc()
         // Ver comentarios en mostrarTelefonos()
         fIdDir = 0
@@ -521,11 +511,13 @@ class FichaClteActivity: AppCompatActivity() {
         val edtDirPoblac = findViewById<View>(R.id.edtDir_Poblacion) as EditText
         val edtDirCP = findViewById<View>(R.id.edtDir_CPostal) as EditText
         val edtDirProv = findViewById<View>(R.id.edtDir_Provincia) as EditText
-        edtDirDirecc.setText(fClientes.getDir_Direccion())
-        edtDirPoblac.setText(fClientes.getDir_Poblac())
-        edtDirCP.setText(fClientes.getDir_CP())
-        edtDirProv.setText(fClientes.getDir_Provincia())
+
+        edtDirDirecc.setText(fDatActDir.direccion)
+        edtDirPoblac.setText(fDatActDir.localidad)
+        edtDirCP.setText(fDatActDir.cPostal)
+        edtDirProv.setText(fDatActDir.provincia)
     }
+
 
     private fun mostrarDatosTlf() {
         val edtContacto = findViewById<View>(R.id.edtContacto) as EditText
@@ -534,11 +526,11 @@ class FichaClteActivity: AppCompatActivity() {
         val edtEmail = findViewById<View>(R.id.edtTlfEmail) as EditText
         val edtObs = findViewById<View>(R.id.edtObsTlf) as EditText
 
-        edtContacto.setText(fDataActual.nombre)
-        edtTlf1.setText(fDataActual.telefono1)
-        edtTlf2.setText(fDataActual.telefono2)
-        edtEmail.setText(fDataActual.eMail)
-        edtObs.setText(fDataActual.obs1)
+        edtContacto.setText(fDatActTlf.nombre)
+        edtTlf1.setText(fDatActTlf.telefono1)
+        edtTlf2.setText(fDatActTlf.telefono2)
+        edtEmail.setText(fDatActTlf.eMail)
+        edtObs.setText(fDatActTlf.obs1)
     }
 
     fun salvarDatos(view: View) {
@@ -614,11 +606,11 @@ class FichaClteActivity: AppCompatActivity() {
                     botonesFlotantesTlf()
                     val i = Intent(this, EditarTlfClte::class.java)
                     i.putExtra("nuevo", false)
-                    i.putExtra("contacto", fDataActual.nombre)
-                    i.putExtra("telefono1", fDataActual.telefono1)
-                    i.putExtra("telefono2", fDataActual.telefono2)
-                    i.putExtra("email", fDataActual.eMail)
-                    i.putExtra("observ", fDataActual.obs1)
+                    i.putExtra("contacto", fDatActTlf.nombre)
+                    i.putExtra("telefono1", fDatActTlf.telefono1)
+                    i.putExtra("telefono2", fDatActTlf.telefono2)
+                    i.putExtra("email", fDatActTlf.eMail)
+                    i.putExtra("observ", fDatActTlf.obs1)
                     startActivityForResult(i, fRequestEditarTlf)
                 } else MsjAlerta(this).alerta("Tiene que seleccionar un contacto")
             }
@@ -629,17 +621,18 @@ class FichaClteActivity: AppCompatActivity() {
         view.getTag(0)          // Para que no dé warning el compilador
 
         if (!fSoloVer) {
-            if (fEstDirecc == est_Direcc_Browse && fClientes.cDirecciones.count > 0) {
+            if (fEstDirecc == est_Direcc_Browse) {
                 if (fIdDir > 0) {
                     fEstDirecc = est_Direc_Editar
                     fShowBtFlotDir = false
                     botonesFlotantesDir()
+
                     val i = Intent(this, EditarDirClte::class.java)
                     i.putExtra("nuevo", false)
-                    i.putExtra("direccion", fClientes.getDir_Direccion())
-                    i.putExtra("poblacion", fClientes.getDir_Poblac())
-                    i.putExtra("codpostal", fClientes.getDir_CP())
-                    i.putExtra("provincia", fClientes.getDir_Provincia())
+                    i.putExtra("direccion", fDatActDir.direccion)
+                    i.putExtra("poblacion", fDatActDir.localidad)
+                    i.putExtra("codpostal", fDatActDir.cPostal)
+                    i.putExtra("provincia", fDatActDir.provincia)
                     startActivityForResult(i, fRequestEditarDir)
                 } else MsjAlerta(this).alerta("Tiene que seleccionar una dirección")
             }
@@ -686,7 +679,7 @@ class FichaClteActivity: AppCompatActivity() {
                     botonesFlotantesTlf()
                     val aldDialog = NuevoAlertBuilder(this, "Borrar teléfono", "¿Está seguro de borrar?", true)
                     aldDialog.setPositiveButton("Si") { _: DialogInterface?, _: Int ->
-                        fClientes.borrarTelf(fIdTelf.toString())
+                        fClientes.borrarTelf(fIdTelf)
                         refrescarTelef()
                     }
                     val alert = aldDialog.create()
@@ -702,13 +695,13 @@ class FichaClteActivity: AppCompatActivity() {
         view.getTag(0)          // Para que no dé warning el compilador
 
         if (!fSoloVer) {
-            if (fEstTelef == est_Direcc_Browse && fClientes.cDirecciones.count > 0) {
+            if (fEstTelef == est_Direcc_Browse) {
                 if (fIdDir > 0) {
                     fShowBtFlotDir = false
                     botonesFlotantesDir()
                     val aldDialog = NuevoAlertBuilder(this, "Borrar dirección", "¿Está seguro de borrar?", true)
                     aldDialog.setPositiveButton("Si") { _: DialogInterface?, _: Int ->
-                        fClientes.borrarDirecc(fIdDir.toString())
+                        fClientes.borrarDirecc(fIdDir)
                         refrescarDirecc()
                     }
                     val alert = aldDialog.create()
@@ -740,7 +733,7 @@ class FichaClteActivity: AppCompatActivity() {
             val permissionCheck = ContextCompat.checkSelfPermission(applicationContext, permission.CALL_PHONE)
             if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
                 val callIntent = Intent(Intent.ACTION_CALL)
-                callIntent.data = Uri.parse("tel:" + fDataActual.telefono1)
+                callIntent.data = Uri.parse("tel:" + fDatActTlf.telefono1)
                 startActivity(callIntent)
             } else {
                 // Aunque tengamos la constante REQUEST_PERMISO_LLAMAR, por ahora no la usamos
@@ -762,7 +755,7 @@ class FichaClteActivity: AppCompatActivity() {
                 ContextCompat.checkSelfPermission(applicationContext, permission.CALL_PHONE)
             if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
                 val callIntent = Intent(Intent.ACTION_CALL)
-                callIntent.data = Uri.parse("tel:" + fDataActual.telefono2)
+                callIntent.data = Uri.parse("tel:" + fDatActTlf.telefono2)
                 startActivity(callIntent)
             } else {
                 ActivityCompat.requestPermissions(
@@ -784,6 +777,7 @@ class FichaClteActivity: AppCompatActivity() {
             } else MsjAlerta(this).alerta("Tiene que indicar algún contacto")
         }
     }
+
 
     private fun aceptarDir(aDatosDirecc: ArrayList<String>) {
         if (fEstDirecc == est_Direc_Nueva || fEstDirecc == est_Direc_Editar) {
@@ -868,6 +862,7 @@ class FichaClteActivity: AppCompatActivity() {
                 aDatosDirecc.add(data?.getStringExtra("provincia") ?: "")
                 aceptarDir(aDatosDirecc)
                 refrescarDirecc()
+
             } else cancelarDir()
         }
     }
