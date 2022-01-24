@@ -354,7 +354,7 @@ class DatosArticulo {
     var tasa1: String = ""
     var tasa2: String = ""
     var enlace: Int = 0
-    var clave: String = ""
+    var clave: String? = ""
     var codAlternativo: String? = null
     var codigoIva: Short = 0
     var porcIva: String = ""
@@ -570,6 +570,16 @@ class DatosTrfArt {
     var dto: String = ""
     var descrTarifa: String = ""
     var descrFto: String = ""
+}
+
+
+class DatosRutero {
+    var orden: Short = 0
+    var clienteId: Int = 0
+    var codigo: Int = 0
+    var nombre: String = ""
+    var nombreComercial: String = ""
+    var tieneIncid: String = ""
 }
 
 

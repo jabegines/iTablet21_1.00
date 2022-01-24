@@ -10,6 +10,8 @@ import android.widget.TextView
 import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.SimpleCursorAdapter
+import es.albainformatica.albamobileandroid.Comunicador
+import es.albainformatica.albamobileandroid.Configuracion
 import es.albainformatica.albamobileandroid.R
 
 /**

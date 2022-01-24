@@ -5,28 +5,28 @@ import android.database.Cursor
 import es.albainformatica.albamobileandroid.Configuracion
 import android.util.Log
 import es.albainformatica.albamobileandroid.Comunicador
+import es.albainformatica.albamobileandroid.DatosRutero
+import es.albainformatica.albamobileandroid.dao.RuterosDao
+import es.albainformatica.albamobileandroid.database.MyDatabase
 import java.lang.Exception
 
 /**
  * Created by jabegines on 14/10/13.
  */
 class Rutero(contexto: Context) {
-    var cursor: Cursor? = null
+    private val ruterosDao: RuterosDao? = MyDatabase.getInstance(contexto)?.ruterosDao()
     private val fConfiguracion: Configuracion = Comunicador.fConfiguracion
 
+    lateinit var lRutero: List<DatosRutero>
 
-    fun abrirRuta(fRuta: String): Boolean {
-        // TODO
-        /*
-        cursor = dbAlba.rawQuery(
-            "SELECT A._id, A.orden, A.cliente, B.codigo, B.nomfi, B.nomco, B.tieneincid FROM rutero A" +
-                    " JOIN clientes B ON B.cliente = A.cliente" +
-                    " WHERE A.ruta = " + fRuta +
-                    " ORDER BY A.orden", null
-        )
-        return cursor?.moveToFirst() ?: false
-        */
-        return true
+    var cursor: Cursor? = null
+
+
+
+    fun abrirRuta(fRuta: Short): Boolean {
+        lRutero = ruterosDao?.abrirRuta(fRuta) ?: emptyList<DatosRutero>().toMutableList()
+
+        return (lRutero.count() > 0)
     }
 
     fun abrirParaReparto(fRuta: String): Boolean {
@@ -46,27 +46,26 @@ class Rutero(contexto: Context) {
     }
 
     fun abrirCodPostal(queCodPostal: String): Boolean {
-        val consulta: String = if (fConfiguracion.aconsNomComercial()) "SELECT cliente _id, 1 orden, cliente, codigo," +
-                    " nomfi, nomco, tieneincid FROM clientes WHERE cpostal = '" + queCodPostal + "'" +
-                    " ORDER BY nomco" else "SELECT cliente _id, 1 orden, cliente, codigo," +
-                    " nomfi, nomco, tieneincid FROM clientes WHERE cpostal = '" + queCodPostal + "'" +
-                    " ORDER BY nomfi"
-        // TODO
-        //cursor = dbAlba.rawQuery(consulta, null)
-        //return cursor?.moveToFirst() ?: false
-        return true
+        lRutero = if (fConfiguracion.aconsNomComercial())
+            ruterosDao?.abrirCodPostal(queCodPostal, 2) ?: emptyList<DatosRutero>().toMutableList()
+        else
+            ruterosDao?.abrirCodPostal(queCodPostal, 1) ?: emptyList<DatosRutero>().toMutableList()
+
+        return (lRutero.count() > 0)
     }
+
 
     fun situarEnCliente(anteriorClte: Int, irASiguClte: Boolean): Boolean {
         if (anteriorClte > 0) {
             try {
-                cursor?.moveToFirst()
-                while (cursor?.getInt(cursor?.getColumnIndex("cliente") ?: 0) != anteriorClte) {
-                    cursor?.moveToNext()
+                for (datosRutero in lRutero) {
+                    if (datosRutero.clienteId == anteriorClte)
+                        break
                 }
             } catch (e: Exception) {
                 Log.e("Excepcion", e.message ?: "")
             }
+
             if (irASiguClte) cursor?.moveToNext()
         } else cursor?.moveToFirst()
 
@@ -76,7 +75,5 @@ class Rutero(contexto: Context) {
             false
     }
 
-    val cliente: Int
-        get() = cursor?.getInt(cursor?.getColumnIndex("cliente") ?: 0) ?: 0
 
 }

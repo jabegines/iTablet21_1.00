@@ -65,7 +65,7 @@ class VerRiesgo: AppCompatActivity() {
 
         if (fClientes.abrirUnCliente(fCliente)) {
 
-            val diasRiesgo: Int = if (fClientes.maxDiasRiesgo() > 0) fClientes.maxDiasRiesgo()
+            val diasRiesgo: Int = if (fClientes.fMaxDias > 0) fClientes.fMaxDias
             else fConfiguracion.cltesMaxDiasRiesgo()
             val queTexto = "Movimientos pendientes superiores a $diasRiesgo días:"
             tvRgMovPdtes.text = queTexto

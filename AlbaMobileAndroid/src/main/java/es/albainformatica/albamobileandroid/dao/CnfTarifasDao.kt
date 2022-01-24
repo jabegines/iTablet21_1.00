@@ -13,7 +13,8 @@ interface CnfTarifasDao {
     fun getFlag(queTarifa: Short): Int
 
 
-    @Query("SELECT * FROM CnfTarifas")
+    @Query("SELECT * FROM CnfTarifas " +
+            " ORDER BY codigo")
     fun getAllCnfTarifas(): List<CnfTarifasEnt>
 
 

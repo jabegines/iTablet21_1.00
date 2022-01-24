@@ -3,39 +3,33 @@ package es.albainformatica.albamobileandroid.maestros
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import es.albainformatica.albamobileandroid.dao.CnfTarifasDao
+import es.albainformatica.albamobileandroid.dao.TarifasDao
+import es.albainformatica.albamobileandroid.database.MyDatabase
+import es.albainformatica.albamobileandroid.entity.CnfTarifasEnt
 import java.util.ArrayList
 
 /**
  * Created by jabegines on 11/10/13.
  */
 class Tarifas(contexto: Context) {
+    private var cnfTarifasDao: CnfTarifasDao? = MyDatabase.getInstance(contexto)?.cnfTarifasDao()
 
-    private lateinit var cursor: Cursor
+    lateinit var lTarifas: List<CnfTarifasEnt>
+
 
     fun abrir(): Boolean {
-        // TODO
-        //cursor = dbAlba.rawQuery("SELECT * FROM cnftarifas ORDER by codigo", null)
-        //return cursor.moveToFirst()
-        return true
+        lTarifas = cnfTarifasDao?.getAllCnfTarifas() ?: emptyList<CnfTarifasEnt>().toMutableList()
+
+        return (lTarifas.count() > 0)
     }
 
-    private val codigo: String
-        get() {
-            val columna = cursor.getColumnIndex("codigo")
-            return cursor.getString(columna)
-        }
-    private val descripcion: String
-        get() {
-            val columna = cursor.getColumnIndex("tarifa")
-            return cursor.getString(columna)
-        }
 
     fun llenarArray(sArrayList: ArrayList<String>) {
         sArrayList.add("Sin tarifa")
-        cursor.moveToFirst()
-        while (!cursor.isAfterLast) {
-            sArrayList.add("$codigo $descripcion")
-            cursor.moveToNext()
+
+        for (cnfTrf in lTarifas) {
+            sArrayList.add(cnfTrf.codigo.toString() + " " + cnfTrf.descrTarifa)
         }
     }
 }

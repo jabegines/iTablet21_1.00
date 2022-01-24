@@ -161,6 +161,10 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                         val ofertasDao: OfertasDao? = MyDatabase.getInstance(fContext)?.ofertasDao()
                         ofertasDao?.vaciar()
 
+                        // Idem con costos
+                        val costosDao: CostosArticulosDao? = MyDatabase.getInstance(fContext)?.costosArticulosDao()
+                        costosDao?.vaciar()
+
                     } catch (e: Exception) {
                         mostrarExcepcion(e)
                     }
@@ -479,7 +483,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                                 sCampo.equals("Cif", ignoreCase = true) -> clienteEnt.cif = parser.getAttributeValue("", sCampo)
                                 sCampo.equals("Direcc", ignoreCase = true) -> clienteEnt.direccion = parser.getAttributeValue("", sCampo)
                                 sCampo.equals("Locali", ignoreCase = true) -> clienteEnt.localidad = parser.getAttributeValue("", sCampo)
-                                sCampo.equals("CPosta", ignoreCase = true) -> clienteEnt.cPostal = parser.getAttributeValue("", sCampo)
+                                sCampo.equals("CPostal", ignoreCase = true) -> clienteEnt.cPostal = parser.getAttributeValue("", sCampo)
                                 sCampo.equals("Provin", ignoreCase = true) -> clienteEnt.provincia = parser.getAttributeValue("", sCampo)
                                 sCampo.equals("AplIva", ignoreCase = true) -> clienteEnt.aplIva = parser.getAttributeValue("", sCampo)
                                 sCampo.equals("AplRec", ignoreCase = true) -> clienteEnt.aplRec = parser.getAttributeValue("", sCampo)

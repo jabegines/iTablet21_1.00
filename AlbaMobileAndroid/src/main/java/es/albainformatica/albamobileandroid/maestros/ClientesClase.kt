@@ -43,6 +43,7 @@ class ClientesClase(val contexto: Context) {
     var fPago: String = ""
     var fRuta: Short = 0
     private var fEmpresaActual = 0
+    var fMaxDias: Int = 0
     private var fMaxFrasPdtes: Int = 0
     var fRiesgo: Double = 0.0
     var fDireccion: String = ""
@@ -79,6 +80,7 @@ class ClientesClase(val contexto: Context) {
             fAplRec = (clteEnt.aplRec == "T")
             fFlag = clteEnt.flag
             fMaxFrasPdtes = clteEnt.maxFrasPdtes
+            fMaxDias = clteEnt.maxDias
             fTarifa = clteEnt.tarifaId
             fTrfDto = clteEnt.tarifaDtoId
             fTrfPiezas = clteEnt.tarifaPiezas
@@ -326,11 +328,6 @@ class ClientesClase(val contexto: Context) {
         return (fFlag and FLAGCLIENTE_CONTROLARRIESGO) > 0
     }
 
-    fun maxDiasRiesgo(): Int {
-        val columna = cursor.getColumnIndex("maxdias")
-        return cursor.getInt(columna)
-    }
-
 
     fun noVender(): Boolean {
         return (fFlag and FLAGCLIENTE_NOVENDER) > 0
@@ -356,7 +353,7 @@ class ClientesClase(val contexto: Context) {
             // y comparamos la fecha del documento con los días de riesgo que tenemos configurado.
             if (!resultado) {
                 if (!fControlarRiesgo && fControlarFechas || fContrFechasSiempre) {
-                    val fDiasClte = maxDiasRiesgo()
+                    val fDiasClte = fMaxDias
                     val fCltesDiasRiesgo = fConfiguracion.cltesMaxDiasRiesgo()
                     if (fDiasClte > 0 || fCltesDiasRiesgo > 0) {
                         val fPendiente = PendienteClase(contexto)

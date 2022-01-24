@@ -70,7 +70,7 @@ class ArticulosClase(val contexto: Context) {
             fArticulo = queArticulo
             fEmpresa = queEmpresa
             fCodigo = datosArticulo.codigo
-            fCodBarras = datosArticulo.clave
+            fCodBarras = datosArticulo.clave ?: ""
             fDescripcion = datosArticulo.descripcion
 
             fCodIva = datosArticulo.codigoIva
@@ -108,7 +108,7 @@ class ArticulosClase(val contexto: Context) {
         return if (datosArticulo.articuloId > 0) {
             fArticulo = queArticulo
             fCodigo = datosArticulo.codigo
-            fCodBarras = datosArticulo.clave
+            fCodBarras = datosArticulo.clave ?: ""
             fDescripcion = datosArticulo.descripcion
 
             fCodIva = datosArticulo.codigoIva

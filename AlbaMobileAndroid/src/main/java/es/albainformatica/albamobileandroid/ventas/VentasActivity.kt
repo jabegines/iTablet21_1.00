@@ -6,8 +6,6 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.content.SharedPreferences
-import android.database.Cursor
-import android.graphics.Typeface
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.Gravity
@@ -18,6 +16,8 @@ import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.cobros.CobrosActivity
 import es.albainformatica.albamobileandroid.comunicaciones.ServicioEnviar
@@ -26,6 +26,7 @@ import es.albainformatica.albamobileandroid.dao.EmpresasDao
 import es.albainformatica.albamobileandroid.dao.SeriesDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.maestros.*
+import kotlinx.android.synthetic.main.cargas.*
 import kotlinx.android.synthetic.main.ventas_rutero.*
 import java.util.*
 
@@ -37,7 +38,9 @@ class VentasActivity: AppCompatActivity() {
     private lateinit var fRutero: Rutero
     private lateinit var fRutas: Rutas
     private lateinit var fClientes: ClientesClase
-    private var adapterLineas: SimpleCursorAdapter? = null
+
+    private lateinit var fRecRutero: RecyclerView
+    private lateinit var fAdpRutero: RuteroRvAdapter
 
     private var fUsarRutero: Boolean = false
     private var fUsarCP: Boolean = false
@@ -227,19 +230,20 @@ class VentasActivity: AppCompatActivity() {
 
 
     private fun inicContrRutero() {
-        //fRutas.abrir()
         fRutaActiva = fConfiguracion.rutaActiva()
         if (fRutaActiva != "") {
             mostrarRutaAct()
         }
-        prepararListView()
+
+        fRecRutero = rvRutero
+        fRecRutero.layoutManager = LinearLayoutManager(this)
+        prepararRvRutero()
 
         if (fRutaActiva != "") {
             if (fClteDoc == 0) {
-                // Vemos el último cliente al que le vendimos.
+                // Vemos el último cliente al que le vendimos y lo ponemos en negrita
                 fClteDoc = prefs.getInt("vtas_ult_clte", 0)
-                // Ponemos en negrita el nombre del siguiente cliente.
-                siguienteClte(false)
+                fAdpRutero.localizarClte(fClteDoc)
             }
         } else
             fClteDoc = 0
@@ -250,23 +254,22 @@ class VentasActivity: AppCompatActivity() {
 
     private fun inicContrCodPostal() {
         fCodPostal = prefs.getString("vtas_ult_cpostal", "") ?: ""
-        fRutero.abrirCodPostal(fCodPostal)
         mostrarCodPostalActivo(fCodPostal)
 
-        prepararListView()
+        fRecRutero = rvRutero
+        fRecRutero.layoutManager = LinearLayoutManager(this)
+        prepararRvRutero()
 
         if (fCodPostal != "") {
             if (fClteDoc == 0) {
-                // Vemos el último cliente al que le vendimos.
+                // Vemos el último cliente al que le vendimos y lo ponemos en negrita
                 fClteDoc = prefs.getInt("vtas_ult_clte", 0)
-                // Ponemos en negrita el nombre del siguiente cliente.
-                siguienteClte(false)
+                fAdpRutero.localizarClte(fClteDoc)
             }
         } else
             fClteDoc = 0
 
         tvSerie = findViewById(R.id.edtVtSerie)
-        //tvSerie.text = fConfiguracion.getSerie()
     }
 
 
@@ -318,7 +321,6 @@ class VentasActivity: AppCompatActivity() {
 
 
     private fun verRiesgoClte() {
-
         if (fClientes.abrirUnCliente(fClteDoc)) {
             val continuar = !fClientes.clienteEnRiesgo(0.0, 1, fEmpresaActual)
 
@@ -368,6 +370,7 @@ class VentasActivity: AppCompatActivity() {
         resultVentasLineas.launch(intent)
     }
 
+
     private var resultVentasLineas = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             // Si estamos usando rutero, nos situamos en el siguiente cliente.
@@ -375,7 +378,7 @@ class VentasActivity: AppCompatActivity() {
                 if (fClteFueraDeRuta)
                     fClteDoc = fAntClteDoc
                 else
-                    siguienteClte(true)
+                    siguienteClte()
             }
 
         } else if (result.resultCode == Activity.RESULT_CANCELED) {
@@ -489,10 +492,11 @@ class VentasActivity: AppCompatActivity() {
 
                     if (fRutaActiva != fOldRuta) {
                         if (fRutaActiva != "") {
-                            if (fRutero.abrirRuta(fRutaActiva)) {
+                            if (fRutero.abrirRuta(fRutaActiva.toShort())) {
                                 mostrarRutaAct()
-                                fClteDoc = fRutero.cliente
-                                adapterLineas?.changeCursor(fRutero.cursor)
+                                prepararRvRutero()
+                                fClteDoc = fRutero.lRutero[0].clienteId
+
                             } else {
                                 fRutaActiva = fOldRuta
 
@@ -673,6 +677,33 @@ class VentasActivity: AppCompatActivity() {
         return false
     }
 
+
+    private fun prepararRvRutero() {
+        fAdpRutero = RuteroRvAdapter(getCltesRuta(), fUsarRutero, this, object: RuteroRvAdapter.OnItemClickListener {
+            override fun onClick(view: View, data: DatosRutero) {
+                // Tomamos el campo cliente de la fila en la que hemos pulsado
+                fClteDoc = data.clienteId
+            }
+        })
+
+        fRecRutero.adapter = fAdpRutero
+    }
+
+    private fun getCltesRuta(): List<DatosRutero> {
+        if (fUsarRutero) {
+            if (fRutaActiva != "")
+                fRutero.abrirRuta(fRutaActiva.toShort())
+            else
+                fRutero.abrirRuta(0)
+        }
+        else {
+            fRutero.abrirCodPostal(fCodPostal)
+        }
+
+        return fRutero.lRutero
+    }
+
+    /*
     private fun prepararListView() {
 
         val columns: Array<String> = if (fConfiguracion.aconsNomComercial())
@@ -751,24 +782,13 @@ class VentasActivity: AppCompatActivity() {
             false
         }
     }
+    */
 
 
-    private fun siguienteClte(irASiguClte: Boolean) {
-        // Tengo que hacer abrirRuta para que adapterLineas.changeCursor llame automáticamente a adapterLineas.setViewValue,
-        // que es donde se pone en negrita el nombre del cliente activo. Si mantengo el cursor abierto no se produce la llamada.
-        if (fUsarRutero)
-            fRutero.abrirRuta(fRutaActiva)
-        else
-            fRutero.abrirCodPostal(fCodPostal)
-
-        if (!fRutero.cursor!!.isBeforeFirst) {
-            if (!fRutero.situarEnCliente(fClteDoc, irASiguClte))
-                fRutero.cursor?.moveToFirst()
-
-            fClteDoc = fRutero.cliente
-
-            adapterLineas?.changeCursor(fRutero.cursor)
-        }
+    private fun siguienteClte() {
+        fAdpRutero.selectedPos++
+        fClteDoc = fAdpRutero.datosRutero[fAdpRutero.selectedPos].clienteId
+        fAdpRutero.notifyDataSetChanged()
     }
 
 
@@ -869,13 +889,14 @@ class VentasActivity: AppCompatActivity() {
         alertDialog.show()
     }
 
+
     private fun cargarCodPostal(queCodPostal: String) {
         if (fRutero.abrirCodPostal(queCodPostal)) {
             fCodPostal = queCodPostal
             mostrarCodPostalActivo(fCodPostal)
+            prepararRvRutero()
+            fClteDoc = fRutero.lRutero[0].clienteId
 
-            fClteDoc = fRutero.cliente
-            adapterLineas?.changeCursor(fRutero.cursor)
         } else
             MsjAlerta(this@VentasActivity).alerta("El código postal no tiene clientes")
     }

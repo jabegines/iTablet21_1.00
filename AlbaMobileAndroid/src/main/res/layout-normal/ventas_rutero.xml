@@ -61,14 +61,14 @@
 
   </LinearLayout>
 
-  <ListView
-    android:id="@+id/lvClientes"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:fastScrollEnabled="true"
-    android:layout_weight="1" />
-  <!-- android:listSelector="@drawable/list_selector" -->
 
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/rvRutero"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1" >
+
+  </androidx.recyclerview.widget.RecyclerView>
 
   <LinearLayout
     android:id="@+id/lyVtCpTipoDoc"
