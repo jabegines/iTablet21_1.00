@@ -26,6 +26,12 @@ interface LotesDao {
             " AND CAST(stock AS REAL) > 0")
     fun getAllLotesArticulo(queArticulo: Int): Cursor
 
+    @Query("SELECT articuloId _id, lote, SUM(stock) stock FROM Lotes " +
+            " WHERE articuloId = :queArticulo " +
+            " AND CAST(stock AS REAL) > 0 " +
+            " GROUP BY lote")
+    fun getAllLotesArtSum(queArticulo: Int): Cursor
+
     @Query("SELECT * FROM Lotes ORDER BY Empresa")
     fun getAllLotes(): List<LotesEnt>
 

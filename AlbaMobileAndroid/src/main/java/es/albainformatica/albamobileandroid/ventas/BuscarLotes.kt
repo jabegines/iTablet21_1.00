@@ -17,6 +17,8 @@ import es.albainformatica.albamobileandroid.R
  */
 class BuscarLotes: Activity() {
     private lateinit var fLotes: LotesClase
+    private lateinit var fConfiguracion: Configuracion
+
     private lateinit var adapterLineas: SimpleCursorAdapter
     private var fArticulo = 0
     private var fFtoCantidad: String = ""
@@ -26,6 +28,9 @@ class BuscarLotes: Activity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.buscar_lotes)
+
+        fConfiguracion = Comunicador.fConfiguracion
+
         val i = intent
         fArticulo = i.getIntExtra("articulo", 0)
         fFtoCantidad = i.getStringExtra("formatocant") ?: ""
@@ -41,7 +46,7 @@ class BuscarLotes: Activity() {
     }
 
     private fun inicializarListView() {
-        val cursor = fLotes.getAllLotesArticulo(fArticulo)
+        val cursor = fLotes.getAllLotesArticulo(fArticulo, fConfiguracion.sumarStockEmpresas())
         val listView = findViewById<ListView>(R.id.lvLotes)
 
         // Si no tenemos datos cerramos la actividad y si sólo tenemos un registro lo devolvemos (si así lo tenemos configurado)

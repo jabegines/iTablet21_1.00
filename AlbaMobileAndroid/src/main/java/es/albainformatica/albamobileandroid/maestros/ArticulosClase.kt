@@ -3,6 +3,7 @@ package es.albainformatica.albamobileandroid.maestros
 import android.content.Context
 import android.database.Cursor
 import es.albainformatica.albamobileandroid.*
+import es.albainformatica.albamobileandroid.Comunicador.Companion.fConfiguracion
 import es.albainformatica.albamobileandroid.dao.*
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.entity.FormatosEnt
@@ -57,7 +58,13 @@ class ArticulosClase(val contexto: Context) {
     // en cuenta en abrirUnArticulo para mostrar el stock del artículo en dicha empresa
     fun abrirUnArticulo(queArticulo: Int, queEmpresa: Short): Boolean {
 
-        val datosArticulo = articulosDao?.abrirUnArticulo(queArticulo, queEmpresa) ?: DatosArticulo()
+        val datosArticulo: DatosArticulo
+        if (fConfiguracion.sumarStockEmpresas()) {
+            datosArticulo = articulosDao?.abrirUnArtSum(queArticulo) ?: DatosArticulo()
+        }
+        else {
+            datosArticulo = articulosDao?.abrirUnArticulo(queArticulo, queEmpresa) ?: DatosArticulo()
+        }
 
         return if (datosArticulo.articuloId > 0) {
             fArticulo = queArticulo

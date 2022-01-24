@@ -313,8 +313,20 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
     private fun getArticulos(): MutableList<ListaArticulos> {
         val articulosDao: ArticulosDao? = MyDatabase.getInstance(this)?.articulosDao()
 
-        return if (fVerPromociones) articulosDao?.getArticPorPromoc()?.toMutableList() ?: emptyList<ListaArticulos>().toMutableList()
-        else articulosDao?.getArticPorDescrCod(queOrdenacion, "%$queBuscar%", fEmpresaActual, fTarifaVtas, fTarifaCajas)?.toMutableList() ?: emptyList<ListaArticulos>().toMutableList()
+        return if (fVerPromociones) {
+            if (fConfiguracion.sumarStockEmpresas())
+                articulosDao?.getArticPorPromSuma()?.toMutableList() ?: emptyList<ListaArticulos>().toMutableList()
+            else
+                articulosDao?.getArticPorPromoc(fEmpresaActual.toShort())?.toMutableList() ?: emptyList<ListaArticulos>().toMutableList()
+        }
+        else {
+            if (fConfiguracion.sumarStockEmpresas())
+                articulosDao?.getArticPorDCSuma(queOrdenacion, "%$queBuscar%", fEmpresaActual, fTarifaVtas,
+                    fTarifaCajas)?.toMutableList() ?: emptyList<ListaArticulos>().toMutableList()
+            else
+                articulosDao?.getArticPorDescrCod(queOrdenacion, "%$queBuscar%", fEmpresaActual, fTarifaVtas,
+                    fTarifaCajas, fEmpresaActual.toShort())?.toMutableList() ?: emptyList<ListaArticulos>().toMutableList()
+        }
     }
 
 

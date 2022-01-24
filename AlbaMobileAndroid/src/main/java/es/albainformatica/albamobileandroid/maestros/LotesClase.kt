@@ -38,8 +38,9 @@ class LotesClase(queContexto: Context) {
     }
 
 
-    fun getAllLotesArticulo(queArticulo: Int): Cursor? {
-        return lotesDao?.getAllLotesArticulo(queArticulo)
+    fun getAllLotesArticulo(queArticulo: Int, sumarEmpresas: Boolean): Cursor? {
+        return if (sumarEmpresas) lotesDao?.getAllLotesArtSum(queArticulo)
+        else lotesDao?.getAllLotesArticulo(queArticulo)
     }
 
 

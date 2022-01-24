@@ -377,6 +377,11 @@ class Configuracion(queContexto: Context) {
         return (queValor == "T")
     }
 
+    fun sumarStockEmpresas(): Boolean {
+        val queValor = configuracionDao?.getValor(640) ?: "F"
+        return (queValor == "T")
+    }
+
     fun pvpHistorico(): Boolean {
         val queValor = configuracionDao?.getValor(611) ?: "F"
         return (queValor == "T")
