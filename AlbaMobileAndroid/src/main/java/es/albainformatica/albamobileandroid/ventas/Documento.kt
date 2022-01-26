@@ -687,7 +687,7 @@ class Documento(private val fContexto: Context) {
 
     fun cargarLinea(fLinea: Int): Boolean {
         var fEncontrada = false
-        val sPorcIva: String
+        var sPorcIva: String
         var datosLinVta = DatosLinVtas()
 
         for (linea in lLineas) {
@@ -699,8 +699,7 @@ class Documento(private val fContexto: Context) {
         }
 
         return if (fEncontrada) {
-            sPorcIva = if (datosLinVta.porcIva != "") "0.0"
-            else datosLinVta.porcIva.replace(',', '.')
+            sPorcIva = datosLinVta.porcIva?.replace(',', '.') ?: "0.0"
             fArticulo = datosLinVta.articuloId
             fCodArt = datosLinVta.codArticulo
             fDescr = datosLinVta.descripcion

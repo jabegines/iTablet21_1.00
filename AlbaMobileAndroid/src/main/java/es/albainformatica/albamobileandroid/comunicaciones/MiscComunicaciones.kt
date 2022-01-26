@@ -902,7 +902,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             try {
                 parser.setInput(fin, "UTF-8")
                 var event = parser.next()
-                val cabeceraId: Long = 0
+                var cabeceraId: Long = 0
 
                 while (event != XmlPullParser.END_DOCUMENT && !fTerminar) {
                     if (event == XmlPullParser.START_TAG) {
@@ -950,7 +950,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                             // Llenamos el campo "firmado" a falso.
                             cabeceraEnt.firmado = "F"
 
-                            cabecerasDao?.insertar(cabeceraEnt)
+                            cabeceraId = cabecerasDao?.insertar(cabeceraEnt) ?: 0
 
                         } else if (parser.name == "linea") {
                             val lineaEnt = LineasEnt()

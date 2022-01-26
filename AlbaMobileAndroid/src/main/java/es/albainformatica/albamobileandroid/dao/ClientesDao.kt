@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import es.albainformatica.albamobileandroid.DatosReparto
 import es.albainformatica.albamobileandroid.ListaClientes
 import es.albainformatica.albamobileandroid.entity.ClientesEnt
 import es.albainformatica.albamobileandroid.entity.TempCltesEnt
@@ -11,6 +12,16 @@ import es.albainformatica.albamobileandroid.entity.TempCltesEnt
 
 @Dao
 interface ClientesDao {
+
+    @Query("SELECT DISTINCT B.cabeceraId, A.clienteId, B.tipoDoc, (B.serie || '/' || B.numero) AS serieNumero, " +
+            " B.fecha, A.codigo, A.nombre, A.nombreComercial, IFNULL(C.clienteId, 0) tienePend, " +
+            " B.estado, B.firmado, B.tipoIncidencia FROM Clientes A " +
+            " LEFT JOIN Cabeceras B ON B.clienteId = A.clienteId " +
+            " LEFT JOIN Pendiente C ON C.clienteId = A.clienteId AND C.estado <> 'L'AND C.tipodoc <> 2 " +
+            " WHERE B.hojaReparto = :queRuta OR C.hoja = :queRuta" +
+            " ORDER BY B.ordenReparto ")
+    fun getDocsReparto(queRuta: Short): List<DatosReparto>
+
 
     @Query("UPDATE Clientes SET numExport = :queNumExportacion " +
             " WHERE numExport = -1")

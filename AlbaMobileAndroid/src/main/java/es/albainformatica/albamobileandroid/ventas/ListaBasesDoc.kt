@@ -157,7 +157,7 @@ class ListaBasesDoc(contexto: Context) {
             if (linea.importeII == "") {
                 fImporteII = linea.importe.replace(',', '.').toDouble()
                 if (linea.porcIva != "") {
-                    dPorcIva = linea.porcIva.replace(',', '.').toDouble()
+                    dPorcIva = linea.porcIva?.replace(',', '.')?.toDouble() ?: 0.0
                     fImporteII += fImporteII * dPorcIva / 100
                 } else fImporteII = 0.0
             } else fImporteII = linea.importeII.replace(',', '.').toDouble()

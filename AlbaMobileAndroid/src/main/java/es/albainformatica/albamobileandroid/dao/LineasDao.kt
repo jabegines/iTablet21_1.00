@@ -88,7 +88,7 @@ interface LineasDao {
             " A.tasa1, A.tasa2, A.flag, A.flag3, A.flag5, A.tipoIncId, A.formatoId, A.textoLinea, A.modif_nueva, " +
             " A.almacenPedido,  A.dtoOftVol, A.ofertaId, A.esEnlace, 0 AS porcIva, '' AS descrFto " +
             " FROM Lineas A " +
-            " LEFT JOIN Cabeceras B ON B.cabeceraId = A.cabeceraId" +
+            " JOIN Cabeceras B ON B.cabeceraId = A.cabeceraId" +
             " WHERE B.numero = 0 OR B.numero IS NULL")
     fun getLineasHuerfanas(): List<DatosLinVtas>
 

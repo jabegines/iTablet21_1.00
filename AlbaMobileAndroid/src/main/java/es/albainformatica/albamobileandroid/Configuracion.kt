@@ -227,7 +227,7 @@ class Configuracion(queContexto: Context) {
         return (queValor == "T")
     }
 
-    fun activarRuta(fRuta: String) {
+    fun activarRuta(fRuta: Short) {
         val values = ContentValues()
         values.put("valor", fRuta)
         // Este valor no lo recibimos de gestión, por eso comprobamos si existe para, si no, dar de alta.
@@ -236,15 +236,15 @@ class Configuracion(queContexto: Context) {
             val configEnt = ConfiguracionEnt()
             configEnt.grupo = 300
             configEnt.descripcion = "Ruta activa"
-            configEnt.valor = fRuta
+            configEnt.valor = fRuta.toString()
             configuracionDao?.insertar(configEnt)
-        } else if (queValor != fRuta) {
-            configuracionDao?.actualizar(fRuta, 300)
+        } else if (queValor != fRuta.toString()) {
+            configuracionDao?.actualizar(fRuta.toString(), 300)
         }
     }
 
-    fun rutaActiva(): String {
-        return configuracionDao?.getValor(300) ?: ""
+    fun rutaActiva(): Short {
+        return configuracionDao?.getValor(300)?.toShort() ?: 0
     }
 
     fun pedirTarifa(): Boolean {

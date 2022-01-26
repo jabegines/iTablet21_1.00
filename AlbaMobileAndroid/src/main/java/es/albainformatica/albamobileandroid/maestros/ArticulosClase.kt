@@ -6,7 +6,10 @@ import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.Comunicador.Companion.fConfiguracion
 import es.albainformatica.albamobileandroid.dao.*
 import es.albainformatica.albamobileandroid.database.MyDatabase
+import es.albainformatica.albamobileandroid.entity.BusquedasEnt
 import es.albainformatica.albamobileandroid.entity.FormatosEnt
+import es.albainformatica.albamobileandroid.entity.HistoricoEnt
+import es.albainformatica.albamobileandroid.entity.StockEnt
 
 
 class ArticulosClase(val contexto: Context) {
@@ -15,9 +18,8 @@ class ArticulosClase(val contexto: Context) {
     private val articDatAdicDao: ArticDatAdicDao? = MyDatabase.getInstance(contexto)?.articDatAdicDao()
     private var formatosDao: FormatosDao? = MyDatabase.getInstance(contexto)?.formatosDao()
     private var historicoDao: HistoricoDao? = MyDatabase.getInstance(contexto)?.historicoDao()
-    private var ivasDao: IvasDao? = MyDatabase.getInstance(contexto)?.ivasDao()
     private var ftosLineasDao: FtosLineasDao? = MyDatabase.getInstance(contexto)?.ftosLineasDao()
-    private var fLotes: LotesClase = LotesClase(contexto)
+    private var stockDao: StockDao? = MyDatabase.getInstance(contexto)?.stockDao()
 
     lateinit var lArticulos: List<Int>
     lateinit var lArtGridView: List<DatosGridView>
@@ -58,12 +60,10 @@ class ArticulosClase(val contexto: Context) {
     // en cuenta en abrirUnArticulo para mostrar el stock del artículo en dicha empresa
     fun abrirUnArticulo(queArticulo: Int, queEmpresa: Short): Boolean {
 
-        val datosArticulo: DatosArticulo
-        if (fConfiguracion.sumarStockEmpresas()) {
-            datosArticulo = articulosDao?.abrirUnArtSum(queArticulo) ?: DatosArticulo()
-        }
-        else {
-            datosArticulo = articulosDao?.abrirUnArticulo(queArticulo, queEmpresa) ?: DatosArticulo()
+        val datosArticulo: DatosArticulo = if (fConfiguracion.sumarStockEmpresas()) {
+            articulosDao?.abrirUnArtSum(queArticulo) ?: DatosArticulo()
+        } else {
+            articulosDao?.abrirUnArticulo(queArticulo, queEmpresa) ?: DatosArticulo()
         }
 
         return if (datosArticulo.articuloId > 0) {
@@ -131,54 +131,8 @@ class ArticulosClase(val contexto: Context) {
             true
         }
         else false
-
-        // TODO
-        /*
-        cursor = dbAlba.rawQuery(
-            "SELECT A.*, B.Clave, C.Clave codalternativo, I.codigo codiva, I.iva porciva,"
-                    + " S.ent, S.sal, S.entc, S.salc"
-                    + " FROM articulos A"
-                    + " LEFT JOIN busquedas B ON B.articulo = A.articulo AND B.tipo = 2"
-                    + " LEFT JOIN busquedas C ON C.articulo = A.articulo AND C.tipo = 6"
-                    + " LEFT JOIN ivas I ON I.tipo = A.tipoiva"
-                    + " LEFT JOIN stock S ON S.articulo = A.articulo"
-                    + " WHERE A.articulo = " + QueArticulo, null)
-
-        if (cursor.moveToFirst()) {
-            fArticulo = getArticulo()
-            if (!fCodBCajas) fUCaja = getUCaja()
-
-            fCodProv = cursor.getString(cursor.getColumnIndex("prov"))
-
-            return true
-        } else return false
-        */
     }
 
-
-    /*
-    private fun abrirTarifas(queArticulo: Int) {
-        // Si el artículo tiene formatos el cursor cTarifas saldrá de la tabla "trfformatos".
-        if (usarFormatos()) {
-            // En la consulta repetimos el campo precio porque nos hará falta en FichaArticuloActivity.setViewBinder.
-            cTarifas = dbAlba.rawQuery(
-                "SELECT A.articulo _id, A.tarifa, A.precio, A.precio priva,"
-                        + " A.dto, B.tarifa nombretrf, C.descr nombrefto FROM trfformatos A"
-                        + " LEFT OUTER JOIN cnftarifas B ON B.codigo = A.tarifa"
-                        + " LEFT OUTER JOIN formatos C ON C.codigo = A.formato"
-                        + " WHERE A.articulo =" + queArticulo, null
-            )
-        } else {
-            // En la consulta repetimos el campo precio porque nos hará falta en FichaArticuloActivity.setViewBinder.
-            cTarifas = dbAlba.rawQuery(
-                ("SELECT A.articulo _id, A.tarifa, A.precio, A.precio priva,"
-                        + " A.dto, B.tarifa nombretrf FROM tarifas A"
-                        + " LEFT OUTER JOIN cnftarifas B ON B.codigo = A.tarifa"
-                        + " WHERE A.articulo =" + queArticulo), null
-            )
-        }
-    }
-    */
 
 
     // Catálogos Bionat
@@ -320,56 +274,33 @@ class ArticulosClase(val contexto: Context) {
 
 
     fun articuloEnTablet(queArticulo: Int): Boolean {
-        // TODO
-        /*
-        cursor = dbAlba.rawQuery("SELECT articulo FROM articulos WHERE articulo = $queArticulo", null)
-        return try {
-            cursor.moveToFirst()
-        } finally {
-            cursor.close()
-        }
-        */
-        return true
+        val queArticuloId = articulosDao?.getArticulo(queArticulo) ?: 0
+        return (queArticuloId > 0)
     }
 
 
-    fun existeCodigo(QueCodigo: String): Boolean {
-        // TODO
-        /*
-        cursor = dbAlba.rawQuery("SELECT articulo, tipo, tcaja, ucaja FROM busquedas WHERE clave = '$QueCodigo'", null)
-        return if (cursor.moveToFirst()) {
-            val QueArticulo = cursor.getInt(0)
-            val tipoCodigo = cursor.getInt(1)
+    fun existeCodigo(queCodigo: String): Boolean {
+        val busqEnt = articulosDao?.existeCodigo(queCodigo) ?: BusquedasEnt()
+
+        return if (busqEnt.articuloId > 0) {
+            val queArticulo = busqEnt.articuloId
+            val tipoCodigo = busqEnt.tipo
             // Si el código es de cajas, asignamos las unidades por caja. Si no, las
             // asignaremos en existeArticulo().
-            if (tipoCodigo == tipoBusq_Caja.toInt()) {
+            if (tipoCodigo == tipoBusq_Caja) {
                 fCodBCajas = true
-                fUCaja = cursor.getDouble(3)
-                fTarifaCajas = cursor.getString(2)[0] == 'T'
+                fUCaja = busqEnt.ucaja.toDouble()
+                fTarifaCajas = (busqEnt.tcaja == "T")
             } else {
                 fCodBCajas = false
                 fTarifaCajas = false
             }
-            cursor.close()
-            existeArticulo(QueArticulo)
+            existeArticulo(queArticulo)
+
         } else {
-            cursor.close()
             false
         }
-        */
-        return true
     }
-
-
-    /*
-    fun getCodAlternativo(): String {
-        if (cursor.getString(cursor.getColumnIndex("codalternativo")) != null)
-            return cursor.getString(cursor.getColumnIndex("codalternativo"))
-        else
-            return ""
-    }
-    */
-
 
 
     fun getCosto(): Double {
@@ -378,63 +309,10 @@ class ArticulosClase(val contexto: Context) {
     }
 
 
-    /*
-    fun getPrOfta(): String {
-        return ofertasDao?.getPrOferta(fArticulo, fEmpresa) ?: "0.0"
-    }
-
-    fun getDtoOfta(): String {
-        return ofertasDao?.getDtoOferta(fArticulo, fEmpresa) ?: "0.0"
-    }
-    */
-
     fun tieneOferta(queArticulo: Int): Boolean {
         val queArticuloId = ofertasDao?.articuloEnOfta(queArticulo, fEmpresa) ?: 0
         return (queArticuloId > 0)
     }
-
-    /*
-    fun getPeso(): Double {
-        val columna = cursor.getColumnIndex("peso")
-        var sPeso = cursor.getString(columna)
-        return if (sPeso != null) {
-            sPeso = sPeso.replace(',', '.')
-            java.lang.Double.valueOf(sPeso)
-        } else 0.0
-    }
-    */
-
-    /*
-    fun getTieneHco(): Boolean {
-        val idHco = cursor.getInt(cursor.getColumnIndex("idHco"))
-        return idHco > 0
-    }
-    */
-
-    /*
-    fun getCantHco(): Double {
-        val sCant = cursor.getString(cursor.getColumnIndex("cantHco"))
-        return if (sCant != null) {
-            java.lang.Double.valueOf(sCant.replace(',', '.'))
-        } else 0.0
-    }
-    */
-
-    /*
-    fun getCajasHco(): Double {
-        val sCajas = cursor.getString(cursor.getColumnIndex("cajasHco"))
-        return if (sCajas != null) {
-            java.lang.Double.valueOf(sCajas.replace(',', '.'))
-        } else 0.0
-    }
-    */
-
-    /*
-    fun getFechaHco(): String {
-        val sFecha = cursor.getString(cursor.getColumnIndex("fecha"))
-        return sFecha ?: ""
-    }
-    */
 
 
     fun getExistencias(): Double {
@@ -473,53 +351,6 @@ class ArticulosClase(val contexto: Context) {
         return (fFlag1 and FLAGARTICULO_APLICARTRFCAJAS) > 0
     }
 
-    /*
-    fun getPrecio(): String {
-        if (cursor.getString(cursor.getColumnIndex("precio")) != null)
-            return cursor.getString(cursor.getColumnIndex("precio"))
-        else
-            return "0.0"
-    }
-    */
-
-    /*
-    fun getPrecioHco(): String {
-        return cursor.getString(cursor.getColumnIndex("precioHco"))
-    }
-    */
-
-    /*
-    fun getDto(): String {
-        if (cursor.getString(cursor.getColumnIndex("dto")) != null)
-            return cursor.getString(cursor.getColumnIndex("dto"))
-        else
-            return "0.0"
-    }
-    */
-
-    /*
-    fun getDtoHco(): String {
-        return cursor.getString(cursor.getColumnIndex("dtoHco"))
-    }
-    */
-
-    /*
-    fun getPrCajas(): String {
-        if (cursor.getString(cursor.getColumnIndex("prCajas")) != null)
-            return cursor.getString(cursor.getColumnIndex("prCajas"))
-        else
-            return "0.0"
-    }
-    */
-
-    /*
-    fun getDtoCajas(): String {
-        if (cursor.getString(cursor.getColumnIndex("dtCajas")) != null)
-            return cursor.getString(cursor.getColumnIndex("dtCajas"))
-        else
-            return "0.0"
-    }
-    */
 
     fun tieneEnlace(): Boolean {
         return fEnlace > 0
@@ -540,41 +371,19 @@ class ArticulosClase(val contexto: Context) {
             listItems.add(ponerCeros(formatoEnt.formatoId.toString(), ancho_formato) + " " + formatoEnt.descripcion)
         }
         return listItems
-
-        // TODO
-        /*
-        dbAlba.rawQuery("SELECT DISTINCT A.codigo, A.descr FROM formatos A" +
-                    " JOIN trfformatos B ON B.formato = A.codigo AND B.articulo = " + getArticulo() +
-                    " ORDER BY A.codigo", null
-        ).use { cFormatos ->
-            cFormatos.moveToFirst()
-            while (!cFormatos.isAfterLast) {
-                listItems.add(
-                    ponerCeros(cFormatos.getString(0), ancho_formato) + "  " + cFormatos.getString(1)
-                )
-                cFormatos.moveToNext()
-            }
-        }
-        */
     }
 
 
     fun cargarHcoArtClte(queArticulo: Int, queCliente: Int, listItems: MutableList<String>) {
-        // TODO
-        /*
-        dbAlba.rawQuery(
-            "SELECT cajas, cantidad, precio, dto, fecha FROM historico" +
-                    " WHERE articulo = " + queArticulo + " AND cliente = " + queCliente, null
-        ).use { cHco ->
-            if (cHco.moveToFirst()) {
-                listItems.add(cHco.getString(0))
-                listItems.add(cHco.getString(1))
-                listItems.add(cHco.getString(2))
-                listItems.add(cHco.getString(3))
-                listItems.add(cHco.getString(4))
-            }
+        val hcoEnt = historicoDao?.cargarHcoArtClte(queArticulo, queCliente) ?: HistoricoEnt()
+
+        if (hcoEnt.articuloId > 0) {
+            listItems.add(hcoEnt.cajas)
+            listItems.add(hcoEnt.cantidad)
+            listItems.add(hcoEnt.precio)
+            listItems.add(hcoEnt.dto)
+            listItems.add(hcoEnt.fecha)
         }
-        */
     }
 
 
@@ -597,107 +406,96 @@ class ArticulosClase(val contexto: Context) {
 
         // Vemos si el artículo está en la tabla Stock
         if (deEntradas) {
-            var sEntradas: String
-            var sEntCajas: String
-            var dEntradas: Double
-            var dEntCajas: Double
+            val sEntradas: String
+            val sEntCajas: String
+            val dEntradas: Double
+            val dEntCajas: Double
 
-            val sQuery = "SELECT ent entradas, entc entcajas FROM stock" +
-                    " WHERE articulo = $queArticulo AND empresa = $queEmpresa"
+            val datosStock = stockDao?.getEntrArtEmpr(queArticulo, queEmpresa) ?: DatosStock()
 
-            // TODO
-            /*
-            dbAlba.rawQuery(sQuery, null).use { cStock ->
-                if (cStock.moveToFirst()) {
-                    sEntradas = if (cStock.getString(cStock.getColumnIndex("entradas")) != null) {
-                        cStock.getString(cStock.getColumnIndex("entradas")).replace(',', '.')
-                    } else {
-                        "0.0"
-                    }
-                    sEntCajas = if (cStock.getString(cStock.getColumnIndex("entcajas")) != null) {
-                        cStock.getString(cStock.getColumnIndex("entcajas")).replace(',', '.')
-                    } else {
-                        "0.0"
-                    }
+            if (datosStock.unidades != "" || datosStock.cajas != "") {
 
-                    dEntradas = sEntradas.toDouble() + dCantidad
-                    dEntCajas = sEntCajas.toDouble() + dCajas
+                sEntradas = if (datosStock.unidades != "") {
+                    datosStock.unidades.replace(',', '.')
                 } else {
-                    bInsertar = true
-                    dEntradas = dCantidad
-                    dEntCajas = dCajas
+                    "0.0"
                 }
-                val values = ContentValues()
-                if (bInsertar) {
-                    values.put("articulo", queArticulo)
-                    values.put("empresa", queEmpresa)
-                    values.put("sal", 0.0)
-                    values.put("salc", 0.0)
-                    values.put("salp", 0.0)
+                sEntCajas = if (datosStock.cajas != "") {
+                    datosStock.cajas.replace(',', '.')
+                } else {
+                    "0.0"
                 }
-                values.put("ent", dEntradas)
-                values.put("entc", dEntCajas)
-                values.put("entp", 0.0)
 
-                if (bInsertar) dbAlba.insert("stock", null, values)
-                else dbAlba.update("stock", values, "articulo=$queArticulo and empresa=$queEmpresa", null)
+                dEntradas = sEntradas.toDouble() + dCantidad
+                dEntCajas = sEntCajas.toDouble() + dCajas
+            } else {
+                bInsertar = true
+                dEntradas = dCantidad
+                dEntCajas = dCajas
             }
-            */
+
+            val stockEnt = StockEnt()
+            stockEnt.articuloId = queArticulo
+            stockEnt.empresa = queEmpresa
+
+            if (bInsertar) {
+                stockEnt.sal = "0.0"
+                stockEnt.salc = "0.0"
+                stockEnt.salp = "0.0"
+            }
+            stockEnt.ent = dEntradas.toString()
+            stockEnt.entc = dEntCajas.toString()
+            stockEnt.entp = "0.0"
+
+            if (bInsertar) stockDao?.insertar(stockEnt)
+            else stockDao?.actualizar(stockEnt)
+
         } else {
-            var sSalidas: String
-            var sSalCajas: String
-            var dSalidas: Double
-            var dSalCajas: Double
+            val sSalidas: String
+            val sSalCajas: String
+            val dSalidas: Double
+            val dSalCajas: Double
 
-            val sQuery = "SELECT sal salidas, salc salcajas FROM stock" +
-                    " WHERE articulo = $queArticulo AND empresa = $queEmpresa"
+            val datosStock = stockDao?.getSalArtEmpr(queArticulo, queEmpresa) ?: DatosStock()
 
-            // TODO
-            /*
-            dbAlba.rawQuery(sQuery, null).use { cStock ->
-                if (cStock.moveToFirst()) {
-                    sSalidas = if (cStock.getString(cStock.getColumnIndex("salidas")) != null) {
-                        cStock.getString(cStock.getColumnIndex("salidas")).replace(',', '.')
-                    } else {
-                        "0.0"
-                    }
-                    sSalCajas = if (cStock.getString(cStock.getColumnIndex("salcajas")) != null) {
-                        cStock.getString(cStock.getColumnIndex("salcajas")).replace(',', '.')
-                    } else {
-                        "0.0"
-                    }
+            if (datosStock.unidades != "" || datosStock.cajas != "") {
 
-                    dSalidas = sSalidas.toDouble() + dCantidad
-                    dSalCajas = sSalCajas.toDouble() + dCajas
+                sSalidas = if (datosStock.unidades!= "") {
+                    datosStock.unidades.replace(',', '.')
                 } else {
-                    bInsertar = true
-                    dSalidas = dCantidad
-                    dSalCajas = dCajas
+                    "0.0"
                 }
-                val values = ContentValues()
-                if (bInsertar) {
-                    values.put("articulo", queArticulo)
-                    values.put("empresa", queEmpresa)
-                    values.put("ent", 0.0)
-                    values.put("entc", 0.0)
-                    values.put("entp", 0.0)
+                sSalCajas = if (datosStock.cajas != "") {
+                    datosStock.cajas.replace(',', '.')
+                } else {
+                    "0.0"
                 }
-                values.put("sal", dSalidas)
-                values.put("salc", dSalCajas)
-                values.put("salp", 0.0)
 
-                if (bInsertar) dbAlba.insert("stock", null, values)
-                else dbAlba.update("stock", values, "articulo=$queArticulo and empresa=$queEmpresa", null)
+                dSalidas = sSalidas.toDouble() + dCantidad
+                dSalCajas = sSalCajas.toDouble() + dCajas
+            } else {
+                bInsertar = true
+                dSalidas = dCantidad
+                dSalCajas = dCajas
             }
-            */
+
+            val stockEnt = StockEnt()
+            stockEnt.articuloId = queArticulo
+            stockEnt.empresa = queEmpresa
+
+            if (bInsertar) {
+                stockEnt.ent = "0.0"
+                stockEnt.entc = "0.0"
+                stockEnt.entp = "0.0"
+            }
+            stockEnt.sal = dSalidas.toString()
+            stockEnt.salc = dSalCajas.toString()
+            stockEnt.salp = "0.0"
+
+            if (bInsertar) stockDao?.insertar(stockEnt)
+            else stockDao?.actualizar(stockEnt)
         }
     }
 
-    /*
-    fun getUCajaAsString(): String {
-        val sUCaja = cursor.getString(cursor.getColumnIndex("ucaja") )
-        return sUCaja ?: ""
-    }
-    */
 
 }

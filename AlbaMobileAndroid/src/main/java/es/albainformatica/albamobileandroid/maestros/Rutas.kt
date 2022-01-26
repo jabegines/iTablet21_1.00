@@ -16,7 +16,7 @@ class Rutas(contexto: Context)  {
     }
 
 
-    fun dimeNombre(queRuta: String): String {
+    fun dimeNombre(queRuta: Short): String {
         return rutasDao?.dimeNombre(queRuta) ?: ""
     }
 }

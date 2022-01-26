@@ -49,7 +49,7 @@ class VentasActivity: AppCompatActivity() {
     private var fClasDocEnvG: Boolean = false
     private var fClteDoc: Int = 0
     private var fCodPostal: String = ""
-    private var fRutaActiva: String = ""
+    private var fRutaActiva: Short = 0
     private var fTipoDoc: Short = 0
     private var fTipoPedido: Int = 0
     private var fAntClteDoc: Int = 0
@@ -231,7 +231,7 @@ class VentasActivity: AppCompatActivity() {
 
     private fun inicContrRutero() {
         fRutaActiva = fConfiguracion.rutaActiva()
-        if (fRutaActiva != "") {
+        if (fRutaActiva > 0) {
             mostrarRutaAct()
         }
 
@@ -239,7 +239,7 @@ class VentasActivity: AppCompatActivity() {
         fRecRutero.layoutManager = LinearLayoutManager(this)
         prepararRvRutero()
 
-        if (fRutaActiva != "") {
+        if (fRutaActiva > 0) {
             if (fClteDoc == 0) {
                 // Vemos el último cliente al que le vendimos y lo ponemos en negrita
                 fClteDoc = prefs.getInt("vtas_ult_clte", 0)
@@ -488,10 +488,10 @@ class VentasActivity: AppCompatActivity() {
             spRuta.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                     val fOldRuta = fRutaActiva
-                    fRutaActiva = spRuta.getItemAtPosition(position).toString().substring(0, 2).trim { it <= ' ' }
+                    fRutaActiva = (spRuta.getItemAtPosition(position).toString().substring(0, 2).trim { it <= ' ' }).toShort()
 
                     if (fRutaActiva != fOldRuta) {
-                        if (fRutaActiva != "") {
+                        if (fRutaActiva > 0) {
                             if (fRutero.abrirRuta(fRutaActiva.toShort())) {
                                 mostrarRutaAct()
                                 prepararRvRutero()
@@ -513,11 +513,11 @@ class VentasActivity: AppCompatActivity() {
         }
     }
 
-    private fun getIndexRuta(s1: Spinner, nombre: String): Int {
+    private fun getIndexRuta(s1: Spinner, nombre: Short): Int {
         var index = 0
         for (i in 0 until s1.count) {
             val queCodigo = s1.getItemAtPosition(i).toString().substring(0, 2).trim { it <= ' ' }
-            if (queCodigo == nombre) {
+            if (queCodigo == nombre.toString()) {
                 index = i
             }
         }
@@ -527,7 +527,7 @@ class VentasActivity: AppCompatActivity() {
 
     private fun mostrarRutaAct() {
         val tvRutaAct = findViewById<TextView>(R.id.tvVtRutaAct)
-        tvRutaAct?.text = fRutas.dimeNombre(fRutaActiva)
+        tvRutaAct?.text = fRutas.dimeNombre(fRutaActiva.toShort())
     }
 
     private fun mostrarCodPostalActivo(queCodPostal: String) {
@@ -691,7 +691,7 @@ class VentasActivity: AppCompatActivity() {
 
     private fun getCltesRuta(): List<DatosRutero> {
         if (fUsarRutero) {
-            if (fRutaActiva != "")
+            if (fRutaActiva > 0)
                 fRutero.abrirRuta(fRutaActiva.toShort())
             else
                 fRutero.abrirRuta(0)

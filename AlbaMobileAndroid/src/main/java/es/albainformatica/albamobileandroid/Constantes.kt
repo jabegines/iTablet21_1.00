@@ -265,7 +265,7 @@ class DatosLinVtas {
     var dtoTarifa: String = ""
     var tasa1: String = ""
     var tasa2: String = ""
-    var porcIva: String = ""
+    var porcIva: String? = null
     var formatoId: Short = 0
     var descrFto: String? = ""
     var tipoIncId: Int = 0
@@ -284,7 +284,7 @@ class DatosLinIva {
     var codigoIva: Short = 0
     var importe: String = ""
     var importeII: String = ""
-    var porcIva: String = ""
+    var porcIva: String? = null
 }
 
 
@@ -580,6 +580,27 @@ class DatosRutero {
     var nombre: String = ""
     var nombreComercial: String = ""
     var tieneIncid: String = ""
+}
+
+class DatosStock {
+    var unidades: String = ""
+    var cajas: String = ""
+}
+
+
+class DatosReparto {
+    var cabeceraId: Int = 0
+    var clienteId: Int = 0
+    var tipoDoc: Short = 0
+    var serieNumero: String = ""
+    var fecha: String = ""
+    var codigo: Int = 0
+    var nombre: String = ""
+    var nombreComercial: String = ""
+    var tienePend: Int = 0
+    var estado: String = ""
+    var firmado: String = ""
+    var tipoIncidencia: Int = 0
 }
 
 

@@ -10,7 +10,7 @@ import es.albainformatica.albamobileandroid.entity.RutasEnt
 interface RutasDao {
 
     @Query("SELECT descripcion FROM Rutas WHERE rutaId = :queRuta")
-    fun dimeNombre(queRuta: String): String
+    fun dimeNombre(queRuta: Short): String
 
 
     @Query("SELECT rutaId || ' ' || descripcion FROM Rutas ORDER BY rutaId")

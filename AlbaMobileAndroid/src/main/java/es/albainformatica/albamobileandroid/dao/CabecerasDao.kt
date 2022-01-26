@@ -13,6 +13,10 @@ import es.albainformatica.albamobileandroid.entity.CabecerasEnt
 @Dao
 interface CabecerasDao {
 
+    @Query("SELECT hojaReparto FROM Cabeceras WHERE hojaReparto IS NOT NULL AND hojaReparto > 0 LIMIT 1")
+    fun buscarRutaActiva(): Int
+
+
     @Query("SELECT A.cabeceraId, A.tipoDoc, A.almacen, A.serie, A.numero, A.ejercicio, A.fecha, A.fechaEntrega, " +
             " A.observ1, A.observ2, B.codigo, B.nombre FROM Cabeceras A " +
             " LEFT JOIN Clientes B ON B.clienteId = A.clienteId " +
@@ -116,6 +120,7 @@ interface CabecerasDao {
     @Query("UPDATE Cabeceras SET firmado = 'T', fechaFirma = :queFechaFirma, horaFirma = :queHoraFirma" +
             " WHERE cabeceraId = :queIdDoc")
     fun marcarComoEntregado(queIdDoc: Int, queFechaFirma: String, queHoraFirma: String)
+
 
     @Query("UPDATE Cabeceras SET imprimido = 'T' WHERE cabeceraId = :queIdDoc")
     fun marcarComoImprimido(queIdDoc: Int)

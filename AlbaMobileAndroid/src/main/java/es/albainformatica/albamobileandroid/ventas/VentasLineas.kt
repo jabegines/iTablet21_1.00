@@ -570,8 +570,6 @@ class VentasLineas : Activity() {
     */
 
     private fun refrescarLineas() {
-        //adapterLineas.changeCursor(fDocumento.cLineas)
-        //adpBases.notifyDataSetChanged()
         prepararRecyclerView()
         fAdpBases.notifyDataSetChanged()
         tvTotal.text = String.format(fFtoDecImpIva, fDocumento.fBases.totalConImptos)

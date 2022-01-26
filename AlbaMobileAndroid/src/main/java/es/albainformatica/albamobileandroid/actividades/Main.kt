@@ -100,7 +100,6 @@ class Main: AppCompatActivity() {
         comprobarActApk()
 
         comprobarLineasHuerfanas()
-        //comprobarBD()
     }
 
 

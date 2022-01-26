@@ -8,6 +8,7 @@ import es.albainformatica.albamobileandroid.DatosArticulo
 import es.albainformatica.albamobileandroid.DatosGridView
 import es.albainformatica.albamobileandroid.ListaArticulos
 import es.albainformatica.albamobileandroid.entity.ArticulosEnt
+import es.albainformatica.albamobileandroid.entity.BusquedasEnt
 
 
 @Dao
@@ -401,6 +402,12 @@ interface ArticulosDao {
 
     @Query("SELECT codigo FROM Articulos WHERE articuloId = :queArticulo")
     fun getCodigo(queArticulo: Int): String
+
+    @Query("SELECT articuloId FROM Articulos WHERE articuloId = :queArticulo")
+    fun getArticulo(queArticulo: Int): Int
+
+    @Query("SELECT * FROM Busquedas WHERE clave = :queCodigo")
+    fun existeCodigo(queCodigo: String): BusquedasEnt
 
 
     @Query("DELETE FROM Articulos")

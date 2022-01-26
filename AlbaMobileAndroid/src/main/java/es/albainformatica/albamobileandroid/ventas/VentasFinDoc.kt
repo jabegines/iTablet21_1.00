@@ -456,9 +456,9 @@ class VentasFinDoc: AppCompatActivity() {
                 if (queIdDireccion > 0) {
                     fDocumento.fAlmDireccion = data?.getStringExtra("almDireccion") ?: ""
                     fDocumento.fOrdenDireccion = data?.getStringExtra("ordenDireccion") ?: ""
-                    terminaAceptarPie()
                 }
             }
+            terminaAceptarPie()
         }
     }
 

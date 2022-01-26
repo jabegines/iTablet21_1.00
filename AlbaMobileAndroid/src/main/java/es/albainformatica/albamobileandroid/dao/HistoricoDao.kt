@@ -11,6 +11,10 @@ import es.albainformatica.albamobileandroid.entity.HistoricoEnt
 @Dao
 interface HistoricoDao {
 
+    @Query("SELECT * FROM Historico WHERE articuloId = :queArticulo AND clienteId = :queCliente")
+    fun cargarHcoArtClte(queArticulo: Int, queCliente: Int): HistoricoEnt
+
+
     @Query("SELECT A.*, B.codigo, B.descripcion, C.piezas piezPedida, C.cantidad cantPedida, D.porcIva, " +
             " (E.ent - E.sal) stock, F.descripcion descrFto, G.texto FROM Historico A " +
             " LEFT JOIN Articulos B ON B.articuloId = A.articuloId " +

@@ -85,13 +85,12 @@
 
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/lvDRDocumentos"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvDRDocumentos"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:fastScrollEnabled="true"
-        android:layout_weight="1" />
-
+        android:layout_weight="1" >
+    </androidx.recyclerview.widget.RecyclerView>
 
     <View
         android:id="@+id/view2"

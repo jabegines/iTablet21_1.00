@@ -3,12 +3,10 @@ package es.albainformatica.albamobileandroid.maestros
 import android.content.Context
 import android.database.Cursor
 import es.albainformatica.albamobileandroid.Configuracion
-import android.util.Log
 import es.albainformatica.albamobileandroid.Comunicador
 import es.albainformatica.albamobileandroid.DatosRutero
 import es.albainformatica.albamobileandroid.dao.RuterosDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
-import java.lang.Exception
 
 /**
  * Created by jabegines on 14/10/13.
@@ -29,9 +27,8 @@ class Rutero(contexto: Context) {
         return (lRutero.count() > 0)
     }
 
+    /*
     fun abrirParaReparto(fRuta: String): Boolean {
-        // TODO
-        /*
         cursor = dbAlba.rawQuery(
             "SELECT DISTINCT A._id, A.orden, A.cliente, B.codigo, B.nomfi, B.nomco, B.tieneincid," +
                     " ifnull(C.cliente, 0) tienedocumentos, FROM rutero A" +  //" ifnull(C.cliente, 0) tienedocumentos, ifnull(D.cliente, 0) tienepend FROM rutero A" +
@@ -41,9 +38,9 @@ class Rutero(contexto: Context) {
                     " ORDER BY A.orden", null
         )
         return cursor?.moveToFirst() ?: false
-        */
-        return true
     }
+    */
+
 
     fun abrirCodPostal(queCodPostal: String): Boolean {
         lRutero = if (fConfiguracion.aconsNomComercial())
@@ -55,6 +52,7 @@ class Rutero(contexto: Context) {
     }
 
 
+    /*
     fun situarEnCliente(anteriorClte: Int, irASiguClte: Boolean): Boolean {
         if (anteriorClte > 0) {
             try {
@@ -74,6 +72,6 @@ class Rutero(contexto: Context) {
         else
             false
     }
-
+    */
 
 }

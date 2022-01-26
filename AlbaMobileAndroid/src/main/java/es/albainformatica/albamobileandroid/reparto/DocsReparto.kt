@@ -1,21 +1,22 @@
 package es.albainformatica.albamobileandroid.reparto
 
-import android.annotation.SuppressLint
+
 import android.app.AlertDialog
 import android.app.DialogFragment
 import android.app.ProgressDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
-import android.database.Cursor
-import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
 import android.os.Looper
 import android.preference.PreferenceManager
 import android.view.*
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.cobros.CobrosActivity
 import es.albainformatica.albamobileandroid.dao.ContactosCltesDao
@@ -25,10 +26,9 @@ import es.albainformatica.albamobileandroid.entity.ContactosCltesEnt
 import es.albainformatica.albamobileandroid.entity.TiposIncEnt
 import es.albainformatica.albamobileandroid.impresion_informes.*
 import es.albainformatica.albamobileandroid.maestros.Rutas
-import es.albainformatica.albamobileandroid.ventas.Documento
-import es.albainformatica.albamobileandroid.ventas.VentasActivity
-import es.albainformatica.albamobileandroid.ventas.VentasIncidencia
-import es.albainformatica.albamobileandroid.ventas.VentasLineas
+import es.albainformatica.albamobileandroid.ventas.*
+import kotlinx.android.synthetic.main.docs_reparto.*
+import kotlinx.android.synthetic.main.ventas_rutero.*
 import java.util.ArrayList
 
 
@@ -38,17 +38,20 @@ class DocsReparto: AppCompatActivity() {
     private lateinit var fReparto: Reparto
     private lateinit var fRutas: Rutas
     private lateinit var prefs: SharedPreferences
-    private lateinit var adapterLineasDocs: SimpleCursorAdapter
+
+    private lateinit var fRecReparto: RecyclerView
+    private lateinit var fAdpReparto: RepartoRvAdapter
+
 
     private var fIdDocumento = 0
     private var fEstado: String = ""
-    private var fRutaActiva: String = ""
+    private var fRutaActiva: Short = 0
     private var fClteDoc = 0
-    private var fTipoDoc: Byte = 0
+    private var fTipoDoc: Short = 0
     private lateinit var spRuta: Spinner
-    private lateinit var lvDocumentos: ListView
     private lateinit var chsIncidencias: Array<CharSequence>
     private var fTipoIncidencia = 0
+    private var fPosAnterior = 0
 
 
     private val fRequestModifDocReparto = 1
@@ -122,31 +125,42 @@ class DocsReparto: AppCompatActivity() {
         tvNombreRep.text = queNombre
         spRuta = findViewById(R.id.spnVt_Ruta)
 
-        // Permitiré modificar ventas si así está configurado.
-        //val btnModif = findViewById<Button>(R.id.btnDREditar)
-        //if (!fConfiguracion.modificarVentas()) btnModif.visibility = View.GONE
         val btnFirmar = findViewById<Button>(R.id.btnDRFirmar)
         if (!prefs.getBoolean("reparto_pedir_firma", false)) btnFirmar.visibility = View.GONE
 
         // Permitiremos ventas si tenemos configurado autoventa o preventa
         val btnRutero = findViewById<Button>(R.id.btnDRRutero)
-        if (!fConfiguracion.hayAutoventa() && !fConfiguracion.hayPreventa()) btnRutero.visibility =
-            View.GONE
+        if (!fConfiguracion.hayAutoventa() && !fConfiguracion.hayPreventa()) btnRutero.visibility = View.GONE
         ocultarTeclado(this)
+
         fIdDocumento = 0
         fClteDoc = 0
         fEstado = ""
+
         inicContrRutero()
         prepararSpinners()
+
         //  Si tenemos algún documento tomamos los datos del primero
-        if (!fReparto.cursorDocs.isBeforeFirst) nuevoClick(0)
+        //if (!fReparto.lDocsReparto.isEmpty()) nuevoClick()
 
         // Preparamos el array de incidencias por si las usamos para el documento.
         prepararIncidencias()
         val tvTitulo = findViewById<TextView>(R.id.tvNombreActivity)
         tvTitulo.setText(R.string.reparto)
+
+        hacerClickEnRecycler()
     }
 
+
+    private fun hacerClickEnRecycler() {
+        // Mediante este código seleccionamos el primer registro del recyclerView y hacemos como si pulsáramos
+        // click en él. Hay que hacerlo con un Handler().postDelayed() porque si no, da errores.
+        if (fAdpReparto.datosReparto.count() > 0) {
+            Handler().postDelayed({
+                fRecReparto.findViewHolderForAdapterPosition(0)?.itemView?.performClick()
+            }, 100)
+        }
+    }
 
 
 
@@ -165,19 +179,19 @@ class DocsReparto: AppCompatActivity() {
                 //val cursor = parent.getItemAtPosition(position) as Cursor
 
                 // Mostramos en el spinner el código de la ruta, no el nombre.
-                val fOldRuta: String = fRutaActiva
-                fRutaActiva = spRuta.getItemAtPosition(position).toString().substring(0, 2).trim { it <= ' ' }
+                val fOldRuta = fRutaActiva
+                fRutaActiva = (spRuta.getItemAtPosition(position).toString().substring(0, 2).trim { it <= ' ' }).toShort()
                 val queView = view as TextView
                 queView.textSize = 12f
-                queView.text = fRutaActiva
+                queView.text = fRutaActiva.toString()
                 queView.gravity = Gravity.CENTER
 
                 if (fRutaActiva != fOldRuta) {
-                    if (fRutaActiva != "") {
+                    if (fRutaActiva > 0) {
                         if (fReparto.abrir(fRutaActiva)) {
                             mostrarRutaAct()
-                            adapterLineasDocs.changeCursor(fReparto.cursorDocs)
-                            nuevoClick(0)
+                            prepararRecyclerView()
+                            fIdDocumento = fReparto.lDocsReparto[0].cabeceraId
                         } else {
                             fRutaActiva = fOldRuta
 
@@ -193,11 +207,11 @@ class DocsReparto: AppCompatActivity() {
         }
     }
 
-    private fun getIndexRuta(s1: Spinner, nombre: String): Int {
+    private fun getIndexRuta(s1: Spinner, nombre: Short): Int {
         var index = 0
         for (i in 0 until s1.count) {
             val queCodigo = s1.getItemAtPosition(i).toString().substring(0, 2).trim { it <= ' ' }
-            if (queCodigo == nombre) {
+            if (queCodigo == nombre.toString()) {
                 index = i
             }
         }
@@ -206,23 +220,23 @@ class DocsReparto: AppCompatActivity() {
 
 
     private fun inicContrRutero() {
-        //fRutas.abrir()
         fRutaActiva = fConfiguracion.rutaActiva()
-        //if (fRutaActiva == "")
-            //fRutaActiva = fRutas.cursor.getString(fRutas.cursor.getColumnIndexOrThrow("_id"))
 
-        if (fRutaActiva != "") {
+        if (fRutaActiva > 0) {
             mostrarRutaAct()
+        } else {
+            // Si no tenemos ruta de reparto buscamos la primera que haya en los documentos
+            fRutaActiva = fReparto.buscarRutaActiva()
         }
-        fReparto.abrir(fRutaActiva)
 
-        prepararListViewDocs()
-        //prepararListViewVtos();
-        if (fRutaActiva != "") {
+        fRecReparto = rvDRDocumentos
+        fRecReparto.layoutManager = LinearLayoutManager(this)
+        prepararRecyclerView()
+
+        if (fRutaActiva > 0) {
             // Vemos el último documento que repartimos.
             fIdDocumento = prefs.getInt("reparto_ult_doc", 0)
-            // Ponemos en negrita el nombre del siguiente documento.
-            siguienteDocReparto()
+
         } else {
             fIdDocumento = 0
             fClteDoc = 0
@@ -236,181 +250,32 @@ class DocsReparto: AppCompatActivity() {
     }
 
 
-    private fun prepararListViewDocs() {
-        val columns: Array<String>
-        val to: IntArray
-        if (fConfiguracion.fTamanyoPantLargo) {
-            columns = if (fConfiguracion.aconsNomComercial()) arrayOf("codigo", "nomco", "tipodoc",
-                "serienumero", "tienepend", "firmado", "tipoincidencia"
-            ) else arrayOf("codigo", "nomfi", "tipodoc", "serienumero", "tienepend", "firmado", "tipoincidencia")
-            to = intArrayOf(
-                R.id.docrpt_codigo, R.id.docrpt_nombre, R.id.docrpt_tipodoc, R.id.docrpt_serienum,
-                R.id.imvTienePend, R.id.docrpt_DocFdo, R.id.docrpt_DocIncid
-            )
-        } else {
-            columns = if (fConfiguracion.aconsNomComercial()) arrayOf(
-                "nomco",
-                "serienumero",
-                "tienepend",
-                "firmado",
-                "tipoincidencia"
-            ) else arrayOf("nomfi", "serienumero", "tienepend", "firmado", "tipoincidencia")
-            to = intArrayOf(
-                R.id.docrpt_nombre,
-                R.id.docrpt_serienum,
-                R.id.imvTienePend,
-                R.id.docrpt_DocFdo,
-                R.id.docrpt_DocIncid
-            )
-        }
 
-        adapterLineasDocs = SimpleCursorAdapter(this, R.layout.ly_docs_reparto, fReparto.cursorDocs, columns, to, 0)
-        lvDocumentos = findViewById(R.id.lvDRDocumentos)
-        formatearColumnasDocs()
-        lvDocumentos.adapter = adapterLineasDocs
-
-        // Establecemos el evento on click del ListView.
-        lvDocumentos.setOnItemClickListener { _: AdapterView<*>?, _: View?, position: Int, _: Long ->
-            // Marcamos en negrita el registro sobre el que acabamos de pulsar.
-            siguienteDocReparto()
-            nuevoClick(position)
-        }
-    }
-
-
-    @SuppressLint("Range")
-    private fun nuevoClick(position: Int) {
-        // Tomamos el campo _id de la fila en la que hemos pulsado.
-        val cursor = lvDocumentos.getItemAtPosition(position) as Cursor
-        fIdDocumento = if (cursor.getString(cursor.getColumnIndex("_id")) != null) {
-            cursor.getInt(cursor.getColumnIndexOrThrow("_id"))
-        } else {
-            0
-        }
-        fEstado = if (cursor.getString(cursor.getColumnIndexOrThrow("estado")) != null)
-            cursor.getString(cursor.getColumnIndexOrThrow("estado"))
-        else
-            ""
-        fTipoDoc = if (cursor.getString(cursor.getColumnIndex("tipodoc")) != null)
-            cursor.getString(cursor.getColumnIndexOrThrow("tipodoc")).toByte()
-        else 0
-        fClteDoc = cursor.getInt(cursor.getColumnIndexOrThrow("cliente"))
-    }
-
-
-    private fun formatearColumnasDocs() {
-        adapterLineasDocs.viewBinder =
-            SimpleCursorAdapter.ViewBinder { view: View, cursor: Cursor, column: Int ->
-                // Tipo de documento
-                if (column == 2) {
-                    val tv = view as TextView
-                    if (cursor.getInt(cursor.getColumnIndex("_id")) > 0) {
-                        if (cursor.getInt(cursor.getColumnIndex("_id")) == fIdDocumento) tv.setTypeface(
-                            null,
-                            Typeface.BOLD
-                        ) else tv.setTypeface(null, Typeface.NORMAL)
-                    } else tv.setTypeface(null, Typeface.NORMAL)
-                    var tipoDoc: Short = 0
-                    if (cursor.getString(cursor.getColumnIndex("tipodoc")) != null)
-                        tipoDoc = cursor.getString(cursor.getColumnIndex("tipodoc")).toShort()
-                    if (cursor.getString(cursor.getColumnIndex("estado")) != null) {
-                        if (cursor.getString(cursor.getColumnIndex("estado")).equals("N", ignoreCase = true))
-                            tv.text = "Nv."
-                        else tv.text = tipoDocResumAsString(tipoDoc)
-                    } else tv.text = ""
-                    return@ViewBinder true
-                }
-                // Serie/número
-                if (column == 3) {
-                    val tv = view as TextView
-                    if (cursor.getInt(cursor.getColumnIndex("_id")) == fIdDocumento) tv.setTypeface(
-                        null,
-                        Typeface.BOLD
-                    ) else tv.setTypeface(null, Typeface.NORMAL)
-                    tv.text = cursor.getString(column)
-                    return@ViewBinder true
-                }
-                // Código
-                if (column == 5) {
-                    val tv = view as TextView
-                    if (cursor.getInt(cursor.getColumnIndex("_id")) > 0) {
-                        if (cursor.getInt(cursor.getColumnIndex("_id")) == fIdDocumento) tv.setTypeface(
-                            null,
-                            Typeface.BOLD
-                        ) else tv.setTypeface(null, Typeface.NORMAL)
-                    } else {
-                        if (cursor.getInt(cursor.getColumnIndex("cliente")) == fClteDoc) tv.setTypeface(
-                            null,
-                            Typeface.BOLD
-                        ) else tv.setTypeface(null, Typeface.NORMAL)
-                    }
-                    // Tengo que hacer esto porque si no, me desaparece el código, me pone siempre: 'Clientes'.
-                    tv.text = cursor.getString(column)
-                    return@ViewBinder true
-                }
-                // Nombre fiscal o comercial. Los pondremos en negrita si el registro es el seleccionado. Idem con el código.
-                if (column == 6 || column == 7) {
-                    val tv = view as TextView
-                    if (cursor.getInt(cursor.getColumnIndex("_id")) > 0) {
-                        if (cursor.getInt(cursor.getColumnIndex("_id")) == fIdDocumento) tv.setTypeface(
-                            null,
-                            Typeface.BOLD
-                        ) else tv.setTypeface(null, Typeface.NORMAL)
-                    } else {
-                        if (cursor.getInt(cursor.getColumnIndex("cliente")) == fClteDoc) tv.setTypeface(
-                            null,
-                            Typeface.BOLD
-                        ) else tv.setTypeface(null, Typeface.NORMAL)
-                    }
-                    // Tengo que hacer esto porque si no, me desaparece el nombre, me pone siempre: 'Clientes'.
-                    tv.text = cursor.getString(column)
-                    return@ViewBinder true
-                }
-                // Tiene pendiente
-                if (column == 8) {
-                    val iv = view as ImageView
-                    if (cursor.getInt(cursor.getColumnIndex("tienepend")) > 0) {
-                        iv.visibility = View.VISIBLE
-                    } else {
-                        iv.visibility = View.INVISIBLE
-                    }
-                    return@ViewBinder true
-                }
-                // Firmado
-                if (column == 10) {
-                    val iv = view as ImageView
-                    if (cursor.getString(cursor.getColumnIndex("firmado")) != null &&
-                        cursor.getString(cursor.getColumnIndex("firmado"))
-                            .equals("T", ignoreCase = true)
-                    ) {
-                        iv.visibility = View.VISIBLE
-                    } else {
-                        iv.visibility = View.INVISIBLE
-                    }
-                    return@ViewBinder true
-                }
-                // Incidencia
-                if (column == 11) {
-                    val iv = view as ImageView
-                    if (cursor.getInt(cursor.getColumnIndex("tipoincidencia")) > 0) iv.visibility =
-                        View.VISIBLE else iv.visibility =
-                        View.INVISIBLE
-                    return@ViewBinder true
-                }
-                false
+    private fun prepararRecyclerView() {
+        fAdpReparto = RepartoRvAdapter(getDocsReparto(), this, object: RepartoRvAdapter.OnItemClickListener {
+            override fun onClick(view: View, data: DatosReparto) {
+                fIdDocumento = data.cabeceraId
+                fEstado = data.estado
+                fTipoDoc = data.tipoDoc
+                fClteDoc = data.clienteId
             }
+        })
+
+        fRecReparto.adapter = fAdpReparto
     }
+
+
+    private fun getDocsReparto(): List<DatosReparto> {
+        fReparto.abrir(fRutaActiva)
+        return fReparto.lDocsReparto
+    }
+
 
 
     private fun siguienteDocReparto() {
-        // Tengo que hacer abrir para que adapterLineas.changeCursor llame automáticamente a adapterLineas.setViewValue,
-        // que es donde se pone en negrita el nombre del cliente activo. Si mantengo el cursor abierto no se produce la llamada.
-        fReparto.abrir(fRutaActiva)
-        if (!fReparto.cursorDocs.isBeforeFirst) {
-            if (!fReparto.situarEnDocumento(fIdDocumento, false)) fReparto.cursorDocs.moveToFirst()
-            fIdDocumento = fReparto.idDocumento
-            adapterLineasDocs.changeCursor(fReparto.cursorDocs)
-        }
+        fAdpReparto.selectedPos = fPosAnterior + 2
+        fIdDocumento = fAdpReparto.datosReparto[fAdpReparto.selectedPos].cabeceraId
+        fAdpReparto.notifyDataSetChanged()
     }
 
 
@@ -435,7 +300,7 @@ class DocsReparto: AppCompatActivity() {
             // desde ModifDocReparto no permitiremos la modificación.
             if (fEstado.equals("0", ignoreCase = true)) {
                 // Por ahora sólo modificaremos si el documento es albarán.
-                if (fTipoDoc.toShort() == TIPODOC_ALBARAN || fTipoDoc.toShort() == TIPODOC_FACTURA) {
+                if (fTipoDoc == TIPODOC_ALBARAN || fTipoDoc == TIPODOC_FACTURA) {
                     val i = Intent(this, ModifDocReparto::class.java)
                     i.putExtra("iddoc", fIdDocumento)
                     startActivityForResult(i, fRequestModifDocReparto)
@@ -640,24 +505,24 @@ class DocsReparto: AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == fRequestFirmarDoc) {
             if (resultCode == RESULT_OK) {
-                fReparto.marcarComoEntregado(fIdDocumento, fRutaActiva)
-                adapterLineasDocs.changeCursor(fReparto.cursorDocs)
+                fReparto.marcarComoEntregado(fIdDocumento)
+                prepararRecyclerView()
             }
         } else if (requestCode == fRequestModifDocReparto) {
-            fReparto.cursorDocs.close()
-            fReparto.abrir(fRutaActiva)
-            adapterLineasDocs.changeCursor(fReparto.cursorDocs)
+            if (resultCode == RESULT_OK) {
+                fPosAnterior = fAdpReparto.selectedPos
+                prepararRecyclerView()
+                siguienteDocReparto()
+            }
+
         } else if (requestCode == fRequestIncidencia) {
             if (resultCode == RESULT_OK) {
                 val textoIncidencia = data?.getStringExtra("textoincid") ?: ""
-                fReparto.setTextoIncidencia(fIdDocumento, textoIncidencia, fRutaActiva, fTipoIncidencia)
-                adapterLineasDocs.changeCursor(fReparto.cursorDocs)
+                fReparto.setTextoIncidencia(fIdDocumento, textoIncidencia, fTipoIncidencia)
+                prepararRecyclerView()
             }
         } else if (requestCode == fRequestPendienteClte) {
-            //fReparto.cursorVtos.close();
-            fReparto.abrir(fRutaActiva)
-            adapterLineasDocs.changeCursor(fReparto.cursorDocs)
-            //adapterLineasVtos.changeCursor(fReparto.cursorVtos);
+            prepararRecyclerView()
         }
     }
 
