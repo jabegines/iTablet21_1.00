@@ -80,17 +80,14 @@
       android:background="#000000"
       android:layout_marginBottom="5dp"/>
 
-    <ListView
-      android:id="@+id/lvPdtes"
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_marginLeft="5dp"
-      android:layout_marginRight="5dp"
-      android:background="#FFFFFF"
-      android:listSelector="@drawable/list_selector"
-      android:layout_weight="6">
-
-    </ListView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPdtes"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp" >
+    </androidx.recyclerview.widget.RecyclerView>
 
     <View
       android:layout_width="match_parent"

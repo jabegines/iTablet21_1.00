@@ -1,32 +1,30 @@
 package es.albainformatica.albamobileandroid.reparto
 
 
-import es.albainformatica.albamobileandroid.NuevoAlertBuilder
 import android.app.Activity
-import es.albainformatica.albamobileandroid.Configuracion
 import es.albainformatica.albamobileandroid.historicos.Historico
 import android.os.Bundle
 import android.content.Intent
-import es.albainformatica.albamobileandroid.Comunicador
-import android.widget.AdapterView
-import android.widget.TextView
-import android.database.Cursor
 import android.view.KeyEvent
 import android.view.View
-import android.widget.ListView
-import android.widget.SimpleCursorAdapter
-import es.albainformatica.albamobileandroid.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import es.albainformatica.albamobileandroid.*
+import kotlinx.android.synthetic.main.reparto_devoluciones.*
 
 
 class RepartoDevoluciones: Activity() {
     private lateinit var fConfiguracion: Configuracion
-    private lateinit var adapterLineas: SimpleCursorAdapter
-    private lateinit var lvLineas: ListView
     private lateinit var fHistorico: Historico
+
+    private lateinit var fRecyclerView: RecyclerView
+    private lateinit var fAdapter: RepDevRvAdapter
+
+
     private var fCliente = 0
     private var fLinea = 0
 
-    private val REQUEST_DATOS_DEVOLUCION = 1
+    private val fRequestDatosDevolucion = 1
 
 
     public override fun onCreate(savedInstance: Bundle?) {
@@ -43,87 +41,41 @@ class RepartoDevoluciones: Activity() {
 
 
     private fun inicializarControles() {
-        lvLineas = findViewById(R.id.lvHcoDev)
-        prepararListView()
+        fRecyclerView = rvHcoDev
+        fRecyclerView.layoutManager = LinearLayoutManager(this)
+        prepararRecyclerView()
     }
 
-    private fun prepararListView() {
-        val columnas = arrayOf("codigo", "descr", "cantpedida", "cantidad", "cajas", "fecha")
-        val to = intArrayOf(
-            R.id.lyDevRepCodigo, R.id.lyDevRepDescr, R.id.lyDevRepCantPedida, R.id.lyDevRepCant,
-            R.id.lyDevRepCajas, R.id.lyhcoFecha
-        )
-        // TODO
-        /*
-        fHistorico.abrir(fCliente)
-        adapterLineas = SimpleCursorAdapter(this, R.layout.ly_dev_reparto, fHistorico.cHco, columnas, to, 0)
-        // Formateamos las columnas.
-        formatearColumnas()
-        lvLineas.adapter = adapterLineas
 
-        // Establecemos el evento on click del ListView.
-        lvLineas.onItemClickListener =
-            AdapterView.OnItemClickListener { listView, _, position, _ ->
-                val cursor = listView.getItemAtPosition(position) as Cursor
-                fLinea = cursor.getInt(cursor.getColumnIndexOrThrow("_id"))
+    private fun prepararRecyclerView() {
+        fAdapter = RepDevRvAdapter(getDatosHco(), this, object: RepDevRvAdapter.OnItemClickListener {
+            override fun onClick(view: View, data: DatosHistorico) {
+                fLinea = data.historicoId
                 val i = Intent(this@RepartoDevoluciones, DatosDevolucion::class.java)
                 i.putExtra("linea", fLinea)
-                i.putExtra("articulo", cursor.getInt(cursor.getColumnIndex("articulo")))
-                i.putExtra("codigo", cursor.getString(cursor.getColumnIndex("codigo")))
-                i.putExtra("descripcion", cursor.getString(cursor.getColumnIndex("descr")))
-                startActivityForResult(i, REQUEST_DATOS_DEVOLUCION)
+                i.putExtra("articulo", data.articuloId)
+                i.putExtra("codigo", data.codigo)
+                i.putExtra("descripcion", data.descripcion)
+                startActivityForResult(i, fRequestDatosDevolucion)
             }
-        */
+        })
+
+        fRecyclerView.adapter = fAdapter
     }
 
-    // TODO
-    /*
-    private fun formatearColumnas() {
-        adapterLineas.viewBinder = SimpleCursorAdapter.ViewBinder { view, cursor, column ->
-            val tv = view as TextView
 
-            // El orden de las columnas será el que tengan en el cursor que estemos utilizando
-            // (en este caso fHistorico.cHco), comenzando por la cero.
-            // Formateamos las cajas y la cantidad.
-            if (column == 3 || column == 4) {
-                val sCajas: String = if (column == 3) cursor.getString(cursor.getColumnIndex("cajas"))
-                    .replace(',', '.') else cursor.getString(cursor.getColumnIndex("cantidad"))
-                    .replace(',', '.')
-                val dCajas = sCajas.toDouble()
-                tv.text = String.format(fConfiguracion.formatoDecCantidad(), dCajas)
-                return@ViewBinder true
-            }
-            // Formateamos la cantidad pedida.
-            if (column == 12) {
-                if (cursor.getString(column) != null) {
-                    val sCant = cursor.getString(column).replace(',', '.')
-                    val dCant = sCant.toDouble()
-                    tv.text = String.format(fConfiguracion.formatoDecCantidad(), dCant)
-                    return@ViewBinder true
-                }
-            }
-            // Formateamos el formato. Si la línea no tiene formato no lo presentaremos.
-            if (column == 15) {
-                if (cursor.getString(15) != null) {
-                    tv.visibility = View.VISIBLE
-                } else {
-                    tv.visibility = View.GONE
-                    return@ViewBinder true
-                }
-            }
-            false
-        }
+    private fun getDatosHco(): List<DatosHistorico> {
+        fHistorico.abrir(fCliente)
+        return fHistorico.lDatosHistorico
     }
-    */
+
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         // Actividad editar linea
-        if (requestCode == REQUEST_DATOS_DEVOLUCION) {
+        if (requestCode == fRequestDatosDevolucion) {
             if (resultCode == RESULT_OK) {
-                // TODO
-                //fHistorico.cHco.close()
-                //fHistorico.abrir(fCliente)
-                //adapterLineas.changeCursor(fHistorico.cHco)
+                prepararRecyclerView()
             }
         }
     }

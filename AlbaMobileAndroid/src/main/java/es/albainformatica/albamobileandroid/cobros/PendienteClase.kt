@@ -1,11 +1,11 @@
 package es.albainformatica.albamobileandroid.cobros
 
 import android.content.Context
-import android.database.Cursor
 import es.albainformatica.albamobileandroid.FLAGPENDIENTE_EN_CARTERA
 import es.albainformatica.albamobileandroid.Comunicador
 import es.albainformatica.albamobileandroid.actualizarSaldo
 import es.albainformatica.albamobileandroid.dao.CabDiferidasDao
+import es.albainformatica.albamobileandroid.dao.FormasPagoDao
 import es.albainformatica.albamobileandroid.dao.PendienteDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.entity.PendienteEnt
@@ -13,6 +13,7 @@ import es.albainformatica.albamobileandroid.entity.PendienteEnt
 
 class PendienteClase(queContexto: Context) {
     private val pendienteDao: PendienteDao? = MyDatabase.getInstance(queContexto)?.pendienteDao()
+    private val formasPagoDao: FormasPagoDao? = MyDatabase.getInstance(queContexto)?.formasPagoDao()
     private val fContexto = queContexto
 
     var pendienteId: Int = 0
@@ -21,14 +22,14 @@ class PendienteClase(queContexto: Context) {
     var importe: String = ""
     var cobrado: String = ""
     var estado: String = ""
-    var tipoDoc: String = ""
-    var almacen: String = ""
+    var tipoDoc: Short = 0
+    var almacen: Short = 0
     var cAlmacen: String = ""
     var cPuesto: String = ""
     var cApunte: String = ""
     var serie: String = ""
-    var numero: String = ""
-    var ejercicio: String = ""
+    var numero: Int = 0
+    var ejercicio: Short = 0
     var fechaDoc: String = ""
     var fechaVto: String = ""
     var flag: Int = 0
@@ -36,7 +37,8 @@ class PendienteClase(queContexto: Context) {
     var fPago: String = ""
     var descrFPago: String = ""
 
-    var cursor: Cursor? = null
+    lateinit var lPendiente: List<PendienteEnt>
+    lateinit var lTodosDocClte: List<String>
 
 
     fun borrarPdteDoc(queTipoDoc: Short, queEmpresa: Short, queAlmacen: Short, queSerie: String,
@@ -55,23 +57,22 @@ class PendienteClase(queContexto: Context) {
         importe = pendienteEnt.importe.replace(',', '.')
         cobrado = pendienteEnt.cobrado.replace(',', '.')
         estado = pendienteEnt.estado
-        tipoDoc = pendienteEnt.tipoDoc.toString()
+        tipoDoc = pendienteEnt.tipoDoc
         empresa = pendienteEnt.empresa
-        almacen = pendienteEnt.almacen.toString()
+        almacen = pendienteEnt.almacen
         cAlmacen = pendienteEnt.cAlmacen
         cPuesto = pendienteEnt.cPuesto
         cApunte = pendienteEnt.cApunte
         serie = pendienteEnt.serie
-        numero = pendienteEnt.numero.toString()
-        ejercicio = pendienteEnt.ejercicio.toString()
+        numero = pendienteEnt.numero
+        ejercicio = pendienteEnt.ejercicio
         fechaDoc = pendienteEnt.fechaDoc
         flag = pendienteEnt.flag
     }
 
     fun abrirTodosDocClte(queCliente: Int): Boolean {
-        cursor = pendienteDao?.abrirTodosDocClte(queCliente)
-
-        return (cursor?.moveToFirst() ?: false)
+        lTodosDocClte = pendienteDao?.abrirTodosDocClte(queCliente) ?:  emptyList<String>().toMutableList()
+        return (lTodosDocClte.count() > 0)
     }
 
 
@@ -85,34 +86,34 @@ class PendienteClase(queContexto: Context) {
     }
 
     fun abrirPorFDoc(queCliente: Int, queEmpresa: Int): Boolean {
-        cursor = pendienteDao?.abrirPorFDoc(queCliente, queEmpresa)
-
-        return (cursor?.moveToFirst() ?: false)
+        lTodosDocClte = pendienteDao?.abrirPorFDoc(queCliente, queEmpresa) ?: emptyList<String>().toMutableList()
+        return (lTodosDocClte.count() > 0)
     }
 
 
     fun abrir(queCliente: Int): Boolean {
-        cursor = pendienteDao?.abrir(queCliente)
+        lPendiente = pendienteDao?.abrir(queCliente) ?: emptyList<PendienteEnt>().toMutableList()
 
-        if (cursor?.moveToFirst() == true) {
+        if (lPendiente.count() > 0) {
+            val pdteEnt = lPendiente[0]
             clienteId = queCliente
-            pendienteId = cursor?.getInt(cursor?.getColumnIndex("pendienteId") ?: 0) ?: 0
-            fechaDoc = cursor?.getString(cursor?.getColumnIndex("fechaDoc") ?: 7) ?: ""
-            fechaVto = cursor?.getString(cursor?.getColumnIndex("fechaVto") ?: 12) ?: ""
-            flag = cursor?.getInt(cursor?.getColumnIndex("flag") ?: 20) ?: 0
-            enviar = cursor?.getString(cursor?.getColumnIndex("enviar") ?: 14) ?: "F"
-            descrFPago = cursor?.getString(cursor?.getColumnIndex("descripcion") ?: 24) ?: ""
-            importe = (cursor?.getString(cursor?.getColumnIndex("importe") ?: 10) ?: "0").replace(',', '.')
-            cobrado = (cursor?.getString(cursor?.getColumnIndex("cobrado") ?: 11) ?: "0").replace(',', '.')
-            tipoDoc = cursor?.getShort(cursor?.getColumnIndex("tipoDoc") ?: 5).toString()
-            empresa = cursor?.getShort(cursor?.getColumnIndex("empresa") ?: 3) ?: 0.toShort()
-            almacen = cursor?.getShort(cursor?.getColumnIndex("almacen") ?: 4).toString()
-            cAlmacen = cursor?.getString(cursor?.getColumnIndex("cAlmacen") ?: 15) ?: ""
-            cPuesto = cursor?.getString(cursor?.getColumnIndex("cPuesto") ?: 16) ?: ""
-            cApunte = cursor?.getString(cursor?.getColumnIndex("cApunte") ?: 17) ?: ""
-            serie = cursor?.getString(cursor?.getColumnIndex("serie") ?: 8) ?: ""
-            numero = cursor?.getString(cursor?.getColumnIndex("numero") ?: 9) ?: ""
-            ejercicio = cursor?.getShort(cursor?.getColumnIndex("ejercicio") ?: 2).toString()
+            pendienteId = pdteEnt.pendienteId
+            fechaDoc = pdteEnt.fechaDoc
+            fechaVto = pdteEnt.fechaVto
+            flag = pdteEnt.flag
+            enviar = pdteEnt.enviar
+            descrFPago = formasPagoDao?.getDescrFPago(pdteEnt.fPago) ?: ""
+            importe = pdteEnt.importe.replace(',', '.')
+            cobrado =  pdteEnt.cobrado.replace(',', '.')
+            tipoDoc = pdteEnt.tipoDoc
+            empresa = pdteEnt.empresa
+            almacen = pdteEnt.almacen
+            cAlmacen = pdteEnt.cAlmacen
+            cPuesto =  pdteEnt.cPuesto
+            cApunte = pdteEnt.cApunte
+            serie = pdteEnt.serie
+            numero = pdteEnt.numero
+            ejercicio =  pdteEnt.ejercicio
 
             return true
         }
@@ -182,12 +183,8 @@ class PendienteClase(queContexto: Context) {
 
 
     fun actualizarFechaVto(queFechaVto: String, queAnotacion: String) {
-
         val queFlag = flag or FLAGPENDIENTE_EN_CARTERA
         pendienteDao?.actualizarFechaVto(pendienteId, queFechaVto, queAnotacion, queFlag)
-
-        cursor?.close()
-        abrir(clienteId)
     }
 
 
@@ -213,7 +210,7 @@ class PendienteClase(queContexto: Context) {
     fun dimeIdDocDiferido(): Int {
         val cabDifDao: CabDiferidasDao? = MyDatabase.getInstance(fContexto)?.cabDiferidasDao()
 
-        return cabDifDao?.getIdDocumento(serie, numero.toInt(), ejercicio.toShort()) ?: 0
+        return cabDifDao?.getIdDocumento(serie, numero, ejercicio) ?: 0
     }
 
 

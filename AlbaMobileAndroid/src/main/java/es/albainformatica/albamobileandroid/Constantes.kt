@@ -1,6 +1,5 @@
 package es.albainformatica.albamobileandroid
 
-import androidx.room.ColumnInfo
 
 
 const val VERSION_PROGRAMA = "1.00"
@@ -454,7 +453,7 @@ class DatosDocsHcArtClte {
 }
 
 
-class DatosHcoArtClte() {
+class DatosHcoArtClte {
     var lineaId: Int = 0
     var precio: String = ""
     var precioII: String = ""

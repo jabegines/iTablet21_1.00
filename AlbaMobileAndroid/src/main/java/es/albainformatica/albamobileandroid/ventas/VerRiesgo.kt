@@ -76,9 +76,9 @@ class VerRiesgo: AppCompatActivity() {
 
             if (fPendiente.abrirTodosDocClte(fCliente)) {
                 var numDias = 0
-                do {
-                    val fEsDocNuevo = fPendiente.cursor?.getString(0)?.contains("/") ?: false
-                    val strFechaDoc = fPendiente.cursor?.getString(0)?.replace('-', '/') ?: ""
+                for (datosPdte in fPendiente.lTodosDocClte) {
+                    val fEsDocNuevo = datosPdte.contains("/")
+                    val strFechaDoc = datosPdte.replace('-', '/')
                     // Si el registro de la tabla Pendiente lo hemos hecho nuevo en la tablet, el formato de la fecha
                     // será dd/MM/yyyy. En cambio, si el registro viene de la gestión el formato será yyyy/MM/dd
                     var formatoFechaDoc = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
@@ -96,11 +96,10 @@ class VerRiesgo: AppCompatActivity() {
                         ex.printStackTrace()
                     }
 
-                } while (fPendiente.cursor?.moveToNext() == true)
+                }
 
                 tvRgPdteFras.text = numDias.toString()
             }
-            fPendiente.cursor?.close()
 
             val fNumDocs = fPendiente.dimeNumDocsClte(fCliente, fEmpresa) + fDocsPdtes
             tvRgDocsPdtes.text = fNumDocs.toString()

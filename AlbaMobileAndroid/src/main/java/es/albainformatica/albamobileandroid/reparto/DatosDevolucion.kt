@@ -29,6 +29,8 @@ class DatosDevolucion: Activity() {
     private lateinit var fConfiguracion: Configuracion
     private lateinit var prefs: SharedPreferences
 
+    private var fDatosHco = DatosHistorico()
+
     private lateinit var tvArticulo: TextView
     private lateinit var edtCantidad: EditText
     private lateinit var edtCajas: EditText
@@ -52,10 +54,12 @@ class DatosDevolucion: Activity() {
         fDescr = i.getStringExtra("descripcion") ?: ""
         fArticulo = i.getIntExtra("articulo", 0)
         fLinea = i.getIntExtra("linea", 0)
+
         fConfiguracion = Comunicador.fConfiguracion
         fHistorico = Comunicador.fHistorico
         fDocumento = Comunicador.fDocumento
         fArticulos = ArticulosClase(this)
+
         // Nos posicionamos en el articulo de la linea del historico (nos servira para calcular las unidades por caja, etc.).
         fArticulos.existeArticulo(fArticulo)
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
@@ -64,10 +68,6 @@ class DatosDevolucion: Activity() {
         setArticulo()
     }
 
-    override fun onDestroy() {
-        fArticulos.close()
-        super.onDestroy()
-    }
 
     private fun inicializarControles() {
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -145,38 +145,43 @@ class DatosDevolucion: Activity() {
         fDocumento.fCodigoIva = fArticulos.fCodIva
         fDocumento.fPorcIva = fArticulos.fPorcIva
 
-        // TODO
-        /*
+        // Localizamos la línea que vamos a editar en la lista de datos de fHistorico
+        for (datHco in fHistorico.lDatosHistorico) {
+            if (datHco.historicoId == fLinea) {
+                fDatosHco = datHco
+                break
+            }
+        }
+
         // Si la línea del histórico tiene formato, mantenemos el mismo.
-        if (fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("formato")) != null)
-            fHistorico.fFormatoLin = fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("formato")).toShort()
+        if (fDatosHco.formatoId > 0)
+            fHistorico.fFormatoLin = fDatosHco.formatoId
+
         fDocumento.fFormatoLin = fHistorico.fFormatoLin
+
         var queTexto = "$fCodigo - $fDescr"
         tvArticulo.text = queTexto
+
         // Si la línea tiene formato, adjuntaremos la descripción del mismo a la del artículo.
-        if (fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("descrfto")) != null) {
-            val fDescrFto = fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("descrfto"))
+        if (fDatosHco.descrFto != null) {
+            val fDescrFto = fDatosHco.descrFto
             queTexto = tvArticulo.text.toString() + " " + fDescrFto
             tvArticulo.text = queTexto
         }
-        fDocumento.fPrecio = fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("precio"))
-                .replace(',', '.').toDouble()
+
+        fDocumento.fPrecio = fDatosHco.precio.replace(',', '.').toDouble()
         fDocumento.calculaPrecioII()
         fHistorico.fPrecio = fDocumento.fPrecio
         fHistorico.fPrecioII = fDocumento.fPrecioII
         fHistorico.fTasa1 = 0.0
         fHistorico.fTasa2 = 0.0
 
-        // Si la línea del histórico tiene formato, mantenemos el mismo.
-        if (fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("formato")) != null)
-            fHistorico.fFormatoLin = fHistorico.cHco.getString(fHistorico.cHco.getColumnIndex("formato")).toShort()
-        fHistorico.fDtoLin = fHistorico.cHco.getDouble(fHistorico.cHco.getColumnIndex("dto"))
+        fHistorico.fDtoLin = fDatosHco.dto.toDouble()
         fHistorico.fDtoImp = 0.0
         fHistorico.fDtoImpII = 0.0
         fHistorico.fCodigoIva = fDocumento.fCodigoIva
         fHistorico.fCodigo = fDocumento.fCodArt
         fHistorico.fDescr = fDocumento.fDescr
-        */
     }
 
     fun incidenciaDatosDev(view: View) {
@@ -209,9 +214,11 @@ class DatosDevolucion: Activity() {
 
         if (puedoSalvar()) {
             fHistorico.fArticulo = fArticulo
-            if (edtCajas.isEnabled) if (edtCajas.text.toString() != "") fHistorico.fCajas =
-                edtCajas.text.toString().toDouble() * -1 else fHistorico.fCajas =
-                0.0 else fHistorico.fCajas = 0.0
+            if (edtCajas.isEnabled) if (edtCajas.text.toString() != "")
+                fHistorico.fCajas = edtCajas.text.toString().toDouble() * -1
+            else
+                fHistorico.fCajas = 0.0 else fHistorico.fCajas = 0.0
+
             fHistorico.fCantidad = edtCantidad.text.toString().toDouble() * -1
             // Por ahora no pedimos piezas
             fHistorico.fPiezas = 0.0

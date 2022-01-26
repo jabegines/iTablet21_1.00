@@ -74,16 +74,14 @@
         android:layout_height="1dp"
         android:background="#000000" />
 
-    <ListView
-        android:id="@+id/lvPdtes"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPdtes"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="5dp"
-        android:layout_weight="3"
-        android:background="#FFFFFF"
-        android:listSelector="@drawable/list_selector">
-
-    </ListView>
+        android:layout_weight="6"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp" >
+    </androidx.recyclerview.widget.RecyclerView>
 
     <View
         android:layout_width="match_parent"

@@ -25,6 +25,7 @@ interface TmpHcoDao {
                     queCodIva: Short, queTasa1: String, queTasa2: String, queLote: String, queAlmPedido: Short,
                     queTextoLinea: String, queFlag: Int, queFlag3: Int, queFlag5: Int)
 
+
     @Query("DELETE FROM TmpHco")
     fun vaciar()
 

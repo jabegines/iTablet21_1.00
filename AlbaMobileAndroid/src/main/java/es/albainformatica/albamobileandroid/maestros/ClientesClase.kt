@@ -358,8 +358,8 @@ class ClientesClase(val contexto: Context) {
                     if (fDiasClte > 0 || fCltesDiasRiesgo > 0) {
                         val fPendiente = PendienteClase(contexto)
                         if (fPendiente.abrirPorFDoc(fCliente, fEmpresa)) {
-                            val fEsDocNuevo = fPendiente.cursor?.getString(0)?.contains("/") ?: true
-                            val strFechaDoc = fPendiente.cursor?.getString(0)?.replace('-', '/') ?: ""
+                            val fEsDocNuevo = fPendiente.lTodosDocClte[0].contains("/")
+                            val strFechaDoc = fPendiente.lTodosDocClte[0].replace('-', '/')
                             val fFechaDoc: Date
                             val fFechaAct: Date
                             // Si el registro de la tabla Pendiente lo hemos hecho nuevo en la tablet, el formato de la fecha
@@ -378,7 +378,6 @@ class ClientesClase(val contexto: Context) {
                                 ex.printStackTrace()
                             }
                         }
-                        if (fPendiente.cursor != null) fPendiente.cursor!!.close()
                     }
                 }
             }
@@ -394,7 +393,6 @@ class ClientesClase(val contexto: Context) {
                             if (fCltesDocsRiesgo > 0) resultado = fNumDocs > fCltesDocsRiesgo
                         }
                     }
-                    if (fPendiente.cursor != null) fPendiente.cursor!!.close()
                 }
             }
         }

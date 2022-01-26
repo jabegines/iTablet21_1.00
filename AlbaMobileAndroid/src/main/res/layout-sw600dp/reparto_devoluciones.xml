@@ -4,15 +4,12 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-  <ListView
-    android:id="@+id/lvHcoDev"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:background="#FFFFFF"
-    android:listSelector="@drawable/list_selector">
-  </ListView>
-
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/rvHcoDev"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1" >
+  </androidx.recyclerview.widget.RecyclerView>
 
   <View
       android:id="@+id/view2"

@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
-import android.database.Cursor
 import android.os.Bundle
 import android.os.Looper
 import android.preference.PreferenceManager
@@ -27,6 +26,7 @@ import es.albainformatica.albamobileandroid.dao.EmpresasDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.entity.CobrosEnt
 import es.albainformatica.albamobileandroid.entity.ContactosCltesEnt
+import es.albainformatica.albamobileandroid.entity.PendienteEnt
 import es.albainformatica.albamobileandroid.impresion_informes.DocDiferidaPDF
 import es.albainformatica.albamobileandroid.maestros.ClientesActivity
 import es.albainformatica.albamobileandroid.maestros.ClientesClase
@@ -45,8 +45,11 @@ class CobrosActivity: AppCompatActivity() {
     private var idPendiente = 0
     private lateinit var fContexto: Context
     private lateinit var prefs: SharedPreferences
+
     private lateinit var fRecycler: RecyclerView
+    private lateinit var fRecPdtes: RecyclerView
     private lateinit var fAdapter: CobrosRvAdapter
+    private lateinit var fAdpPdtes: PdtesRvAdapter
 
     private lateinit var edtCodClte: EditText
     private lateinit var tvNombre: TextView
@@ -80,6 +83,7 @@ class CobrosActivity: AppCompatActivity() {
         super.onCreate(savedInstance)
         fContexto = this
         setContentView(R.layout.cobros)
+
         fCobros = CobrosClase(this)
         fPendiente = PendienteClase(this)
         fClientes = ClientesClase(this)
@@ -133,9 +137,13 @@ class CobrosActivity: AppCompatActivity() {
         prepararEdit()
 
         fRecycler = findViewById(R.id.rvCobros)
+        fRecycler.layoutManager = LinearLayoutManager(this)
         prepararRecycler()
 
-        prepararListViewPdtes()
+        fRecPdtes = findViewById(R.id.rvPdtes)
+        fRecPdtes.layoutManager = LinearLayoutManager(this)
+        prepararRecPdtes()
+
         if (fCliente > 0) {
             edtCodClte.isEnabled = false
             mostrarCliente(fCliente)
@@ -180,8 +188,24 @@ class CobrosActivity: AppCompatActivity() {
     }
 
 
+    private fun prepararRecPdtes() {
+        fAdpPdtes  = PdtesRvAdapter(getPendiente(), this, object: PdtesRvAdapter.OnItemClickListener {
+            override fun onClick(view: View, data: PendienteEnt) {
+                idPendiente = data.pendienteId
+                fPendiente.abrirPendienteId(idPendiente)
+                mostrarPdte()
+            }
+        })
 
+        fRecycler.adapter = fAdapter
+    }
 
+    private fun getPendiente(): List<PendienteEnt> {
+        fPendiente.abrir(fCliente)
+        return fPendiente.lPendiente
+    }
+
+    /*
     private fun prepararListViewPdtes() {
         val columnas: Array<String> = arrayOf("tipoDoc", "serie", "numero", "importe", "cobrado", "flag")
         val to = intArrayOf(R.id.lyvpTipoDoc, R.id.lyvpSerie, R.id.lyvpNumero, R.id.lyvpImporte, R.id.lyvpCobrado, R.id.lyvpFlag)
@@ -200,6 +224,7 @@ class CobrosActivity: AppCompatActivity() {
                 mostrarPdte()
             }
     }
+    */
 
 
     @SuppressLint("SetTextI18n")
@@ -226,7 +251,7 @@ class CobrosActivity: AppCompatActivity() {
         tvPdFPago.text = fPendiente.descrFPago
     }
 
-
+    /*
     private fun formatearColumnasPdtes() {
         adapterPdtes.viewBinder = SimpleCursorAdapter.ViewBinder { view: View, cursor: Cursor, column: Int ->
                 val tv = view as TextView
@@ -270,7 +295,7 @@ class CobrosActivity: AppCompatActivity() {
                 false
             }
     }
-
+    */
 
     private fun prepararRecycler() {
         fAdapter  = CobrosRvAdapter(getCobros(), this, object: CobrosRvAdapter.OnItemClickListener {
@@ -278,7 +303,6 @@ class CobrosActivity: AppCompatActivity() {
             }
         })
 
-        fRecycler.layoutManager = LinearLayoutManager(this)
         fRecycler.adapter = fAdapter
     }
 
@@ -434,7 +458,7 @@ class CobrosActivity: AppCompatActivity() {
 
             // Tengo que cerrar y abrir fPendiente porque si no, no refresca el listView de pendientes.
             idPendiente = 0
-            if (fPendiente.cursor != null) fPendiente.cursor!!.close()
+
             fPendiente.abrir(fCliente)
             refrescarPdtes()
             // Ocultamos el teclado

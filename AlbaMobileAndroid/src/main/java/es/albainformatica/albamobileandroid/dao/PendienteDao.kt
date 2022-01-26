@@ -37,7 +37,7 @@ interface PendienteDao {
 
 
     @Query("SELECT FechaDoc FROM Pendiente WHERE clienteId = :queCliente AND importe <> cobrado")
-    fun abrirTodosDocClte(queCliente: Int): Cursor
+    fun abrirTodosDocClte(queCliente: Int): List<String>
 
 
     @Query("DELETE FROM Pendiente WHERE tipoDoc = :queTipoDoc AND Empresa = :queEmpresa" +
@@ -54,7 +54,7 @@ interface PendienteDao {
             " AND CAST(importe AS REAL) <> CAST(cobrado AS REAL)" +
             " ORDER BY FechaDoc" +
             " LIMIT 1")
-    fun abrirPorFDoc(queCliente: Int, queEmpresa: Int): Cursor
+    fun abrirPorFDoc(queCliente: Int, queEmpresa: Int): List<String>
 
 
     @Query("SELECT COUNT(*) FROM Pendiente WHERE clienteId = :queCliente AND empresa = :queEmpresa" +
@@ -62,11 +62,12 @@ interface PendienteDao {
     fun dimeNumDocsClte(queCliente: Int, queEmpresa: Int): Int
 
 
-    @Query("SELECT A.*, A.pendienteId _id, B.Descripcion FROM Pendiente A" +
+    @Query("SELECT A.*, B.descripcion FROM Pendiente A " +
             " LEFT JOIN FormasPago B ON B.Codigo = A.FPago" +
-            " WHERE A.ClienteId = :queCliente AND CAST(A.Importe AS REAL) <> CAST(A.Cobrado AS REAL)" +
-            " ORDER BY A.FechaVto")
-    fun abrir(queCliente: Int): Cursor
+            " WHERE A.clienteId = :queCliente AND CAST(A.importe AS REAL) <> CAST(A.cobrado AS REAL)" +
+            " ORDER BY A.fechaVto")
+    fun abrir(queCliente: Int): List<PendienteEnt>
+
 
 
     @Query("SELECT * FROM Pendiente WHERE Almacen = :queAlmacen" +
