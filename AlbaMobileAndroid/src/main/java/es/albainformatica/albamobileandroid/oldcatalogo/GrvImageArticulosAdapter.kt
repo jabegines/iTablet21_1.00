@@ -40,7 +40,7 @@ class GrvImageArticulosAdapter: BaseAdapter {
     private var fDecPrBase: Int = 2
     private var fTarifa: Short = 0
     private var inflater: LayoutInflater
-    private var fEmpresaActual = 0
+    private var fEmpresaActual: Short = 0
     private lateinit var prefs: SharedPreferences
 
     // El constructor necesita el contexto de la actividad donde se utiliza el adapter
@@ -54,7 +54,7 @@ class GrvImageArticulosAdapter: BaseAdapter {
         fTarifa = queTarifa
         inflater = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         prefs = PreferenceManager.getDefaultSharedPreferences(activity)
-        fEmpresaActual = prefs.getInt("ultima_empresa", 0)
+        fEmpresaActual = prefs.getInt("ultima_empresa", 0).toShort()
         fArticulosGrv = Comunicador.fArticulosGrv
         if (fVendiendo)
             fDocumento = Comunicador.fDocumento

@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.bio_fragment_page_6.view.*
 import kotlin.math.ceil
 
 
-class ViewPagerAdapter(queRutaImagenes: String, queImagPorPagina: Int, queEmpresa: Int): RecyclerView.Adapter<ViewPagerAdapter.ViewPagerViewHolder>() {
+class ViewPagerAdapter(queRutaImagenes: String, queImagPorPagina: Int, queEmpresa: Short): RecyclerView.Adapter<ViewPagerAdapter.ViewPagerViewHolder>() {
     private var list: List<Int> = listOf()
     private var fRutaImagenes = queRutaImagenes
     private var fImagPorPagina = queImagPorPagina
@@ -45,7 +45,7 @@ class ViewPagerAdapter(queRutaImagenes: String, queImagPorPagina: Int, queEmpres
     }
 
 
-    class ViewPagerViewHolder(itemView: View, fRutaImagenes: String, queImagPorPagina: Int, queEmpresa: Int, list: List<Int>): RecyclerView.ViewHolder(itemView) {
+    class ViewPagerViewHolder(itemView: View, fRutaImagenes: String, queImagPorPagina: Int, queEmpresa: Short, list: List<Int>): RecyclerView.ViewHolder(itemView) {
 
         private val queRutaImag = fRutaImagenes
         private val fImagPorPagina = queImagPorPagina

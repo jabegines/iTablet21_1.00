@@ -143,9 +143,9 @@ class ArticulosClase(val contexto: Context) {
         return (lArticulos.count() > 0)
     }
 
-    fun abrirBioDepartamento(queGrupo: Int, queDepartamento: Int, fOrdenacion: Int): Boolean {
+    fun abrirBioDepartamento(queGrupo: Short, queDepartamento: Short, fOrdenacion: Int): Boolean {
 
-        lArticulos = articulosDao?.abrirBioDepartamento(queGrupo.toShort(), queDepartamento.toShort(), fOrdenacion) ?: emptyList<Int>().toMutableList()
+        lArticulos = articulosDao?.abrirBioDepartamento(queGrupo, queDepartamento, fOrdenacion) ?: emptyList<Int>().toMutableList()
         return (lArticulos.count() > 0)
     }
 

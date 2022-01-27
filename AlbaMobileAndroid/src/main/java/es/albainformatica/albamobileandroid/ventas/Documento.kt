@@ -405,7 +405,7 @@ class Documento(private val fContexto: Context) {
 
     // Borraremos las líneas que no han sido modificadas ni insertadas.
     fun borrarLineasNoModif() {
-        val fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresa.toString().toInt())
+        val fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresa)
 
         for (linea in lLineas) {
             val fLinea = linea.lineaId
@@ -627,7 +627,7 @@ class Documento(private val fContexto: Context) {
         // le hacemos que aplique la configuración sobre su clase interna TBaseDocumento.
         fBases.fAplicarIva = fAplicarIva
         fBases.fAplicarRecargo = fAplicarRe
-        fBases.fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresa.toString().toInt())
+        fBases.fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresa)
         fBases.fDecImpBase = fConfiguracion.decimalesImpBase()
         fBases.fDecImpII = fConfiguracion.decimalesImpII()
     }
@@ -687,7 +687,7 @@ class Documento(private val fContexto: Context) {
 
     fun cargarLinea(fLinea: Int): Boolean {
         var fEncontrada = false
-        var sPorcIva: String
+        val sPorcIva: String
         var datosLinVta = DatosLinVtas()
 
         for (linea in lLineas) {
@@ -747,7 +747,7 @@ class Documento(private val fContexto: Context) {
     }
 
     fun grabarHistorico() {
-        val fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresa.toString().toInt())
+        val fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresa)
 
         val lineasHco = tmpHcoDao?.getAllLineas() ?: emptyList<TmpHcoEnt>().toMutableList()
         for (linHco in lineasHco) {
@@ -829,7 +829,7 @@ class Documento(private val fContexto: Context) {
 
         fDtosCascada.abrir(-1)
         // Configuramos el objeto de los dtos. en cascada
-        fDtosCascada.fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresa.toString().toInt())
+        fDtosCascada.fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresa)
         fDtosCascada.fAplicarIva = fClientes.fAplIva
         fDtosCascada.fPorcIva = fPorcIva
         fDtosCascada.fDecPrBase = fConfiguracion.decimalesPrecioBase()
@@ -1082,7 +1082,7 @@ class Documento(private val fContexto: Context) {
         else cabeceraEnt.estado = queEstado
 
         // Por ahora el flag "AplicarIvaCliente" no se usa, ya que no viene en la configuración.
-        if (fConfiguracion.ivaIncluido(fEmpresa.toInt()))
+        if (fConfiguracion.ivaIncluido(fEmpresa))
             cabeceraEnt.flag = FLAGCABECERAVENTA_PRECIOS_IVA_INCLUIDO
         else
             cabeceraEnt.flag = 0

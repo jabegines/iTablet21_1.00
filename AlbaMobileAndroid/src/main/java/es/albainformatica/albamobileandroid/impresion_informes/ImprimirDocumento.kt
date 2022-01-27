@@ -117,7 +117,7 @@ class ImprimirDocumento(contexto: Context): Runnable {
                 queImprimir = fImprimirDocumento
                 fImprSinValorar = sinValorar
                 fVtaIvaIncluido =
-                    fConfiguracion.ivaIncluido(fDocumento.fEmpresa.toString().toInt())
+                    fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
                 mBluetoothDevice = mBluetoothAdapter.getRemoteDevice(mDeviceAddress)
                 mBluetoothConnectProgressDialog = ProgressDialog.show(
                     fContexto,

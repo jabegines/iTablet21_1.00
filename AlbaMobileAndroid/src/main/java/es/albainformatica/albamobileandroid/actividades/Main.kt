@@ -44,7 +44,6 @@ import es.albainformatica.albamobileandroid.oldcatalogo.CatalogoGruposDep
 import es.albainformatica.albamobileandroid.reparto.DocsReparto
 import es.albainformatica.albamobileandroid.ventas.Documento
 import es.albainformatica.albamobileandroid.ventas.VentasActivity
-import kotlinx.android.synthetic.main.alert_dialog_pedir_fechas.*
 import kotlinx.android.synthetic.main.main.*
 import org.apache.commons.net.util.Base64
 import org.jetbrains.anko.alert

@@ -22,9 +22,7 @@ import es.albainformatica.albamobileandroid.entity.ContactosCltesEnt
 import es.albainformatica.albamobileandroid.impresion_informes.*
 import es.albainformatica.albamobileandroid.ventas.*
 import kotlinx.android.synthetic.main.modif_doc_reparto.*
-import kotlinx.android.synthetic.main.ventas_lineas.*
 import org.jetbrains.anko.alert
-import java.util.*
 
 
 class ModifDocReparto: Activity() {
@@ -149,7 +147,7 @@ class ModifDocReparto: Activity() {
         tvNombreClte.text = queTexto
         tvNComClte.text = fDocumento.nombreComClte()
         fEstado = est_Vl_Browse
-        fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa.toString().toInt())
+        fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
 
         fRecyclerView = rvRep_LineasDoc
         fRecyclerView.layoutManager = LinearLayoutManager(this)

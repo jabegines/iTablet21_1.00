@@ -35,7 +35,6 @@ import es.albainformatica.albamobileandroid.dao.ContactosCltesDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.entity.ContactosCltesEnt
 import es.albainformatica.albamobileandroid.impresion_informes.ImprDocFormato2
-import kotlinx.android.synthetic.main.clientes_activity.*
 import kotlinx.android.synthetic.main.ventas_lineas.*
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -249,7 +248,7 @@ class VentasLineas : Activity() {
         tvNombreClte.text = fDocumento.fClientes.fCodigo + " - " + fDocumento.nombreCliente()
         tvNComClte.text = fDocumento.nombreComClte()
         fEstado = est_Vl_Browse
-        fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa.toString().toInt())
+        fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
 
         fRecyclerView = rvVL_LineasDoc
         fRecyclerView.layoutManager = LinearLayoutManager(this)

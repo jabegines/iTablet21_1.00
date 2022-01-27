@@ -2,15 +2,14 @@ package es.albainformatica.albamobileandroid.ventas
 
 
 import android.app.Activity
+import android.content.Intent
 import es.albainformatica.albamobileandroid.historicos.HistoricoMes
-import es.albainformatica.albamobileandroid.Configuracion
 import android.os.Bundle
-import es.albainformatica.albamobileandroid.Comunicador
+import android.view.View
 import android.widget.TextView
-import android.widget.ListView
-import android.widget.SimpleCursorAdapter
-import es.albainformatica.albamobileandroid.R
-import es.albainformatica.albamobileandroid.dimeNombreMesResum
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import es.albainformatica.albamobileandroid.*
 import java.util.*
 
 /**
@@ -20,7 +19,9 @@ class AcumuladosMes: Activity() {
     private lateinit var fHistorico: HistoricoMes
     private lateinit var fConfiguracion: Configuracion
 
-    private lateinit var lvLineas: ListView
+    private lateinit var fRecycler: RecyclerView
+    private lateinit var fAdapter: AcumMesRvAdapter
+
     private var fCliente = 0
     private var fArticulo = 0
     private var fFtoDecCantidad: String = ""
@@ -39,9 +40,7 @@ class AcumuladosMes: Activity() {
 
 
     private fun inicializarControles() {
-        lvLineas = findViewById(R.id.lvAcumuladosMes)
         fFtoDecCantidad = fConfiguracion.formatoDecCantidad()
-        fHistorico.abrir(fCliente)
 
         val fecha = Calendar.getInstance()
         val anyo = fecha[Calendar.YEAR]
@@ -56,76 +55,35 @@ class AcumuladosMes: Activity() {
         queTexto = "$nombreMes $anyo"
         tvCantAct.text = queTexto
 
-        // TODO: hacer RecyclerView
-        //prepararListView()
+        fRecycler = findViewById(R.id.rvAcumuladosMes)
+        fRecycler.layoutManager = LinearLayoutManager(this)
+        prepararRecycler()
 
         val tvTitulo = findViewById<TextView>(R.id.tvNombreActivity)
         tvTitulo.setText(R.string.acum_mes)
     }
 
-    /*
-    private fun prepararListView() {
-        val columnas = arrayOf("codigo", "descr", "cantidadant", "cantidad", "diferencia")
-        val to = intArrayOf(
-            R.id.lyhcomesCodigo, R.id.lyhcomesDescr,
-            R.id.lyhcomesCantAnt, R.id.lyhcomesCant, R.id.lyhcomesDiferencia
-        )
-        adapterLineas = SimpleCursorAdapter(
-            this,
-            R.layout.ly_acum_mes,
-            fHistorico.cCursorHco,
-            columnas,
-            to,
-            0
-        )
-        // Formateamos las columnas.
-        formatearColumnas()
-        lvLineas.adapter = adapterLineas
-
-        // Establecemos el evento on click del ListView.
-        lvLineas.onItemClickListener =
-            AdapterView.OnItemClickListener { listView: AdapterView<*>, _: View?, position: Int, _: Long ->
+    private fun prepararRecycler() {
+        fAdapter = AcumMesRvAdapter(getAcum(), this, object: AcumMesRvAdapter.OnItemClickListener {
+            override fun onClick(view: View, data: DatosHistMesDif) {
                 // Tomamos el campo _id de la fila en la que hemos pulsado.
-                val cursor = listView.getItemAtPosition(position) as Cursor
-                fArticulo = cursor.getInt(cursor.getColumnIndexOrThrow("articulo"))
+                fArticulo = data.articuloId
                 val i = Intent(this@AcumuladosMes, AcumuladosAnyo::class.java)
                 i.putExtra("cliente", fCliente)
                 i.putExtra("articulo", fArticulo)
-                i.putExtra("codart", cursor.getString(cursor.getColumnIndex("codigo")))
-                i.putExtra("descrart", cursor.getString(cursor.getColumnIndex("descr")))
+                i.putExtra("codart", data.codigo)
+                i.putExtra("descrart", data.descripcion)
                 startActivity(i)
             }
+        })
+
+        fRecycler.adapter = fAdapter
     }
 
-    private fun formatearColumnas() {
-        adapterLineas.viewBinder =
-            SimpleCursorAdapter.ViewBinder { view: View, cursor: Cursor, column: Int ->
-                val tv = view as TextView
-
-                // El orden de las columnas será el que tengan en el cursor que estemos utilizando
-                // (en este caso fHistorico.cHcoMes), comenzando por la cero.
-                // Formateamos las cantidades.
-                if (column == 2 || column == 3 || column == 4) {
-                    val sCantidad: String = when (column) {
-                        2 -> cursor.getString(cursor.getColumnIndex("cantidadant"))
-                            .replace(
-                                ',',
-                                '.'
-                            )
-                        3 -> cursor.getString(cursor.getColumnIndex("cantidad"))
-                            .replace(
-                                ',',
-                                '.'
-                            )
-                        else -> cursor.getString(cursor.getColumnIndex("diferencia"))
-                            .replace(',', '.')
-                    }
-                    val dCantidad = sCantidad.toDouble()
-                    tv.text = String.format(fFtoDecCantidad, dCantidad)
-                }
-                false
-            }
+    private fun getAcum(): List<DatosHistMesDif> {
+        fHistorico.abrir(fCliente)
+        return fHistorico.lDatosHMDif
     }
-    */
+
 
 }

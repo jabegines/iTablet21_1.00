@@ -180,7 +180,7 @@ class VentasDatosLinea: Activity() {
         imgBuscaArt = findViewById(R.id.imgBuscaArticulo)
         carpetaImagenes = dimeRutaImagenes(this)
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa.toString().toInt())
+        fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
         fAplicarIva = fDocumento.fClientes.fAplIva
         fUsarTasa1 = fConfiguracion.usarTasa1()
         fUsarTasa2 = fConfiguracion.usarTasa2()
@@ -779,7 +779,7 @@ class VentasDatosLinea: Activity() {
 
         fDtosCascada.abrir(-1)
         // Configuramos el objeto de los dtos. en cascada
-        fDtosCascada.fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa.toString().toInt())
+        fDtosCascada.fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
         fDtosCascada.fAplicarIva = fDocumento.fClientes.fAplIva
         fDtosCascada.fPorcIva = fDocumento.fPorcIva
         fDtosCascada.fDecPrBase = fConfiguracion.decimalesPrecioBase()
@@ -981,7 +981,7 @@ class VentasDatosLinea: Activity() {
                     -1
                 )
                 // Configuramos el objeto de los dtos. en cascada
-                fDtosCascada.fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa.toString().toInt())
+                fDtosCascada.fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
                 fDtosCascada.fAplicarIva = fDocumento.fClientes.fAplIva
                 fDtosCascada.fPorcIva = fDocumento.fPorcIva
                 fDtosCascada.fDecPrBase = fConfiguracion.decimalesPrecioBase()

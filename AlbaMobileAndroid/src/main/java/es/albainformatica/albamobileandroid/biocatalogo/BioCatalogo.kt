@@ -59,6 +59,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
     private lateinit var fRecyclerLeftD: RecyclerView
     private lateinit var fAdpGrupos: GruposRvAdapter
+    private lateinit var fAdpDepart: DepartRvAdapter
     private lateinit var fAdpCatalogos: CatalogosRvAdapter
 
 
@@ -72,8 +73,8 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
     private var carpetaDocAsoc: String = ""
 
     private var fIdCatalogo: Int = 0
-    private var fIdGrupo: Int = 0
-    private var fIdDepartamento: Int = 0
+    private var fIdGrupo: Short = 0
+    private var fIdDepartamento: Short = 0
     private var fPosicion: Int = 0
     private var fPagina: Int = 0
     private var fItemActual: Int = 0
@@ -101,7 +102,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
     private var fModoVtaCat: Int = 1
     private var fOrdenacion: Int = 1
 
-    private var fEmpresaActual: Int = 0
+    private var fEmpresaActual: Short = 0
 
     private val fRequestVtaFormatos = 1
     private val fRequestCambDistr = 2
@@ -125,7 +126,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         fUsarFormatos = fConfiguracion.usarFormatos()
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
 
-        fEmpresaActual = prefs.getInt("ultima_empresa", 0)
+        fEmpresaActual = prefs.getInt("ultima_empresa", 0).toShort()
         fPedirDetalles = prefs.getBoolean("ventas_detall_cat_vis", false)
         fImagPorPagina = (prefs.getString("num_imag_cat", "1") ?: "1").toInt()
         // Establecemos la ruta de imágenes
@@ -445,11 +446,9 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
             if (fModoVtaCat == 1) {
                 if (fCatalogos.lClasCat.count() > 0)
                     prepararRvCatalogos()
-                    //prepararLVCatalogos()
                 else {
                     if (fGrupos.lGrupCat.count() > 0) {
                         prepararRvGrupos()
-                        //prepararLVGrupos()
                     } else {
                         alert("No tiene ningún catálogo ni tampoco ningún grupo.\nNo podrá vender en el modo Catálogo Visual.") {
                             title = "Información"
@@ -460,11 +459,9 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
             } else {
                 if (fGrupos.lGrupCat.count() > 0)
                     prepararRvGrupos()
-                    //prepararLVGrupos()
                 else {
                     if (fCatalogos.lClasCat.count() > 0) {
                         prepararRvCatalogos()
-                        //prepararLVCatalogos()
                     } else {
                         alert("No tiene ningún catálogo ni tampco ningún grupo.\nNo podrá vender en el modo Catálogo Visual.") {
                             title = "Información"
@@ -541,6 +538,10 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
     private fun prepararRvGrupos() {
         fAdpGrupos = GruposRvAdapter(getGrupos(), this, object: GruposRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: GruposParaCat) {
+                fIdGrupo = data.codigo
+                val fDescrGrupo = data.descripcion
+                // Cargamos los departamentos del grupo
+                prepararRvDepartamentos()
             }
         })
 
@@ -550,6 +551,37 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
     private fun getGrupos(): List<GruposParaCat> {
         return fGrupos.lGrupCat
+    }
+
+
+    private fun prepararRvDepartamentos() {
+        fAdpDepart = DepartRvAdapter(getDepartam(), this, object: DepartRvAdapter.OnItemClickListener {
+            override fun onClick(view: View, data: DepartParaCat) {
+                // Primero guardamos en el documento para mantener las cantidades pedidas
+                if (fUsarFormatos) {
+                    bioCat2DocFtos()
+                } else {
+                    bioCat2Doc(false)
+                }
+                // Tomamos el campo _id de la fila en la que hemos pulsado y cerramos el DrawerLayout
+                fIdDepartamento = data.departamentoId
+                dwLayout.closeDrawer(GravityCompat.START)
+                // Volvemos a cargar los arrays
+                setImagesData()
+
+                // Reiniciamos el adaptador y demás controles
+                reiniciarAdaptador(false)
+                if (fImagPorPagina == 1)
+                    verImpte()
+            }
+        })
+
+        fRecyclerLeftD.adapter = fAdpDepart
+    }
+
+    private fun getDepartam(): List<DepartParaCat> {
+        fDepartamentos.abrirParaCatalogo(fIdGrupo)
+        return fDepartamentos.lDepCat
     }
 
 
@@ -623,15 +655,12 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         if (fViendoDep) {
             fViendoDep = false
             prepararRvGrupos()
-            //prepararLVGrupos()
         } else {
             fModoVtaCat = if (fModoVtaCat == 1) 2
             else 1
 
             if (fModoVtaCat == 1) prepararRvCatalogos()
-                //prepararLVCatalogos()
             else prepararRvGrupos()
-                //prepararLVGrupos()
         }
     }
 

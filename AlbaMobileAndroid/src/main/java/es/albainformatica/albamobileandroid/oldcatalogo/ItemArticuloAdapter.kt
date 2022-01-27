@@ -21,7 +21,7 @@ import java.util.*
  * Created by jabegines on 11/10/13.
  */
 class ItemArticuloAdapter(protected var activity: Activity, protected var items: ArrayList<ItemArticulo>,
-    queEmpresa: Int) : BaseAdapter() {
+    queEmpresa: Short) : BaseAdapter() {
     val carpetaImagenes: String = dimeRutaImagenes(activity)
     private val fArticulos: ArticulosClase = ArticulosClase(activity)
     private var fFtoPrecio: String = ""

@@ -811,7 +811,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                                     sCampo.equals("Serie", ignoreCase = true) -> cabDifEnt.serie = parser.getAttributeValue("", sCampo)
                                     sCampo.equals("Numero", ignoreCase = true) -> cabDifEnt.numero = parser.getAttributeValue("", sCampo).toInt()
                                     sCampo.equals("Ejercicio", ignoreCase = true) -> cabDifEnt.ejercicio = parser.getAttributeValue("", sCampo).toShort()
-                                    sCampo.equals("Empresa", ignoreCase = true) -> cabDifEnt.empresa = parser.getAttributeValue("", sCampo).toInt()
+                                    sCampo.equals("Empresa", ignoreCase = true) -> cabDifEnt.empresa = parser.getAttributeValue("", sCampo).toShort()
                                     sCampo.equals("Fecha", ignoreCase = true) -> {
                                         val sFecha = parser.getAttributeValue("", sCampo)
                                         val sFecha2 = (sFecha.substring(8, 10) + "/" + sFecha.substring(5, 7) + "/" + sFecha.substring(0, 4))

@@ -1,6 +1,7 @@
 package es.albainformatica.albamobileandroid.maestros
 
 import android.content.Context
+import es.albainformatica.albamobileandroid.DepartParaCat
 import es.albainformatica.albamobileandroid.dao.DepartamentosDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.entity.DepartamentosEnt
@@ -12,7 +13,7 @@ class Departamentos(contexto: Context) {
     private val departamentosDao: DepartamentosDao? = MyDatabase.getInstance(contexto)?.departamentosDao()
 
     lateinit var lDepartamentos: List<DepartamentosEnt>
-
+    lateinit var lDepCat: List<DepartParaCat>
 
 
     fun abrir(fGrupo: Short): Boolean {
@@ -21,19 +22,9 @@ class Departamentos(contexto: Context) {
     }
 
 
-    fun abrirParaCatalogo(fGrupo: Int): Boolean {
-        // TODO
-        /*
-        cursor = dbAlba.rawQuery(
-            "SELECT A.codigo _id, A.descr," +
-                    " (SELECT COUNT(*) FROM articulos WHERE grupo = " + fGrupo + " AND dpto = A.codigo) numarticulos" +
-                    " FROM departamentos A" +
-                    " WHERE A.grupo = " + fGrupo +
-                    " ORDER BY A.codigo", null
-        )
-        return cursor.moveToFirst()
-        */
-        return true
+    fun abrirParaCatalogo(fGrupo: Short): Boolean {
+        lDepCat = departamentosDao?.abrirParaCatalogo(fGrupo) ?: emptyList<DepartParaCat>().toMutableList()
+        return (lDepCat.count() > 0)
     }
 
 

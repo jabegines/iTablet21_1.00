@@ -17,7 +17,6 @@ import es.albainformatica.albamobileandroid.ventas.BuscarLotes
 import es.albainformatica.albamobileandroid.ventas.Documento
 import es.albainformatica.albamobileandroid.ventas.NumberTextWatcher
 import kotlinx.android.synthetic.main.bio_vtadetallescat.*
-import kotlinx.android.synthetic.main.nueva_carga.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.yesButton
 import java.util.*
@@ -36,7 +35,7 @@ class VtaDetallesCat: AppCompatActivity() {
     private var fUsarTasa1: Boolean = false
     private var fUsarTasa2: Boolean = false
 
-    private var fEmpresaActual: Int = 0
+    private var fEmpresaActual: Short = 0
 
     private lateinit var chsLineas: Array<CharSequence>
     private var queLinea: Int = 0
@@ -52,7 +51,7 @@ class VtaDetallesCat: AppCompatActivity() {
         val intent = intent
         val fArticulo = intent.getIntExtra("articulo", 0)
         val fArtNumVecesEnDoc = intent.getIntExtra("numVecesEnDoc", 0)
-        fEmpresaActual = intent.getIntExtra("empresa", 0)
+        fEmpresaActual = intent.getShortExtra("empresa", 0)
 
         fDocumento = Comunicador.fDocumento
         fConfiguracion = Comunicador.fConfiguracion

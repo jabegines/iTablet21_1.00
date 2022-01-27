@@ -3,6 +3,7 @@ package es.albainformatica.albamobileandroid.historicos
 import android.content.Context
 import android.database.Cursor
 import es.albainformatica.albamobileandroid.DatosHistMesAnyo
+import es.albainformatica.albamobileandroid.DatosHistMesClte
 import es.albainformatica.albamobileandroid.DatosHistMesDif
 import es.albainformatica.albamobileandroid.TotalesHistMes
 import es.albainformatica.albamobileandroid.dao.HistMesDao
@@ -19,6 +20,7 @@ class HistoricoMes(val contexto: Context) {
     lateinit var lDatosHistMes: List<HistMesEnt>
     lateinit var lDatosHMAnyo: List<DatosHistMesAnyo>
     lateinit var lDatosHMDif: List<DatosHistMesDif>
+    lateinit var lDatosHcoMesClte: List<DatosHistMesClte>
     lateinit var totalesHistMes: TotalesHistMes
 
 
@@ -58,7 +60,7 @@ class HistoricoMes(val contexto: Context) {
 
 
     fun abrirHcoClte(queCliente: Int) {
-        histMesDao?.abrirHcoClte(queCliente)
+        lDatosHcoMesClte = histMesDao?.abrirHcoClte(queCliente) ?: emptyList<DatosHistMesClte>().toMutableList()
     }
 
 

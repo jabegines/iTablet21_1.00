@@ -52,20 +52,13 @@ class InfCobrosRvAdapter(
             private val impCobro = itemView.findViewById(R.id.lyicTotal) as TextView
 
             fun bind(cobro: DatosInfCobros) {
-                // TODO
-                /*
-                val cursor = dbAlba.rawQuery("SELECT nomfi FROM clientes WHERE cliente = " + cobro.clienteId, null)
-                if (cursor.moveToFirst()) {
-                    nombreClte.text = cursor.getString(cursor.getColumnIndex("nomfi"))
-                }
-                cursor.close()
-
+                nombreClte.text = cobro.nombre
                 fecha.text = cobro.fechaCobro
                 tipoDoc.text = tipoDocResumAsString(cobro.tipoDoc)
                 serie.text = cobro.serie
                 numero.text = cobro.numero
                 impCobro.text = cobro.cobro
-                */
+
             }
         }
 

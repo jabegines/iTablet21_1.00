@@ -138,7 +138,7 @@ import java.util.*
          fFtoPrII = fConfiguracion.formatoDecPrecioIva()
          fFtoImpBase = fConfiguracion.formatoDecImptesBase()
          fFtoImpII = fConfiguracion.formatoDecImptesIva()
-         fVtaIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa.toInt())
+         fVtaIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
 
          // Leemos las preferencias de la aplicación;
          prefs = PreferenceManager.getDefaultSharedPreferences(fContexto)

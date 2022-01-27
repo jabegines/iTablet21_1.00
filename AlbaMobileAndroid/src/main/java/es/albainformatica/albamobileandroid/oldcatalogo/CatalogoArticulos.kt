@@ -55,7 +55,7 @@ class CatalogoArticulos: Activity(), Dlg2Listener {
     private lateinit var contexto: Context
     private lateinit var itemArticulo: ItemArticulo
     private var fEditandoCajas: Boolean = false
-    private var fEmpresaActual = 0
+    private var fEmpresaActual: Short = 0
 
     public override fun onCreate(savedInstance: Bundle?) {
         super.onCreate(savedInstance)
@@ -117,7 +117,7 @@ class CatalogoArticulos: Activity(), Dlg2Listener {
             null
         )
         dondeBuscar = prefs.getInt("dondebuscar", 0).toShort()
-        fEmpresaActual = prefs.getInt("ultima_empresa", 0)
+        fEmpresaActual = prefs.getInt("ultima_empresa", 0).toShort()
     }
 
     private fun inicializarControles(i: Intent) {

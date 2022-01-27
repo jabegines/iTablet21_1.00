@@ -352,8 +352,8 @@ class Configuracion(queContexto: Context) {
     //    return (queValor == "T")
     //}
 
-    fun ivaIncluido(queEmpresa: Int): Boolean {
-        val queValor = empresasDao?.getIvaIncluido(queEmpresa) ?: "F"
+    fun ivaIncluido(queEmpresa: Short): Boolean {
+        val queValor = empresasDao?.getIvaIncluido(queEmpresa.toInt()) ?: "F"
         return (queValor == "T")
     }
 

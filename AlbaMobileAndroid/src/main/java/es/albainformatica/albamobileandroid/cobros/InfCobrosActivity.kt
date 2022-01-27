@@ -3,7 +3,6 @@ package es.albainformatica.albamobileandroid.cobros
 import android.app.Activity
 import android.os.Bundle
 import android.view.View
-import android.widget.SimpleCursorAdapter
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,7 +13,6 @@ import es.albainformatica.albamobileandroid.*
 class InfCobrosActivity: Activity() {
     private lateinit var fCobros: CobrosClase
     private lateinit var fConfiguracion: Configuracion
-    private lateinit var adapterCobros: SimpleCursorAdapter
     private lateinit var fRecycler: RecyclerView
     private lateinit var fRecResumen: RecyclerView
     private lateinit var fAdapter: InfCobrosRvAdapter
@@ -42,7 +40,9 @@ class InfCobrosActivity: Activity() {
         fFtoDecImpIva = fConfiguracion.formatoDecImptesIva()
 
         fRecycler = findViewById(R.id.rvInfCobros)
+        fRecycler.layoutManager = LinearLayoutManager(this)
         fRecResumen = findViewById(R.id.rvResDivInfC)
+        fRecResumen.layoutManager = GridLayoutManager(this, 2)
         prepararRecycler()
         prepararRecResumen()
         val tvTitulo = findViewById<TextView>(R.id.tvNombreActivity)
@@ -57,7 +57,6 @@ class InfCobrosActivity: Activity() {
             }
         })
 
-        fRecycler.layoutManager = LinearLayoutManager(this)
         fRecycler.adapter = fAdapter
     }
 
@@ -81,7 +80,6 @@ class InfCobrosActivity: Activity() {
             }
         })
 
-        fRecResumen.layoutManager = GridLayoutManager(this, 2)
         fRecResumen.adapter = fAdpResumen
     }
 

@@ -65,7 +65,7 @@ class DocDiferidaPDF(private val fContexto: Context, idDocumento: Int) {
     private var fFtoImpII: String = ""
     private var fSerie: String = ""
     private var fNumero: String = ""
-    private var fEmpresaActual = 0
+    private var fEmpresaActual: Short = 0
 
     private val fntHelv8: Font = Font(Font.HELVETICA, 8f, Font.NORMAL, Color.BLACK)
     private val fntHelvNegra8: Font = Font(Font.HELVETICA, 8f, Font.BOLD, Color.BLACK)

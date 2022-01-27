@@ -33,10 +33,10 @@ interface OfertasDao {
 
 
     @Query("SELECT articuloId FROM Ofertas WHERE empresa = :queEmpresa AND tarifa = :queTarifa")
-    fun getAllOftas(queEmpresa: Int, queTarifa: Short): MutableList<Int>
+    fun getAllOftas(queEmpresa: Short, queTarifa: Short): MutableList<Int>
 
     @Query("SELECT * FROM Ofertas WHERE articuloId = :queArticulo AND empresa = :queEmpresa AND tarifa = :queTarifa")
-    fun getOftaArt(queArticulo: Int, queEmpresa: Int, queTarifa: Short): OfertasEnt
+    fun getOftaArt(queArticulo: Int, queEmpresa: Short, queTarifa: Short): OfertasEnt
 
 
     @Query("SELECT precio FROM Ofertas WHERE articuloId = :queArticulo AND empresa = :queEmpresa LIMIT 1")

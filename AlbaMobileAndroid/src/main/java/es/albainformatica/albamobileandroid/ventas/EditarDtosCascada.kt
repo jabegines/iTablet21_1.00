@@ -87,7 +87,7 @@ class EditarDtosCascada: Activity(), OnFocusChangeListener {
         fFtoImpBase = fConfiguracion.formatoDecImptesBase()
 
         // Configuramos el objeto de los dtos. en cascada
-        fDtosCascada.fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa.toString().toInt())
+        fDtosCascada.fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
         fDtosCascada.fAplicarIva = fDocumento.fClientes.fAplIva
         fDtosCascada.fPorcIva = fDocumento.fPorcIva
         fDtosCascada.fDecPrBase = fConfiguracion.decimalesPrecioBase()

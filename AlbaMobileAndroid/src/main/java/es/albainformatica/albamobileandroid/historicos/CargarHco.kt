@@ -42,7 +42,7 @@ class CargarHco: Activity() {
     private lateinit var prefs: SharedPreferences
     private var fAlertarArtNoVend = false
     private var fDiasAlerta = 0
-    private var fEmpresaActual = 0
+    private var fEmpresaActual: Short = 0
 
     // Request de las actividades a las que llamamos.
     private  val fRequestEditarHco = 1
@@ -56,7 +56,7 @@ class CargarHco: Activity() {
         fCliente = i.getIntExtra("cliente", 0)
         fAplicarIva = i.getBooleanExtra("aplicariva", true)
         fDesdeCltes = i.getBooleanExtra("desdecltes", false)
-        fEmpresaActual = i.getIntExtra("empresa", 0)
+        fEmpresaActual = i.getShortExtra("empresa", 0)
         fConfiguracion = Comunicador.fConfiguracion
         fHistorico = if (fDesdeCltes) Historico(this) else Comunicador.fHistorico
         inicializarControles()

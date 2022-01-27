@@ -13,7 +13,7 @@ data class CabDiferidasEnt (
     var serie: String = "",
     var numero: Int = 0,
     var ejercicio: Short = 0,
-    var empresa: Int = 0,
+    var empresa: Short = 0,
     var fecha: String = "",
     var clienteId: Int = 0,
     var aplIva: String = "",

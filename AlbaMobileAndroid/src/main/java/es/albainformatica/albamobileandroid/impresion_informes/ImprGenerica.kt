@@ -147,7 +147,7 @@ class ImprGenerica(contexto: Context): Runnable {
         fFtoPrBase = fConfiguracion.formatoDecPrecioBase()
         fFtoImpBase = fConfiguracion.formatoDecImptesBase()
         fFtoImpII = fConfiguracion.formatoDecImptesIva()
-        fVtaIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa.toString().toInt())
+        fVtaIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
 
         // Leemos las preferencias de la aplicación;
         prefs = PreferenceManager.getDefaultSharedPreferences(fContexto)

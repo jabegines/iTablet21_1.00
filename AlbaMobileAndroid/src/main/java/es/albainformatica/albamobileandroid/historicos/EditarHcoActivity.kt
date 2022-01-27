@@ -64,7 +64,7 @@ class EditarHcoActivity: AppCompatActivity() {
     private lateinit var imgTrfPiezas: ImageView
 
     private var fFlag5 = 0
-    private var fEmpresaActual = 0
+    private var fEmpresaActual: Short = 0
 
     private val fRequestTextoLinea = 1
     private val fRequestBuscarLote = 2
@@ -79,7 +79,7 @@ class EditarHcoActivity: AppCompatActivity() {
         fLinea = intent.getIntExtra("linea", 0)
         fPosicion = intent.getIntExtra("posicion", 0)
         fDesdeHcoArtClte = intent.getBooleanExtra("desdeHcoArtClte", false)
-        fEmpresaActual = intent.getIntExtra("empresa", 0)
+        fEmpresaActual = intent.getShortExtra("empresa", 0)
         fVendTrfPiezas = false
 
         fHistMes = HistoricoMes(this)

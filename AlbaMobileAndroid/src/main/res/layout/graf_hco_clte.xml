@@ -111,13 +111,11 @@
     android:background="#FFFFFF"
     android:orientation="horizontal">
 
-    <ListView
-      android:id="@+id/lvGrafHcoClte"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:background="#FFFFFF"
-      android:listSelector="@drawable/list_selector">
-    </ListView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvGrafHcoClte"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+      />
 
   </LinearLayout>
 

@@ -54,7 +54,7 @@ class VtaFormatosCat: AppCompatActivity() {
     private var fAplicarIva: Boolean = true
 
     private lateinit var fContexto: Context
-    private var fEmpresaActual: Int = 0
+    private var fEmpresaActual: Short = 0
 
 
     private val fRequestTextoLinea = 1
@@ -77,7 +77,7 @@ class VtaFormatosCat: AppCompatActivity() {
         fArticulo = i.getIntExtra("articulo", 0)
         fArticulos.existeArticulo(fArticulo)
         fRutaImagenes = i.getStringExtra("rutaimagenes") ?: ""
-        fEmpresaActual = intent.getIntExtra("empresa", 0)
+        fEmpresaActual = intent.getShortExtra("empresa", 0)
 
         inicializarControles()
     }

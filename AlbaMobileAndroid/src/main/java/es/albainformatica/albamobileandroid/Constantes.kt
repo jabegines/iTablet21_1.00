@@ -387,11 +387,17 @@ class DatosGridView {
 }
 
 class GruposParaCat {
-    var codigo: Int = 0
+    var codigo: Short = 0
     var descripcion: String = ""
     var numDepartamentos: Int = 0
 }
 
+
+class DepartParaCat {
+    var departamentoId: Short = 0
+    var descripcion: String = ""
+    var numArticulos: Int = 0
+}
 
 class ClasifParaCat {
     var clasificadorId: Int = 0
@@ -602,5 +608,19 @@ class DatosReparto {
     var tipoIncidencia: Int = 0
 }
 
+
+class ListaPreciosEsp {
+    var ratingArtId: Int = 0
+    var precio: String = ""
+    var dto: String = ""
+    var flag: Int = 0
+    var descripcion: String = ""
+    var descrFto: String = ""
+    var porcIva: String = ""
+    var prTarifa: String = ""
+    var dtoTarifa: String = ""
+    var prTrfFto: String = ""
+    var dtoTrfFto: String = ""
+}
 
 var fArtSeleccCat = 0

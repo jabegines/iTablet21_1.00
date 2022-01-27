@@ -150,7 +150,7 @@ class ImprIntermecPB51(contexto: Context): Runnable {
         fFtoPrBase = fConfiguracion.formatoDecPrecioBase()
         fFtoImpBase = fConfiguracion.formatoDecImptesBase()
         fFtoImpII = fConfiguracion.formatoDecImptesIva()
-        fVtaIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa.toString().toInt())
+        fVtaIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
         fLineasImpr = 0
 
         // Leemos las preferencias de la aplicación;
