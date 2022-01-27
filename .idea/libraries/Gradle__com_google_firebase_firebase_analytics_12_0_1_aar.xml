@@ -3,9 +3,10 @@
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/0a20212458b41c4dd5d6aea4d4b7b184/transformed/jetified-firebase-analytics-12.0.1/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/8cea0b69676a6e1552d5cb0b08a765a6/transformed/jetified-firebase-analytics-12.0.1/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/995b0c01e26323bc7af418b38ecfd5bd/transformed/jetified-firebase-analytics-12.0.1/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/995b0c01e26323bc7af418b38ecfd5bd/transformed/jetified-firebase-analytics-12.0.1/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/995b0c01e26323bc7af418b38ecfd5bd/transformed/jetified-firebase-analytics-12.0.1/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/00a82668cae1951f93d24b62dc803b70/transformed/jetified-firebase-analytics-12.0.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/00a82668cae1951f93d24b62dc803b70/transformed/jetified-firebase-analytics-12.0.1/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/00a82668cae1951f93d24b62dc803b70/transformed/jetified-firebase-analytics-12.0.1/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
