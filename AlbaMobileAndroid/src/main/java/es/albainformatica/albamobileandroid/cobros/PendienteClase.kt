@@ -5,6 +5,7 @@ import es.albainformatica.albamobileandroid.FLAGPENDIENTE_EN_CARTERA
 import es.albainformatica.albamobileandroid.Comunicador
 import es.albainformatica.albamobileandroid.actualizarSaldo
 import es.albainformatica.albamobileandroid.dao.CabDiferidasDao
+import es.albainformatica.albamobileandroid.dao.CabecerasDao
 import es.albainformatica.albamobileandroid.dao.FormasPagoDao
 import es.albainformatica.albamobileandroid.dao.PendienteDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
@@ -14,6 +15,7 @@ import es.albainformatica.albamobileandroid.entity.PendienteEnt
 class PendienteClase(queContexto: Context) {
     private val pendienteDao: PendienteDao? = MyDatabase.getInstance(queContexto)?.pendienteDao()
     private val formasPagoDao: FormasPagoDao? = MyDatabase.getInstance(queContexto)?.formasPagoDao()
+    private val cabecerasDao: CabecerasDao? = MyDatabase.getInstance(queContexto)?.cabecerasDao()
     private val fContexto = queContexto
 
     var pendienteId: Int = 0
@@ -189,21 +191,7 @@ class PendienteClase(queContexto: Context) {
 
 
     fun getCabeceraId(): Int {
-        // TODO
-        /*
-        try {
-            dbAlba.rawQuery("SELECT _id FROM cabeceras WHERE tipodoc = " + tipoDoc +
-                    " AND empresa = " + empresa + " AND alm = " + almacen +
-                    " AND serie = '" + serie + "'" + " AND numero = " + numero +
-                    " AND ejer = " + ejercicio, null
-            ).use {
-                    cDoc -> return if (cDoc.moveToFirst()) { cDoc.getInt(0) } else 0
-            }
-        } catch (e: Exception) {
-            return 0
-        }
-        */
-        return 0
+        return cabecerasDao?.getCabeceraId(tipoDoc, empresa, almacen, serie, numero, ejercicio) ?: 0
     }
 
 

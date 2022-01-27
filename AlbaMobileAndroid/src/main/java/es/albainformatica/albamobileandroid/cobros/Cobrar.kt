@@ -149,8 +149,7 @@ class Cobrar: Activity() {
     }
 
     private fun prepararSpFPago() {
-        val spnFPago =
-            findViewById<Spinner>(es.albainformatica.albamobileandroid.R.id.spnCobrar_FPago)
+        val spnFPago = findViewById<Spinner>(es.albainformatica.albamobileandroid.R.id.spnCobrar_FPago)
         fFPago.abrirSoloContado()
         val c = fFPago.cursor
         // Inicializamos QueFPago
@@ -246,8 +245,7 @@ class Cobrar: Activity() {
                 cobroEnt.vAlmacen = fPendiente.cAlmacen
                 cobroEnt.vPuesto = fPendiente.cPuesto
                 cobroEnt.vApunte = fPendiente.cApunte
-                cobroEnt.vEjercicio =
-                    fPendiente.ejercicio // vEjer. Tomamos fPendiente.getEjercicio() y no fPendiente.getCEjer() porque el vencimiento es nuevo
+                cobroEnt.vEjercicio = fPendiente.ejercicio.toString() // vEjer. Tomamos fPendiente.getEjercicio() y no fPendiente.getCEjer() porque el vencimiento es nuevo
                 // y "cejer" está en blanco, en cambio "ejer" sí tiene valor. La gestión lo que necesita para
                 // localizar el vencimiento y darlo como cobrado es el ejercicio del mismo.
             } else {

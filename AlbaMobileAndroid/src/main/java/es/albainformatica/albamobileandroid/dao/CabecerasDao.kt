@@ -13,6 +13,13 @@ import es.albainformatica.albamobileandroid.entity.CabecerasEnt
 @Dao
 interface CabecerasDao {
 
+    @Query("SELECT cabeceraId FROM Cabeceras " +
+            " WHERE tipoDoc = :queTipoDoc AND empresa = :queEmpresa AND almacen = :queAlmacen " +
+            " AND serie = :queSerie AND numero = :queNumero AND ejercicio = :queEjercicio")
+    fun getCabeceraId(queTipoDoc: Short, queEmpresa: Short, queAlmacen: Short, queSerie: String,
+                        queNumero: Int, queEjercicio: Short): Int
+
+
     @Query("SELECT hojaReparto FROM Cabeceras WHERE hojaReparto IS NOT NULL AND hojaReparto > 0 LIMIT 1")
     fun buscarRutaActiva(): Int
 

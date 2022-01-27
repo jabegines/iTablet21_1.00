@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.dao.ContactosCltesDao
 import es.albainformatica.albamobileandroid.dao.EmpresasDao
+import es.albainformatica.albamobileandroid.dao.FormasPagoDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.entity.CobrosEnt
 import es.albainformatica.albamobileandroid.entity.ContactosCltesEnt
@@ -36,6 +37,7 @@ import kotlinx.android.synthetic.main.ventas_verhcoartclte.*
 import java.util.*
 
 class CobrosActivity: AppCompatActivity() {
+    private val formasPagoDao: FormasPagoDao? = MyDatabase.getInstance(this)?.formasPagoDao()
     private lateinit var fClientes: ClientesClase
     private lateinit var fCobros: CobrosClase
     private lateinit var fPendiente: PendienteClase
@@ -58,7 +60,6 @@ class CobrosActivity: AppCompatActivity() {
     private lateinit var tvRiesgo: TextView
     private lateinit var tvSaldo: TextView
     private lateinit var tvTotal: TextView
-    private lateinit var adapterPdtes: SimpleCursorAdapter
     private lateinit var fFtoDecImpIva: String
     private lateinit var tvFPago: TextView
     private lateinit var tvDivisa: TextView
@@ -72,11 +73,11 @@ class CobrosActivity: AppCompatActivity() {
     private lateinit var btnCambVista: Button
     private var fEmpresaActual: Int = 0
 
-    private val REQUEST_BUSCAR_CLTE = 1
-    private val REQUEST_COBRAR = 2
-    private val REQUEST_COBRAR_PDTE = 3
-    private val REQUEST_INF_COBROS = 4
-    private val REQUEST_PEDIR_ANOTACION = 5
+    private val fRequestBuscarClte = 1
+    private val fRequestCobrar = 2
+    private val fRequestCobrarPdte = 3
+    private val fRequestInfCobros = 4
+    private val fRequestPedirAnotacion = 5
 
 
     override fun onCreate(savedInstance: Bundle?) {
@@ -142,7 +143,6 @@ class CobrosActivity: AppCompatActivity() {
 
         fRecPdtes = findViewById(R.id.rvPdtes)
         fRecPdtes.layoutManager = LinearLayoutManager(this)
-        prepararRecPdtes()
 
         if (fCliente > 0) {
             edtCodClte.isEnabled = false
@@ -197,34 +197,13 @@ class CobrosActivity: AppCompatActivity() {
             }
         })
 
-        fRecycler.adapter = fAdapter
+        fRecPdtes.adapter = fAdpPdtes
     }
 
     private fun getPendiente(): List<PendienteEnt> {
         fPendiente.abrir(fCliente)
         return fPendiente.lPendiente
     }
-
-    /*
-    private fun prepararListViewPdtes() {
-        val columnas: Array<String> = arrayOf("tipoDoc", "serie", "numero", "importe", "cobrado", "flag")
-        val to = intArrayOf(R.id.lyvpTipoDoc, R.id.lyvpSerie, R.id.lyvpNumero, R.id.lyvpImporte, R.id.lyvpCobrado, R.id.lyvpFlag)
-        adapterPdtes = SimpleCursorAdapter(this, R.layout.ly_ver_pendientes, fPendiente.cursor, columnas, to, 0)
-        formatearColumnasPdtes()
-        val lvPdtes = findViewById<ListView>(R.id.lvPdtes)
-        lvPdtes.adapter = adapterPdtes
-
-        // Establecemos el evento on click del ListView.
-        lvPdtes.onItemClickListener =
-            AdapterView.OnItemClickListener { listView: AdapterView<*>, _: View?, position: Int, _: Long ->
-                val cursor = listView.getItemAtPosition(position) as Cursor
-                idPendiente = cursor.getInt(0)
-
-                fPendiente.abrirPendienteId(idPendiente)
-                mostrarPdte()
-            }
-    }
-    */
 
 
     @SuppressLint("SetTextI18n")
@@ -251,87 +230,26 @@ class CobrosActivity: AppCompatActivity() {
         tvPdFPago.text = fPendiente.descrFPago
     }
 
-    /*
-    private fun formatearColumnasPdtes() {
-        adapterPdtes.viewBinder = SimpleCursorAdapter.ViewBinder { view: View, cursor: Cursor, column: Int ->
-                val tv = view as TextView
-
-                // Formateamos el tipo de documento.
-                if (column == 5) {
-                    if (cursor.getString(cursor.getColumnIndex("tipoDoc")) != "")
-                        if (cursor.getString(cursor.getColumnIndex("tipoDoc")).toInt() == 33)
-                            tv.setText(R.string.vtos_agrup)
-                        else
-                            tv.text = tipoDocAsString(cursor.getString(cursor.getColumnIndex("tipoDoc")).toShort()
-                    ) else tv.text = ""
-                    return@ViewBinder true
-                }
-                // Serie
-                if (column == 8) {
-                    if (cursor.getString(cursor.getColumnIndex("tipoDoc")).toByte().toInt() != 0
-                    ) tv.text = cursor.getString(cursor.getColumnIndex("serie")) else tv.text = ""
-                    return@ViewBinder true
-                }
-                // Número
-                if (column == 9) {
-                    if (cursor.getString(cursor.getColumnIndex("tipoDoc")).toByte().toInt() != 33)
-                        tv.text = cursor.getString(cursor.getColumnIndex("numero")) else tv.text = ""
-                    return@ViewBinder true
-                }
-                // Formateamos el total.
-                if (column == 10 || column == 11) {
-                    val sTotal = cursor.getString(column).replace(',', '.')
-                    val dTotal = sTotal.toDouble()
-                    tv.text = String.format(fFtoDecImpIva, dTotal)
-                    return@ViewBinder true
-                }
-                // Flag
-                if (column == 20) {
-                    if (cursor.getInt(cursor.getColumnIndex("flag")) and FLAGPENDIENTE_EN_CARTERA > 0) {
-                        tv.text = "*"
-                    }
-                    return@ViewBinder true
-                }
-                false
-            }
-    }
-    */
 
     private fun prepararRecycler() {
         fAdapter  = CobrosRvAdapter(getCobros(), this, object: CobrosRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: CobrosEnt) {
+                val queFpago = data.fPago
+                val queDescrFPago = formasPagoDao?.getDescrFPago(queFpago) ?: ""
+                tvFPago.text = queDescrFPago
+                tvDivisa.text = data.divisa
+                tvAnotacion.text = data.anotacion
             }
         })
 
         fRecycler.adapter = fAdapter
     }
 
+
     private fun getCobros(): MutableList<CobrosEnt> {
         return fCobros.abrir(fCliente)
     }
 
-/*
-    private fun prepararListViewCobros() {
-        val columnas: Array<String> = arrayOf("fechacobro", "tipodoc", "serie", "numero", "cobro")
-        val to = intArrayOf(R.id.lyvdFecha, R.id.lyvdTipoDoc, R.id.lyvdSerie, R.id.lyvdNumero, R.id.lyvdTotal)
-        adapterCobros = SimpleCursorAdapter(this, R.layout.ly_ver_documentos, fCobros.cursor, columnas, to, 0)
-        formatearColumnasCobros()
-        val lvCobros = findViewById<ListView>(R.id.lvCobros)
-        lvCobros.adapter = adapterCobros
-
-        // Establecemos el evento on click del ListView.
-        lvCobros.onItemClickListener =
-            AdapterView.OnItemClickListener { listView: AdapterView<*>, _: View?, position: Int, _: Long ->
-                val cursor = listView.getItemAtPosition(position) as Cursor
-
-                val queFpago = cursor.getString(cursor.getColumnIndex("fpago"))
-                val queDescrFPago = formasPagoDao?.getDescrFPago(queFpago) ?: ""
-                tvFPago.text = queDescrFPago
-                tvDivisa.text = cursor.getString(cursor.getColumnIndex("descrdivisa"))
-                tvAnotacion.text = cursor.getString(cursor.getColumnIndex("anotacion"))
-            }
-    }
-*/
 
     /*
     private fun formatearColumnasCobros() {
@@ -396,7 +314,7 @@ class CobrosActivity: AppCompatActivity() {
                 val i = Intent(fContexto, InfCobrosActivity::class.java)
                 i.putExtra("desdeFecha", desdeFecha)
                 i.putExtra("hastaFecha", hastaFecha)
-                startActivityForResult(i, REQUEST_INF_COBROS)
+                startActivityForResult(i, fRequestInfCobros)
             }
             else {
                 MsjAlerta(fContexto).alerta("Tiene que indicar las dos fechas")
@@ -447,7 +365,7 @@ class CobrosActivity: AppCompatActivity() {
 
         val i = Intent(this, ClientesActivity::class.java)
         i.putExtra("buscar", true)
-        startActivityForResult(i, REQUEST_BUSCAR_CLTE)
+        startActivityForResult(i, fRequestBuscarClte)
     }
 
 
@@ -459,8 +377,7 @@ class CobrosActivity: AppCompatActivity() {
             // Tengo que cerrar y abrir fPendiente porque si no, no refresca el listView de pendientes.
             idPendiente = 0
 
-            fPendiente.abrir(fCliente)
-            refrescarPdtes()
+            prepararRecPdtes()
             // Ocultamos el teclado
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
         }
@@ -481,9 +398,9 @@ class CobrosActivity: AppCompatActivity() {
 
             if (fPendiente.flag and FLAGPENDIENTE_EN_CARTERA == 0) {
                 if (fPendiente.cobrado.toDouble() < fPendiente.importe.toDouble()) {
-                    if (fPendiente.tipoDoc == TIPODOC_FACTURA.toString() && fPendiente.cApunte != "") {
+                    if (fPendiente.tipoDoc == TIPODOC_FACTURA && fPendiente.cApunte != "") {
                         val i = Intent(this, PedirAnotacion::class.java)
-                        startActivityForResult(i, REQUEST_PEDIR_ANOTACION)
+                        startActivityForResult(i, fRequestPedirAnotacion)
                     } else MsjAlerta(this).alerta(resources.getString(R.string.msj_VtoDeFra))
                 } else MsjAlerta(this).alerta(resources.getString(R.string.msj_VtoCobrado))
             } else MsjAlerta(this).alerta(resources.getString(R.string.msj_VtoYaEsPagare))
@@ -501,7 +418,7 @@ class CobrosActivity: AppCompatActivity() {
                     i.putExtra("fpagoDoc", "")
                     i.putExtra("idPendiente", idPendiente)
                     i.putExtra("cliente", fCliente)
-                    startActivityForResult(i, REQUEST_COBRAR_PDTE)
+                    startActivityForResult(i, fRequestCobrarPdte)
                 } else MsjAlerta(this).alerta(resources.getString(R.string.msj_VtoYaEsPagare))
             }
         } else {
@@ -510,7 +427,7 @@ class CobrosActivity: AppCompatActivity() {
                 i.putExtra("espendiente", false)
                 i.putExtra("fpagoDoc", "")
                 i.putExtra("cliente", fCliente)
-                startActivityForResult(i, REQUEST_COBRAR)
+                startActivityForResult(i, fRequestCobrar)
             }
         }
     }
@@ -519,29 +436,26 @@ class CobrosActivity: AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         // Buscar cliente.
-        if (requestCode == REQUEST_BUSCAR_CLTE) {
+        if (requestCode == fRequestBuscarClte) {
             if (resultCode == RESULT_OK) {
                 val queCliente = data?.getIntExtra("cliente", -1) ?: 0
                 mostrarCliente(queCliente)
             }
             // Cobrar. Refrescaremos el listView si hemos hecho un nuevo cobro.
-        } else if (requestCode == REQUEST_COBRAR) {
+        } else if (requestCode == fRequestCobrar) {
             if (resultCode == RESULT_OK) {
                 refrescarCobros()
                 // Volvemos a mostrar los datos del cliente por si ha cambiado el saldo.
                 mostrarCliente(fCliente)
             }
-        } else if (requestCode == REQUEST_COBRAR_PDTE) {
+        } else if (requestCode == fRequestCobrarPdte) {
             if (resultCode == RESULT_OK) {
-                // Tengo que cerrar y abrir fPendiente porque si no, no refresca el listView de pendientes.
-                if (fPendiente.cursor != null) fPendiente.cursor!!.close()
-                fPendiente.abrir(fCliente)
-                refrescarPdtes()
+                prepararRecPdtes()
                 refrescarCobros()
                 // Volvemos a mostrar los datos del cliente por si ha cambiado el saldo.
                 mostrarCliente(fCliente)
             }
-        } else if (requestCode == REQUEST_PEDIR_ANOTACION) {
+        } else if (requestCode == fRequestPedirAnotacion) {
             var queAnotacion: String? = ""
             var queFechaVto: String? = ""
             if (resultCode == RESULT_OK) {
@@ -559,16 +473,15 @@ class CobrosActivity: AppCompatActivity() {
             val fCodClte = fClientes.fCodigo
             val fNombreClte = fClientes.fNombre
             val fNomComClte = fClientes.fNomComercial
-            edtCodClte.setText(ponerCeros(fCodClte.toString(), ancho_codclte))
+            edtCodClte.setText(ponerCeros(fCodClte, ancho_codclte))
             tvNombre.text = fNombreClte
             tvNomCom.text = fNomComClte
             tvFPagoClte.text = fClientes.nombreFPago(fClientes.fPago)
             tvRiesgo.text = String.format(fFtoDecImpIva, fClientes.fRiesgo)
             tvSaldo.text = String.format(fFtoDecImpIva, fClientes.getSaldo())
-            fClientes.close()
-            fPendiente.abrir(fCliente)
+
             refrescarCobros()
-            refrescarPdtes()
+            prepararRecPdtes()
         }
     }
 
@@ -576,23 +489,16 @@ class CobrosActivity: AppCompatActivity() {
         prepararRecycler()
         val fTotal = fCobros.dimeTotalCobros(fCliente)
         tvTotal.text = String.format(fFtoDecImpIva, fTotal)
-        refrescarLineas()
+
         ocultarTeclado()
     }
 
-
-    private fun refrescarPdtes() {
-        adapterPdtes.changeCursor(fPendiente.cursor)
-    }
 
     private fun ocultarTeclado() {
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(edtCodClte.windowToken, 0)
     }
 
-    private fun refrescarLineas() {
-        //adapterCobros.changeCursor(fCobros.cursor)
-    }
 
     fun crearPDFCobros(view: View) {
         view.getTag(0)              // Para que no dé warning el compilador
