@@ -10,9 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.*
-import kotlinx.android.synthetic.main.ly_cltes_rutero.view.*
 import kotlinx.android.synthetic.main.ly_docs_reparto.view.*
-import org.jetbrains.anko.find
 
 
 class RepartoRvAdapter(var datosReparto: List<DatosReparto>, val context: Context,
@@ -108,7 +106,11 @@ class RepartoRvAdapter(var datosReparto: List<DatosReparto>, val context: Contex
             else
                 tvNombre.text = reparto.nombre
 
-            tvTipoDoc.text = tipoDocResumAsString(reparto.tipoDoc)
+            if (reparto.estado != "") {
+                if (reparto.estado == "N") tvTipoDoc.text = itemView.context.getString(R.string.nuevo_doc)
+                else tvTipoDoc.text = tipoDocResumAsString(reparto.tipoDoc)
+            } else tvTipoDoc.text = ""
+
             tvSerieNum.text = reparto.serieNumero
 
             if (reparto.tienePend > 0) imgTienePend.visibility = View.VISIBLE

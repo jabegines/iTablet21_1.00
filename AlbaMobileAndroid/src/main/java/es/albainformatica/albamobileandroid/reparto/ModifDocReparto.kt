@@ -170,7 +170,8 @@ class ModifDocReparto: Activity() {
 
 
     private fun prepararRecyclerView() {
-        fAdapter = LinRepVtasRvAdapter(getLineasDoc(), this, object: LinRepVtasRvAdapter.OnItemClickListener {
+        fAdapter = LinRepVtasRvAdapter(getLineasDoc(), fIvaIncluido, fAplicarIva, this,
+                            object: LinRepVtasRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: DatosLinVtas) {
                 fLinea = data.lineaId
             }

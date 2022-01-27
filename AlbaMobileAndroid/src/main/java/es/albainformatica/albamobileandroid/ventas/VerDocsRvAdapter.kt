@@ -105,7 +105,7 @@ class VerDocsRvAdapter(var documentos: List<DatosVerDocs>, val context: Context,
             tvTipoDoc.text = documento.tipoDoc.toString()
             tvSerie.text = documento.serie
             tvNumero.text = documento.numero.toString()
-            tvTotal.text = String.format("%." + fDecPrBase + "f", documento.total.toDouble())
+            tvTotal.text = String.format("%." + fDecPrBase + "f", documento.total.replace(',', '.').toDouble())
 
             if (documento.firmado == "T") imgFirmado.visibility = View.VISIBLE
             else imgFirmado.visibility = View.GONE

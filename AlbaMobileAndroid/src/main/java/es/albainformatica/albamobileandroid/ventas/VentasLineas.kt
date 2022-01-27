@@ -275,7 +275,8 @@ class VentasLineas : Activity() {
 
 
     private fun prepararRecyclerView() {
-        fAdapter = LineasVtasRvAdapter(getLineasDoc(), this, object: LineasVtasRvAdapter.OnItemClickListener {
+        fAdapter = LineasVtasRvAdapter(getLineasDoc(), fIvaIncluido, fAplicarIva, this,
+                            object: LineasVtasRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: DatosLinVtas) {
                 fLinea = data.lineaId
             }

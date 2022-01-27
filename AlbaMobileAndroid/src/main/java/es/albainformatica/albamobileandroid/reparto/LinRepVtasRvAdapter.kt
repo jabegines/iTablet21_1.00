@@ -10,25 +10,32 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import es.albainformatica.albamobileandroid.Comunicador
-import es.albainformatica.albamobileandroid.DatosLinVtas
-import es.albainformatica.albamobileandroid.R
-import kotlinx.android.synthetic.main.ly_docs_reparto.view.*
-import kotlinx.android.synthetic.main.ly_docs_reparto.view.docrpt_codigo
+import com.google.android.material.color.MaterialColors
+import es.albainformatica.albamobileandroid.*
 import kotlinx.android.synthetic.main.ly_lineas_ventas.view.*
+import java.util.*
 
 
-class LinRepVtasRvAdapter(var lineas: List<DatosLinVtas>, val context: Context,
-                          private var listener: OnItemClickListener): RecyclerView.Adapter<LinRepVtasRvAdapter.ViewHolder>() {
+class LinRepVtasRvAdapter(var lineas: List<DatosLinVtas>, val fIvaIncluido: Boolean, val fAplicarIva: Boolean,
+          val context: Context, private var listener: OnItemClickListener): RecyclerView.Adapter<LinRepVtasRvAdapter.ViewHolder>() {
 
     var selectedPos: Int = RecyclerView.NO_POSITION
-    private val fDecPrBase = Comunicador.fConfiguracion.decimalesImpBase()
+
+    private val fDecPrBase = Comunicador.fConfiguracion.decimalesPrecioBase()
+    private val fDecPrIva = Comunicador.fConfiguracion.decimalesPrecioIva()
+    private val fDecImpBase = Comunicador.fConfiguracion.decimalesImpBase()
+    private val fDecImpIva = Comunicador.fConfiguracion.decimalesImpII()
+    private val fUsarPiezas = Comunicador.fConfiguracion.usarPiezas()
+    private val fUsarTasa1 = Comunicador.fConfiguracion.usarTasa1()
+    private val fUsarTasa2 = Comunicador.fConfiguracion.usarTasa2()
+    private val fNombreTasa1 = Comunicador.fConfiguracion.nombreTasa1()
+    private val fNombreTasa2 = Comunicador.fConfiguracion.nombreTasa2()
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val fPosicion = holder.adapterPosition
         val item = lineas[fPosicion]
-        holder.bind(item, fDecPrBase)
+        holder.bind(item)
 
         if (selectedPos == fPosicion) {
             holder.itemView.ly_vl_descr.typeface = Typeface.DEFAULT_BOLD
@@ -56,7 +63,9 @@ class LinRepVtasRvAdapter(var lineas: List<DatosLinVtas>, val context: Context,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         setOnItemClickListener(listener)
         val layoutInflater = LayoutInflater.from(parent.context)
-        return ViewHolder(layoutInflater.inflate(R.layout.ly_lineas_ventas, parent, false))
+        return ViewHolder(layoutInflater.inflate(R.layout.ly_lineas_ventas, parent, false),
+                    fIvaIncluido, fAplicarIva, fUsarPiezas, fUsarTasa1, fUsarTasa2, fNombreTasa1,
+                    fNombreTasa2, fDecPrBase, fDecPrIva, fDecImpBase, fDecImpIva)
     }
 
 
@@ -74,7 +83,20 @@ class LinRepVtasRvAdapter(var lineas: List<DatosLinVtas>, val context: Context,
     }
 
 
-    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View, ivaIncluido: Boolean, aplicarIva: Boolean, usarPiezas: Boolean,
+                     usarTasa1: Boolean, usarTasa2: Boolean, nombreTasa1: String, nombreTasa2: String, decPrBase: Int,
+                     decPrIva: Int, decImpBase: Int, decImpIva: Int): RecyclerView.ViewHolder(itemView) {
+        private val fIvaIncluido = ivaIncluido
+        private val fAplicarIva = aplicarIva
+        private val fUsarTasa1 = usarTasa1
+        private val fUsarTasa2 = usarTasa2
+        private val fNombreTasa1 = nombreTasa1
+        private val fNombreTasa2 = nombreTasa2
+        private val fUsarPiezas = usarPiezas
+        private val fDecPrBase = decPrBase
+        private val fDecPrIva = decPrIva
+        private val fDecImpBase = decImpBase
+        private val fDecImpIva = decImpIva
         private val fRutaImagenes = Comunicador.fConfiguracion.rutaLocalComunicacion() + "/imagenes"
 
         private val imgArt = itemView.findViewById(R.id.imvArtLinea) as ImageView
@@ -90,26 +112,106 @@ class LinRepVtasRvAdapter(var lineas: List<DatosLinVtas>, val context: Context,
         private val tvPrecio = itemView.findViewById(R.id.ly_vl_precio) as TextView
         private val tvDto = itemView.findViewById(R.id.ly_vl_dto) as TextView
         private val tvTasa2 = itemView.findViewById(R.id.ly_vl_tasa2) as TextView
+        private val tvTextoLinea = itemView.findViewById(R.id.ly_vl_textolinea) as TextView
 
-        fun bind(linea: DatosLinVtas, fDecPrBase: Int) {
+        fun bind(linea: DatosLinVtas) {
             val queFichero = "$fRutaImagenes/ART_" + linea.articuloId + ".jpg"
             val bitmap = BitmapFactory.decodeFile(queFichero)
             imgArt.setImageBitmap(bitmap)
 
             tvDescr.text = linea.descripcion
-            tvImporte.text = String.format("%." + fDecPrBase + "f", linea.importe.toDouble())
+
+            val sPorcIva = linea.porcIva?.replace(',', '.') ?: "0.0"
+            val dPorcIva = sPorcIva.toDouble()
+
+            // Si la línea es sin cargo lo indicamos.
+            val queFlag = linea.flag
+            val lineaSinCargo = (queFlag and FLAGLINEAVENTA_SIN_CARGO > 0)
+            if (lineaSinCargo) {
+                tvImporte.setText(R.string.sincargo)
+            } else {
+                val sImpte = linea.importe.replace(',', '.')
+                var dImpte = sImpte.toDouble()
+
+                if (fIvaIncluido && fAplicarIva) {
+                    // También calculamos el importe iva incluído cuando es null.
+                    if (linea.importeII == "") {
+                        dImpte += dImpte * dPorcIva / 100
+                    }
+                    tvImporte.text = String.format("%." + fDecImpIva + "f", dImpte)
+                } else {
+                    tvImporte.text = String.format("%." + fDecImpBase + "f", dImpte)
+                }
+            }
+
             tvDescrFto.text = linea.descrFto
             tvCodArt.text = linea.codArticulo
-            //tvTarifa.text = linea.
-            //tvPiezas.text = linea.
-            tvCajas.text = linea.cajas
-            tvCantidad.text = linea.cantidad
-            if (linea.tasa1 != "") tvTasa1.text = String.format("%." + fDecPrBase + "f", linea.tasa1.toDouble())
-            else tvTasa1.text = ""
-            tvPrecio.text = String.format("%." + fDecPrBase + "f", linea.precio.toDouble())
-            tvDto.text = String.format("%.2f", linea.dto.toDouble())
-            if (linea.tasa2 != "") tvTasa2.text = String.format("%." + fDecPrBase + "f", linea.tasa2.toDouble())
-            else tvTasa2.text = ""
+            tvCajas.text = linea.cajas.replace(',', '.')
+            tvCantidad.text = linea.cantidad.replace(',', '.')
+
+            if (fUsarTasa1) {
+                if (linea.tasa1 != "") {
+                    val sTasa = linea.tasa1.replace(',', '.')
+                    var dTasa = sTasa.toDouble()
+
+                    if (fIvaIncluido && fAplicarIva) {
+                        dTasa += dTasa * dPorcIva / 100
+                    }
+                    val queTasa =
+                        fNombreTasa1 + " " + String.format(Locale.getDefault(), "%.3f", dTasa)
+                    tvTasa1.text = queTasa
+                } else tvTasa1.text = ""
+            } else tvTasa1.text = ""
+
+            if (fUsarTasa2) {
+                if (linea.tasa2 != "") {
+                    val sTasa = linea.tasa2.replace(',', '.')
+                    var dTasa = sTasa.toDouble()
+
+                    if (fIvaIncluido && fAplicarIva) {
+                        dTasa += dTasa * dPorcIva / 100
+                    }
+                    val queTasa =
+                        fNombreTasa2 + " " + String.format(Locale.getDefault(), "%.3f", dTasa)
+                    tvTasa2.text = queTasa
+                } else tvTasa2.text = ""
+            } else tvTasa2.text = ""
+
+            if (fIvaIncluido && fAplicarIva) {
+                // El precio iva incluído vendrá a null desde la gestión, por eso lo calculamos.
+                val sPrecio = linea.precio.replace(',', '.')
+                var dPrecio = sPrecio.toDouble()
+
+                if (linea.precioII == "") {
+                    dPrecio += dPrecio * dPorcIva / 100
+                }
+                tvPrecio.text = String.format("%." + fDecPrIva + "f", dPrecio)
+            } else {
+                tvPrecio.text = String.format("%." + fDecPrBase + "f", linea.precio.replace(',', '.').toDouble())
+            }
+
+            tvDto.text = String.format("%.2f", linea.dto.replace(',', '.').toDouble())
+            tvTextoLinea.text = ""
+
+            if (fUsarPiezas) {
+                if (linea.piezas != "") {
+                    tvPiezas.text = linea.piezas.replace(',', '.')
+
+                    val queFlag3 = linea.flag3
+                    val fLineaPorPiezas = (queFlag3 and FLAG3LINEAVENTA_PRECIO_POR_PIEZAS > 0)
+                    if (fLineaPorPiezas) tvPiezas.setBackgroundColor(Color.parseColor("#979797"))
+                    else tvPiezas.setBackgroundColor(MaterialColors.getColor(tvPiezas, R.color.gris_alba))
+                }
+                else tvPiezas.text = ""
+
+            } else {
+                // Quitamos el drawableLeft del TextView, además de dejar el texto vacío y el background en blanco.
+                tvPiezas.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                tvPiezas.text = ""
+                //tvPiezas.setBackgroundColor(Color.WHITE)
+            }
+
+            tvTarifa.text = linea.tarifaId.toString()
         }
 
     }
