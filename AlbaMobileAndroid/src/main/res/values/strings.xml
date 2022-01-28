@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <string name="app_name">ibsTablet</string>
+    <string name="app_name">iTablet21</string>
     <string name="action_settings">Settings</string>
 
     <!-- Etiquetas de título -->
@@ -327,6 +327,7 @@
     <string name="mni_modolista">Modo lista</string>
     <string name="mni_vergruposydep">Grupos</string>
     <string name="mni_verhistorico">Historico</string>
+    <string name="mni_hacerBackup">Hacer backup</string>
     <string name="mni_hco_resum">Hco.</string>
     <string name="mni_vercatalogos">Catalogos</string>
     <string name="min_catalog_resum">Cat.</string>

@@ -8,7 +8,7 @@ import es.albainformatica.albamobileandroid.historicos.Historico
 import android.content.SharedPreferences
 import android.content.Intent
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.content.DialogInterface
 import android.annotation.SuppressLint
 import android.app.AlertDialog

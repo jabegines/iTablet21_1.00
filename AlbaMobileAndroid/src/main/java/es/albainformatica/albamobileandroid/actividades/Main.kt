@@ -12,7 +12,7 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Environment
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.provider.Settings
 import android.text.Html
 import android.text.Spannable
@@ -539,6 +539,12 @@ class Main: AppCompatActivity() {
         item = menu.findItem(R.id.mni_verID)
         item.title = text6
 
+        val text7 = SpannableStringBuilder()
+        text7.append(resources.getString(R.string.mni_hacerBackup))
+        text7.setSpan(ForegroundColorSpan(Color.parseColor(COLOR_MENUS)), 0, text7.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        item = menu.findItem(R.id.mni_hacerBackup)
+        item.title = text7
+
         return true
     }
 
@@ -649,6 +655,11 @@ class Main: AppCompatActivity() {
             R.id.mni_vtasRepre -> {
                 i = Intent(this, GrafVtasRepre::class.java)
                 startActivity(i)
+                return true
+            }
+
+            R.id.mni_hacerBackup -> {
+                bdBackup()
                 return true
             }
 
@@ -935,39 +946,29 @@ class Main: AppCompatActivity() {
 
 
     @Throws(IOException::class)
-    fun bdBackup(view: View) {
-        view.getTag(0)              // Para que no dé warning el compilador
+    fun bdBackup() {
+        val aldDialog = NuevoAlertBuilder(this, "Backup", "¿Hacer backup?", true)
 
-        fNumClicks++
-        if (fNumClicks >= 5) {
-            val aldDialog = NuevoAlertBuilder(this, "Backup", "¿Hacer backup?", true)
-
-            aldDialog.setPositiveButton("Sí") { _, _ ->
-                hacerBackup("DBAlba", "DBAlba.db")
-                hacerBackup("ibsTablet00.db", "ibsTablet.db")
-            }
-            val alert = aldDialog.create()
-            alert.show()
-            ColorDividerAlert(this, alert)
-
-            fNumClicks = 0
+        aldDialog.setPositiveButton("Sí") { _, _ ->
+            hacerBackup("ibsTablet00.db", "ibsTablet.db")
         }
+        val alert = aldDialog.create()
+        alert.show()
+        ColorDividerAlert(this, alert)
     }
+
 
     @SuppressLint("SimpleDateFormat")
     private fun hacerBackup(queBD: String, queNombre: String) {
         try {
-
-            val inFileName = "/data/data/es.albainformatica.albamobileandroid/databases/$queBD"
-
-            val dbFile = File(inFileName)
+            val dbFile = this.getDatabasePath(queBD)
             val fis: FileInputStream?
             fis = FileInputStream(dbFile)
 
-            val directorio = Environment.getExternalStorageDirectory().path + "/alba"
-            val d = File(directorio)
+            val directorio = this.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.path
+            val d = this.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
 
-            if (!d.exists()) {
+            if (d?.exists() == false) {
                 d.mkdir()
             }
 

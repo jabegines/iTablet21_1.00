@@ -432,7 +432,6 @@
             android:layout_marginLeft="10dp"
             android:layout_weight="0.30"
             android:clickable="true"
-            android:onClick="bdBackup"
             android:src="@drawable/logo_footer_app" />
     </LinearLayout>
 
