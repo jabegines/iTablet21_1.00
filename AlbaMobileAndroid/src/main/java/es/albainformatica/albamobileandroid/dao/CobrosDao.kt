@@ -94,16 +94,17 @@ interface CobrosDao {
     fun abrirParaExportar(): MutableList<CobrosEnt>
 
 
-    @Query("SELECT A.clienteId, A.tipoDoc, A.fechaCobro, A.cobro, A.serie, A.numero, '' nombre, '' nombreComercial " +
+    @Query("SELECT A.clienteId, A.tipoDoc, A.fechaCobro, A.cobro, A.serie, A.numero, B.nombre, B.nombreComercial " +
             " FROM Cobros A" +
-            " WHERE (julianday(substr(A.fechaCobro, 7, 4) || '-' || substr(A.fechaCobro, 4, 2) || '-' ||" +
-            " substr(A.fechacobro, 1, 2)) >= julianday(:queDesdeFecha))" +
-            " AND (julianday(substr(A.fechacobro, 7, 4) || '-' || substr(A.fechacobro, 4, 2) || '-' || " +
-            " substr(A.fechacobro, 1, 2)) <= julianday(:queHastaFecha))")
+            " LEFT JOIN Clientes B ON B.clienteId = A.clienteId " +
+            " WHERE (julianday(substr(A.fechaCobro, 7, 4) || '-' || SUBSTR(A.fechaCobro, 4, 2) || '-' ||" +
+            " SUBSTR(A.fechacobro, 1, 2)) >= julianday(:queDesdeFecha))" +
+            " AND (julianday(substr(A.fechacobro, 7, 4) || '-' || SUBSTR(A.fechacobro, 4, 2) || '-' || " +
+            " SUBSTR(A.fechacobro, 1, 2)) <= julianday(:queHastaFecha))")
     fun abrirEntreFechas(queDesdeFecha: String, queHastaFecha: String): MutableList<DatosInfCobros>
 
 
-    @Query("SELECT B.descripcion, TOTAL(REPLACE(A.cobro, ',', '.')) cobro FROM Cobros A" +
+    @Query("SELECT B.descripcion, TOTAL(A.cobro) cobro FROM Cobros A" +
             " LEFT JOIN divisas B ON B.codigo = A.divisa" +
             " WHERE (julianday(substr(A.fechacobro, 7, 4) || '-' || substr(A.fechacobro, 4, 2) || '-' ||" +
             " substr(A.fechacobro, 1, 2)) >= julianday(:queDesdeFecha))" +

@@ -1,6 +1,7 @@
 package es.albainformatica.albamobileandroid.cobros
 
 import android.content.Context
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.R
 import es.albainformatica.albamobileandroid.entity.CobrosEnt
 import es.albainformatica.albamobileandroid.tipoDocResumAsString
+import kotlinx.android.synthetic.main.ly_ver_cobros.view.*
+import kotlinx.android.synthetic.main.ly_ver_pendientes.view.*
 
 
 class CobrosRvAdapter(
@@ -22,6 +25,20 @@ class CobrosRvAdapter(
         val fPosicion = holder.adapterPosition
         val item = lCobros[fPosicion]
         holder.bind(item)
+
+        if (selectedPos == fPosicion) {
+            holder.itemView.lyvdFecha.typeface = Typeface.DEFAULT_BOLD
+            holder.itemView.lyvdTipoDoc.typeface = Typeface.DEFAULT_BOLD
+            holder.itemView.lyvdSerie.typeface = Typeface.DEFAULT_BOLD
+            holder.itemView.lyvdNumero.typeface = Typeface.DEFAULT_BOLD
+            holder.itemView.lyvdTotal.typeface = Typeface.DEFAULT_BOLD
+        } else {
+            holder.itemView.lyvdFecha.typeface = Typeface.DEFAULT
+            holder.itemView.lyvdTipoDoc.typeface = Typeface.DEFAULT
+            holder.itemView.lyvdSerie.typeface = Typeface.DEFAULT
+            holder.itemView.lyvdNumero.typeface = Typeface.DEFAULT
+            holder.itemView.lyvdTotal.typeface = Typeface.DEFAULT
+        }
 
         holder.itemView.setOnClickListener {
             // Tenemos en cuenta si el registro sobre el que pulsamos estaba anteriormente seleccionado

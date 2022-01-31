@@ -3,6 +3,7 @@ package es.albainformatica.albamobileandroid.ventas
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,8 @@ import es.albainformatica.albamobileandroid.DatosLinVtas
 import es.albainformatica.albamobileandroid.FLAG3LINEAVENTA_PRECIO_POR_PIEZAS
 import es.albainformatica.albamobileandroid.FLAGLINEAVENTA_SIN_CARGO
 import es.albainformatica.albamobileandroid.R
+import kotlinx.android.synthetic.main.item_cargas_list.view.*
+import kotlinx.android.synthetic.main.ly_lineas_ventas.view.*
 import java.util.*
 
 
@@ -31,14 +34,32 @@ class LineasVtasRvAdapter(var lineas: List<DatosLinVtas>, val fIvaIncluido: Bool
     private val fNombreTasa1 = fConfiguracion.nombreTasa1()
     private val fNombreTasa2 = fConfiguracion.nombreTasa2()
 
+    private var selectedPos: Int = RecyclerView.NO_POSITION
+
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = lineas[position]
+        val fPosicion = holder.adapterPosition
+        val item = lineas[fPosicion]
         holder.bind(item)
 
+        if (selectedPos == fPosicion) {
+            holder.itemView.ly_vl_descr.typeface = Typeface.DEFAULT_BOLD
+            holder.itemView.ly_vl_impte.typeface = Typeface.DEFAULT_BOLD
+        } else {
+            holder.itemView.ly_vl_descr.typeface = Typeface.DEFAULT
+            holder.itemView.ly_vl_impte.typeface = Typeface.DEFAULT
+        }
+
         holder.itemView.setOnClickListener {
-            //selectedPos = position
-            notifyItemChanged(position)
-            listener.onClick(it, lineas[position])
+            //selectedPos = if (selectedPos == fPosicion) {
+            //    RecyclerView.NO_POSITION
+            //} else {
+            //    fPosicion
+            //}
+            selectedPos = fPosicion
+
+            notifyDataSetChanged()
+            listener.onClick(it, lineas[fPosicion])
         }
     }
 

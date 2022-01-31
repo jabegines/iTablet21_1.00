@@ -76,7 +76,7 @@ class PrecEspRvAdapter(private var lPrecios: List<ListaPreciosEsp>, private val 
             // Si en el rating no viene precio lo tomamos de la tarifa.
             if (sPrecio.toDouble() == 0.0) {
                 sPrecio = if (precEsp.prTarifa != "") precEsp.prTarifa.replace(',', '.')
-                else precEsp.prTrfFto.replace(',', '.')
+                else precEsp.prTrfFto?.replace(',', '.') ?: "0.0"
             }
 
             if (precEsp.flag and FLAGRATING_DESCUENTOIMPORTE > 0) {
@@ -106,7 +106,7 @@ class PrecEspRvAdapter(private var lPrecios: List<ListaPreciosEsp>, private val 
 
             // Si el artículo no tiene formato el precio será el de la tarifa.
             sPrecio = if (precEsp.prTarifa != "") precEsp.prTarifa.replace(',', '.')
-            else precEsp.prTrfFto.replace(',', '.')
+            else precEsp.prTrfFto?.replace(',', '.') ?: "0.0"
             if (sPrecio != "") {
                 val dPrecio = sPrecio.toDouble()
                 if (fIvaIncl) {
@@ -120,7 +120,7 @@ class PrecEspRvAdapter(private var lPrecios: List<ListaPreciosEsp>, private val 
             }
 
             sDto = if (precEsp.dtoTarifa != "") precEsp.dtoTarifa.replace(',', '.')
-            else precEsp.dtoTrfFto.replace(',', '.')
+            else precEsp.dtoTrfFto?.replace(',', '.') ?: "0.0"
 
             if (sDto != "") {
                 tvDtoTrf.text = String.format(Locale.getDefault(), "%.2f", sDto.toDouble())

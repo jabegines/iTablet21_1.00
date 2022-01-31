@@ -33,7 +33,6 @@ import es.albainformatica.albamobileandroid.maestros.ClientesActivity
 import es.albainformatica.albamobileandroid.maestros.ClientesClase
 import es.albainformatica.albamobileandroid.maestros.ElegirEmpresaActivity
 import es.albainformatica.albamobileandroid.ventas.VentasLineas
-import kotlinx.android.synthetic.main.ventas_verhcoartclte.*
 import java.util.*
 
 class CobrosActivity: AppCompatActivity() {

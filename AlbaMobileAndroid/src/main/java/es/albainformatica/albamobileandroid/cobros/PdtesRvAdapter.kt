@@ -1,6 +1,7 @@
 package es.albainformatica.albamobileandroid.cobros
 
 import android.content.Context
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,8 @@ import es.albainformatica.albamobileandroid.FLAGPENDIENTE_EN_CARTERA
 import es.albainformatica.albamobileandroid.R
 import es.albainformatica.albamobileandroid.entity.PendienteEnt
 import es.albainformatica.albamobileandroid.tipoDocAsString
+import kotlinx.android.synthetic.main.ly_lineas_ventas.view.*
+import kotlinx.android.synthetic.main.ly_ver_pendientes.view.*
 import org.w3c.dom.Text
 
 
@@ -24,6 +27,20 @@ class PdtesRvAdapter(private var lPendiente: List<PendienteEnt>, val context: Co
         val fPosicion = holder.adapterPosition
         val item = lPendiente[position]
         holder.bind(item, fFtoDecImpIva)
+
+        if (selectedPos == fPosicion) {
+            holder.itemView.lyvpTipoDoc.typeface = Typeface.DEFAULT_BOLD
+            holder.itemView.lyvpSerie.typeface = Typeface.DEFAULT_BOLD
+            holder.itemView.lyvpNumero.typeface = Typeface.DEFAULT_BOLD
+            holder.itemView.lyvpImporte.typeface = Typeface.DEFAULT_BOLD
+            holder.itemView.lyvpFlag.typeface = Typeface.DEFAULT_BOLD
+        } else {
+            holder.itemView.lyvpTipoDoc.typeface = Typeface.DEFAULT
+            holder.itemView.lyvpSerie.typeface = Typeface.DEFAULT
+            holder.itemView.lyvpNumero.typeface = Typeface.DEFAULT
+            holder.itemView.lyvpImporte.typeface = Typeface.DEFAULT
+            holder.itemView.lyvpFlag.typeface = Typeface.DEFAULT
+        }
 
         holder.itemView.setOnClickListener {
             // Tenemos en cuenta si el registro sobre el que pulsamos estaba anteriormente seleccionado

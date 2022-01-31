@@ -615,12 +615,12 @@ class ListaPreciosEsp {
     var dto: String = ""
     var flag: Int = 0
     var descripcion: String = ""
-    var descrFto: String = ""
+    var descrFto: String? = null
     var porcIva: String = ""
     var prTarifa: String = ""
     var dtoTarifa: String = ""
-    var prTrfFto: String = ""
-    var dtoTrfFto: String = ""
+    var prTrfFto: String? = null
+    var dtoTrfFto: String? = null
 }
 
 var fArtSeleccCat = 0

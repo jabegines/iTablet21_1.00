@@ -489,8 +489,8 @@ class VentasDatosLinea: Activity() {
         // Si hemos leído un código de cajas y el artículo tiene la marca 'aplicar tarifa cajas', establecemos la
         // tarifa de cajas, siempre y cuando el documento nos permita aplicar tarifa de cajas. Antes de comenzar cualquier documento
         // comprobamos si hemos recibido en la tablet la tarifa de cajas, para permitir su uso o no.
-        if (fArticulos.fTarifaCajas && fDocumento.fPuedoAplTrfCajas) fDocumento.fTarifaLin =
-            fConfiguracion.tarifaCajas()
+        if (fArticulos.fTarifaCajas && fDocumento.fPuedoAplTrfCajas)
+            fDocumento.fTarifaLin = fConfiguracion.tarifaCajas()
         fHeElegidoTarifa = false
         // Si tenemos configurado pedir tarifa por linea la pedimos ahora, a no ser que
         // el artículo tenga la marca de 'aplicar tarifa cajas'.
@@ -682,11 +682,13 @@ class VentasDatosLinea: Activity() {
         fDocumento.fCodArt = fArticulos.fCodigo
         fDocumento.fDescr = fArticulos.fDescripcion
         fDocumento.fCodigoIva = fArticulos.fCodIva
+
         // Vemos las posibles tasas de la línea.
         if (fDocumento.fAplicarIva) {
             if (fUsarTasa1) fDocumento.fTasa1 = fArticulos.fTasa1
             if (fUsarTasa2) fDocumento.fTasa2 = fArticulos.fTasa2
         }
+
         // Si trabajamos con artículos habituales grabamos el texto del artículo en el de la línea.
         // Si el artículo tiene texto resaltamos en rojo el título del botón para que el vendedor se percate.
         if (fDocumento.fHayArtHabituales) {
@@ -714,7 +716,6 @@ class VentasDatosLinea: Activity() {
             edtCajas.setText(fDocumento.fCajas.toString())
             edtCantidad.setText(fDocumento.fCantidad.toString())
         }
-
 
         // Calculamos el precio y el descuento.
         calcularPrecioYDto(true)

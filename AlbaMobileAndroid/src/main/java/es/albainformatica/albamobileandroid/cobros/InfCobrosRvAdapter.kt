@@ -26,7 +26,7 @@ class InfCobrosRvAdapter(
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             setOnItemClickListener(listener)
             val layoutInflater = LayoutInflater.from(parent.context)
-            return ViewHolder(layoutInflater.inflate(R.layout.ly_inf_cobros, parent, false), context)
+            return ViewHolder(layoutInflater.inflate(R.layout.ly_inf_cobros, parent, false))
         }
 
 
@@ -43,7 +43,7 @@ class InfCobrosRvAdapter(
         }
 
 
-        class ViewHolder(itemView: View, context: Context): RecyclerView.ViewHolder(itemView) {
+        class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
             private val nombreClte = itemView.findViewById(R.id.lyicCliente) as TextView
             private val fecha = itemView.findViewById(R.id.lyicFecha) as TextView
             private val tipoDoc = itemView.findViewById(R.id.lyicTipoDoc) as TextView

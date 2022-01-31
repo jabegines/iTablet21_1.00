@@ -26,7 +26,6 @@ class CargasRvAdapter(var cargas: List<CargasEnt>, val context: Context, var lis
         val item = cargas[fPosicion]
         holder.bind(item)
 
-
         if (selectedPos == fPosicion) {
             holder.itemView.tvCargaId.setTextColor(Color.BLACK)
             holder.itemView.tvCargaId.typeface = Typeface.DEFAULT_BOLD
