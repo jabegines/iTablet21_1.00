@@ -176,7 +176,7 @@ class VentasLineas : Activity() {
             if (fDocumento.fTipoDoc == TIPODOC_FACTURA && !fSoloVer) {
                 if (fDocumento.esContado()) {
                     continuar = false
-                    val aldDialog = NuevoAlertBuilder(
+                    val aldDialog = nuevoAlertBuilder(
                         this,
                         "Salir",
                         resources.getString(R.string.msj_DocContado),
@@ -608,7 +608,7 @@ class VentasLineas : Activity() {
                     // Comprobamos si el Whatsapp está instalado
                     if (whatsappInstalado(this)) {
                         val aldDialog =
-                            NuevoAlertBuilder(this, "Escoja", "Enviar documento PDF", true)
+                            nuevoAlertBuilder(this, "Escoja", "Enviar documento PDF", true)
                         aldDialog.setPositiveButton("Por email") { _: DialogInterface?, _: Int ->
                             //Toast.makeText(VentasLineas.this, getString(R.string.tst_docpdf), Toast.LENGTH_LONG).show();
                             documPDF.enviarPorEmail()
@@ -886,7 +886,7 @@ class VentasLineas : Activity() {
                 // ya que trabajo directamente sobre la tabla de líneas. La PDA
                 // funciona igual, para salir de una modificación de un documento habrá que grabarlo.
                 if (fDocNuevo) {
-                    val aldDialog = NuevoAlertBuilder(this, "Salir", "¿Anular el documento?", true)
+                    val aldDialog = nuevoAlertBuilder(this, "Salir", "¿Anular el documento?", true)
                     aldDialog.setPositiveButton("Sí") { _: DialogInterface?, _: Int ->
                         fDocumento.anularDocumento()
                         val returnIntent = Intent()

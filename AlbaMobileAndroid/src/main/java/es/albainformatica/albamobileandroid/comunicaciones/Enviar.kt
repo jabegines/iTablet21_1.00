@@ -152,7 +152,7 @@ class Enviar: AppCompatActivity() {
     fun prepararDatos(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
-        val aldDialog = NuevoAlertBuilder(
+        val aldDialog = nuevoAlertBuilder(
             this, resources.getString(R.string.tit_prepdatos),
             resources.getString(R.string.dlg_datosenvio), true
         )
@@ -166,7 +166,7 @@ class Enviar: AppCompatActivity() {
     fun enviarFTP(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
-        val aldDialog = NuevoAlertBuilder(
+        val aldDialog = nuevoAlertBuilder(
             this, resources.getString(R.string.tit_envioftp),
             resources.getString(R.string.dlg_envioftp), true
         )
@@ -178,7 +178,7 @@ class Enviar: AppCompatActivity() {
     fun enviarWifi(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
-        val aldDialog = NuevoAlertBuilder(
+        val aldDialog = nuevoAlertBuilder(
             this, resources.getString(R.string.tit_enviowifi),
             resources.getString(R.string.dlg_enviowifi), true
         )

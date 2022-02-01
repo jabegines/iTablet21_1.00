@@ -12,7 +12,7 @@ import es.albainformatica.albamobileandroid.ventas.Documento
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.content.Intent
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import androidx.core.content.ContextCompat
 import es.albainformatica.albamobileandroid.maestros.FichaArticuloActivity
 import android.view.LayoutInflater
@@ -368,11 +368,11 @@ class CatalogoArticulos: Activity(), Dlg2Listener {
             sDto = if (fDocumento?.fDtoLin != 0.0) fDocumento?.fDtoLin.toString().replace(',', '.')
                 else "0"
         }
-        var dPrecio = Redondear(sPrecio.toDouble(), fDecPrBase)
+        var dPrecio = redondear(sPrecio.toDouble(), fDecPrBase)
         fHistorico.fPrecio = dPrecio
         val dImpIva = dPrecio * queItem.porcIva / 100
         dPrecio += dImpIva
-        fHistorico.fPrecioII = Redondear(dPrecio, fDecPrII)
+        fHistorico.fPrecioII = redondear(dPrecio, fDecPrII)
         fHistorico.fDtoLin = sDto.toDouble()
         fHistorico.fTasa1 = 0.0
         fHistorico.fTasa2 = 0.0

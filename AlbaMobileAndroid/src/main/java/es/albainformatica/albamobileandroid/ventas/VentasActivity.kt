@@ -842,7 +842,7 @@ class VentasActivity: AppCompatActivity() {
         fClientes.close()
 
         if (fClteAplOftas) {
-            val aldDialog = NuevoAlertBuilder(this, resources.getString(R.string.tit_apl_oft_ped), resources.getString(R.string.dlg_apl_oft_ped), true)
+            val aldDialog = nuevoAlertBuilder(this, resources.getString(R.string.tit_apl_oft_ped), resources.getString(R.string.dlg_apl_oft_ped), true)
 
             aldDialog.setPositiveButton(resources.getString(R.string.dlg_si)) { _, _ ->
                 fAplOftEnPed = true

@@ -332,7 +332,7 @@ class DocsReparto: AppCompatActivity() {
 
                     // Comprobamos si el Whatsapp está instalado
                     if (whatsappInstalado(this@DocsReparto)) {
-                        val aldDialog = NuevoAlertBuilder(
+                        val aldDialog = nuevoAlertBuilder(
                             this@DocsReparto,
                             "Escoja",
                             "Enviar documento PDF",

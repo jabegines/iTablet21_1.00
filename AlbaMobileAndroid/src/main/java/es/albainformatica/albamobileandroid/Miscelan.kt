@@ -8,16 +8,16 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.preference.PreferenceManager
-import android.text.Html
+import androidx.preference.PreferenceManager
 import android.text.InputFilter
 import android.text.InputFilter.LengthFilter
-import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
+import androidx.core.text.HtmlCompat
 import es.albainformatica.albamobileandroid.dao.CabecerasDao
 import es.albainformatica.albamobileandroid.dao.CargasDao
 import es.albainformatica.albamobileandroid.dao.CobrosDao
@@ -32,10 +32,10 @@ import java.math.RoundingMode
 import java.security.MessageDigest
 import java.text.NumberFormat
 import java.util.*
+import kotlin.math.pow
 
 
-
-    fun dimeRutaImagenes(activity: Activity): String {
+fun dimeRutaImagenes(activity: Activity): String {
         val pref = PreferenceManager.getDefaultSharedPreferences(activity)
         val usarMultisistema = pref.getBoolean("usar_multisistema", false)
         val rutaImagenes = pref.getString("rutacomunicacion", "") ?: ""
@@ -49,7 +49,7 @@ import java.util.*
     }
 
 
-    fun dimeRutaDocAsoc(activity: Activity?): String {
+    fun dimeRutaDocAsoc(activity: Activity): String {
         val pref = PreferenceManager.getDefaultSharedPreferences(activity)
         val usarMultisistema = pref.getBoolean("usar_multisistema", false)
         val rutaDocAsoc = pref.getString("rutacomunicacion", "") ?: ""
@@ -78,48 +78,46 @@ import java.util.*
     }
 
 
-    fun Redondear(dNumero: Double, iDecimales: Int): Double {
-        val dDecimales = iDecimales * 1.0 + 1
-        val numberFormat = NumberFormat.getInstance()
-        numberFormat.maximumFractionDigits = 0
-        numberFormat.roundingMode = RoundingMode.DOWN
-        val sPrecision =
-            numberFormat.format(Math.pow(10.0, dDecimales)).replace(".", "").replace(",", "")
-        val Precision = sPrecision.toInt()
-        val sRedondeo = numberFormat.format(dNumero * Precision).replace(".", "").replace(",", "")
-        var Redondeo = sRedondeo.toInt()
-        val Aux = Redondeo % 10
-        Redondeo = if (Aux >= 0) {
-            if (Aux >= 5) Redondeo + 10 - Aux else Redondeo - Aux
-        } else {
-            if (Aux <= -5) Redondeo - 10 - Aux else Redondeo - Aux
-        }
-        val fResultado: Double = Redondeo.toDouble() / Precision
-        return fResultado
+fun redondear(dNumero: Double, iDecimales: Int): Double {
+    val dDecimales = iDecimales * 1.0 + 1
+    val numberFormat = NumberFormat.getInstance()
+    numberFormat.maximumFractionDigits = 0
+    numberFormat.roundingMode = RoundingMode.DOWN
+    val sPrecision =
+        numberFormat.format(10.0.pow(dDecimales)).replace(".", "").replace(",", "")
+    val precision = sPrecision.toInt()
+    val sRedondeo = numberFormat.format(dNumero * precision).replace(".", "").replace(",", "")
+    var redondeo = sRedondeo.toInt()
+    val aux = redondeo % 10
+    redondeo = if (aux >= 0) {
+        if (aux >= 5) redondeo + 10 - aux else redondeo - aux
+    } else {
+        if (aux <= -5) redondeo - 10 - aux else redondeo - aux
     }
+    return redondeo.toDouble() / precision
+}
 
 
-    fun Redondear(dNumero: Float, iDecimales: Int): Float {
-        val dDecimales = iDecimales * 1.0 + 1
-        val numberFormat = NumberFormat.getInstance()
-        numberFormat.maximumFractionDigits = 0
-        numberFormat.roundingMode = RoundingMode.DOWN
-        val sPrecision = numberFormat.format(Math.pow(10.0, dDecimales)).replace(".", "")
-        val Precision = sPrecision.toInt()
-        val sRedondeo = numberFormat.format((dNumero * Precision).toDouble()).replace(".", "")
-        var Redondeo = sRedondeo.toInt()
-        val Aux = Redondeo % 10
-        Redondeo = if (Aux >= 0) {
-            if (Aux >= 5) Redondeo + 10 - Aux else Redondeo - Aux
-        } else {
-            if (Aux <= -5) Redondeo - 10 - Aux else Redondeo - Aux
-        }
-        val fResultado: Float = Redondeo.toFloat() / Precision
-        return fResultado
+fun redondear(dNumero: Float, iDecimales: Int): Float {
+    val dDecimales = iDecimales * 1.0 + 1
+    val numberFormat = NumberFormat.getInstance()
+    numberFormat.maximumFractionDigits = 0
+    numberFormat.roundingMode = RoundingMode.DOWN
+    val sPrecision = numberFormat.format(10.0.pow(dDecimales)).replace(".", "")
+    val precision = sPrecision.toInt()
+    val sRedondeo = numberFormat.format((dNumero * precision).toDouble()).replace(".", "")
+    var redondeo = sRedondeo.toInt()
+    val aux = redondeo % 10
+    redondeo = if (aux >= 0) {
+        if (aux >= 5) redondeo + 10 - aux else redondeo - aux
+    } else {
+        if (aux <= -5) redondeo - 10 - aux else redondeo - aux
     }
+    return redondeo.toFloat() / precision
+}
 
 
-    fun StringOfChar(cadena: String, numRepet: Int): String {
+    fun stringOfChar(cadena: String, numRepet: Int): String {
         var result = ""
         for (x in 0 until numRepet) {
             result += cadena
@@ -252,6 +250,7 @@ import java.util.*
         }
     }
 
+/*
     fun hideStr(str: String): String {
         var i: Int
         var pass1 = ""
@@ -272,7 +271,7 @@ import java.util.*
         }
         return pass2
     }
-
+*/
 
     fun dimeMiTipoDeArchivo(nombreDocumento: String): String {
         val tipo = ""
@@ -322,7 +321,7 @@ import java.util.*
         return inSampleSize
     }
 
-    fun DimeDiaSemana(queDia: Int): String {
+    fun dimeDiaSemana(queDia: Int): String {
         var nombreDia = ""
         when (queDia) {
             1 -> nombreDia = "DOMINGO"
@@ -336,7 +335,7 @@ import java.util.*
         return nombreDia
     }
 
-    fun DimeNombreMes(queMes: Int): String {
+    fun dimeNombreMes(queMes: Int): String {
         var nombreMes = ""
         when (queMes) {
             0 -> nombreMes = "ENERO"
@@ -356,7 +355,7 @@ import java.util.*
     }
 
 
-    fun DimeNombreMesAbrev(queMes: Int): String {
+    fun dimeNombreMesAbrev(queMes: Int): String {
         var nombreMes = ""
         when (queMes) {
             1 -> nombreMes = "EN"
@@ -395,34 +394,21 @@ import java.util.*
         return nombreMes
     }
 
-    fun NuevoAlertBuilder(
-        activity: Activity,
-        queTitulo: String,
-        queMensaje: String,
-        conBotonNo: Boolean
-    ): AlertDialog.Builder {
+
+    fun nuevoAlertBuilder(activity: Activity, queTitulo: String, queMensaje: String, conBotonNo: Boolean): AlertDialog.Builder {
         val aldDialog = AlertDialog.Builder(activity)
-        aldDialog.setTitle(Html.fromHtml("<font color='" + activity.resources.getColor(R.color.texto_botones) + "'>" + queTitulo + "</font>"))
+        aldDialog.setTitle(HtmlCompat.fromHtml("<font color='" +
+                ContextCompat.getColor(activity, R.color.texto_botones) + "'>" + queTitulo + "</font>",
+                HtmlCompat.FROM_HTML_MODE_LEGACY))
         aldDialog.setMessage(queMensaje)
         aldDialog.setIcon(R.drawable.mensaje)
         aldDialog.setCancelable(false)
         if (conBotonNo) {
-            aldDialog.setNegativeButton(
-                activity.resources.getString(R.string.dlg_no)
-            ) { dialog: DialogInterface, which: Int -> dialog.cancel() }
+            aldDialog.setNegativeButton(activity.resources.getString(R.string.dlg_no)) { dialog: DialogInterface, _: Int -> dialog.cancel() }
         }
         return aldDialog
     }
 
-
-    fun ColorDividerAlert(activity: Activity, alert: AlertDialog) {
-        // Color para el divider del AlertDialog. Hay que asignarlo después de hacer el alert.show().
-        val dividerId = alert.context.resources.getIdentifier("android:id/titleDivider", null, null)
-        if (dividerId != 0) {
-            val divider = alert.findViewById<View>(dividerId)
-            divider?.setBackgroundColor(activity.resources.getColor(R.color.gris_alba))
-        }
-    }
 
     // No podremos recibir siempre que comuniquemos vía wifi o ftp y:
     // - tengamos documentos o cobros pendientes de enviar
@@ -477,7 +463,7 @@ import java.util.*
 // Utilidades
 // ====================
 // Códigos para la impresora Star DP8340
-    private val caracteresEspeciales = "ÜüÁáÉéÍíÓóÚúÑñ"
+    private const val caracteresEspeciales = "ÜüÁáÉéÍíÓóÚúÑñ"
     private val codigoCaracteresEspeciales = byteArrayOf(
         0xA2.toByte(),
         0xBE.toByte(),
@@ -492,26 +478,25 @@ import java.util.*
     )
 
 
-    fun stringABytes(s: String?): ByteArray? {
+    fun stringABytes(s: String): ByteArray {
         var l: Int
-        var i_especial: Int
+        var iEspecial: Int
         var b: Byte
-        var s_sub: String
-        if (s == null) return null
+        var sSub: String
+
         if (s.length.also { l = it } < 1) return ByteArray(0)
 
         // Convertimos a byte carácter por carácter
-        val b_arr: ByteArray = ByteArray(l)
-        var i: Int = 0
+        val bArr = ByteArray(l)
+        var i = 0
         while (i < l) {
-            s_sub = s.substring(i, i + 1)
-            i_especial = caracteresEspeciales.indexOf(s_sub)
-            b =
-                if (i_especial < 0) s_sub.toByteArray()[0] else codigoCaracteresEspeciales[i_especial]
-            b_arr[i] = b
+            sSub = s.substring(i, i + 1)
+            iEspecial = caracteresEspeciales.indexOf(sSub)
+            b = if (iEspecial < 0) sSub.toByteArray()[0] else codigoCaracteresEspeciales[iEspecial]
+            bArr[i] = b
             i++
         }
-        return b_arr
+        return bArr
     }
 
 

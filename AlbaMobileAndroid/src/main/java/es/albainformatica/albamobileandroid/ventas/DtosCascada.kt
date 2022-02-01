@@ -1,7 +1,7 @@
 package es.albainformatica.albamobileandroid.ventas
 
 import android.content.Context
-import es.albainformatica.albamobileandroid.Redondear
+import es.albainformatica.albamobileandroid.redondear
 import es.albainformatica.albamobileandroid.dao.DtosLineasDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.entity.DtosLineasEnt
@@ -63,8 +63,8 @@ class DtosCascada(fContexto: Context) {
         // de la clase TDivisa, que convierte los valores a currency y, por lo tanto, trabaja con 4 decimales.
         // Esto lo hacemos así para obtener los mismos resultados en la tablet y en la gestión.
         if (redondear) {
-            fImporte = Redondear(fImporte, 4)
-            fImporte = Redondear(fImporte, fDecPrBase)
+            fImporte = redondear(fImporte, 4)
+            fImporte = redondear(fImporte, fDecPrBase)
         }
         val fDescuento: Float = if (precio == 0.0) 0.0f else {
             val sPrecio = precio.toString()
@@ -93,7 +93,7 @@ class DtosCascada(fContexto: Context) {
             // El cálculo lo hago con fDecPrBase+1 porque creo que la gestión también lo hace así.
             if (fIvaIncluido && fAplicarIva) {
                 val dIvaDiv = (100 + fPorcIva) / 100
-                dImporte = Redondear(dImporte / dIvaDiv, fDecPrBase + 1)
+                dImporte = redondear(dImporte / dIvaDiv, fDecPrBase + 1)
             }
             dImporte
 

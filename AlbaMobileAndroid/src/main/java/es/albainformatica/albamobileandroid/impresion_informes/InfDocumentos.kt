@@ -6,7 +6,7 @@ import android.app.ProgressDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothSocket
 import android.bluetooth.BluetoothDevice
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.widget.Toast
 import android.content.Intent
 import datamaxoneil.printer.DocumentExPCL_LP
@@ -319,10 +319,10 @@ class InfDocumentos(contexto: Context): Runnable {
         }
         var sTotalCobros = String.format(fFtoDecImpIva, fTotalCobros)
         if (sTotalCobros.length > 7) sTotalCobros = "*******"
-        sTotalCobros = StringOfChar(" ", 7 - sTotalCobros.length) + sTotalCobros
+        sTotalCobros = stringOfChar(" ", 7 - sTotalCobros.length) + sTotalCobros
         result.append(lineaSimple).append(ccSaltoLinea)
-        result.append("TOTAL COBROS:").append(StringOfChar(" ", 34)).append(sTotalCobros).append(ccSaltoLinea)
-        result.append(lineaSimple).append(StringOfChar(ccSaltoLinea, 3))
+        result.append("TOTAL COBROS:").append(stringOfChar(" ", 34)).append(sTotalCobros).append(ccSaltoLinea)
+        result.append(lineaSimple).append(stringOfChar(ccSaltoLinea, 3))
 
         return result.toString()
     }
@@ -453,19 +453,19 @@ class InfDocumentos(contexto: Context): Runnable {
         result += sElemImpresos
         var sTotalVentas: String = String.format(fFtoDecImpIva, fTotalVentas)
         var sTotalCobrado: String = String.format(fFtoDecImpIva, fTotalCobrado)
-        sTotalVentas = if (sTotalVentas.length > 7) "*******" else StringOfChar(
+        sTotalVentas = if (sTotalVentas.length > 7) "*******" else stringOfChar(
             " ",
             7 - sTotalVentas.length
         ) + sTotalVentas
-        sTotalCobrado = if (sTotalCobrado.length > 7) "*******" else StringOfChar(
+        sTotalCobrado = if (sTotalCobrado.length > 7) "*******" else stringOfChar(
             " ",
             7 - sTotalCobrado.length
         ) + sTotalCobrado
-        result = result + StringOfChar(" ", 7) + "SUBTOTALES: " + StringOfChar(
+        result = result + stringOfChar(" ", 7) + "SUBTOTALES: " + stringOfChar(
             " ",
             5
-        ) + sTotalVentas + StringOfChar(" ", 1) + sTotalCobrado + ccSaltoLinea
-        result = result + lineaSimple + StringOfChar(ccSaltoLinea, 2)
+        ) + sTotalVentas + stringOfChar(" ", 1) + sTotalCobrado + ccSaltoLinea
+        result = result + lineaSimple + stringOfChar(ccSaltoLinea, 2)
         return result
     }
 
@@ -479,9 +479,9 @@ class InfDocumentos(contexto: Context): Runnable {
         val sTotalVentas = String.format(fFtoDecImpIva, fTotalVentas)
         val sTotalCobrado = String.format(fFtoDecImpIva, fTotalCobrado)
         result =
-            result + StringOfChar(" ", 28) + "TOTALES: " + StringOfChar(" ", 9) + sTotalVentas +
-                    StringOfChar(" ", 2) + sTotalCobrado + ccSaltoLinea
-        result = result + lineaSimple + StringOfChar(ccSaltoLinea, 8)
+            result + stringOfChar(" ", 28) + "TOTALES: " + stringOfChar(" ", 9) + sTotalVentas +
+                    stringOfChar(" ", 2) + sTotalCobrado + ccSaltoLinea
+        result = result + lineaSimple + stringOfChar(ccSaltoLinea, 8)
         return result
     }
 

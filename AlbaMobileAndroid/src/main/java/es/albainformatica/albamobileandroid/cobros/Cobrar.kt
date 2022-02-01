@@ -71,7 +71,7 @@ class Cobrar: Activity() {
             fTotal = fPendiente.importe.toDouble()
             fCobrado = fPendiente.cobrado.toDouble()
             // Si no redondeamos tendremos problemas de precisión.
-            fImptePdte = Redondear(fTotal - fCobrado, 2)
+            fImptePdte = redondear(fTotal - fCobrado, 2)
         }
         inicializarControles()
     }
@@ -151,6 +151,8 @@ class Cobrar: Activity() {
     private fun prepararSpFPago() {
         val spnFPago = findViewById<Spinner>(es.albainformatica.albamobileandroid.R.id.spnCobrar_FPago)
         fFPago.abrirSoloContado()
+
+        //  TODO: cambiar esto
         val c = fFPago.cursor
         // Inicializamos QueFPago
         QueFPago = if (c != null) c.getString(c.getColumnIndex("_id")) else ""

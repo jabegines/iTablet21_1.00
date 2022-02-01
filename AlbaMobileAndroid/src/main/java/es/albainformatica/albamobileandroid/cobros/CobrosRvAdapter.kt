@@ -11,7 +11,6 @@ import es.albainformatica.albamobileandroid.R
 import es.albainformatica.albamobileandroid.entity.CobrosEnt
 import es.albainformatica.albamobileandroid.tipoDocResumAsString
 import kotlinx.android.synthetic.main.ly_ver_cobros.view.*
-import kotlinx.android.synthetic.main.ly_ver_pendientes.view.*
 
 
 class CobrosRvAdapter(
@@ -42,12 +41,11 @@ class CobrosRvAdapter(
 
         holder.itemView.setOnClickListener {
             // Tenemos en cuenta si el registro sobre el que pulsamos estaba anteriormente seleccionado
-            if (selectedPos == fPosicion) {
-                selectedPos = RecyclerView.NO_POSITION
-            }
-            else //Seleccionamos el registro
+            selectedPos = if (selectedPos == fPosicion) {
+                RecyclerView.NO_POSITION
+            } else //Seleccionamos el registro
             {
-                selectedPos = fPosicion
+                fPosicion
             }
 
             notifyDataSetChanged()

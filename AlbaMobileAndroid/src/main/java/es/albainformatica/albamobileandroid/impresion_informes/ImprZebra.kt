@@ -10,7 +10,7 @@ import android.content.SharedPreferences
 import android.os.Handler
 import android.os.Message
 import android.os.SystemClock
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.cobros.FormasPagoClase
 import es.albainformatica.albamobileandroid.cobros.PendienteClase
@@ -288,8 +288,8 @@ import java.util.*
 
      private fun imprCabLin80(): String {
          val lineaSimple: java.lang.StringBuilder = java.lang.StringBuilder()
-         var result: String = "COD." + StringOfChar(" ", 4) + "ARTICULO" + StringOfChar(" ", 12) +
-                 "UNID" + StringOfChar(" ", 2) + "PRECIO" + StringOfChar(" ", 3) +
+         var result: String = "COD." + stringOfChar(" ", 4) + "ARTICULO" + stringOfChar(" ", 12) +
+                 "UNID" + stringOfChar(" ", 2) + "PRECIO" + stringOfChar(" ", 3) +
                  "TOTAL" + fCR + fLF
          for (x in 0 until anchoPapel) {
              lineaSimple.append("-")
@@ -415,7 +415,7 @@ import java.util.*
          SystemClock.sleep(200)
          sCajas = String.format(fFtoCant, sumaCajas)
          sCant = String.format(fFtoCant, sumaCant)
-         result.append("SUMAS: ").append(StringOfChar(" ", 13))
+         result.append("SUMAS: ").append(stringOfChar(" ", 13))
              .append(ajustarCadena(sCajas, lCajas, false)).append(" ")
              .append(ajustarCadena(sCant, lCant, false)).append(fCR).append(fLF)
          val lineaSimple: java.lang.StringBuilder = java.lang.StringBuilder()
@@ -863,7 +863,7 @@ import java.util.*
                      sImpRe = String.format(fFtoImpBase, x.fImporteRe)
                      if (x.fImporteRe != 0.0) {
                          texto.append("% Rec. equ.: ").append(ajustarCadena(sPorcRe, 5, false))
-                         texto.append(StringOfChar(" ", 3)).append("Rec. equ.: ")
+                         texto.append(stringOfChar(" ", 3)).append("Rec. equ.: ")
                              .append(ajustarCadena(sImpRe, lImpRe, false))
                              .append(fCR).append(fLF)
                      }
@@ -881,8 +881,8 @@ import java.util.*
          if (result.length > maxLong) result =
              result.substring(0, maxLong) else if (result.length < maxLong) {
              result =
-                 if (fPorLaDerecha) result + StringOfChar(" ", maxLong - result.length)
-                 else StringOfChar(" ", maxLong - result.length) + result
+                 if (fPorLaDerecha) result + stringOfChar(" ", maxLong - result.length)
+                 else stringOfChar(" ", maxLong - result.length) + result
          }
          return result
      }

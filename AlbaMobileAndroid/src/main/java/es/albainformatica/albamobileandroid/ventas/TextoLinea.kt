@@ -1,7 +1,6 @@
 package es.albainformatica.albamobileandroid.ventas
 
-import es.albainformatica.albamobileandroid.NuevoAlertBuilder
-import es.albainformatica.albamobileandroid.ColorDividerAlert
+import es.albainformatica.albamobileandroid.nuevoAlertBuilder
 import android.app.Activity
 import android.widget.EditText
 import android.os.Bundle
@@ -57,7 +56,7 @@ class TextoLinea : Activity() {
         if (fDocumento.fHayArtHabituales) {
             if (edtObserv.text.toString() != fDocumento.textoArtHabitual()) {
                 val aldDialog =
-                    NuevoAlertBuilder(this, "Marcar", "¿Marcar el texto como modificado?", true)
+                    nuevoAlertBuilder(this, "Marcar", "¿Marcar el texto como modificado?", true)
                 aldDialog.setPositiveButton("Si") { _: DialogInterface?, _: Int ->
                     val returnIntent = Intent()
                     if (fSalvar) {
@@ -82,7 +81,6 @@ class TextoLinea : Activity() {
                 }
                 val alert = aldDialog.create()
                 alert.show()
-                ColorDividerAlert(this, alert)
             }
         } else {
             val returnIntent = Intent()

@@ -186,7 +186,7 @@ class CargarHco: Activity() {
         view?.getTag(0)          // Para que no dé warning el compilador
 
         if (!fDesdeCltes) {
-            val aldDialog = NuevoAlertBuilder(
+            val aldDialog = nuevoAlertBuilder(
                 this, getString(R.string.tit_cancelar_hco),
                 getString(R.string.msj_Abandonar), true
             )
@@ -198,7 +198,6 @@ class CargarHco: Activity() {
             }
             val alert = aldDialog.create()
             alert.show()
-            ColorDividerAlert(this, alert)
         }
     }
 

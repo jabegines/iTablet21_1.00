@@ -84,7 +84,7 @@ class RepartoDevoluciones: Activity() {
     fun cancelarRepDev(view: View?) {
         view?.getTag(0)              // Para que no dé warning el compilador
 
-        val aldDialog = NuevoAlertBuilder(this, "Salir", "¿Anular las devoluciones?", true)
+        val aldDialog = nuevoAlertBuilder(this, "Salir", "¿Anular las devoluciones?", true)
         aldDialog.setPositiveButton("Sí") { _, _ ->
             fHistorico.borrar()
             val returnIntent = Intent()

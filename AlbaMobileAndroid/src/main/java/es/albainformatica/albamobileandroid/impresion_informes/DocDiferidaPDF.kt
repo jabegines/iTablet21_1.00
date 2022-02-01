@@ -12,7 +12,7 @@ import es.albainformatica.albamobileandroid.ventas.ListaBasesDoc
 import es.albainformatica.albamobileandroid.maestros.ClientesClase
 import es.albainformatica.albamobileandroid.cobros.PendienteClase
 import es.albainformatica.albamobileandroid.cobros.FormasPagoClase
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import com.lowagie.text.pdf.PdfWriter
 import android.widget.Toast
 import com.lowagie.text.pdf.PdfPTable
@@ -416,7 +416,7 @@ class DocDiferidaPDF(private val fContexto: Context, idDocumento: Int) {
                 val fPorcIva = linea.porcIva.replace(',', '.').toDouble()
 
                 fImpteII = fImporte + fImporte * fPorcIva / 100
-                fImpteII = Redondear(fImpteII, fDecImpII)
+                fImpteII = redondear(fImpteII, fDecImpII)
             }
             val fCodigoIva = linea.codigoIva
             if (fBases.fIvaIncluido) fBases.calcularBase(fCodigoIva, fImpteII)
@@ -525,10 +525,10 @@ class DocDiferidaPDF(private val fContexto: Context, idDocumento: Int) {
         // no llega a esta cifra, le añadimos espacios al final.
         if (result.length > maxLong) result =
             result.substring(0, maxLong) else if (result.length < maxLong) {
-            result = if (fPorLaDerecha) result + StringOfChar(
+            result = if (fPorLaDerecha) result + stringOfChar(
                 " ",
                 maxLong - result.length
-            ) else StringOfChar(" ", maxLong - result.length) + result
+            ) else stringOfChar(" ", maxLong - result.length) + result
         }
         return result
     }

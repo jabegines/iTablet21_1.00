@@ -8,7 +8,7 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothSocket
 import android.bluetooth.BluetoothDevice
 import android.content.Context
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.widget.Toast
 import android.content.Intent
 import android.os.Handler
@@ -193,10 +193,8 @@ class ImprDocFormato2(contexto: Context): Runnable {
 
     private fun imprCabLineas(): String {
         val lineaSimple = StringBuilder()
-        var result: String = "COD." + StringOfChar(" ", 4) + "ARTICULO" + StringOfChar(
-            " ",
-            35
-        ) + "CANTIDAD" + ccSaltoLinea
+        var result: String = "COD." + stringOfChar(" ", 4) + "ARTICULO" + stringOfChar(" ", 35) +
+                "CANTIDAD" + ccSaltoLinea
         for (x in 0..59) {
             lineaSimple.append("-")
         }
@@ -212,17 +210,17 @@ class ImprDocFormato2(contexto: Context): Runnable {
         result += ccSaltoLinea
         cCadena = ajustarCadena(fDocumento.fClientes.fDireccion, 35, true)
         result += cCadena
-        result = (result + StringOfChar(" ", 5) + "Hora: "
-                + StringOfChar(" ", 4) + fDocumento.fHora)
+        result = (result + stringOfChar(" ", 5) + "Hora: "
+                + stringOfChar(" ", 4) + fDocumento.fHora)
         result += ccSaltoLinea
         result = (result + ajustarCadena(fDocumento.fClientes.fCodPostal + " " + fDocumento.fClientes.fPoblacion, 35, true))
-        result = (result + StringOfChar(" ", 5) + "Fecha: " + StringOfChar(" ", 3) + fDocumento.fFecha)
+        result = (result + stringOfChar(" ", 5) + "Fecha: " + stringOfChar(" ", 3) + fDocumento.fFecha)
         result += ccSaltoLinea
         result += ajustarCadena(fDocumento.fClientes.fProvincia, 35, true)
-        result = result + StringOfChar(" ", 5) + "Doc: " + tipoDocAsString(fDocumento.fTipoDoc)
+        result = result + stringOfChar(" ", 5) + "Doc: " + tipoDocAsString(fDocumento.fTipoDoc)
         result += ccSaltoLinea
         result += ajustarCadena("C.I.F.: " + fDocumento.fClientes.fCif, 35, true)
-        result = result + StringOfChar(" ", 5) + "Num.: " + fDocumento.serie + "/" + fDocumento.numero
+        result = result + stringOfChar(" ", 5) + "Num.: " + fDocumento.serie + "/" + fDocumento.numero
         result = result + ccSaltoLinea + ccSaltoLinea
         return result
     }
@@ -235,10 +233,10 @@ class ImprDocFormato2(contexto: Context): Runnable {
         // no llega a esta cifra, le añadimos espacios al final.
         if (result.length > maxLong) result =
             result.substring(0, maxLong) else if (result.length < maxLong) {
-            result = if (fPorLaDerecha) result + StringOfChar(
+            result = if (fPorLaDerecha) result + stringOfChar(
                 " ",
                 maxLong - result.length
-            ) else StringOfChar(" ", maxLong - result.length) + result
+            ) else stringOfChar(" ", maxLong - result.length) + result
         }
         return result
     }
@@ -248,10 +246,7 @@ class ImprDocFormato2(contexto: Context): Runnable {
         val lineaSimple = StringBuilder()
         val sTotalCajas = fTotalCajas.toString()
         result = StringBuilder(
-            ccSaltoLinea + "Total Cajas: " + sTotalCajas + StringOfChar(
-                " ",
-                5
-            ) + "Recibi conforme: El cliente" + ccSaltoLinea
+            ccSaltoLinea + "Total Cajas: " + sTotalCajas + stringOfChar(" ", 5) + "Recibi conforme: El cliente" + ccSaltoLinea
         )
         result.append(ccSaltoLinea).append(ccSaltoLinea)
         fNumLineas += 4

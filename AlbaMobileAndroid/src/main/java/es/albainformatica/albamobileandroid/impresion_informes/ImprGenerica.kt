@@ -16,7 +16,7 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Message
 import android.os.SystemClock
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.dao.CargasDao
 import es.albainformatica.albamobileandroid.dao.CargasLineasDao
@@ -274,9 +274,9 @@ class ImprGenerica(contexto: Context): Runnable {
                 lineaSimple.append("-")
             }
             result = result + lineaSimple + ccSaltoLinea
-            result = (result + fMargenIzq + StringOfChar(" ", 2) + "IMPORTE"
-                    + StringOfChar(" ", 7) + "ENTREGADO"
-                    + StringOfChar(" ", 6) + "PENDIENTE" + ccSaltoLinea)
+            result = (result + fMargenIzq + stringOfChar(" ", 2) + "IMPORTE"
+                    + stringOfChar(" ", 7) + "ENTREGADO"
+                    + stringOfChar(" ", 6) + "PENDIENTE" + ccSaltoLinea)
             lineaSimple = StringBuilder(fMargenIzq)
             for (x in 0..39) {
                 lineaSimple.append("-")
@@ -289,9 +289,9 @@ class ImprGenerica(contexto: Context): Runnable {
             val dPdte = dImporte - dCobrado
             sPdte = String.format(fFtoImpII, dPdte)
             result = (result + fMargenIzq + ajustarCadena(sImpte, lImptes, false)
-                    + StringOfChar(" ", 7)
+                    + stringOfChar(" ", 7)
                     + ajustarCadena(sCobrado, lImptes, false)
-                    + StringOfChar(" ", 6)
+                    + stringOfChar(" ", 6)
                     + ajustarCadena(sPdte, lImptes, false))
             result += ccSaltoLinea
         }
@@ -330,11 +330,11 @@ class ImprGenerica(contexto: Context): Runnable {
                     sImpIva = String.format(fFtoImpBase, x.fImporteIva)
                     if (x.fImporteRe != 0.0) fHayRecargo = true
                     texto.append(fMargenIzq).append(ajustarCadena(sBruto, lBruto, false))
-                        .append(StringOfChar(" ", 1)).append(ajustarCadena(sImpDto, lImpDto, false))
-                        .append(StringOfChar(" ", 1)).append(ajustarCadena(sBase, lBase, false))
-                        .append(StringOfChar(" ", 2)).append(ajustarCadena(sPorcIva, 7, false))
-                        .append(StringOfChar(" ", 1)).append(ajustarCadena(sImpIva, lImpIva, false))
-                        .append(StringOfChar(" ", 1))
+                        .append(stringOfChar(" ", 1)).append(ajustarCadena(sImpDto, lImpDto, false))
+                        .append(stringOfChar(" ", 1)).append(ajustarCadena(sBase, lBase, false))
+                        .append(stringOfChar(" ", 2)).append(ajustarCadena(sPorcIva, 7, false))
+                        .append(stringOfChar(" ", 1)).append(ajustarCadena(sImpIva, lImpIva, false))
+                        .append(stringOfChar(" ", 1))
                     texto.append(ccSaltoLinea)
                 }
             }
@@ -345,7 +345,7 @@ class ImprGenerica(contexto: Context): Runnable {
             if (fHayRecargo) imprRecEquiv80(os)
             sTotal = String.format(fFtoImpII, fDocumento.fBases.totalConImptos)
             texto.append(ccSaltoLinea).append(ccSaltoLinea)
-            texto.append(StringOfChar(" ", 5)).append("TOTAL IMPORTE: ").append(ccDobleAncho)
+            texto.append(stringOfChar(" ", 5)).append("TOTAL IMPORTE: ").append(ccDobleAncho)
                 .append(ajustarCadena(sTotal, lTotal, false)).append(
                     ccNormal
             ).append("  Euros").append(ccSaltoLinea)
@@ -369,7 +369,7 @@ class ImprGenerica(contexto: Context): Runnable {
                     sImpRe = String.format(fFtoImpBase, x.fImporteRe)
                     if (x.fImporteRe != 0.0) {
                         texto.append("% Rec. equ.: ").append(ajustarCadena(sPorcRe, 5, false))
-                        texto.append(StringOfChar(" ", 3)).append("Rec. equ.: ")
+                        texto.append(stringOfChar(" ", 3)).append("Rec. equ.: ")
                             .append(ajustarCadena(sImpRe, lImpRe, false)).append(
                                 ccSaltoLinea
                         )
@@ -416,25 +416,25 @@ class ImprGenerica(contexto: Context): Runnable {
                     sPorcRe = String.format(fFtoImpBase, x.fPorcRe)
                     sImpRe = String.format(fFtoImpBase, x.fImporteRe)
                     texto.append(fMargenIzq).append(ajustarCadena(sBruto, lBruto, false))
-                        .append(StringOfChar(" ", 1)).append(ajustarCadena(sImpDto, lImpDto, false))
-                        .append(StringOfChar(" ", 1)).append(ajustarCadena(sBase, lBase, false))
-                        .append(StringOfChar(" ", 2)).append(ajustarCadena(sPorcIva, 7, false))
-                        .append(StringOfChar(" ", 1)).append(ajustarCadena(sImpIva, lImpIva, false))
-                        .append(StringOfChar(" ", 1))
+                        .append(stringOfChar(" ", 1)).append(ajustarCadena(sImpDto, lImpDto, false))
+                        .append(stringOfChar(" ", 1)).append(ajustarCadena(sBase, lBase, false))
+                        .append(stringOfChar(" ", 2)).append(ajustarCadena(sPorcIva, 7, false))
+                        .append(stringOfChar(" ", 1)).append(ajustarCadena(sImpIva, lImpIva, false))
+                        .append(stringOfChar(" ", 1))
                     if (x.fImporteRe != 0.0) texto.append(ajustarCadena(sPorcRe, 8, false))
-                        .append(StringOfChar(" ", 3)).append(
+                        .append(stringOfChar(" ", 3)).append(
                         ajustarCadena(
                             sImpRe,
                             lImpRe,
                             false
                         )
-                    ) else texto.append(StringOfChar(" ", 6 + lImpRe))
+                    ) else texto.append(stringOfChar(" ", 6 + lImpRe))
                     texto.append(ccSaltoLinea)
                 }
             }
             sTotal = String.format(fFtoImpII, fDocumento.fBases.totalConImptos)
             texto.append(ccSaltoLinea).append(ccSaltoLinea)
-            texto.append(StringOfChar(" ", 27)).append("TOTAL IMPORTE: ").append(ccDobleAncho)
+            texto.append(stringOfChar(" ", 27)).append("TOTAL IMPORTE: ").append(ccDobleAncho)
                 .append(ajustarCadena(sTotal, lTotal, false)).append(
                     ccNormal
             ).append("  Euros").append(ccSaltoLinea)
@@ -519,7 +519,7 @@ class ImprGenerica(contexto: Context): Runnable {
         if (sumaCajas != 0.0 || sumaCant != 0.0) {
             sCajas = String.format(fFtoCant, sumaCajas)
             sCant = String.format(fFtoCant, sumaCant)
-            result.append(fMargenIzq).append("SUMAS: ").append(StringOfChar(" ", 13))
+            result.append(fMargenIzq).append("SUMAS: ").append(stringOfChar(" ", 13))
                 .append(ajustarCadena(sCajas, lCajas, false)).append(" ")
                 .append(ajustarCadena(sCant, lCant, false)).append(
                     ccSaltoLinea
@@ -606,7 +606,7 @@ class ImprGenerica(contexto: Context): Runnable {
         if (sumaCajas != 0.0 || sumaCant != 0.0) {
             sCajas = String.format(fFtoCant, sumaCajas)
             sCant = String.format(fFtoCant, sumaCant)
-            result.append(fMargenIzq).append("SUMAS: ").append(StringOfChar(" ", 31))
+            result.append(fMargenIzq).append("SUMAS: ").append(stringOfChar(" ", 31))
                 .append(ajustarCadena(sCajas, lCajas, false)).append(" ")
                 .append(ajustarCadena(sCant, lCant, false)).append(
                     ccSaltoLinea
@@ -710,7 +710,7 @@ class ImprGenerica(contexto: Context): Runnable {
         SystemClock.sleep(200)
         sCajas = String.format(fFtoCant, sumaCajas)
         sCant = String.format(fFtoCant, sumaCant)
-        result.append(fMargenIzq).append("SUMAS: ").append(StringOfChar(" ", 13))
+        result.append(fMargenIzq).append("SUMAS: ").append(stringOfChar(" ", 13))
             .append(ajustarCadena(sCajas, lCajas, false)).append(" ")
             .append(ajustarCadena(sCant, lCant, false)).append(
                 ccSaltoLinea
@@ -815,7 +815,7 @@ class ImprGenerica(contexto: Context): Runnable {
         result.append(ccSaltoLinea)
         sCajas = String.format(fFtoCant, sumaCajas)
         sCant = String.format(fFtoCant, sumaCant)
-        result.append(fMargenIzq).append("SUMAS: ").append(StringOfChar(" ", 31))
+        result.append(fMargenIzq).append("SUMAS: ").append(stringOfChar(" ", 31))
             .append(ajustarCadena(sCajas, lCajas, false)).append(" ")
             .append(ajustarCadena(sCant, lCant, false)).append(
                 ccSaltoLinea
@@ -837,17 +837,17 @@ class ImprGenerica(contexto: Context): Runnable {
         var texto = ""
         val lineaSimple = StringBuilder(fMargenIzq)
         try {
-            texto += StringOfChar(ccSaltoLinea, 2)
+            texto += stringOfChar(ccSaltoLinea, 2)
             os.write(texto.toByteArray())
             for (x in 0 until anchoPapel) {
                 lineaSimple.append("-")
             }
             texto = lineaSimple.toString() + ccSaltoLinea
-            texto = (texto + fMargenIzq + StringOfChar(" ", 4) + "VENTA" + StringOfChar(
+            texto = (texto + fMargenIzq + stringOfChar(" ", 4) + "VENTA" + stringOfChar(
                 " ",
                 5
-            ) + "DTO" + StringOfChar(" ", 5)
-                    + "NETO" + StringOfChar(" ", 4) + "%IVA" + StringOfChar(
+            ) + "DTO" + stringOfChar(" ", 5)
+                    + "NETO" + stringOfChar(" ", 4) + "%IVA" + stringOfChar(
                 " ",
                 5
             ) + "IVA" + ccSaltoLinea)
@@ -863,21 +863,21 @@ class ImprGenerica(contexto: Context): Runnable {
         var texto = ""
         val lineaSimple = StringBuilder(fMargenIzq)
         try {
-            texto += StringOfChar(ccSaltoLinea, 2)
+            texto += stringOfChar(ccSaltoLinea, 2)
             os.write(texto.toByteArray())
             for (x in 0 until anchoPapel) {
                 lineaSimple.append("-")
             }
             texto = lineaSimple.toString() + ccSaltoLinea
-            texto = (texto + fMargenIzq + StringOfChar(" ", 5) + "VENTA" + StringOfChar(
+            texto = (texto + fMargenIzq + stringOfChar(" ", 5) + "VENTA" + stringOfChar(
                 " ",
                 8
-            ) + "DTO" + StringOfChar(" ", 7)
-                    + "NETO" + StringOfChar(" ", 5) + "%IVA" + StringOfChar(
+            ) + "DTO" + stringOfChar(" ", 7)
+                    + "NETO" + stringOfChar(" ", 5) + "%IVA" + stringOfChar(
                 " ",
                 6
-            ) + "IVA" + StringOfChar(" ", 5)
-                    + "%REC" + StringOfChar(" ", 7) + "REC" + ccSaltoLinea)
+            ) + "IVA" + stringOfChar(" ", 5)
+                    + "%REC" + stringOfChar(" ", 7) + "REC" + ccSaltoLinea)
             texto = texto + lineaSimple + ccSaltoLinea
             os.write(texto.toByteArray())
         } catch (ignored: Exception) {
@@ -889,8 +889,8 @@ class ImprGenerica(contexto: Context): Runnable {
     private fun imprCabLin80(): String {
         val lineaSimple = StringBuilder(fMargenIzq)
         var result: String =
-            fMargenIzq + "COD." + StringOfChar(" ", 4) + "ARTICULO" + StringOfChar(" ", 12) +
-                "UNID" + StringOfChar(" ", 2) + "PRECIO" + StringOfChar(
+            fMargenIzq + "COD." + stringOfChar(" ", 4) + "ARTICULO" + stringOfChar(" ", 12) +
+                "UNID" + stringOfChar(" ", 2) + "PRECIO" + stringOfChar(
             " ",
             3
         ) + "TOTAL" + ccSaltoLinea
@@ -903,12 +903,12 @@ class ImprGenerica(contexto: Context): Runnable {
 
     private fun imprCabLineas(): String {
         val lineaSimple = StringBuilder(fMargenIzq)
-        var result: String = (fMargenIzq + "COD." + StringOfChar(" ", 4) + "ARTICULO" + StringOfChar(
+        var result: String = (fMargenIzq + "COD." + stringOfChar(" ", 4) + "ARTICULO" + stringOfChar(
             " ",
             23
         ) + "CAJAS"
-                + StringOfChar(" ", 4) + "UNID" + StringOfChar(" ", 2) + "PRECIO"
-                + StringOfChar(" ", 4) + "TOTAL" + ccSaltoLinea)
+                + stringOfChar(" ", 4) + "UNID" + stringOfChar(" ", 2) + "PRECIO"
+                + stringOfChar(" ", 4) + "TOTAL" + ccSaltoLinea)
         for (x in 0 until anchoPapel) {
             lineaSimple.append("-")
         }
@@ -946,23 +946,23 @@ class ImprGenerica(contexto: Context): Runnable {
         cCadena = ajustarCadena(fMargenIzq + ponerCeros(fDocumento.fClientes.fCodigo.toString(), ancho_codclte) + " " +
                 fDocumento.fClientes.fNombre, sLongDatosClte.toInt(), true)
         result = cCadena
-        cCadena = StringOfChar(" ", 5) + "Vendedor: " + fConfiguracion.vendedor()
+        cCadena = stringOfChar(" ", 5) + "Vendedor: " + fConfiguracion.vendedor()
         result = result + cCadena + ccSaltoLinea
         cCadena = ajustarCadena(fMargenIzq + fDocumento.fClientes.fNomComercial, sLongDatosClte.toInt(), true)
         result = result + cCadena + ccSaltoLinea
         result += ajustarCadena(fMargenIzq + fDocumento.fClientes.fDireccion, sLongDatosClte.toInt(), true)
-        cCadena = StringOfChar(" ", 5) + "Hora: " + fDocumento.fHora
+        cCadena = stringOfChar(" ", 5) + "Hora: " + fDocumento.fHora
         result += cCadena
         result += ccSaltoLinea
         result += ajustarCadena(fMargenIzq + fDocumento.fClientes.fCodPostal + " " + fDocumento.fClientes.fPoblacion, sLongDatosClte.toInt(), true)
-        cCadena = StringOfChar(" ", 5) + "Fecha: " + fDocumento.fFecha
+        cCadena = stringOfChar(" ", 5) + "Fecha: " + fDocumento.fFecha
         result += cCadena
         result += ccSaltoLinea
         result += ajustarCadena(fMargenIzq + fDocumento.fClientes.fProvincia, sLongDatosClte.toInt(), true)
-        result = result + StringOfChar(" ", 5) + "Doc: " + tipoDocAsString(fDocumento.fTipoDoc)
+        result = result + stringOfChar(" ", 5) + "Doc: " + tipoDocAsString(fDocumento.fTipoDoc)
         result += ccSaltoLinea
         result += ajustarCadena(fMargenIzq + "C.I.F.: " + fDocumento.fClientes.fCif, sLongDatosClte.toInt(), true)
-        result = result + StringOfChar(" ", 5) + "Num.: " + fDocumento.serie + "/" + fDocumento.numero
+        result = result + stringOfChar(" ", 5) + "Num.: " + fDocumento.serie + "/" + fDocumento.numero
         result = result + ccSaltoLinea + ccSaltoLinea + ccSaltoLinea
         return result
     }
@@ -972,10 +972,10 @@ class ImprGenerica(contexto: Context): Runnable {
         // Si la cadena supera el máximo de caracteres, la recortamos. En cambio, si no llega a esta cifra, le añadimos espacios al final.
         if (result.length > maxLong) result =
             result.substring(0, maxLong) else if (result.length < maxLong) {
-            result = if (fPorLaDerecha) result + StringOfChar(
+            result = if (fPorLaDerecha) result + stringOfChar(
                 " ",
                 maxLong - result.length
-            ) else StringOfChar(" ", maxLong - result.length) + result
+            ) else stringOfChar(" ", maxLong - result.length) + result
         }
         return result
     }
@@ -1029,15 +1029,15 @@ class ImprGenerica(contexto: Context): Runnable {
             for (x in 0..62) {
                 lineasDobles.append("=")
             }
-            result += StringOfChar(ccSaltoLinea, 3)
+            result += stringOfChar(ccSaltoLinea, 3)
             result = result + fMargenIzq + ccDobleAncho + "Nueva carga  "
             result += cargaEnt.fecha
-            result = result + StringOfChar(" ", 3) + cargaEnt.hora
+            result = result + stringOfChar(" ", 3) + cargaEnt.hora
             result += ccSaltoLinea
-            result = result + fMargenIzq + lineasDobles + StringOfChar(ccSaltoLinea, 4)
+            result = result + fMargenIzq + lineasDobles + stringOfChar(ccSaltoLinea, 4)
             result += ccNormal
-            result = result + fMargenIzq + "Codigo" + StringOfChar(" ", 2) + "Descripcion" + StringOfChar(" ", 32) +
-                    "Cajas" + StringOfChar(" ", 2) + "Cantidad" + ccSaltoLinea
+            result = result + fMargenIzq + "Codigo" + stringOfChar(" ", 2) + "Descripcion" + stringOfChar(" ", 32) +
+                    "Cajas" + stringOfChar(" ", 2) + "Cantidad" + ccSaltoLinea
             for (x in 0..65) {
                 lineaSimple.append("-")
             }
@@ -1089,10 +1089,10 @@ class ImprGenerica(contexto: Context): Runnable {
         sCajas = String.format(fFtoCant, sumaCajas)
         sCant = String.format(fFtoCant, sumaCant)
         result.append(ccSaltoLinea)
-        result.append(fMargenIzq).append("SUMAS: ").append(StringOfChar(" ", 42))
+        result.append(fMargenIzq).append("SUMAS: ").append(stringOfChar(" ", 42))
             .append(ajustarCadena(sCajas, lCajas, false))
-            .append(StringOfChar(" ", 1)).append(ajustarCadena(sCant, lCant, false))
-        result.append(StringOfChar(ccSaltoLinea, 15))
+            .append(stringOfChar(" ", 1)).append(ajustarCadena(sCant, lCant, false))
+        result.append(stringOfChar(ccSaltoLinea, 15))
         try {
             os.write(result.toString().toByteArray())
             // Hacemos una pausa para agilizar los buffers de las impresoras, principalmente de las serie.

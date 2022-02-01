@@ -8,7 +8,7 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.DigitsKeyListener
@@ -21,6 +21,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.dao.CnfTarifasDao
 import es.albainformatica.albamobileandroid.dao.OftCantRangosDao
@@ -694,10 +695,7 @@ class VentasDatosLinea: Activity() {
         if (fDocumento.fHayArtHabituales) {
             fDocumento.fTextoLinea = fDocumento.textoArtHabitual()
             if (fDocumento.fTextoLinea != "") {
-                if (fDocumento.fTextoLinea == "") btnTextoLinea.setTextColor(
-                    resources.getColor(
-                        R.color.texto_botones
-                    )
+                if (fDocumento.fTextoLinea == "") btnTextoLinea.setTextColor(ContextCompat.getColor(this, R.color.texto_botones)
                 ) else btnTextoLinea.setTextColor(Color.RED)
             }
         }
@@ -747,7 +745,7 @@ class VentasDatosLinea: Activity() {
                 if (fIvaIncluido && fAplicarIva) {
                     var fDtoRatingImpII =
                         fDocumento.fDtoRatingImp + fDocumento.fDtoRatingImp * fDocumento.fPorcIva / 100
-                    fDtoRatingImpII = Redondear(fDtoRatingImpII, 2)
+                    fDtoRatingImpII = redondear(fDtoRatingImpII, 2)
                     tvPrNeto.text =
                         String.format(fFtoDecPrII, fDocumento.fPrecioII - fDtoRatingImpII)
                 } else {

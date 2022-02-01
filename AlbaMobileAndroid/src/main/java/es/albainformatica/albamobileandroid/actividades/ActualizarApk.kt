@@ -300,14 +300,13 @@ class ActualizarApk : Activity() {
 
     fun salir() {
         if (fDescargando) {
-            val aldDialog = NuevoAlertBuilder(
+            val aldDialog = nuevoAlertBuilder(
                 this, resources.getString(R.string.tit_impdatos),
                 resources.getString(R.string.dlg_abandrecep), true
             )
             aldDialog.setPositiveButton(resources.getString(R.string.dlg_si)) { _, _ -> finish() }
             val alert = aldDialog.create()
             alert.show()
-            ColorDividerAlert(this, alert)
         } else finish()
     }
 }

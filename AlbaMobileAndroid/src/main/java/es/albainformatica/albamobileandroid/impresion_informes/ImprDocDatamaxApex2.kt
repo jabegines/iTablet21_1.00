@@ -8,7 +8,7 @@ import es.albainformatica.albamobileandroid.cobros.FormasPagoClase
 import es.albainformatica.albamobileandroid.cobros.PendienteClase
 import android.content.SharedPreferences
 import es.albainformatica.albamobileandroid.database.MyDatabase
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import datamaxoneil.printer.DocumentExPCL_LP
 import datamaxoneil.connection.ConnectionBase
 import datamaxoneil.connection.Connection_Bluetooth
@@ -152,10 +152,10 @@ class ImprDocDatamaxApex2(contexto: Context): Runnable {
         // no llega a esta cifra, le añadimos espacios al final.
         if (result.length > maxLong) result =
             result.substring(0, maxLong) else if (result.length < maxLong) {
-            result = if (fPorLaDerecha) result + StringOfChar(
+            result = if (fPorLaDerecha) result + stringOfChar(
                 " ",
                 maxLong - result.length
-            ) else StringOfChar(" ", maxLong - result.length) + result
+            ) else stringOfChar(" ", maxLong - result.length) + result
         }
         return result
     }
@@ -163,10 +163,10 @@ class ImprDocDatamaxApex2(contexto: Context): Runnable {
     private fun imprCabLineas(docExPCL_LP: DocumentExPCL_LP) {
         val lineaSimple = StringBuilder()
         val cCadena: String = ("ARTICULO"
-                + StringOfChar(" ", 13) + "CAJAS"
-                + StringOfChar(" ", 3) + "UNID"
-                + StringOfChar(" ", 2) + "PRECIO"
-                + StringOfChar(" ", 2) + "TOTAL")
+                + stringOfChar(" ", 13) + "CAJAS"
+                + stringOfChar(" ", 3) + "UNID"
+                + stringOfChar(" ", 2) + "PRECIO"
+                + stringOfChar(" ", 2) + "TOTAL")
         docExPCL_LP.writeText(cCadena)
         for (x in 0 until fAnchoPapel) {
             lineaSimple.append("-")
@@ -224,10 +224,10 @@ class ImprDocDatamaxApex2(contexto: Context): Runnable {
         }
         docExPCL_LP.writeText(lineaSimple.toString())
         val cCadena: String = ("  VENTA"
-                + StringOfChar(" ", 8) + "DTO" + StringOfChar(" ", 7)
-                + "NETO" + StringOfChar(" ", 4) + "%IVA"
-                + StringOfChar(" ", 7) + "IVA")
-        // + Miscelan.StringOfChar(" ", 3) + "%REC" + Miscelan.StringOfChar(" ", 4) + "REC";
+                + stringOfChar(" ", 8) + "DTO" + stringOfChar(" ", 7)
+                + "NETO" + stringOfChar(" ", 4) + "%IVA"
+                + stringOfChar(" ", 7) + "IVA")
+
         docExPCL_LP.writeText(cCadena)
         docExPCL_LP.writeText(lineaSimple.toString())
     }
@@ -261,12 +261,12 @@ class ImprDocDatamaxApex2(contexto: Context): Runnable {
                 sPorcIva = String.format(Locale.getDefault(), "%.2f", x.fPorcIva)
                 sImpIva = String.format(fFtoImpBase, x.fImporteIva)
                 cCadena = (ajustarCadena(sBruto, lBruto, false)
-                        + StringOfChar(" ", 1)
+                        + stringOfChar(" ", 1)
                         + ajustarCadena(sImpDto, lImpDto, false)
-                        + StringOfChar(" ", 3)
+                        + stringOfChar(" ", 3)
                         + ajustarCadena(sBase, lBase, false)
-                        + StringOfChar(" ", 3) + ajustarCadena(sPorcIva, 5, false)
-                        + StringOfChar(" ", 1)
+                        + stringOfChar(" ", 3) + ajustarCadena(sPorcIva, 5, false)
+                        + stringOfChar(" ", 1)
                         + ajustarCadena(sImpIva, lImpIva, false))
                 hayRecargo = hayRecargo || x.fImporteRe != 0.0
                 docExPCL_LP.writeText(cCadena)
@@ -295,7 +295,7 @@ class ImprDocDatamaxApex2(contexto: Context): Runnable {
             lineaSimple.append("-")
         }
         docExPCL_LP.writeText(lineaSimple.toString())
-        docExPCL_LP.writeText("%REC" + StringOfChar(" ", 6) + "REC")
+        docExPCL_LP.writeText("%REC" + stringOfChar(" ", 6) + "REC")
         docExPCL_LP.writeText(lineaSimple.toString())
         for (x in fDocumento.fBases.fLista) {
             if (x.fBaseImponible != 0.0) {
@@ -303,7 +303,7 @@ class ImprDocDatamaxApex2(contexto: Context): Runnable {
                     sPorcRe = String.format(fFtoImpBase, x.fPorcRe)
                     sImpRe = String.format(fFtoImpBase, x.fImporteRe)
                     cCadena =
-                        ajustarCadena(sPorcRe, 5, false) + StringOfChar(" ", 1) + ajustarCadena(
+                        ajustarCadena(sPorcRe, 5, false) + stringOfChar(" ", 1) + ajustarCadena(
                             sImpRe,
                             lImpRe,
                             false
@@ -332,9 +332,9 @@ class ImprDocDatamaxApex2(contexto: Context): Runnable {
                 lineaSimple.append("-")
             }
             docExPCL_LP.writeText(lineaSimple.toString())
-            cCadena = (StringOfChar(" ", 2) + "IMPORTE"
-                    + StringOfChar(" ", 2) + "ENTREGADO"
-                    + StringOfChar(" ", 2) + "PENDIENTE")
+            cCadena = (stringOfChar(" ", 2) + "IMPORTE"
+                    + stringOfChar(" ", 2) + "ENTREGADO"
+                    + stringOfChar(" ", 2) + "PENDIENTE")
             docExPCL_LP.writeText(cCadena)
             docExPCL_LP.writeText(lineaSimple.toString())
             val dImporte = fPendiente.importe.toDouble()
@@ -344,9 +344,9 @@ class ImprDocDatamaxApex2(contexto: Context): Runnable {
             val dPdte = dImporte - dCobrado
             sPdte = String.format(fFtoImpII, dPdte)
             cCadena = (ajustarCadena(sImpte, lImptes, false)
-                    + StringOfChar(" ", 2)
+                    + stringOfChar(" ", 2)
                     + ajustarCadena(sCobrado, lImptes, false)
-                    + StringOfChar(" ", 2)
+                    + stringOfChar(" ", 2)
                     + ajustarCadena(sPdte, lImptes, false))
             docExPCL_LP.writeText(cCadena)
         }

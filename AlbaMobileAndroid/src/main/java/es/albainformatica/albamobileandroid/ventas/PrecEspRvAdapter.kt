@@ -63,7 +63,7 @@ class PrecEspRvAdapter(private var lPrecios: List<ListaPreciosEsp>, private val 
 
             if (fIvaIncl) {
                 var dPrecioII = sPrecio.toDouble() + ((sPrecio.toDouble() * sPorcIva.toDouble()) / 100)
-                dPrecioII = Redondear(dPrecioII, fDecPrII)
+                dPrecioII = redondear(dPrecioII, fDecPrII)
                 tvPrecio.text = String.format(fFtoDecPrII, dPrecioII)
             } else {
                 tvPrecio.text = String.format(fFtoDecPrBase, sPrecio.toDouble())
@@ -84,7 +84,7 @@ class PrecEspRvAdapter(private var lPrecios: List<ListaPreciosEsp>, private val 
 
                 if (fIvaIncl) {
                     var dPrecioII = dPrecio + ((dPrecio * sPorcIva.toDouble()) / 100)
-                    dPrecioII = Redondear(dPrecioII, fDecPrII)
+                    dPrecioII = redondear(dPrecioII, fDecPrII)
 
                     tvPrNeto.text = String.format(fFtoDecPrII, dPrecioII)
                 } else {
@@ -96,7 +96,7 @@ class PrecEspRvAdapter(private var lPrecios: List<ListaPreciosEsp>, private val 
 
                 if (fIvaIncl) {
                     var dPrecioII = dPrecio + ((dPrecio * sPorcIva.toDouble()) / 100)
-                    dPrecioII = Redondear(dPrecioII, fDecPrII)
+                    dPrecioII = redondear(dPrecioII, fDecPrII)
 
                     tvPrNeto.text = String.format(fFtoDecPrII, dPrecioII)
                 } else {
@@ -111,7 +111,7 @@ class PrecEspRvAdapter(private var lPrecios: List<ListaPreciosEsp>, private val 
                 val dPrecio = sPrecio.toDouble()
                 if (fIvaIncl) {
                     var dPrecioII = dPrecio + ((dPrecio * sPorcIva.toDouble()) / 100)
-                    dPrecioII = Redondear(dPrecioII, fDecPrII)
+                    dPrecioII = redondear(dPrecioII, fDecPrII)
 
                     tvPrTarifa.text = String.format(fFtoDecPrII, dPrecioII)
                 } else {

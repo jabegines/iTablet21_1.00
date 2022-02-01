@@ -354,7 +354,7 @@ class GrvImageArticulosAdapter: BaseAdapter {
         // Precio en hco.
         item.prHco
         val sPrecio = item.prHco.replace(',', '.')
-        var dPrecio = Redondear(sPrecio.toDouble(), fDecPrBase)
+        var dPrecio = redondear(sPrecio.toDouble(), fDecPrBase)
         // Si vendemos iva incluído tendremos que calcular el precio con iva.
         if (fIvaIncluido) {
             val dImpIva = dPrecio * item.porcIva / 100
@@ -426,7 +426,7 @@ class GrvImageArticulosAdapter: BaseAdapter {
         item.prClte
         run {
             val sPrecio = item.prClte?.replace(',', '.') ?: "0.0"
-            var dPrecio = Redondear(sPrecio.toDouble(), fDecPrBase)
+            var dPrecio = redondear(sPrecio.toDouble(), fDecPrBase)
             // Si vendemos iva incluído tendremos que calcular el precio con iva.
             if (fIvaIncluido) {
                 val dImpIva = dPrecio * item.porcIva / 100
@@ -482,7 +482,7 @@ class GrvImageArticulosAdapter: BaseAdapter {
         // Tarifa cajas
         item.prCajas
         val sPrCajas = item.prCajas?.replace(',', '.') ?: "0.0"
-        var dPrecio = Redondear(sPrCajas.toDouble(), fDecPrBase)
+        var dPrecio = redondear(sPrCajas.toDouble(), fDecPrBase)
         if (fIvaIncluido) {
             val dImpIva = dPrecio * item.porcIva / 100
             dPrecio += dImpIva
@@ -514,7 +514,7 @@ class GrvImageArticulosAdapter: BaseAdapter {
         // sin oferta en la casilla tvPrAnt. El descuento, sea de oferta o no, lo presentaremos siempre en la casilla tvDto.
         if (item.tieneOferta()) {
             val sPrecio = item.prOfta.replace(',', '.')
-            var dPrecioOfta = Redondear(sPrecio.toDouble(), fDecPrBase)
+            var dPrecioOfta = redondear(sPrecio.toDouble(), fDecPrBase)
             if (dPrecioOfta != 0.0) {
                 if (fIvaIncluido) {
                     val dImpIva = dPrecioOfta * item.porcIva / 100

@@ -12,7 +12,7 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothSocket
 import android.bluetooth.BluetoothDevice
 import android.content.Context
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.widget.Toast
 import android.content.Intent
 import android.os.Handler
@@ -282,8 +282,8 @@ class ImprimirDocumento(contexto: Context): Runnable {
                 lineaSimple.append("-")
             }
             result = result + lineaSimple + ccSaltoLinea
-            result = (result + StringOfChar(" ", 2) + "IMPORTE" + StringOfChar(" ", 2) + "ENTREGADO"
-                    + StringOfChar(" ", 2) + "PENDIENTE" + ccSaltoLinea)
+            result = (result + stringOfChar(" ", 2) + "IMPORTE" + stringOfChar(" ", 2) + "ENTREGADO"
+                    + stringOfChar(" ", 2) + "PENDIENTE" + ccSaltoLinea)
             lineaSimple = StringBuilder()
             for (x in 0..34) {
                 lineaSimple.append("-")
@@ -295,8 +295,8 @@ class ImprimirDocumento(contexto: Context): Runnable {
             sCobrado = String.format(fFtoImpII, dCobrado)
             val dPdte = dImporte - dCobrado
             sPdte = String.format(fFtoImpII, dPdte)
-            result = (result + ajustarCadena(sImpte, lImptes, false) + StringOfChar(" ", 2)
-                    + ajustarCadena(sCobrado, lImptes, false) + StringOfChar(
+            result = (result + ajustarCadena(sImpte, lImptes, false) + stringOfChar(" ", 2)
+                    + ajustarCadena(sCobrado, lImptes, false) + stringOfChar(
                 " ",
                 2
             ) + ajustarCadena(sPdte, lImptes, false))
@@ -341,26 +341,26 @@ class ImprimirDocumento(contexto: Context): Runnable {
                     sImpIva = String.format(fFtoImpBase, x.fImporteIva)
                     sPorcRe = String.format(fFtoImpBase, x.fPorcRe)
                     sImpRe = String.format(fFtoImpBase, x.fImporteRe)
-                    texto.append(ajustarCadena(sBruto, lBruto, false)).append(StringOfChar(" ", 1))
-                        .append(ajustarCadena(sImpDto, lImpDto, false)).append(StringOfChar(" ", 1))
-                        .append(ajustarCadena(sBase, lBase, false)).append(StringOfChar(" ", 2))
-                        .append(ajustarCadena(sPorcIva, 5, false)).append(StringOfChar(" ", 1))
-                        .append(ajustarCadena(sImpIva, lImpIva, false)).append(StringOfChar(" ", 1))
+                    texto.append(ajustarCadena(sBruto, lBruto, false)).append(stringOfChar(" ", 1))
+                        .append(ajustarCadena(sImpDto, lImpDto, false)).append(stringOfChar(" ", 1))
+                        .append(ajustarCadena(sBase, lBase, false)).append(stringOfChar(" ", 2))
+                        .append(ajustarCadena(sPorcIva, 5, false)).append(stringOfChar(" ", 1))
+                        .append(ajustarCadena(sImpIva, lImpIva, false)).append(stringOfChar(" ", 1))
                     if (x.fImporteRe != 0.0) texto.append(ajustarCadena(sPorcRe, 5, false))
-                        .append(StringOfChar(" ", 1)).append(
+                        .append(stringOfChar(" ", 1)).append(
                         ajustarCadena(
                             sImpRe,
                             lImpRe,
                             false
                         )
-                    ) else texto.append(StringOfChar(" ", 6 + lImpRe))
+                    ) else texto.append(stringOfChar(" ", 6 + lImpRe))
                     texto.append(ccSaltoLinea)
                     fLineasImpresas++
                 }
             }
             sTotal = String.format(fFtoImpII, fDocumento.fBases.totalConImptos)
             texto.append(ccSaltoLinea)
-            texto.append(StringOfChar(" ", 10)).append("TOTAL IMPORTE: ").append(ccDobleAncho)
+            texto.append(stringOfChar(" ", 10)).append("TOTAL IMPORTE: ").append(ccDobleAncho)
                 .append(ajustarCadena(sTotal, lTotal, false)).append(
                     ccNormal
             ).append("  Euros").append(ccSaltoLinea)
@@ -469,13 +469,13 @@ class ImprimirDocumento(contexto: Context): Runnable {
                 lineaSimple.append("-")
             }
             texto = StringBuilder(lineaSimple.toString() + ccSaltoLinea)
-            texto.append(StringOfChar(" ", 3)).append("VENTA").append(StringOfChar(" ", 7))
+            texto.append(stringOfChar(" ", 3)).append("VENTA").append(stringOfChar(" ", 7))
                 .append("DTO")
-                .append(StringOfChar(" ", 5)).append("NETO").append(StringOfChar(" ", 4))
+                .append(stringOfChar(" ", 5)).append("NETO").append(stringOfChar(" ", 4))
                 .append("%IVA")
-                .append(StringOfChar(" ", 6)).append("IVA").append(StringOfChar(" ", 3))
+                .append(stringOfChar(" ", 6)).append("IVA").append(stringOfChar(" ", 3))
                 .append("%REC")
-                .append(StringOfChar(" ", 5)).append("REC").append(ccSaltoLinea)
+                .append(stringOfChar(" ", 5)).append("REC").append(ccSaltoLinea)
             texto.append(lineaSimple).append(ccSaltoLinea)
             os.write(stringABytes(texto.toString()))
         } catch (e: Exception) {
@@ -488,12 +488,12 @@ class ImprimirDocumento(contexto: Context): Runnable {
 
     private fun imprCabLineas(): String {
         val lineaSimple = StringBuilder()
-        var result: String = "COD." + StringOfChar(" ", 4) + "ARTICULO" + StringOfChar(
+        var result: String = "COD." + stringOfChar(" ", 4) + "ARTICULO" + stringOfChar(
             " ",
             13
-        ) + "CAJAS" + StringOfChar(" ", 4) + "UNID"
+        ) + "CAJAS" + stringOfChar(" ", 4) + "UNID"
         result = if (!fImprSinValorar) {
-            result + StringOfChar(" ", 2) + "PRECIO" + StringOfChar(
+            result + stringOfChar(" ", 2) + "PRECIO" + stringOfChar(
                 " ",
                 4
             ) + "TOTAL" + ccSaltoLinea
@@ -517,25 +517,22 @@ class ImprimirDocumento(contexto: Context): Runnable {
         var cCadena: String = ajustarCadena(ponerCeros(fDocumento.fClientes.fCodigo.toString(), ancho_codclte) + " " +
                 fDocumento.fClientes.fNombre, 35, true)
         result += cCadena
-        cCadena = StringOfChar(
-            " ",
-            5
-        ) + "Vendedor: " + fConfiguracion.vendedor() // + " " + fConfiguracion.nombreVendedor(), 20, true);
+        cCadena = stringOfChar(" ", 5) + "Vendedor: " + fConfiguracion.vendedor() // + " " + fConfiguracion.nombreVendedor(), 20, true);
         result += cCadena
         result += ccSaltoLinea
         result += ajustarCadena(fDocumento.fClientes.fDireccion, 35, true)
-        cCadena = StringOfChar(" ", 5) + "Hora: " + fDocumento.fHora
+        cCadena = stringOfChar(" ", 5) + "Hora: " + fDocumento.fHora
         result += cCadena
         result += ccSaltoLinea
         result += ajustarCadena(fDocumento.fClientes.fCodPostal + " " + fDocumento.fClientes.fPoblacion, 35, true)
-        cCadena = StringOfChar(" ", 5) + "Fecha: " + fDocumento.fFecha
+        cCadena = stringOfChar(" ", 5) + "Fecha: " + fDocumento.fFecha
         result += cCadena
         result += ccSaltoLinea
         result += ajustarCadena(fDocumento.fClientes.fProvincia, 35, true)
-        result = result + StringOfChar(" ", 5) + "Doc: " + tipoDocAsString(fDocumento.fTipoDoc)
+        result = result + stringOfChar(" ", 5) + "Doc: " + tipoDocAsString(fDocumento.fTipoDoc)
         result += ccSaltoLinea
         result += ajustarCadena("C.I.F.: " + fDocumento.fClientes.fCif, 35, true)
-        result = result + StringOfChar(" ", 5) + "Num.: " + fDocumento.serie + "/" + fDocumento.numero
+        result = result + stringOfChar(" ", 5) + "Num.: " + fDocumento.serie + "/" + fDocumento.numero
         result = result + ccSaltoLinea + ccSaltoLinea
         return result
     }
@@ -547,10 +544,10 @@ class ImprimirDocumento(contexto: Context): Runnable {
         // Si la cadena supera el máximo de caracteres, la recortamos. En cambio, si no llega a esta cifra, le añadimos espacios al final.
         if (result.length > maxLong) result =
             result.substring(0, maxLong) else if (result.length < maxLong) {
-            result = if (fPorLaDerecha) result + StringOfChar(
+            result = if (fPorLaDerecha) result + stringOfChar(
                 " ",
                 maxLong - result.length
-            ) else StringOfChar(" ", maxLong - result.length) + result
+            ) else stringOfChar(" ", maxLong - result.length) + result
         }
         return result
     }
@@ -662,17 +659,17 @@ class ImprimirDocumento(contexto: Context): Runnable {
             result.append("LISTADO DE CARGA").append(ccSaltoLinea).append(ccSaltoLinea)
             result.append("Nueva carga  ")
             result.append(cargaEnt.fecha)
-            result.append(StringOfChar(" ", 3)).append(cargaEnt.hora)
+            result.append(stringOfChar(" ", 3)).append(cargaEnt.hora)
             result.append(ccSaltoLinea)
             result.append("Terminal: ").append(fConfiguracion.codTerminal()).append(" ").append(
                 fConfiguracion.nombreTerminal()).append(ccSaltoLinea)
             result.append("Vendedor: ").append(fConfiguracion.vendedor()).append(" ").append(
                 fConfiguracion.nombreVendedor()).append(ccSaltoLinea)
-            result.append(lineasDobles).append(StringOfChar(ccSaltoLinea, 3))
-            result.append("Codigo").append(StringOfChar(" ", 2)).append("Descripcion")
-                .append(StringOfChar(" ", 16))
-                .append("Lote").append(StringOfChar(" ", 8)).append("Cajas")
-                .append(StringOfChar(" ", 3))
+            result.append(lineasDobles).append(stringOfChar(ccSaltoLinea, 3))
+            result.append("Codigo").append(stringOfChar(" ", 2)).append("Descripcion")
+                .append(stringOfChar(" ", 16))
+                .append("Lote").append(stringOfChar(" ", 8)).append("Cajas")
+                .append(stringOfChar(" ", 3))
                 .append("Cant.").append(ccSaltoLinea)
             for (x in 0..59) {
                 lineaSimple.append("-")
@@ -711,7 +708,7 @@ class ImprimirDocumento(contexto: Context): Runnable {
                 sCant = linea.cantidad
                 result.append(ajustarCadena(sCodigo, lCodigo, true)).append(" ")
                     .append(ajustarCadena(sDescr, lDescr, true))
-                    .append(StringOfChar(" ", 3)).append(ajustarCadena(sLote, lLote, true))
+                    .append(stringOfChar(" ", 3)).append(ajustarCadena(sLote, lLote, true))
                 var dCajas = 0.0
                 var dCant = 0.0
                 if (sCajas != "") dCajas = sCajas.toDouble()
@@ -730,9 +727,9 @@ class ImprimirDocumento(contexto: Context): Runnable {
         sCajas = String.format(fFtoCant, sumaCajas)
         sCant = String.format(fFtoCant, sumaCant)
         result.append(ccSaltoLinea)
-        result.append("SUMAS: ").append(StringOfChar(" ", 39))
+        result.append("SUMAS: ").append(stringOfChar(" ", 39))
             .append(ajustarCadena(sCajas, lCajas, false))
-            .append(StringOfChar(" ", 1)).append(ajustarCadena(sCant, lCant, false))
+            .append(stringOfChar(" ", 1)).append(ajustarCadena(sCant, lCant, false))
         fLineasImpresas += 2
 
         // Avanzamos el papel hasta el punto de corte

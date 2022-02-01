@@ -11,7 +11,7 @@ import es.albainformatica.albamobileandroid.ventas.Documento
 import es.albainformatica.albamobileandroid.cobros.FormasPagoClase
 import es.albainformatica.albamobileandroid.cobros.PendienteClase
 import com.lowagie.text.pdf.PdfContentByte
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import com.lowagie.text.pdf.PdfWriter
 import android.widget.Toast
 import com.lowagie.text.pdf.PdfPTable
@@ -419,10 +419,10 @@ class DocPDF(contexto: Context) {
         // no llega a esta cifra, le añadimos espacios al final.
         if (result.length > maxLong) result =
             result.substring(0, maxLong) else if (result.length < maxLong) {
-            result = if (fPorLaDerecha) result + StringOfChar(
+            result = if (fPorLaDerecha) result + stringOfChar(
                 " ",
                 maxLong - result.length
-            ) else StringOfChar(" ", maxLong - result.length) + result
+            ) else stringOfChar(" ", maxLong - result.length) + result
         }
         return result
     }

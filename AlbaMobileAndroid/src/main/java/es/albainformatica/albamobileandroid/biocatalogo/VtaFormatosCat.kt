@@ -261,7 +261,7 @@ class VtaFormatosCat: AppCompatActivity() {
                 // Mostramos el precio neto.
                 if (fIvaIncluido && fAplicarIva) {
                     var fDtoRatingImpII: Double = fDocumento.fDtoRatingImp + fDocumento.fDtoRatingImp * fDocumento.fPorcIva / 100
-                    fDtoRatingImpII = Redondear(fDtoRatingImpII, 2)
+                    fDtoRatingImpII = redondear(fDtoRatingImpII, 2)
                     edtFtCatPrecio.setText(String.format(fFtoDecPrII, fDocumento.fPrecioII - fDtoRatingImpII))
                 } else {
                     edtFtCatPrecio.setText(String.format(fFtoDecPrBase, fDocumento.fPrecio - fDocumento.fDtoRatingImp))

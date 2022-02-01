@@ -233,7 +233,7 @@ class Recibir : Activity() {
     fun recibirWifi(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
-        val aldDialog = NuevoAlertBuilder(
+        val aldDialog = nuevoAlertBuilder(
             this, resources.getString(R.string.tit_recepwifi),
             resources.getString(R.string.dlg_recepwifi), true
         )
@@ -255,7 +255,7 @@ class Recibir : Activity() {
             val i = Intent(this, PedirConfigFtp::class.java)
             startActivityForResult(i, fRequestPedirConfFtp)
         }
-        val aldDialog = NuevoAlertBuilder(
+        val aldDialog = nuevoAlertBuilder(
             this, resources.getString(R.string.tit_recepftp),
             resources.getString(R.string.dlg_recepftp), true
         )
@@ -312,7 +312,7 @@ class Recibir : Activity() {
 
                             // Reseteamos la aplicación, para no tener problemas con las fecha de
                             // inicio y fin del ejercicio. Así también refrescamos las etiquetas de la pantalla principal.
-                            val aldDialog = NuevoAlertBuilder(
+                            val aldDialog = nuevoAlertBuilder(
                                 this@Recibir,
                                 "Información",
                                 "Fin de la importación",
@@ -511,7 +511,7 @@ class Recibir : Activity() {
 
                         // Reseteamos la aplicación, para no tener problemas con las fecha de
                         // inicio y fin del ejercicio. Así también refrescamos las etiquetas de la pantalla principal.
-                        val aldDialog = NuevoAlertBuilder(
+                        val aldDialog = nuevoAlertBuilder(
                             this@Recibir,
                             "Información",
                             "Fin de la importación",
@@ -698,7 +698,7 @@ class Recibir : Activity() {
         view.getTag(0)          // Para que no dé warning el compilador
 
         if (fImportando) {
-            val aldDialog = NuevoAlertBuilder(
+            val aldDialog = nuevoAlertBuilder(
                 this, resources.getString(R.string.tit_impdatos), resources.getString(
                     R.string.dlg_abandrecep
                 ), true

@@ -954,7 +954,7 @@ class Documento(private val fContexto: Context) {
             if (!fAplicarIva) fOldImpteII = fOldImpte
             else {
                 fOldImpteII = fOldImpte + ((fOldImpte * fPorcIva) / 100)
-                fOldImpteII = Redondear(fOldImpteII, fDecImpII)
+                fOldImpteII = redondear(fOldImpteII, fDecImpII)
             }
         }
 
@@ -1518,7 +1518,7 @@ class Documento(private val fContexto: Context) {
             fPrecioII = fPrecio
         } else {
             fPrecioII = fPrecio + fPrecio * fPorcIva / 100
-            fPrecioII = Redondear(fPrecioII, fDecPrII)
+            fPrecioII = redondear(fPrecioII, fDecPrII)
         }
     }
 
@@ -1532,7 +1532,7 @@ class Documento(private val fContexto: Context) {
             // decimales), al volver a calcular el precio iva incluído nos saldría
             // 14.251.
             val dIvaDiv = (100 + fPorcIva) / 100
-            Redondear(fPrecioII / dIvaDiv, fDecPrII + 2)
+            redondear(fPrecioII / dIvaDiv, fDecPrII + 2)
         }
     }
 
@@ -1543,7 +1543,7 @@ class Documento(private val fContexto: Context) {
             } else {
                 val dIvaDiv = (100 + fPorcIva) / 100
                 try {
-                    Redondear(fImpteII / dIvaDiv, fDecImpII + 1)
+                    redondear(fImpteII / dIvaDiv, fDecImpII + 1)
                 } catch (e: NumberFormatException) {
                     val texto = "Error al redondear, número demasiado alto"
                     val textoGrande = SpannableStringBuilder(texto)
@@ -1566,7 +1566,7 @@ class Documento(private val fContexto: Context) {
                 fImporte + (fTasa1 + fTasa2 - fDtoImp) * fCantidad
             }
             fImporte = try {
-                Redondear(fImporte, fDecImpBase)
+                redondear(fImporte, fDecImpBase)
             } catch (e: NumberFormatException) {
                 val texto = "Error al redondear, número demasiado alto"
                 val textoGrande = SpannableStringBuilder(texto)
@@ -1583,7 +1583,7 @@ class Documento(private val fContexto: Context) {
             if (!fAplicarIva) fImpteII = fImporte else {
                 fImpteII = fImporte + fImporte * fPorcIva / 100
                 fImpteII = try {
-                    Redondear(fImpteII, fDecImpII)
+                    redondear(fImpteII, fDecImpII)
                 } catch (e: NumberFormatException) {
                     val texto = "Error al redondear, número demasiado alto"
                     val textoGrande = SpannableStringBuilder(texto)
@@ -1609,7 +1609,7 @@ class Documento(private val fContexto: Context) {
                 fImpteII + (fTasa1II + fTasa2II - fDtoImpII) * fCantidad
             }
             fImpteII = try {
-                Redondear(fImpteII, fDecImpII)
+                redondear(fImpteII, fDecImpII)
             } catch (e: NumberFormatException) {
                 val texto = "Error al redondear, número demasiado alto"
                 val textoGrande = SpannableStringBuilder(texto)
@@ -1623,12 +1623,12 @@ class Documento(private val fContexto: Context) {
 
     fun calcularDtoImpBase() {
         val dIvaDiv = (100 + fPorcIva) / 100
-        fDtoImp = Redondear(fDtoImpII / dIvaDiv, 2)
+        fDtoImp = redondear(fDtoImpII / dIvaDiv, 2)
     }
 
     fun calcularDtoImpII() {
         fDtoImpII = fDtoImp + fDtoImp * fPorcIva / 100
-        fDtoImpII = Redondear(fDtoImpII, 2)
+        fDtoImpII = redondear(fDtoImpII, 2)
     }
 
     private fun tomaPrecioHco() {
@@ -1642,8 +1642,8 @@ class Documento(private val fContexto: Context) {
         if (datosPrecios.precio != "") {
             val sPrecio = datosPrecios.precio.replace(',', '.')
             val sDto = datosPrecios.dto.replace(',', '.')
-            fPrecio = Redondear(sPrecio.toDouble(), fDecPrBase)
-            fDtoLin = Redondear(sDto.toDouble(), 2)
+            fPrecio = redondear(sPrecio.toDouble(), fDecPrBase)
+            fDtoLin = redondear(sDto.toDouble(), 2)
         }
     }
 
@@ -1659,9 +1659,9 @@ class Documento(private val fContexto: Context) {
             val sDto = ofertaEnt.dto.replace(',', '.')
             val queTipoOfta = ofertaEnt.tipoOferta.toInt()
             if (queTipoOfta != 6) {
-                fPrecio = Redondear(sPrecio.toDouble(), fDecPrBase)
+                fPrecio = redondear(sPrecio.toDouble(), fDecPrBase)
                 fArtEnOferta = true
-                if (fDtoLin == 0.0) fDtoLin = Redondear(sDto.toDouble(), 2)
+                if (fDtoLin == 0.0) fDtoLin = redondear(sDto.toDouble(), 2)
 
             // Comprobamos si hay alguna oferta de escalado de precios
             } else {
@@ -1716,8 +1716,8 @@ class Documento(private val fContexto: Context) {
         if (datosPrecios.precio != "") {
             val sPrecio = datosPrecios.precio.replace(',', '.')
             val sDto = datosPrecios.dto.replace(',', '.')
-            fPrecio = Redondear(sPrecio.toDouble(), fDecPrBase)
-            if (fDtoLin == 0.0) fDtoLin = Redondear(sDto.toDouble(), 2)
+            fPrecio = redondear(sPrecio.toDouble(), fDecPrBase)
+            if (fDtoLin == 0.0) fDtoLin = redondear(sDto.toDouble(), 2)
         }
 
         if (fTarifaDto > 0 && fDtoLin == 0.0) {
@@ -1730,7 +1730,7 @@ class Documento(private val fContexto: Context) {
 
             if (datosPrecios.dto != "") {
                 val sDto = datosPrecios.dto.replace(',', '.')
-                fDtoLin = Redondear(sDto.toDouble(), 2)
+                fDtoLin = redondear(sDto.toDouble(), 2)
             }
         }
     }
@@ -1769,8 +1769,8 @@ class Documento(private val fContexto: Context) {
             // Vemos si el descuento es por importe o por porcentaje
             val queFlag = quePrec.flag
             if (queFlag and FLAGRATING_DESCUENTOIMPORTE > 0) fDtoRatingImp = sDto.toDouble()
-            else fDtoLin = Redondear(sDto.toDouble(), 2)
-            fPrecio = Redondear(sPrecio.toDouble(), fDecPrBase)
+            else fDtoLin = redondear(sDto.toDouble(), 2)
+            fPrecio = redondear(sPrecio.toDouble(), fDecPrBase)
             existe = true
         }
 
@@ -1780,7 +1780,7 @@ class Documento(private val fContexto: Context) {
 
             if (sDto != "") {
                 sDto = sDto.replace(',', '.')
-                fDtoLin = Redondear(sDto.toDouble(), 2)
+                fDtoLin = redondear(sDto.toDouble(), 2)
                 existe = true
             }
         }
@@ -1797,8 +1797,8 @@ class Documento(private val fContexto: Context) {
                     val queFlag = quePrec.flag
                     if (queFlag and FLAGRATING_DESCUENTOIMPORTE > 0)
                         fDtoRatingImp = sDto.toDouble()
-                    else fDtoLin = Redondear(sDto.toDouble(), 2)
-                    fPrecio = Redondear(sPrecio.toDouble(), fDecPrBase)
+                    else fDtoLin = redondear(sDto.toDouble(), 2)
+                    fPrecio = redondear(sPrecio.toDouble(), fDecPrBase)
                     existe = true
                 }
             }
@@ -1812,7 +1812,7 @@ class Documento(private val fContexto: Context) {
 
                 if (sDto != "") {
                     sDto = sDto.replace(',', '.')
-                    fDtoLin = Redondear(sDto.toDouble(), 2)
+                    fDtoLin = redondear(sDto.toDouble(), 2)
                     existe = true
                 }
             }
@@ -1824,7 +1824,7 @@ class Documento(private val fContexto: Context) {
 
             if (sDto != "") {
                 sDto =  sDto.replace(',', '.')
-                fDtoLin = Redondear(sDto.toDouble(), 2)
+                fDtoLin = redondear(sDto.toDouble(), 2)
                 existe = true
             }
         }
@@ -1837,7 +1837,7 @@ class Documento(private val fContexto: Context) {
 
                 if (sDto != "") {
                     sDto = sDto.replace(',', '.')
-                    fDtoLin = Redondear(sDto.toDouble(), 2)
+                    fDtoLin = redondear(sDto.toDouble(), 2)
                 }
             }
         }

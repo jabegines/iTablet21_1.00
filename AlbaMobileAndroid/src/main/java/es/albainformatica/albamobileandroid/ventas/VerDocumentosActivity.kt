@@ -238,7 +238,7 @@ class VerDocumentosActivity: Activity() {
 
 
     private fun marcarParaEnviar() {
-        val aldDialog = NuevoAlertBuilder(this, getString(R.string.tit_marcarenv), getString(R.string.msj_MarcarEnviar), false)
+        val aldDialog = nuevoAlertBuilder(this, getString(R.string.tit_marcarenv), getString(R.string.msj_MarcarEnviar), false)
         aldDialog.setPositiveButton(android.R.string.yes) { _: DialogInterface?, _: Int ->
             fDocumento.marcarParaEnviar(fIdDocumento)
             refrescarLineas()
@@ -401,7 +401,7 @@ class VerDocumentosActivity: Activity() {
                     // Comprobamos si el Whatsapp está instalado
                     if (whatsappInstalado(this@VerDocumentosActivity)) {
 
-                        val aldDialog = NuevoAlertBuilder(
+                        val aldDialog = nuevoAlertBuilder(
                             this@VerDocumentosActivity,
                             "Escoja",
                             "Enviar documento PDF",

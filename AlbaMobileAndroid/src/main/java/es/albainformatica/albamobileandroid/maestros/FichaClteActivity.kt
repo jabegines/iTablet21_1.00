@@ -677,14 +677,13 @@ class FichaClteActivity: AppCompatActivity() {
                 if (fIdTelf > 0) {
                     fShowBtFlotTlf = false
                     botonesFlotantesTlf()
-                    val aldDialog = NuevoAlertBuilder(this, "Borrar teléfono", "¿Está seguro de borrar?", true)
+                    val aldDialog = nuevoAlertBuilder(this, "Borrar teléfono", "¿Está seguro de borrar?", true)
                     aldDialog.setPositiveButton("Si") { _: DialogInterface?, _: Int ->
                         fClientes.borrarTelf(fIdTelf)
                         refrescarTelef()
                     }
                     val alert = aldDialog.create()
                     alert.show()
-                    ColorDividerAlert(this, alert)
                 } else MsjAlerta(this).alerta("Tiene que seleccionar un contacto")
             }
         }
@@ -699,14 +698,13 @@ class FichaClteActivity: AppCompatActivity() {
                 if (fIdDir > 0) {
                     fShowBtFlotDir = false
                     botonesFlotantesDir()
-                    val aldDialog = NuevoAlertBuilder(this, "Borrar dirección", "¿Está seguro de borrar?", true)
+                    val aldDialog = nuevoAlertBuilder(this, "Borrar dirección", "¿Está seguro de borrar?", true)
                     aldDialog.setPositiveButton("Si") { _: DialogInterface?, _: Int ->
                         fClientes.borrarDirecc(fIdDir)
                         refrescarDirecc()
                     }
                     val alert = aldDialog.create()
                     alert.show()
-                    ColorDividerAlert(this, alert)
                 } else MsjAlerta(this).alerta("Tiene que seleccionar una dirección")
             }
         }

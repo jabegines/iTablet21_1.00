@@ -8,7 +8,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Looper
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.text.Html
 import android.view.KeyEvent
 import android.view.View
@@ -369,7 +369,7 @@ class CobrosActivity: AppCompatActivity() {
 
 
     private fun continuarPagare(queAnotacion: String, queFechaVto: String) {
-        val aldDialog = NuevoAlertBuilder(this, "Marcar", resources.getString(R.string.msj_MarcarPagare), true)
+        val aldDialog = nuevoAlertBuilder(this, "Marcar", resources.getString(R.string.msj_MarcarPagare), true)
         aldDialog.setPositiveButton("OK") { _: DialogInterface?, _: Int ->
             fPendiente.actualizarFechaVto(queFechaVto, queAnotacion)
 
@@ -382,7 +382,6 @@ class CobrosActivity: AppCompatActivity() {
         }
         val alert = aldDialog.create()
         alert.show()
-        ColorDividerAlert(this, alert)
     }
 
 
@@ -527,7 +526,7 @@ class CobrosActivity: AppCompatActivity() {
 
                         // Comprobamos si el Whatsapp está instalado
                         if (whatsappInstalado(this@CobrosActivity)) {
-                            val aldDialog = NuevoAlertBuilder(
+                            val aldDialog = nuevoAlertBuilder(
                                 this@CobrosActivity,
                                 "Escoja",
                                 "Enviar documento PDF",

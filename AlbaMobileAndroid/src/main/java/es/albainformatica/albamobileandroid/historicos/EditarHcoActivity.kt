@@ -470,7 +470,7 @@ class EditarHcoActivity: AppCompatActivity() {
                 edtDtoI.setText(String.format(fFtoDecPrII, fDocumento.fDtoRatingImp))
                 // Mostramos el precio neto.
                 var fDtoRatingImpII = fDocumento.fDtoRatingImp + fDocumento.fDtoRatingImp * fDocumento.fPorcIva / 100
-                fDtoRatingImpII = Redondear(fDtoRatingImpII, 2)
+                fDtoRatingImpII = redondear(fDtoRatingImpII, 2)
                 tvPrNeto.text = String.format(fFtoDecPrII, fDocumento.fPrecioII - fDtoRatingImpII)
             } else {
                 edtDtoI.setText(String.format(fFtoDecPrBase, fDocumento.fDtoRatingImp))
@@ -489,7 +489,7 @@ class EditarHcoActivity: AppCompatActivity() {
     }
 
     private fun avisoArtLoteEnDoc() {
-        val aldDialog = NuevoAlertBuilder(
+        val aldDialog = nuevoAlertBuilder(
             this, "Artículo y lote vendido",
             "El artículo con este lote ya está en el documento, ¿continuar?", true
         )
@@ -497,11 +497,10 @@ class EditarHcoActivity: AppCompatActivity() {
         aldDialog.setNegativeButton(getString(R.string.dlg_no)) { _: DialogInterface?, _: Int -> cancelarHco(null) }
         val alert = aldDialog.create()
         alert.show()
-        ColorDividerAlert(this, alert)
     }
 
     private fun avisoArtEnDoc() {
-        val aldDialog = NuevoAlertBuilder(
+        val aldDialog = nuevoAlertBuilder(
             this, "Artículo vendido",
             "El artículo ya está en el documento, ¿continuar?", true
         )
@@ -509,7 +508,6 @@ class EditarHcoActivity: AppCompatActivity() {
         aldDialog.setNegativeButton(getString(R.string.dlg_no)) { _: DialogInterface?, _: Int -> cancelarHco(null) }
         val alert = aldDialog.create()
         alert.show()
-        ColorDividerAlert(this, alert)
     }
 
 

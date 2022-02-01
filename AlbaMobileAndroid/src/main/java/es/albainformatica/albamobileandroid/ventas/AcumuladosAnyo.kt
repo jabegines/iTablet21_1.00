@@ -1,6 +1,6 @@
 package es.albainformatica.albamobileandroid.ventas
 
-import es.albainformatica.albamobileandroid.DimeNombreMesAbrev
+import es.albainformatica.albamobileandroid.dimeNombreMesAbrev
 import android.app.Activity
 import es.albainformatica.albamobileandroid.historicos.HistoricoMes
 import android.widget.LinearLayout
@@ -97,7 +97,7 @@ class AcumuladosAnyo: Activity() {
         image.setImageDrawable(badge)
         llGrupo.addView(image)
         val mes = TextView(this)
-        mes.text = DimeNombreMesAbrev(queMes)
+        mes.text = dimeNombreMesAbrev(queMes)
         mes.gravity = Gravity.CENTER
         llGrupo.addView(mes)
         linearChart.addView(llGrupo)

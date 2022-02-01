@@ -6,7 +6,7 @@ import android.app.DialogFragment
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -268,7 +268,7 @@ class ModifDocReparto: Activity() {
             i.putExtra("terminar", true)
             startActivityForResult(i, fRequestPieDoc)
         } else {
-            val aldDialog = NuevoAlertBuilder(this, "Terminar", "No ha realizado ninguna modificación", false)
+            val aldDialog = nuevoAlertBuilder(this, "Terminar", "No ha realizado ninguna modificación", false)
             aldDialog.setPositiveButton("Ok") { _: DialogInterface?, _: Int ->
                     // Borramos la cabecera del albarán
                     fDocumento.borrarDocumento(fDocumento.fIdDoc)
@@ -310,7 +310,7 @@ class ModifDocReparto: Activity() {
         val dSumaDocs = dTotalDoc + fTotalDocOriginal
         val sSumaDocs = String.format(fFtoDecImpIva, dSumaDocs)
         if (fPedirCobro) {
-            val aldDialog = NuevoAlertBuilder(this, "Cobrar", "¿Cobrar $sSumaDocs por los dos documentos?", true)
+            val aldDialog = nuevoAlertBuilder(this, "Cobrar", "¿Cobrar $sSumaDocs por los dos documentos?", true)
             aldDialog
                 .setPositiveButton("Sí") { _: DialogInterface?, _: Int -> cobrarModifDocReparto() }
                 .setNegativeButton("No") { _: DialogInterface?, _: Int ->
@@ -466,7 +466,7 @@ class ModifDocReparto: Activity() {
                     // Comprobamos si el Whatsapp está instalado
                     if (whatsappInstalado(this)) {
 
-                        val aldDialog = NuevoAlertBuilder(this, "Escoja", "Enviar documento PDF", true)
+                        val aldDialog = nuevoAlertBuilder(this, "Escoja", "Enviar documento PDF", true)
 
                         aldDialog.setPositiveButton("Por email") { _: DialogInterface?, _: Int ->
                             documPDF.enviarPorEmail()
@@ -550,7 +550,7 @@ class ModifDocReparto: Activity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (fEstado == est_Vl_Browse) {
-                val aldDialog = NuevoAlertBuilder(this, "Salir", "¿Anular el documento?", true)
+                val aldDialog = nuevoAlertBuilder(this, "Salir", "¿Anular el documento?", true)
                 aldDialog.setPositiveButton("Sí") { _: DialogInterface?, _: Int ->
                     fDocumento.borrarModifDocReparto(fDocumento.fIdDoc)
                     val returnIntent = Intent()
@@ -559,7 +559,6 @@ class ModifDocReparto: Activity() {
                 }
                 val alert = aldDialog.create()
                 alert.show()
-                ColorDividerAlert(this, alert)
 
                 // Si el listener devuelve true, significa que el evento está procesado, y nadie debe hacer nada más.
                 return true

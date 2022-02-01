@@ -51,7 +51,7 @@ class CobrosClase(queContexto: Context) {
             cobroEnt.vPuesto, cobroEnt.vApunte, cobroEnt.vEjercicio) ?: CobrosEnt()
 
         if (cobroExist.cobroId > 0) {
-            val aldDialog = NuevoAlertBuilder(fContexto as Activity, "Cobro existente",
+            val aldDialog = nuevoAlertBuilder(fContexto as Activity, "Cobro existente",
                 fContexto.resources.getString(R.string.msj_CobroExiste), true)
 
             aldDialog.setPositiveButton("Sí") { _: DialogInterface?, _: Int ->

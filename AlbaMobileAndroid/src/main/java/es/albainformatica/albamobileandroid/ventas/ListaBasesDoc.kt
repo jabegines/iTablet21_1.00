@@ -2,7 +2,7 @@ package es.albainformatica.albamobileandroid.ventas
 
 import android.content.Context
 import es.albainformatica.albamobileandroid.DatosLinIva
-import es.albainformatica.albamobileandroid.Redondear
+import es.albainformatica.albamobileandroid.redondear
 import es.albainformatica.albamobileandroid.dao.IvasDao
 import es.albainformatica.albamobileandroid.dao.LineasDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
@@ -196,19 +196,19 @@ class ListaBasesDoc(contexto: Context) {
             if (fIvaIncluido) {
                 fTotal += Importe
                 fImpteBruto += Importe
-                fBaseImponible = Redondear(fTotal / ((100 + fPorcIva) / 100), fDecImpII + 2)
+                fBaseImponible = redondear(fTotal / ((100 + fPorcIva) / 100), fDecImpII + 2)
             } else {
                 fBaseImponible += Importe
                 fImpteBruto += Importe
             }
-            fImporteIva = if (fAplicarIva) Redondear(fBaseImponible * fPorcIva / 100, fDecImpBase) else 0.0
-            fImporteRe = if (fAplicarRecargo) Redondear(fBaseImponible * fPorcRe / 100, fDecImpBase) else 0.0
+            fImporteIva = if (fAplicarIva) redondear(fBaseImponible * fPorcIva / 100, fDecImpBase) else 0.0
+            fImporteRe = if (fAplicarRecargo) redondear(fBaseImponible * fPorcRe / 100, fDecImpBase) else 0.0
 
             // La diferencia entre Total y TotalConImptos es el recargo de
             // equivalencia, que Total no incluye. Me viene bien cuando trabajo iva
             // incluído, ya que a Total no puedo añadirle el recargo y, para calcular
             // la base, parto de Total.
-            fTotalConImptos = Redondear(fBaseImponible + fImporteIva + fImporteRe, fDecImpII)
+            fTotalConImptos = redondear(fBaseImponible + fImporteIva + fImporteRe, fDecImpII)
         }
 
         fun calcularBaseConDtos() {
@@ -217,15 +217,15 @@ class ListaBasesDoc(contexto: Context) {
                 fTotal -= fTotal * fDtoPie2 / 100
                 fTotal -= fTotal * fDtoPie3 / 100
                 fTotal -= fTotal * fDtoPie4 / 100
-                fTotal = Redondear(fTotal, fDecImpII)
-                fImpDtosPie = Redondear(fImpteBruto - fTotal, fDecImpII)
+                fTotal = redondear(fTotal, fDecImpII)
+                fImpDtosPie = redondear(fImpteBruto - fTotal, fDecImpII)
             } else {
                 fBaseImponible = fImpteBruto - fImpteBruto * fDtoPie1 / 100
                 fBaseImponible -= fBaseImponible * fDtoPie2 / 100
                 fBaseImponible -= fBaseImponible * fDtoPie3 / 100
                 fBaseImponible -= fBaseImponible * fDtoPie4 / 100
-                fBaseImponible = Redondear(fBaseImponible, fDecImpBase)
-                fImpDtosPie = Redondear(fImpteBruto - fBaseImponible, fDecImpBase)
+                fBaseImponible = redondear(fBaseImponible, fDecImpBase)
+                fImpDtosPie = redondear(fImpteBruto - fBaseImponible, fDecImpBase)
             }
             calcularBase(0.0)
         }

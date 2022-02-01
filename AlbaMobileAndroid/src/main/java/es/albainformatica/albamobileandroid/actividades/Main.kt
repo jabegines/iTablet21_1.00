@@ -14,7 +14,6 @@ import android.os.Bundle
 import android.os.Environment
 import androidx.preference.PreferenceManager
 import android.provider.Settings
-import android.text.Html
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
@@ -27,6 +26,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.DialogFragment
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.cargas.VerCargas
@@ -418,8 +418,8 @@ class Main: AppCompatActivity() {
         val cal = Calendar.getInstance()
         val queMes = cal.get(Calendar.MONTH)
         val queDia = cal.get(Calendar.DAY_OF_MONTH).toString()
-        val queDiaSemana = DimeDiaSemana(cal.get(Calendar.DAY_OF_WEEK))
-        val queNombreMes = DimeNombreMes(queMes)
+        val queDiaSemana = dimeDiaSemana(cal.get(Calendar.DAY_OF_WEEK))
+        val queNombreMes = dimeNombreMes(queMes)
 
         val tvDiaNombre = findViewById<View>(R.id.tvMainDiaNombre) as TextView
         val tvDiaNum = findViewById<View>(R.id.tvMainDiaNum) as TextView
@@ -578,12 +578,11 @@ class Main: AppCompatActivity() {
             R.id.mni_actualizar -> {
                 // Antes de actualizar comprobaremos que no tengamos nada pendiente de enviar
                 if (puedoRecibir(this)) {
-                    aldDialog = NuevoAlertBuilder(this, "Actualizar", "¿Actualizar la aplicación?", true)
+                    aldDialog = nuevoAlertBuilder(this, "Actualizar", "¿Actualizar la aplicación?", true)
 
                     aldDialog.setPositiveButton("Sí") { _, _ -> lanzarActualizar() }
                     alert = aldDialog.create()
                     alert.show()
-                    ColorDividerAlert(this, alert)
                 } else {
                     MsjAlerta(this).alerta("Tiene documentos o cobros pendientes de enviar. No podrá actualizar.")
                 }
@@ -598,7 +597,7 @@ class Main: AppCompatActivity() {
             }
 
             R.id.mni_infStock -> {
-                aldDialog = NuevoAlertBuilder(this, "Informe", "¿Emitir informe de stock?", true)
+                aldDialog = nuevoAlertBuilder(this, "Informe", "¿Emitir informe de stock?", true)
 
                 aldDialog.setPositiveButton("Sí") { _, _ ->
                     val infStock = InfStock(this@Main)
@@ -606,7 +605,6 @@ class Main: AppCompatActivity() {
                 }
                 alert = aldDialog.create()
                 alert.show()
-                ColorDividerAlert(this, alert)
 
                 return true
             }
@@ -614,7 +612,7 @@ class Main: AppCompatActivity() {
             R.id.mni_infDoc -> {
 
                 val builder = AlertDialog.Builder(this)
-                builder.setTitle(Html.fromHtml("<font color='#000000'>Introducir fechas</font>"))
+                builder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Introducir fechas</font>", HtmlCompat.FROM_HTML_MODE_LEGACY))
                 val inflater = layoutInflater
                 val dialogLayout = inflater.inflate(R.layout.alert_dialog_pedir_fechas, null)
                 builder.setView(dialogLayout)
@@ -637,7 +635,7 @@ class Main: AppCompatActivity() {
             }
 
             R.id.mni_resPedidos -> {
-                aldDialog = NuevoAlertBuilder(this, "Informe", "¿Emitir resumen de pedidos?", true)
+                aldDialog = nuevoAlertBuilder(this, "Informe", "¿Emitir resumen de pedidos?", true)
 
                 aldDialog.setPositiveButton("Sí") { _, _ ->
                     val resPedidos = ResumenPedidos(this@Main)
@@ -647,7 +645,6 @@ class Main: AppCompatActivity() {
                 }
                 alert = aldDialog.create()
                 alert.show()
-                ColorDividerAlert(this, alert)
 
                 return true
             }
@@ -947,21 +944,20 @@ class Main: AppCompatActivity() {
 
     @Throws(IOException::class)
     fun bdBackup() {
-        val aldDialog = NuevoAlertBuilder(this, "Backup", "¿Hacer backup?", true)
+        val aldDialog = nuevoAlertBuilder(this, "Backup", "¿Hacer backup?", true)
 
         aldDialog.setPositiveButton("Sí") { _, _ ->
-            hacerBackup("ibsTablet00.db", "ibsTablet.db")
+            hacerBackup()
         }
         val alert = aldDialog.create()
         alert.show()
-        ColorDividerAlert(this, alert)
     }
 
 
-    @SuppressLint("SimpleDateFormat")
-    private fun hacerBackup(queBD: String, queNombre: String) {
+    //private fun hacerBackup(queBD: String, queNombre: String) {
+    private fun hacerBackup() {
         try {
-            val dbFile = this.getDatabasePath(queBD)
+            val dbFile = this.getDatabasePath("ibsTablet00.db")
             val fis: FileInputStream?
             fis = FileInputStream(dbFile)
 
@@ -972,7 +968,7 @@ class Main: AppCompatActivity() {
                 d.mkdir()
             }
 
-            val outFileName = "$directorio/$queNombre"
+            val outFileName = "$directorio/ibsTablet.db"
 
             val output = FileOutputStream(outFileName)
             val buffer = ByteArray(1024)

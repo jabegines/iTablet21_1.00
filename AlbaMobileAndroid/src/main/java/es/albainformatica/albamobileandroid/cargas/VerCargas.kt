@@ -213,7 +213,7 @@ class VerCargas: AppCompatActivity() {
                         lineaEnt.articuloId = loteEnt.articuloId
                         lineaEnt.lote = loteEnt.lote
                         lineaEnt.cajas = "0.0"
-                        lineaEnt.cantidad = Redondear(dStock, fDecimalesCant).toString()
+                        lineaEnt.cantidad = redondear(dStock, fDecimalesCant).toString()
 
                         cargasLineasDao?.insertar(lineaEnt)
 
@@ -255,7 +255,7 @@ class VerCargas: AppCompatActivity() {
                         lineaEnt.articuloId = stockEnt.articuloId
                         lineaEnt.lote = ""
                         lineaEnt.cajas = fCajas.toString()
-                        lineaEnt.cantidad = Redondear(fExistencias, fDecimalesCant).toString()
+                        lineaEnt.cantidad = redondear(fExistencias, fDecimalesCant).toString()
 
                         cargasLineasDao?.insertar(lineaEnt)
 
