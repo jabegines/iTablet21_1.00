@@ -1,7 +1,6 @@
 package es.albainformatica.albamobileandroid.ventas
 
 
-import android.app.Activity
 import es.albainformatica.albamobileandroid.cobros.PendienteClase
 import es.albainformatica.albamobileandroid.cobros.CobrosClase
 import es.albainformatica.albamobileandroid.historicos.Historico
@@ -11,14 +10,13 @@ import android.os.Bundle
 import androidx.preference.PreferenceManager
 import android.content.DialogInterface
 import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.app.Dialog
-import android.app.DialogFragment
+import android.app.*
 import android.view.*
 import es.albainformatica.albamobileandroid.biocatalogo.BioCatalogo
 import es.albainformatica.albamobileandroid.historicos.CargarHcoPorDoc
 import es.albainformatica.albamobileandroid.historicos.CargarHco
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.*
@@ -44,7 +42,7 @@ import java.util.*
 /**
  * Created by jabegines on 14/10/13.
  */
-class VentasLineas : Activity() {
+class VentasLineas: AppCompatActivity() {
     private lateinit var fDocumento: Documento
     private lateinit var fConfiguracion: Configuracion
     private lateinit var fPendiente: PendienteClase
@@ -460,6 +458,7 @@ class VentasLineas : Activity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         // Actividad editarlinea
         if (requestCode == fRequestEditarLinea) {
             // Volvemos a activar el adaptador del listView, porque en editarLinea lo desactivamos.
@@ -482,6 +481,7 @@ class VentasLineas : Activity() {
                     // Creamos un objeto de la clase EnviarOGuardar y lo mostramos para elegir si guardamos o está listo para el envío.
                     val newFragment: DialogFragment = EnviarOGuardar.newInstance(R.string.app_name)
                     newFragment.show(fragmentManager, "dialog")
+
                 } else grabarPieDoc()
             } else {
                 // Si hemos añadido ofertas por volumen las borramos porque seguiremos editando el documento
@@ -916,9 +916,9 @@ class VentasLineas : Activity() {
         // Por ahora sólo permitiremos cambiar el tipo de documento cuando lo estamos haciendo nuevo.
         // Si estuviéramos modificando tendríamos que cambiar también el registro de la tabla cabecera.
         if (fDocNuevo) {
-            val newFragment: DialogFragment =
-                DialogoSeleccion.newInstance(R.string.app_name)
-            newFragment.show(fragmentManager, "dialog")
+            val dialog = SeleccDocFragment()
+            val fm = supportFragmentManager
+            dialog.show(fm, "customDialog")
         }
     }
 
@@ -1005,66 +1005,6 @@ class VentasLineas : Activity() {
         }
     }
 
-    class DialogoSeleccion : DialogFragment() {
-        private var queOpcion = 0
-
-        override fun onCreateDialog(savedInstanceState: Bundle): Dialog {
-            val fConfiguracion = Comunicador.fConfiguracion
-            var numOpciones = 0
-            var opFra = -1
-            var opAlb = -1
-            var opPed = -1
-            var opPres = -1
-            var itemDef = 1
-            queOpcion = -1
-
-            if (fConfiguracion.hacerFacturas()) {
-                numOpciones++
-                opFra = numOpciones
-            }
-            if (fConfiguracion.hacerAlbaranes()) {
-                numOpciones++
-                opAlb = numOpciones
-                if ((activity as VentasLineas).fDocumento.fTipoDoc == TIPODOC_ALBARAN) itemDef =
-                    opAlb
-            }
-            if (fConfiguracion.hacerPedidos()) {
-                numOpciones++
-                opPed = numOpciones
-                if ((activity as VentasLineas).fDocumento.fTipoDoc == TIPODOC_PEDIDO) itemDef =
-                    opPed
-            }
-            if (fConfiguracion.hacerPresup()) {
-                numOpciones++
-                opPres = numOpciones
-                if ((activity as VentasLineas).fDocumento.fTipoDoc == TIPODOC_PRESUPUESTO) itemDef =
-                    opPres
-            }
-            val items = arrayOfNulls<String>(numOpciones)
-            if (fConfiguracion.hacerFacturas()) items[opFra - 1] = "Factura"
-            if (fConfiguracion.hacerAlbaranes()) items[opAlb - 1] = "Albarán"
-            if (fConfiguracion.hacerPedidos()) items[opPed - 1] = "Pedido"
-            if (fConfiguracion.hacerPresup()) items[opPres - 1] = "Presupuesto"
-            val builder = AlertDialog.Builder(activity)
-            builder.setTitle("Selección").setSingleChoiceItems(items, itemDef - 1) { _: DialogInterface?, item: Int -> queOpcion = item }
-            builder.setPositiveButton("Aceptar") { _: DialogInterface?, _: Int ->
-                if (queOpcion > -1) (activity as VentasLineas).cambiarTipoDoc(
-                    queOpcion
-                )
-            }
-            return builder.create()
-        }
-
-        companion object {
-            fun newInstance(title: Int): DialogoSeleccion {
-                val frag = DialogoSeleccion()
-                val args = Bundle()
-                args.putInt("title", title)
-                frag.arguments = args
-                return frag
-            }
-        }
-    }
 
     fun verDesctos(view: View) {
         view.getTag(0)              // Para que no dé warning el compilador
@@ -1101,8 +1041,9 @@ class VentasLineas : Activity() {
         editor.apply()
     }
 
-    class EnviarOGuardar : DialogFragment() {
+    class EnviarOGuardar: DialogFragment() {
         var queOpcion = 0
+
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
             queOpcion = 0
             val items = arrayOfNulls<String>(2)

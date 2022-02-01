@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/seleccDocHeaderTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/selecc_doc"
+        android:textSize="16sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="20dp" />
+
+    <RadioGroup
+        android:id="@+id/seleccDocRadioGroup"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="25dp"
+        app:layout_constraintTop_toBottomOf="@+id/seleccDocHeaderTextView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" >
+
+        <RadioButton
+            android:id="@+id/facturaRB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rdb_factura"
+            android:checked="true"
+            android:tag="0"
+        />
+
+        <RadioButton
+            android:id="@+id/albaranRB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rdb_albaran"
+            android:tag="1"
+        />
+
+        <RadioButton
+            android:id="@+id/pedidoRB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rdb_pedido"
+            android:tag="2"
+        />
+
+        <RadioButton
+            android:id="@+id/presptoRB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rdb_presup"
+            android:tag="3"
+        />
+
+    </RadioGroup>
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="250dp"
+        android:layout_height="1dp"
+        android:background="@android:color/background_dark"
+        app:layout_constraintBottom_toBottomOf="@+id/seleccDocRadioGroup"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+     />
+
+
+    <TextView
+        android:id="@+id/cancelarButton"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="@string/cancelar_upp"
+        android:background="#ffffff"
+        android:textColor="@color/texto_botones"
+        app:layout_constraintTop_toBottomOf="@+id/seleccDocRadioGroup"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginBottom="20dp"
+        android:textSize="16sp"
+    />
+
+    <TextView
+        android:id="@+id/aceptarButton"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="@string/aceptar_upp"
+        android:background="#ffffff"
+        android:textColor="@color/texto_botones"
+        app:layout_constraintTop_toBottomOf="@+id/seleccDocRadioGroup"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="20dp"
+        android:textSize="16sp"
+    />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

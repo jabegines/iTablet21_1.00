@@ -185,6 +185,7 @@
     <string name="ruta">Ruta</string>
     <string name="ruta_act">Ruta activa:</string>
     <string name="saldo">Saldo</string>
+    <string name="selecc_doc">Seleccione un tipo de documento</string>
     <string name="selec_formato">Seleccione un formato</string>
     <string name="serie">Serie</string>
     <string name="series">Series</string>
@@ -313,6 +314,7 @@
 
     <!-- Menus -->
     <string name="aceptar">Aceptar</string>
+    <string name="aceptar_upp">ACEPTAR</string>
     <string name="cancelar">Cancelar</string>
     <string name="cancelar_upp">CANCELAR</string>
     <string name="mni_actualizar">Actualizar la aplicacion</string>

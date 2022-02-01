@@ -10,11 +10,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.Comunicador
-import es.albainformatica.albamobileandroid.DatosLinVtas
 import es.albainformatica.albamobileandroid.DatosVerDocs
 import es.albainformatica.albamobileandroid.R
+import es.albainformatica.albamobileandroid.tipoDocAsString
 import kotlinx.android.synthetic.main.ly_ver_cobros.view.*
-import kotlinx.coroutines.selects.select
 
 
 class VerDocsRvAdapter(var documentos: List<DatosVerDocs>, val context: Context,
@@ -56,12 +55,12 @@ class VerDocsRvAdapter(var documentos: List<DatosVerDocs>, val context: Context,
         holder.itemView.setOnClickListener {
             // Tenemos en cuenta si el registro sobre el que pulsamos estaba anteriormente seleccionado
             // Deseleccionamos el registro
-            if (selectedPos == fPosicion) {
-                selectedPos = RecyclerView.NO_POSITION
+            selectedPos = if (selectedPos == fPosicion) {
+                RecyclerView.NO_POSITION
             }
             // Seleccionamos el registro
             else {
-                selectedPos = fPosicion
+                fPosicion
             }
 
             notifyDataSetChanged()
@@ -102,7 +101,7 @@ class VerDocsRvAdapter(var documentos: List<DatosVerDocs>, val context: Context,
 
         fun bind(documento: DatosVerDocs, fDecPrBase: Int) {
             tvFecha.text = documento.fecha
-            tvTipoDoc.text = documento.tipoDoc.toString()
+            tvTipoDoc.text = tipoDocAsString(documento.tipoDoc)
             tvSerie.text = documento.serie
             tvNumero.text = documento.numero.toString()
             tvTotal.text = String.format("%." + fDecPrBase + "f", documento.total.replace(',', '.').toDouble())

@@ -110,8 +110,6 @@ class Main: AppCompatActivity() {
 
         // Si usamos el servicio comprobamos si tenemos algo pendiente
         if (fUsarServicio) {
-            //imgHayPaquetes.visibility = View.INVISIBLE
-            //imgHayImagenes.visibility = View.INVISIBLE
             val miscServicio = MiscServicio(this)
 
             imgHayPaquetes.visibility = View.GONE
