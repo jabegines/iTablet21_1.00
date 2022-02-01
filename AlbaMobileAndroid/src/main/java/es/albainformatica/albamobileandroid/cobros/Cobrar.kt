@@ -1,11 +1,9 @@
 package es.albainformatica.albamobileandroid.cobros
 
-import android.R
 import android.app.Activity
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.content.Intent
-import android.database.Cursor
 import android.view.KeyEvent
 import android.view.View
 import android.widget.*
@@ -32,7 +30,7 @@ class Cobrar: Activity() {
     private lateinit var tvCobrado: TextView
     private lateinit var tvPdte: TextView
 
-    private var QueFPago: String = ""
+    private var queFPago: String = ""
     private var queDivisa: String =  ""
     private var fEsPendiente: Boolean = false
     private var fTipoDoc: Byte = 0
@@ -47,7 +45,8 @@ class Cobrar: Activity() {
 
     override fun onCreate(savedInstance: Bundle?) {
         super.onCreate(savedInstance)
-        setContentView(es.albainformatica.albamobileandroid.R.layout.cobrar)
+        setContentView(R.layout.cobrar)
+
         fCobros = Comunicador.fCobros
         fFPago = FormasPagoClase(this)
         fDivisas = DivisasClase(this)
@@ -78,19 +77,13 @@ class Cobrar: Activity() {
 
 
     private fun inicializarControles() {
-        edtImpte = findViewById(es.albainformatica.albamobileandroid.R.id.edtCobrar_Impte)
-        edtAnotacion = findViewById(es.albainformatica.albamobileandroid.R.id.edtCobrar_Anot)
+        edtImpte = findViewById(R.id.edtCobrar_Impte)
+        edtAnotacion = findViewById(R.id.edtCobrar_Anot)
         val lyPendiente = findViewById<View>(es.albainformatica.albamobileandroid.R.id.lyPendiente)
-        tvTotal = findViewById(es.albainformatica.albamobileandroid.R.id.tvCobrar_Total)
-        tvCobrado = findViewById(es.albainformatica.albamobileandroid.R.id.tvCobrar_Cobrado)
-        tvPdte = findViewById(es.albainformatica.albamobileandroid.R.id.tvCobrar_Pdte)
-        edtImpte.addTextChangedListener(
-            NumberTextWatcher(
-                edtImpte,
-                6,
-                fConfiguracion.decimalesImpII()
-            )
-        )
+        tvTotal = findViewById(R.id.tvCobrar_Total)
+        tvCobrado = findViewById(R.id.tvCobrar_Cobrado)
+        tvPdte = findViewById(R.id.tvCobrar_Pdte)
+        edtImpte.addTextChangedListener(NumberTextWatcher(edtImpte, 6, fConfiguracion.decimalesImpII()))
         fFtoDecImpIva = fConfiguracion.formatoDecImptesIva()
         fEsContado = false
         if (fEsPendiente) {
@@ -112,8 +105,7 @@ class Cobrar: Activity() {
         // Si la forma de pago es contado no presentaremos el botón de cancelar porque no permitiremos la cancelación,
         // ya que dejaríamos el documento con la forma de pago CON y sin cobro.
         if (fEsContado) {
-            val btnCancelar =
-                findViewById<Button>(es.albainformatica.albamobileandroid.R.id.btnCobrar_Cancelar)
+            val btnCancelar = findViewById<Button>(R.id.btnCobrar_Cancelar)
             btnCancelar.visibility = View.GONE
 
             // Si no tenemos configurado pedir cobros al finalizar y el documento es de contado lo que hacemos es llamar
@@ -133,8 +125,8 @@ class Cobrar: Activity() {
             }
         }
         val tvTitulo =
-            findViewById<TextView>(es.albainformatica.albamobileandroid.R.id.tvNombreActivity)
-        tvTitulo.setText(es.albainformatica.albamobileandroid.R.string.btn_cobrar)
+            findViewById<TextView>(R.id.tvNombreActivity)
+        tvTitulo.setText(R.string.btn_cobrar)
     }
 
     private fun prepararLyPdte() {
@@ -149,24 +141,19 @@ class Cobrar: Activity() {
     }
 
     private fun prepararSpFPago() {
-        val spnFPago = findViewById<Spinner>(es.albainformatica.albamobileandroid.R.id.spnCobrar_FPago)
-        fFPago.abrirSoloContado()
+        val spnFPago = findViewById<Spinner>(R.id.spnCobrar_FPago)
+        val lFPago: List<DatosFPago> = fFPago.abrirSoloContado()
 
-        //  TODO: cambiar esto
-        val c = fFPago.cursor
-        // Inicializamos QueFPago
-        QueFPago = if (c != null) c.getString(c.getColumnIndex("_id")) else ""
-        val columnas = arrayOf("descripcion")
-        val to = intArrayOf(R.id.text1)
-        val sca = SimpleCursorAdapter(this, R.layout.simple_spinner_item, c, columnas, to)
-        sca.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
-        spnFPago.adapter = sca
+        // Inicializamos queFPago
+        queFPago = lFPago[0].codigo
+        val adaptador = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, lFPago)
+        adaptador.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spnFPago.adapter = adaptador
         spnFPago.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>, view: View, position: Int, id: Long
-            ) {
-                val c = parent.getItemAtPosition(position) as Cursor
-                QueFPago = c.getString(c.getColumnIndexOrThrow("_id"))
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+
+                val datFPago = parent.getItemAtPosition(position) as DatosFPago
+                queFPago = datFPago.codigo
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -174,23 +161,16 @@ class Cobrar: Activity() {
     }
 
     private fun prepararSpDivisas() {
-        val spnDivisas =
-            findViewById<Spinner>(es.albainformatica.albamobileandroid.R.id.spnCobrar_Divisas)
+        val spnDivisas = findViewById<Spinner>(R.id.spnCobrar_Divisas)
         val lDivisas: List<DatosDivisa> = fDivisas.abrirParaSpinner()
 
-        // Inicializamos QueDivisa
+        // Inicializamos queDivisa
         queDivisa = lDivisas[0].codigo
-        val spinnerArrayAdapter =
-            ArrayAdapter(this, R.layout.simple_spinner_dropdown_item, lDivisas)
-        spinnerArrayAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
+        val spinnerArrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, lDivisas)
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spnDivisas.adapter = spinnerArrayAdapter
         spnDivisas.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>,
-                view: View,
-                position: Int,
-                id: Long
-            ) {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 val datDivisa = parent.getItemAtPosition(position) as DatosDivisa
                 queDivisa = datDivisa.codigo
             }
@@ -219,10 +199,10 @@ class Cobrar: Activity() {
             val cobroEnt = CobrosEnt()
             if (fEsPendiente) {
                 cobroEnt.clienteId = fPendiente.clienteId
-                cobroEnt.tipoDoc = fPendiente.tipoDoc.toShort()
-                cobroEnt.almacen = fPendiente.almacen.toShort()
+                cobroEnt.tipoDoc = fPendiente.tipoDoc
+                cobroEnt.almacen = fPendiente.almacen
                 cobroEnt.serie = fPendiente.serie
-                cobroEnt.numero = fPendiente.numero.toInt()
+                cobroEnt.numero = fPendiente.numero
                 cobroEnt.ejercicio = fConfiguracion.ejercicio()
                 cobroEnt.empresa = fPendiente.empresa
                 queEmpresa = fPendiente.empresa
@@ -232,7 +212,7 @@ class Cobrar: Activity() {
                 val df = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                 cobroEnt.fechaCobro = df.format(tim)
                 cobroEnt.cobro = edtImpte.text.toString()
-                cobroEnt.fPago = QueFPago
+                cobroEnt.fPago = queFPago
                 cobroEnt.divisa = queDivisa
                 cobroEnt.anotacion = edtAnotacion.text.toString()
                 if (fDesdeVentas) {
@@ -264,7 +244,7 @@ class Cobrar: Activity() {
                 val df = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                 cobroEnt.fechaCobro = df.format(tim)
                 cobroEnt.cobro = edtImpte.text.toString()
-                cobroEnt.fPago = QueFPago
+                cobroEnt.fPago = queFPago
                 cobroEnt.divisa = queDivisa
                 cobroEnt.anotacion = edtAnotacion.text.toString()
                 cobroEnt.codigo = "EN"
@@ -292,18 +272,18 @@ class Cobrar: Activity() {
 
     private fun puedoSalvar(): Boolean {
         return if (edtImpte.text.toString() == "") {
-            MsjAlerta(this).alerta(resources.getString(es.albainformatica.albamobileandroid.R.string.msj_SinImpte))
+            MsjAlerta(this).alerta(resources.getString(R.string.msj_SinImpte))
             false
         } else if (edtImpte.text.toString().replace(",", ".").toDouble() == 0.0) {
             // Si el total es cero permitiremos también que edtImpte sea cero.
             if (fTotal == 0.0) true else {
-                MsjAlerta(this).alerta(resources.getString(es.albainformatica.albamobileandroid.R.string.msj_SinImpte))
+                MsjAlerta(this).alerta(resources.getString(R.string.msj_SinImpte))
                 false
             }
         } else {
             if (fEsPendiente) {
                 if (edtImpte.text.toString().replace(",", ".").toDouble() > fImptePdte) {
-                    MsjAlerta(this).alerta(resources.getString(es.albainformatica.albamobileandroid.R.string.msj_ImpteMayorPdte))
+                    MsjAlerta(this).alerta(resources.getString(R.string.msj_ImpteMayorPdte))
                     false
                 } else true
             } else true

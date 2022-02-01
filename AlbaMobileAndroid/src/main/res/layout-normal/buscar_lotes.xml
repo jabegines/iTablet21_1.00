@@ -51,29 +51,15 @@
         android:layout_marginTop="5dp"
         android:background="#000000" />
 
-    <ListView
-        android:id="@+id/lvLotes"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvLotes"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="5dp"
-        android:background="#FFFFFFFF"
-        android:fastScrollEnabled="true"
-        android:listSelector="@drawable/list_selector"
         android:paddingLeft="5dp"
-        android:paddingRight="5dp" >
-
-    </ListView>
-
-    <ListView
-        android:id="@+id/listView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="5dp"
-        android:background="#FFFFFFFF"
-        android:fastScrollEnabled="true"
-        android:listSelector="@drawable/list_selector"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"/>
+        android:paddingRight="5dp"
+        />
 
 
 </LinearLayout>

@@ -42,7 +42,7 @@ class ClientesRvAdapter(var clientes: List<ListaClientes>, val context: Context,
 
         holder.itemView.setOnClickListener {
             selectedPos = position
-            notifyItemChanged(position)
+            notifyDataSetChanged()
             listener.onClick(it, clientes[position])
         }
     }

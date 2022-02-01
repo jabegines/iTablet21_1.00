@@ -3,7 +3,7 @@ package es.albainformatica.albamobileandroid.maestros
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -99,7 +99,7 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
         for (i in 1 until alfabeto.size) {
             letra = alfabeto[i]
 
-            // Vamos recorriendo el cursor para encontrar el primer registro que coincida con la letra que
+            // Vamos recorriendo la lista para encontrar el primer registro que coincida con la letra que
             // estamos indexando. Una vez encontrado guardamos su posición en el objeto mapIndex.
             // Si llegamos a un registro cuya primera letra es mayor que la que estamos indexando, salimos del bucle.
             if (mapIndex[letra] == null) { // La eñe tenemos que tratarla aparte, ya que con ella no funciona bien el compareTo().
@@ -329,61 +329,6 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
         }
     }
 
-
-
-    /*
-    // En modo lista uso un adaptador propio para el listView: ItemArticuloAdapter, que usa un ArrayList con objetos de la clase
-    // ItemArticulo. En obtenerItems lo que hago es llenar dicho ArrayList.
-    private fun obtenerItems(cursor: Cursor, tipoBusqueda: Int): ArrayList<ItemArticulo> {
-        val items = ArrayList<ItemArticulo>()
-        val ofertas: MutableList<Int>
-        // Si usamos ofertas lo que hacemos es cargar en un array los artículos de las que pertenezcan
-        // a la empresa y tarifa actuales para, luego, buscar el precio y dto.
-        val usarOfertas = fConfiguracion.usarOfertas()
-        ofertas = if (usarOfertas) {
-            // Obtenemos las ofertas para la empresa y tarifa actuales
-            ofertasDao?.getAllOftas(fEmpresaActual, fTarifa.toShort()) ?: emptyList<Int>().toMutableList()
-        }
-        else emptyList<Int>().toMutableList()
-
-        if (cursor.moveToFirst()) {
-            cursor.moveToPosition(-1)
-            while (cursor.moveToNext()) {
-
-                var quePrOfta = "0.0"
-                var queDtoOfta = "0.0"
-                var queArticulo = 0
-
-                if (usarOfertas) {
-                    // Vemos si el artículo está en el array de ofertas, en cuyo caso buscaremos el precio y dto. de la oferta
-                    queArticulo = ofertas.find {  it == cursor.getInt(0) } ?: 0
-                    if (queArticulo > 0) {
-                        val ofertaEnt = ofertasDao?.getOftaArt(queArticulo, fEmpresaActual, fTarifa.toShort()) ?: OfertasEnt()
-                        quePrOfta = ofertaEnt.precio
-                        queDtoOfta = ofertaEnt.dto
-                    }
-                }
-
-                val hayOferta = queArticulo > 0
-                // Si queremos presentar sólo las ofertas comprobaremos que el artículo esté en el array de ofertas,
-                // en caso contrario no lo presentamos
-                if (tipoBusqueda == 1 || queArticulo > 0) {
-                    items.add(
-                        ItemArticulo(
-                            cursor.getInt(0), cursor.getString(1), cursor.getString(2),
-                            cursor.getString(3), cursor.getString(4), cursor.getString(5),
-                            cursor.getString(6), cursor.getString(7),
-                            quePrOfta, queDtoOfta,
-                            cursor.getDouble(8), hayOferta, "0.0", "0.0", cursor.getDouble(9),
-                            false, ""
-                        )
-                    )
-                }
-            }
-        }
-        return items
-    }
-    */
 
 
     private fun abrirFicha(articuloId: Int) {

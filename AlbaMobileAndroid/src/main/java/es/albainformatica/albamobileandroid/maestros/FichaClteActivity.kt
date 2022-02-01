@@ -5,7 +5,6 @@ import android.content.ActivityNotFoundException
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.database.Cursor
 import android.location.Address
 import android.location.Geocoder
 import android.net.Uri
@@ -105,11 +104,6 @@ class FichaClteActivity: AppCompatActivity() {
         inicializarControles()
     }
 
-
-    override fun onDestroy() {
-        fClientes.close()
-        super.onDestroy()
-    }
 
 
     private fun inicializarControles() {
@@ -259,36 +253,30 @@ class FichaClteActivity: AppCompatActivity() {
 
     private fun prepararSpFPago() {
         val spnFPago = findViewById<View>(R.id.spnFPago) as Spinner
-        fFPago.abrir()
-        val c = fFPago.cursor
-        val from = arrayOf("descripcion")
-        val to = intArrayOf(android.R.id.text1)
-        val sca = SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, c, from, to)
-        sca.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spnFPago.adapter = sca
+        val lFPago: List<DatosFPago> = fFPago.abrir()
+
+        val adaptador = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, lFPago)
+        adaptador.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spnFPago.adapter = adaptador
 
         // Hacemos un bucle para dejar seleccionada la forma de pago del cliente.
         if (fCliente > 0) {
             val fPagoClte = fClientes.fPago
             queFPago = fPagoClte
-            for (i in 0 until spnFPago.count) {
-                spnFPago.getItemAtPosition(i)
-                val queCodigo: String = if (c != null) {
-                    c.getString(c.getColumnIndexOrThrow("_id"))
-                } else ""
+            for (datFPago in lFPago) {
+                val queCodigo = datFPago.codigo
                 if (queCodigo == fPagoClte) {
-                    spnFPago.setSelection(i)
+                    spnFPago.setSelection(lFPago.indexOf(datFPago))
                     break
                 }
             }
             if (fSoloVer) spnFPago.isEnabled = false
         }
         spnFPago.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>, view: View, position: Int, id: Long
-            ) {
-                val queCursor = parent.getItemAtPosition(position) as Cursor
-                queFPago = queCursor.getString(queCursor.getColumnIndexOrThrow("_id"))
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+
+                val datFPago = parent.getItemAtPosition(position) as DatosFPago
+                queFPago = datFPago.codigo
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -499,7 +487,6 @@ class FichaClteActivity: AppCompatActivity() {
     }
 
     private fun refrescarTelef() {
-        //adapterTlf.changeCursor(fClientes.cTelefonos)
         mostrarTelefonos()
         mostrarDatosTlf()
         // Ver comentarios en mostrarTelefonos()

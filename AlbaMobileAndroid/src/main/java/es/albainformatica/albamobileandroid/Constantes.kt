@@ -183,6 +183,16 @@ class DatosDivisa {
     }
 }
 
+class DatosFPago {
+    var codigo: String = ""
+    var descripcion: String = ""
+
+    // Si no incluimos esta función el spinner no mostrará bien la descripción
+    override fun toString(): String {
+        return descripcion
+    }
+}
+
 
 class DatosInfCobros {
     var clienteId: Int = 0

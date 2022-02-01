@@ -12,7 +12,7 @@ import android.media.ToneGenerator
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -151,8 +151,6 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
     }
 
     override fun onDestroy() {
-        fArticulos.close()
-
         prefs.edit().putInt("modo_vta_cat", fModoVtaCat).apply()
         super.onDestroy()
     }
@@ -276,35 +274,30 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         lyBioScroll.removeAllViews()
 
         if (fArticulos.datosAdicionales(aImages[fPosicion])) {
-            var continuar = true
-            //while (!fArticulos.cDatAdicionales?.isAfterLast) {
-            while (continuar) {
-                val tipo = dimeMiTipoDeArchivo(fArticulos.docAsociado())
+
+            for (datAdic in fArticulos.lDatAdic) {
+                val tipo = dimeMiTipoDeArchivo(datAdic)
 
                 // El documento es una imagen.
                 when {
-                    tipo.equals("image", ignoreCase = true) -> imagenAGaleria(carpetaDocAsoc + fArticulos.docAsociado())
+                    tipo.equals("image", ignoreCase = true) -> imagenAGaleria(carpetaDocAsoc + datAdic, datAdic)
 
                     // El documento es un pdf.
-                    tipo.equals("pdf", ignoreCase = true) -> pdfAGaleria()
+                    tipo.equals("pdf", ignoreCase = true) -> pdfAGaleria(datAdic)
 
                     // El documento es un archivo word
-                    tipo.equals("word", ignoreCase = true) -> wordAGaleria()
+                    tipo.equals("word", ignoreCase = true) -> wordAGaleria(datAdic)
 
                     // El documento es un video.
                     //} else if (tipo.substring(0, 5).equals("video", ignoreCase = true)) {
                     //videoAGaleria()
                 }
-
-                fArticulos.cDatAdicionales?.moveToNext()
-                if (fArticulos.cDatAdicionales?.isAfterLast != false)
-                    continuar = false
             }
         }
     }
 
 
-    private fun imagenAGaleria(queImagen: String) {
+    private fun imagenAGaleria(queImagen: String, queNombre: String) {
         val ly = LinearLayout(this)
         val lp = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         ly.orientation = LinearLayout.VERTICAL
@@ -319,7 +312,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         val dw = iv.drawable
         val bt = Button(this)
         bt.tag = queImagen
-        bt.text = fArticulos.docAsociado()
+        bt.text = queNombre
         bt.textSize = 10f
         bt.background = ColorDrawable(Color.parseColor("#FFFFFF"))
         bt.setCompoundDrawablesWithIntrinsicBounds(null, dw, null, null)
@@ -331,7 +324,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         lyBioScroll.addView(ly)
     }
 
-    private fun pdfAGaleria() {
+    private fun pdfAGaleria(queNombre: String) {
         val ly = LinearLayout(this)
         val lp = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         ly.layoutParams = lp
@@ -339,7 +332,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         ly.gravity = Gravity.CENTER
 
         val bt = Button(this)
-        bt.text = fArticulos.docAsociado()
+        bt.text = queNombre
         bt.textSize = 10f
         bt.background = ColorDrawable(Color.parseColor("#FFFFFF"))
         bt.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.logopdf), null, null)
@@ -353,7 +346,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         lyBioScroll.addView(ly)
     }
 
-    private fun wordAGaleria() {
+    private fun wordAGaleria(queNombre: String) {
         val ly = LinearLayout(this)
         val lp = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         ly.layoutParams = lp
@@ -361,7 +354,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         ly.gravity = Gravity.CENTER
 
         val bt = Button(this)
-        bt.text = fArticulos.docAsociado()
+        bt.text = queNombre
         bt.textSize = 10f
         bt.background = ColorDrawable(Color.parseColor("#FFFFFF"))
         bt.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.logoword), null, null)
@@ -487,59 +480,12 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         return fCatalogos.lClasCat
     }
 
-    /*
-    private fun prepararLVCatalogos() {
-        if (fCatalogos.cursor.count > 0) {
-            fModoVtaCat = 1
-            // Obtenemos el ListView
-            val mDrawerList = findViewById<View>(R.id.left_drawer) as ListView
-            nhTvTipoCatalogo.text = resources.getString(R.string.cat_catalogos)
-
-            // Por ahora abrimos el primer catálogo de la tabla de catálogos
-            fIdCatalogo = fCatalogos.cursor.getInt(fCatalogos.cursor.getColumnIndexOrThrow("_id"))
-
-            val columns = arrayOf("descr", "numarticulos")
-            val to = intArrayOf(R.id.tvBioDescr, R.id.tvBioNumArt)
-            // Le establecemos el adaptador
-            mDrawerList.adapter = SimpleCursorAdapter(this, R.layout.layout_biocatalogos, fCatalogos.cursor, columns, to, 0)
-
-            // Establecemos el clickListener del ListView.
-            mDrawerList.onItemClickListener = AdapterView.OnItemClickListener { adapter, _, position, _ ->
-                val cursor = adapter.getItemAtPosition(position) as Cursor
-                // Primero guardamos en el documento para mantener las cantidades pedidas
-                if (fUsarFormatos) {
-                    bioCat2DocFtos()
-                } else {
-                    bioCat2Doc(false)
-                }
-                // Tomamos el campo _id de la fila en la que hemos pulsado y cerramos el DrawerLayout
-                fIdCatalogo = cursor.getInt(cursor.getColumnIndexOrThrow("_id"))
-                dwLayout.closeDrawer(GravityCompat.START)
-                // Volvemos a cargar los arrays
-                setImagesData()
-
-                // Reiniciamos el adaptador y demás controles
-                reiniciarAdaptador(false)
-                if (fImagPorPagina == 1)
-                    verImpte()
-            }
-        }
-        else {
-            prepararRvGrupos()
-            //prepararLVGrupos()
-            //    alert("No tiene ningún catálogo") {
-            //        title = "Información"
-            //        yesButton { }
-            //    }.show()
-        }
-    }
-    */
 
     private fun prepararRvGrupos() {
         fAdpGrupos = GruposRvAdapter(getGrupos(), this, object: GruposRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: GruposParaCat) {
                 fIdGrupo = data.codigo
-                val fDescrGrupo = data.descripcion
+                //val fDescrGrupo = data.descripcion
                 // Cargamos los departamentos del grupo
                 prepararRvDepartamentos()
             }
@@ -585,68 +531,6 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
     }
 
 
-    /*
-    private fun prepararLVGrupos() {
-        if (fGrupos.lGrupCat.count() > 0) {
-            fModoVtaCat = 2
-            val lvDrawerList = findViewById<View>(R.id.left_drawer) as ListView
-            nhTvTipoCatalogo.text = resources.getString(R.string.grupos)
-
-            val columns = arrayOf("descr", "numdepartamentos")
-            val to = intArrayOf(R.id.tvBioDescr, R.id.tvBioNumArt)
-            lvDrawerList.adapter = SimpleCursorAdapter(this, R.layout.layout_biogrupos, fGrupos.cursor, columns, to, 0)
-
-            lvDrawerList.onItemClickListener = AdapterView.OnItemClickListener { adapter, _, position, _ ->
-                val cursor = adapter.getItemAtPosition(position) as Cursor
-                fIdGrupo = cursor.getInt(cursor.getColumnIndexOrThrow("_id"))
-                val fDescrGrupo = cursor.getString(cursor.getColumnIndexOrThrow("descr"))
-
-                // Cargamos los departamentos del grupo
-                prepararLVDepartamentos(fDescrGrupo)
-            }
-        } else {
-            alert("No tiene ningún grupo") {
-                title = "Información"
-                yesButton {}
-            }.show()
-        }
-    }
-    */
-
-
-    /*
-    private fun prepararLVDepartamentos(fDescrGrupo: String) {
-        fViendoDep = true
-        val mDrawerList = findViewById<View>(R.id.left_drawer) as ListView
-        nhTvTipoCatalogo.text = fDescrGrupo
-        fDepartamentos.abrirParaCatalogo(fIdGrupo)
-
-        val columns = arrayOf("descr", "numarticulos")
-        val to = intArrayOf(R.id.tvBioDescr, R.id.tvBioNumArt)
-        mDrawerList.adapter = SimpleCursorAdapter(this, R.layout.layout_biocatalogos, fDepartamentos.cursor, columns, to, 0)
-
-        // Establecemos el clickListener del ListView.
-        mDrawerList.onItemClickListener = AdapterView.OnItemClickListener { adapter, _, position, _ ->
-            val cursor = adapter.getItemAtPosition(position) as Cursor
-            // Primero guardamos en el documento para mantener las cantidades pedidas
-            if (fUsarFormatos) {
-                bioCat2DocFtos()
-            } else {
-                bioCat2Doc(false)
-            }
-            // Tomamos el campo _id de la fila en la que hemos pulsado y cerramos el DrawerLayout
-            fIdDepartamento = cursor.getInt(cursor.getColumnIndexOrThrow("_id"))
-            dwLayout.closeDrawer(GravityCompat.START)
-            // Volvemos a cargar los arrays
-            setImagesData()
-
-            // Reiniciamos el adaptador y demás controles
-            reiniciarAdaptador(false)
-            if (fImagPorPagina == 1)
-                verImpte()
-        }
-    }
-    */
 
 
     fun cambiarTipoCatalogo(view: View) {

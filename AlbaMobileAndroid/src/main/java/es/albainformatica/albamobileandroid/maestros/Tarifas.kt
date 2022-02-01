@@ -1,10 +1,7 @@
 package es.albainformatica.albamobileandroid.maestros
 
 import android.content.Context
-import android.database.Cursor
-import android.database.sqlite.SQLiteDatabase
 import es.albainformatica.albamobileandroid.dao.CnfTarifasDao
-import es.albainformatica.albamobileandroid.dao.TarifasDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.entity.CnfTarifasEnt
 import java.util.ArrayList
@@ -15,7 +12,7 @@ import java.util.ArrayList
 class Tarifas(contexto: Context) {
     private var cnfTarifasDao: CnfTarifasDao? = MyDatabase.getInstance(contexto)?.cnfTarifasDao()
 
-    lateinit var lTarifas: List<CnfTarifasEnt>
+    private lateinit var lTarifas: List<CnfTarifasEnt>
 
 
     fun abrir(): Boolean {

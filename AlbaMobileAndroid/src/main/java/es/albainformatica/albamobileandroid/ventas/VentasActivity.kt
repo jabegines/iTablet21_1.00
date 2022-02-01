@@ -7,7 +7,7 @@ import android.app.Dialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -26,9 +26,7 @@ import es.albainformatica.albamobileandroid.dao.EmpresasDao
 import es.albainformatica.albamobileandroid.dao.SeriesDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.maestros.*
-import kotlinx.android.synthetic.main.cargas.*
 import kotlinx.android.synthetic.main.ventas_rutero.*
-import java.util.*
 
 
 class VentasActivity: AppCompatActivity() {
@@ -129,7 +127,6 @@ class VentasActivity: AppCompatActivity() {
         // Guardamos la ruta activa para volver a presentarla la siguiente vez que entremos en ventas.
         if (fUsarRutero) fConfiguracion.activarRuta(fRutaActiva)
 
-        fClientes.close()
         super.onDestroy()
     }
 
@@ -339,7 +336,6 @@ class VentasActivity: AppCompatActivity() {
             } else
                 lanzarVentasLineas()
         }
-        fClientes.close()
     }
 
     fun cambiarSerie(view: View) {
@@ -492,7 +488,7 @@ class VentasActivity: AppCompatActivity() {
 
                     if (fRutaActiva != fOldRuta) {
                         if (fRutaActiva > 0) {
-                            if (fRutero.abrirRuta(fRutaActiva.toShort())) {
+                            if (fRutero.abrirRuta(fRutaActiva)) {
                                 mostrarRutaAct()
                                 prepararRvRutero()
                                 fClteDoc = fRutero.lRutero[0].clienteId
@@ -527,7 +523,7 @@ class VentasActivity: AppCompatActivity() {
 
     private fun mostrarRutaAct() {
         val tvRutaAct = findViewById<TextView>(R.id.tvVtRutaAct)
-        tvRutaAct?.text = fRutas.dimeNombre(fRutaActiva.toShort())
+        tvRutaAct?.text = fRutas.dimeNombre(fRutaActiva)
     }
 
     private fun mostrarCodPostalActivo(queCodPostal: String) {
@@ -660,10 +656,8 @@ class VentasActivity: AppCompatActivity() {
             if (fClientes.abrirUnCliente(fClteDoc)) {
                 if (fClientes.noVender()) {
                     MsjAlerta(this).alerta(resources.getString(R.string.msj_NoVender))
-                    fClientes.close()
                     return false
                 }
-                fClientes.close()
             }
 
             return if (!rdbFra.isChecked && !rdbAlb.isChecked && !rdbPed.isChecked && !rdbPresp.isChecked) {
@@ -692,7 +686,7 @@ class VentasActivity: AppCompatActivity() {
     private fun getCltesRuta(): List<DatosRutero> {
         if (fUsarRutero) {
             if (fRutaActiva > 0)
-                fRutero.abrirRuta(fRutaActiva.toShort())
+                fRutero.abrirRuta(fRutaActiva)
             else
                 fRutero.abrirRuta(0)
         }
@@ -703,86 +697,6 @@ class VentasActivity: AppCompatActivity() {
         return fRutero.lRutero
     }
 
-    /*
-    private fun prepararListView() {
-
-        val columns: Array<String> = if (fConfiguracion.aconsNomComercial())
-            arrayOf("orden", "codigo", "nomco", "tieneincid")
-        else
-            arrayOf("orden", "codigo", "nomfi", "tieneincid")
-
-        val to = intArrayOf(R.id.cltrt_orden, R.id.cltrt_codigo, R.id.cltrt_nombre, R.id.imvTieneInc)
-
-        adapterLineas = SimpleCursorAdapter(this, R.layout.ly_cltes_rutero, fRutero.cursor, columns, to, 0)
-
-        val listView = findViewById<ListView>(R.id.lvClientes)
-        formatearColumnas()
-        listView.adapter = adapterLineas
-
-        // Establecemos el evento on click del ListView.
-        listView.onItemClickListener = AdapterView.OnItemClickListener { adapter, _, position, _ ->
-            val cursor = adapter.getItemAtPosition(position) as Cursor
-            // Tomamos el campo cliente de la fila en la que hemos pulsado
-            fClteDoc = cursor.getInt(cursor.getColumnIndexOrThrow("cliente"))
-            // Marcamos en negrita el registro sobre el que acabamos de pulsar.
-            siguienteClte(false)
-        }
-    }
-
-
-    private fun formatearColumnas() {
-        adapterLineas?.viewBinder = SimpleCursorAdapter.ViewBinder { view, cursor, column ->
-            if (column == 1) {
-                // Si estamos presentando el rutero por código postal no mostraremos la columna 'orden'.
-                if (fUsarCP) {
-                    val tv = view as TextView
-                    //tv.setText(" - ");
-                    tv.visibility = View.GONE
-                    return@ViewBinder true
-                }
-            }
-
-            // Nombre fiscal o comercial. Los pondremos en negrita si el registro es el seleccionado. Idem con el código.
-            if (column == 3) {
-                val tv = view as TextView
-                if (cursor.getInt(cursor.getColumnIndex("cliente")) == fClteDoc)
-                    tv.setTypeface(null, Typeface.BOLD)
-                else
-                    tv.setTypeface(null, Typeface.NORMAL)
-                // Tengo que hacer esto porque si no, me desaparece el código, me pone siempre: 'Clientes'.
-                tv.text = cursor.getString(column)
-
-                return@ViewBinder true
-            }
-            if (column == 4 || column == 5) {
-                val tv = view as TextView
-
-                if (cursor.getInt(cursor.getColumnIndex("cliente")) == fClteDoc)
-                    tv.setTypeface(null, Typeface.BOLD)
-                else
-                    tv.setTypeface(null, Typeface.NORMAL)
-                // Tengo que hacer esto porque si no, me desaparece el nombre, me pone siempre: 'Clientes'.
-                tv.text = cursor.getString(column)
-
-                return@ViewBinder true
-            }
-
-            if (column == 6) {
-                val iv = view as ImageView
-
-                if (cursor.getString(cursor.getColumnIndex("tieneincid")) != null && cursor.getString(cursor.getColumnIndex("tieneincid")).equals("T", ignoreCase = true)) {
-                    iv.visibility = View.VISIBLE
-                } else {
-                    iv.visibility = View.GONE
-                }
-
-                return@ViewBinder true
-            }
-
-            false
-        }
-    }
-    */
 
 
     private fun siguienteClte() {
@@ -839,7 +753,6 @@ class VentasActivity: AppCompatActivity() {
         if (fClientes.abrirUnCliente(fClteDoc)) {
            fClteAplOftas = fClientes.getAplicarOfertas()
         }
-        fClientes.close()
 
         if (fClteAplOftas) {
             val aldDialog = nuevoAlertBuilder(this, resources.getString(R.string.tit_apl_oft_ped), resources.getString(R.string.dlg_apl_oft_ped), true)

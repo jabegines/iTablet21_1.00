@@ -5,7 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
@@ -25,7 +25,6 @@ import es.albainformatica.albamobileandroid.maestros.ArticulosActivity
 import es.albainformatica.albamobileandroid.maestros.ArticulosClase
 import es.albainformatica.albamobileandroid.maestros.LotesClase
 import es.albainformatica.albamobileandroid.ventas.BuscarLotes
-import kotlinx.android.synthetic.main.cargas.*
 import kotlinx.android.synthetic.main.nueva_carga.*
 import org.jetbrains.anko.alert
 import java.text.SimpleDateFormat
@@ -70,12 +69,6 @@ class NuevaCarga: AppCompatActivity() {
         inicializarControles()
     }
 
-
-    override fun onDestroy() {
-        fArticulos.close()
-
-        super.onDestroy()
-    }
 
 
     private fun inicializarControles() {
@@ -367,7 +360,7 @@ class NuevaCarga: AppCompatActivity() {
             cargasLineasDao?.borrarLinea(fNumLinea)
 
             fNumLinea = 0
-            // Volvemos a cargar el cursor para refrescar el listView
+            // Volvemos a cargar los datos para refrescar el listView
             prepararRecyclerView()
         }
         else Toast.makeText(this, "No ha seleccionado ninguna línea", Toast.LENGTH_SHORT).show()

@@ -7,7 +7,7 @@ import es.albainformatica.albamobileandroid.maestros.ArticulosClase
 import android.os.Bundle
 import android.content.Intent
 import android.net.Uri
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
@@ -43,7 +43,6 @@ class CatalogoGruposDep: Activity() {
 
     override fun onDestroy() {
         guardarPreferencias()
-        fArticulosGrv.close()
         super.onDestroy()
     }
 

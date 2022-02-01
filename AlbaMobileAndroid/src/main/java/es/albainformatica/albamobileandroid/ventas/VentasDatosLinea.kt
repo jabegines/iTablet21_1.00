@@ -142,10 +142,6 @@ class VentasDatosLinea: Activity() {
         fInicializando = false
     }
 
-    override fun onDestroy() {
-        fArticulos.close()
-        super.onDestroy()
-    }
 
     private fun inicializarControles() {
         val tvNombreClte = findViewById<TextView>(R.id.tvVL_Clte)

@@ -22,15 +22,16 @@ interface LotesDao {
     fun getStockLote(queArticulo:  Int, queLote: String): String
 
 
-    @Query("SELECT articuloId _id, lote, stock FROM Lotes WHERE articuloId = :queArticulo" +
+    @Query("SELECT * FROM Lotes WHERE articuloId = :queArticulo" +
             " AND CAST(stock AS REAL) > 0")
-    fun getAllLotesArticulo(queArticulo: Int): Cursor
+    fun getAllLotesArticulo(queArticulo: Int): List<LotesEnt>
 
-    @Query("SELECT articuloId _id, lote, SUM(stock) stock FROM Lotes " +
+    @Query("SELECT loteId, empresa, articuloId, lote, SUM(stock) stock, stockPiezas, flag FROM Lotes " +
             " WHERE articuloId = :queArticulo " +
             " AND CAST(stock AS REAL) > 0 " +
             " GROUP BY lote")
-    fun getAllLotesArtSum(queArticulo: Int): Cursor
+    fun getAllLotesArtSum(queArticulo: Int): List<LotesEnt>
+
 
     @Query("SELECT * FROM Lotes ORDER BY Empresa")
     fun getAllLotes(): List<LotesEnt>

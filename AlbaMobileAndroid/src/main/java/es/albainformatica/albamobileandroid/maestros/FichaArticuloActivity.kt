@@ -4,7 +4,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -44,11 +44,6 @@ class FichaArticuloActivity: AppCompatActivity() {
         inicializarControles()
     }
 
-
-    override fun onDestroy() {
-        fArticulos.close()
-        super.onDestroy()
-    }
 
 
     private fun inicializarControles() {
@@ -99,7 +94,8 @@ class FichaArticuloActivity: AppCompatActivity() {
             } else edtProveedor.setText("")
             val textoTipoIva = String.format("%.2f", fArticulos.fPorcIva) + '%'
             edtTipoIva.setText(textoTipoIva)
-            edtCosto.setText((String.format(fConfiguracion.formatoDecPrecioBase(), fArticulos.getCosto()) + " €"))
+            val queTexto = (String.format(fConfiguracion.formatoDecPrecioBase(), fArticulos.getCosto()) + " €")
+            edtCosto.setText(queTexto)
             edtPeso.setText(String.format(fDecCantidad, fArticulos.fPeso))
             edtUndCj.setText(String.format(fDecCantidad, fArticulos.fUCaja))
             edtExistencias.setText(String.format(fDecCantidad, fArticulos.getExistencias()))

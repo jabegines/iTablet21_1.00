@@ -5,7 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.view.KeyEvent
@@ -62,7 +62,6 @@ class CargarHcoPorDoc: AppCompatActivity() {
         fRecDocs.layoutManager = LinearLayoutManager(this)
 
         prepararRvArticulos()
-        //prepararListView()
 
         // Mediante este código seleccionamos el primer registro del recyclerView y hacemos como si pulsáramos
         // click en él. Hay que hacerlo con un Handler().postDelayed() porque si no, da errores.
@@ -138,50 +137,6 @@ class CargarHcoPorDoc: AppCompatActivity() {
     }
 
 
-/*
-private fun cargarCursor() {
-
-    fCursor = dbAlba.rawQuery("SELECT A.*, B.codigo, B.descr FROM hcoPorArticClte A " +
-            " LEFT JOIN articulos B ON B.articulo = A.articulo" +
-            " WHERE A.articulo = " + fAdapter.articuloId + " AND A.cliente = " + fCliente +
-            " ORDER BY substr(A.fecha, 7)||substr(A.fecha, 4, 2)||substr(A.fecha, 1, 2) DESC", null)
-
-    fCursor.moveToFirst()
-}
-*/
-
-
-    /*
-    private fun prepararListView() {
-        val columnas = arrayOf("tipodoc", "serie", "fecha", "ventas", "devoluciones")
-
-        val to = intArrayOf(R.id.tvHcoArtClTipoDoc, R.id.tvHcoArtClSerieNum, R.id.tvHcoArtClFecha,
-                R.id.tvHcoArtClVentas, R.id.tvHcoArtClDevoluciones)
-
-        cargarCursor()
-
-        adapterLineas = SimpleCursorAdapter(this, R.layout.ly_hco_doc, fCursor, columnas, to, 0)
-        // Formateamos las columnas.
-        formatearColumnas()
-
-        lvHcoPorDoc.adapter = adapterLineas
-
-
-        // Establecemos el evento on click del ListView.
-        lvHcoPorDoc.onItemClickListener = AdapterView.OnItemClickListener { listView, _, position, _ ->
-            val cursor = listView.getItemAtPosition(position) as Cursor
-            fLinea = cursor.getInt(cursor.getColumnIndexOrThrow("_id"))
-            val queArticulo = cursor.getInt(cursor.getColumnIndexOrThrow("articulo"))
-
-            val i = Intent(this, EditarHco::class.java)
-            i.putExtra("linea", fLinea)
-            i.putExtra("desdeHcoDoc", true)
-            i.putExtra("articulo", queArticulo)
-            startActivityForResult(i, fRequestEditarHco)
-        }
-
-    }
-    */
 
     fun editarHco(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
@@ -194,34 +149,6 @@ private fun cargarCursor() {
             startActivityForResult(i, fRequestEditarHco)
         }
     }
-
-    /*
-    private fun formatearColumnas() {
-        adapterLineas.viewBinder = SimpleCursorAdapter.ViewBinder { view, cursor, column ->
-            val tv = view as TextView
-
-            // El orden de las columnas será el que tengan en el cursor que estemos utilizando
-            // (en este caso fHcoMes.cCursorHco), comenzando por la cero.
-            // Formateamos el tipo de documento
-            if (column == 3) {
-                val queTipoDoc = cursor.getString(cursor.getColumnIndex("tipodoc")).toShort()
-                tv.text = tipoDocAsString(queTipoDoc)
-
-                return@ViewBinder true
-            }
-            // Serie/Número
-            if (column == 4) {
-                val queCadena = cursor.getString(cursor.getColumnIndex("serie")) + "/" +
-                        cursor.getString(cursor.getColumnIndex("numero"))
-                tv.text = queCadena
-
-                return@ViewBinder true
-            }
-
-            false
-        }
-    }
-    */
 
 
 

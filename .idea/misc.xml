@@ -4,13 +4,16 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/buscar_articulos.xml" value="0.33" />
+        <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/buscar_lotes.xml" value="0.26416666666666666" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/clientes_activity.xml" value="0.30083333333333334" />
+        <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/cobrar.xml" value="0.30083333333333334" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/cobros.xml" value="0.26416666666666666" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/cobros_pendientes.xml" value="0.26416666666666666" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/editar_hco.xml" value="0.33" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/ficha_articulos.xml" value="0.30083333333333334" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/ficha_clientes.xml" value="0.30083333333333334" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/layout_direcc_cltes.xml" value="0.30083333333333334" />
+        <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/layout_lotes.xml" value="0.26416666666666666" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/layout_tarifas_artic.xml" value="0.26416666666666666" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/ly_cltes_rutero.xml" value="0.26416666666666666" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/ly_docs_reparto.xml" value="0.26416666666666666" />
@@ -28,6 +31,7 @@
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/ventas_verhcoartclte.xml" value="0.26416666666666666" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-large/ver_documentos.xml" value="0.33" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-normal/buscar_articulos.xml" value="0.990625" />
+        <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-normal/buscar_lotes.xml" value="0.990625" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-normal/clientes_activity.xml" value="0.990625" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-normal/cobros.xml" value="0.990625" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-normal/cobros_pendientes.xml" value="0.990625" />

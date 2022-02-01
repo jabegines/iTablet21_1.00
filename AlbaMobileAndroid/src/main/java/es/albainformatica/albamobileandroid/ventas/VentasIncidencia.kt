@@ -33,10 +33,6 @@ class VentasIncidencia : Activity() {
         inicializarControles(textoIncid)
     }
 
-    override fun onDestroy() {
-        fClientes.close()
-        super.onDestroy()
-    }
 
     private fun inicializarControles(textoIncid: String) {
         fClientes.abrirUnCliente(fClteDoc)

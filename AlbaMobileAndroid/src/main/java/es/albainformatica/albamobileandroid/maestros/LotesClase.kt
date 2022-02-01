@@ -1,7 +1,6 @@
 package es.albainformatica.albamobileandroid.maestros
 
 import android.content.Context
-import android.database.Cursor
 import es.albainformatica.albamobileandroid.dao.LotesDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.entity.LotesEnt
@@ -38,9 +37,9 @@ class LotesClase(queContexto: Context) {
     }
 
 
-    fun getAllLotesArticulo(queArticulo: Int, sumarEmpresas: Boolean): Cursor? {
-        return if (sumarEmpresas) lotesDao?.getAllLotesArtSum(queArticulo)
-        else lotesDao?.getAllLotesArticulo(queArticulo)
+    fun getAllLotesArticulo(queArticulo: Int, sumarEmpresas: Boolean): List<LotesEnt> {
+        return if (sumarEmpresas) lotesDao?.getAllLotesArtSum(queArticulo) ?: emptyList<LotesEnt>().toMutableList()
+        else lotesDao?.getAllLotesArticulo(queArticulo) ?: emptyList<LotesEnt>().toMutableList()
     }
 
 

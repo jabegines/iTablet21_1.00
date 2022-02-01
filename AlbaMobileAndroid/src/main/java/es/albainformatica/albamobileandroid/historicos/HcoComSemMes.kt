@@ -1,11 +1,10 @@
 package es.albainformatica.albamobileandroid.historicos
 
 import android.content.Context
-import android.database.Cursor
-import android.database.sqlite.SQLiteDatabase
 import es.albainformatica.albamobileandroid.DatosHcoCompSemMes
 import es.albainformatica.albamobileandroid.dao.HcoCompSemMesDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
+
 
 class HcoComSemMes(contexto: Context) {
     private var hcoComSemMesDao: HcoCompSemMesDao? = MyDatabase.getInstance(contexto)?.hcoCompSemMesDao()

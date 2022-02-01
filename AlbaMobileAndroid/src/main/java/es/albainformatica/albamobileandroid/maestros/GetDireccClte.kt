@@ -44,10 +44,6 @@ class GetDireccClte: Activity() {
         mostrarDirecciones()
     }
 
-    override fun onDestroy() {
-        fClientes.close()
-        super.onDestroy()
-    }
 
     private fun inicializarControles() {
         val tvNombreClte = findViewById<TextView>(R.id.tvDirNombreClte)

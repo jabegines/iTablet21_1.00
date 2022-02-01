@@ -9,7 +9,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.provider.Settings
 import android.util.Log
 import android.view.KeyEvent
@@ -122,10 +122,6 @@ class ServicioRecibir: AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        fArticulos.close()
-        super.onDestroy()
-    }
 
 
     private fun comenzarRecepcion() {
@@ -153,11 +149,11 @@ class ServicioRecibir: AppCompatActivity() {
         if (!rutarecepcion.exists()) rutarecepcion.mkdirs()
 
         localDirImagenes = if (localDirImagenes == "") {
-            if (usarMultisistema) "/storage/sdcard0/alba/imagenes/" + queBDRoom
+            if (usarMultisistema) "/storage/sdcard0/alba/imagenes/$queBDRoom"
             else "/storage/sdcard0/alba/imagenes"
         }
         else {
-            if (usarMultisistema) "$localDirImagenes/imagenes/" + queBDRoom
+            if (usarMultisistema) "$localDirImagenes/imagenes/$queBDRoom"
             else "$localDirImagenes/imagenes"
         }
         // Nos aseguramos de que la carpeta de imágenes existe y, si no, la creamos
@@ -165,10 +161,10 @@ class ServicioRecibir: AppCompatActivity() {
         if (!rutaRecepImag.exists()) rutaRecepImag.mkdirs()
 
         localDirDocAsoc = if (localDirDocAsoc == "") {
-            if (usarMultisistema) "/storage/sdcard'/alba/docasociados/" + queBDRoom
+            if (usarMultisistema) "/storage/sdcard'/alba/docasociados/$queBDRoom"
             else "/storage/sdcard0/alba/docasociados"
         } else {
-            if (usarMultisistema) "$localDirDocAsoc/docasociados/" + queBDRoom
+            if (usarMultisistema) "$localDirDocAsoc/docasociados/$queBDRoom"
             else "$localDirDocAsoc/docasociados"
         }
         // Nos aseguramos de que la carpeta de documentos asociados existe y, si no, la creamos

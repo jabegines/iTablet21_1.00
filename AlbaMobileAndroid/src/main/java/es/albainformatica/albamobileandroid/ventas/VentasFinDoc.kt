@@ -11,7 +11,6 @@ import android.app.Dialog
 import android.app.DialogFragment
 import es.albainformatica.albamobileandroid.maestros.GetDireccClte
 import android.content.DialogInterface
-import android.database.Cursor
 import android.view.KeyEvent
 import android.view.View
 import android.widget.*
@@ -164,29 +163,25 @@ class VentasFinDoc: AppCompatActivity() {
     private fun prepararSpFPago() {
         val sFPago: String
         val llFpago = findViewById<LinearLayout>(R.id.llVFD_Fpago)
-        val spnFPago = findViewById<Spinner>(R.id.spnVFD_FPago)
+
         // Para los pedidos también pediremos la forma de pago.
         if (fDocumento.fTipoDoc == TIPODOC_FACTURA || fDocumento.fTipoDoc == TIPODOC_PEDIDO) {
-            fFPago.abrir()
-            val c = fFPago.cursor
-            val columnas = arrayOf("descripcion")
-            val to = intArrayOf(android.R.id.text1)
-            val sca = SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, c, columnas, to)
-            sca.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spnFPago.adapter = sca
+            val spnFPago = findViewById<Spinner>(R.id.spnVFD_FPago)
+            val lFPago: List<DatosFPago> = fFPago.abrir()
+
+            val adaptador = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, lFPago)
+            adaptador.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spnFPago.adapter = adaptador
 
             // Localizamos en el spinner la forma de pago que tuviera el documento,
             // para seguir aconsejándola, o bien si es un documento nuevo, aconsejamos
             // la forma de pago que tenga el cliente.
-            if (queFPago != "")
-                sFPago = queFPago
-            else
-                sFPago = fDocumento.fClientes.fPago
+            sFPago = if (queFPago != "") queFPago
+            else fDocumento.fClientes.fPago
 
-            for (i in 0 until sca.count) {
-                val cursor = sca.getItem(i) as Cursor
-                if (sFPago == cursor.getString(cursor.getColumnIndex("_id"))) {
-                    spnFPago.setSelection(i)
+            for (datFPago in lFPago) {
+                if (sFPago == datFPago.codigo) {
+                    spnFPago.setSelection(lFPago.indexOf(datFPago))
                     break
                 }
             }
@@ -195,11 +190,13 @@ class VentasFinDoc: AppCompatActivity() {
             if (fConfiguracion.noCambiarFPago()) {
                 spnFPago.isEnabled = false
                 queFPago = sFPago
+
             } else {
                 spnFPago.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
                     override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                        val queCursor = parent.getItemAtPosition(position) as Cursor
-                        queFPago = queCursor.getString(queCursor.getColumnIndexOrThrow("_id"))
+
+                        val datFPago = parent.getItemAtPosition(position) as DatosFPago
+                        queFPago = datFPago.codigo
                     }
 
                     override fun onNothingSelected(parent: AdapterView<*>?) {}

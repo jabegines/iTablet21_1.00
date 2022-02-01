@@ -59,11 +59,6 @@ class VerCargas: AppCompatActivity() {
         inicializarControles()
     }
 
-    override fun onDestroy() {
-        fArticulos.close()
-
-        super.onDestroy()
-    }
 
 
     private fun inicializarControles() {

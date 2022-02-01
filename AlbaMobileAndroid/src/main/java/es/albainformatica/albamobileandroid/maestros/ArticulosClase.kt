@@ -1,7 +1,6 @@
 package es.albainformatica.albamobileandroid.maestros
 
 import android.content.Context
-import android.database.Cursor
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.Comunicador.Companion.fConfiguracion
 import es.albainformatica.albamobileandroid.dao.*
@@ -23,8 +22,7 @@ class ArticulosClase(val contexto: Context) {
 
     lateinit var lArticulos: List<Int>
     lateinit var lArtGridView: List<DatosGridView>
-
-    var cDatAdicionales: Cursor? = null
+    lateinit var lDatAdic: List<String>
 
     var fArticulo = 0
     var fCodigo: String = ""
@@ -50,10 +48,6 @@ class ArticulosClase(val contexto: Context) {
     private var salidas: Double = 0.0
 
 
-
-    fun close() {
-        cDatAdicionales?.close()
-    }
 
 
     // Por ahora, la diferencia entre abrirUnArticulo y existeArticulo es la empresa, que la tomamos
@@ -263,14 +257,10 @@ class ArticulosClase(val contexto: Context) {
 
 
     fun datosAdicionales(queArticulo: Int): Boolean {
-        val lDatAdic = articDatAdicDao?.getDatosArticulo(queArticulo) ?: emptyList<String>().toMutableList()
+        lDatAdic = articDatAdicDao?.getDatosArticulo(queArticulo) ?: emptyList<String>().toMutableList()
         return lDatAdic.isNotEmpty()
     }
 
-
-    fun docAsociado(): String {
-        return cDatAdicionales?.getString(cDatAdicionales?.getColumnIndex("cadena") ?: 0) ?: ""
-    }
 
 
     fun articuloEnTablet(queArticulo: Int): Boolean {

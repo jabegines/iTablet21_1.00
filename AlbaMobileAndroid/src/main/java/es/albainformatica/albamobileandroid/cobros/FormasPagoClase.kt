@@ -1,7 +1,7 @@
 package es.albainformatica.albamobileandroid.cobros
 
 import android.content.Context
-import android.database.Cursor
+import es.albainformatica.albamobileandroid.DatosFPago
 import es.albainformatica.albamobileandroid.dao.FormasPagoDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 
@@ -9,18 +9,15 @@ import es.albainformatica.albamobileandroid.database.MyDatabase
 class FormasPagoClase(queContexto: Context) {
     private val fPagoDao: FormasPagoDao? = MyDatabase.getInstance(queContexto)?.formasPagoDao()
 
-    var cursor: Cursor? = null
 
 
-    fun abrir() {
-        cursor = fPagoDao?.getAllFPago()
-        cursor?.moveToFirst()
+    fun abrir(): List<DatosFPago> {
+        return fPagoDao?.getAllFPago() ?: emptyList<DatosFPago>().toMutableList()
     }
 
 
-    fun abrirSoloContado() {
-        cursor = fPagoDao?.abrirSoloContado()
-        cursor?.moveToFirst()
+    fun abrirSoloContado(): List<DatosFPago> {
+        return fPagoDao?.abrirSoloContado() ?: emptyList<DatosFPago>().toMutableList()
     }
 
 

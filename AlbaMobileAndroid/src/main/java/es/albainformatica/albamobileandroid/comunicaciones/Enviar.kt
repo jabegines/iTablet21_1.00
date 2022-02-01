@@ -10,7 +10,7 @@ import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.Spannable
 import android.content.Intent
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.widget.Toast
 import android.text.Html
 import android.graphics.Color
@@ -20,6 +20,7 @@ import android.os.Message
 import android.view.*
 import android.widget.Button
 import androidx.appcompat.widget.Toolbar
+import androidx.core.text.HtmlCompat
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.queBDRoom
 import kotlin.Throws
@@ -70,9 +71,9 @@ class Enviar: AppCompatActivity() {
 
     override fun onDestroy() {
         aCabeceras.clear()
-        fClientes.close()
         super.onDestroy()
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
@@ -195,9 +196,8 @@ class Enviar: AppCompatActivity() {
         miscCom.puente = puente
         miscCom.baseDatosAXML(queNumExportacion)
         aCabeceras = miscCom.aCabeceras
-        val queTexto = tvDatos.text.toString() + Html.fromHtml("<br />") + resources.getString(
-            R.string.msj_FinPrep
-        )
+        val queTexto = tvDatos.text.toString() + HtmlCompat.fromHtml("<br />", HtmlCompat.FROM_HTML_MODE_LEGACY) +
+                                resources.getString(R.string.msj_FinPrep)
         tvDatos.text = queTexto
 
         // Volvemos a habilitar los botones.

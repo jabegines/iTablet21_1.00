@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 import android.os.Environment
 import android.os.Handler
 import android.os.Message
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.util.Xml
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.R.string
@@ -3398,125 +3398,120 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
         val fNotas = NotasClientes(fContext)
         val fNumExportaciones = NumExportaciones(fContext)
 
-        try {
-            var hayClientes = false; var hayDirecc = false; var hayContactos = false; var hayNotas = false
-            var hayDocumentos = false; var hayCobros = false; var hayPendiente = false; var hayCargas = false
-            // Si estamos enviando desde el servicio primero asignamos el número de exportación a -1 y luego
-            // actualizaremos los registros que tengan este número con el número de paquete que nos devuelva el servicio.
-            val iSigExportacion: Int = if (fDesdeServicio) -1
-            else prefs.getInt("num_sig_exportacion", 1)
+        var hayClientes = false; var hayDirecc = false; var hayContactos = false; var hayNotas = false
+        var hayDocumentos = false; var hayCobros = false; var hayPendiente = false; var hayCargas = false
+        // Si estamos enviando desde el servicio primero asignamos el número de exportación a -1 y luego
+        // actualizaremos los registros que tengan este número con el número de paquete que nos devuelva el servicio.
+        val iSigExportacion: Int = if (fDesdeServicio) -1
+        else prefs.getInt("num_sig_exportacion", 1)
 
-            // Nos aseguramos de que la carpeta existe y, si no, la creamos.
-            val rutaenvio = File(rutaLocalEnvio)
-            if (!rutaenvio.exists())
-                rutaenvio.mkdirs()
+        // Nos aseguramos de que la carpeta existe y, si no, la creamos.
+        val rutaenvio = File(rutaLocalEnvio)
+        if (!rutaenvio.exists())
+            rutaenvio.mkdirs()
 
-            // Igualmente, nos aseguramos de que la carpeta esté vacía, para que no haya restos de un
-            // envío anterior fallido.
-            val rutaLocEnv = File(rutaLocalEnvio)
-            val xmlFiles = rutaLocEnv.listFiles()
-            for (File in xmlFiles) {
-                File.delete()
+        // Igualmente, nos aseguramos de que la carpeta esté vacía, para que no haya restos de un
+        // envío anterior fallido.
+        val rutaLocEnv = File(rutaLocalEnvio)
+        val xmlFiles = rutaLocEnv.listFiles()
+        for (File in xmlFiles) {
+            File.delete()
+        }
+        val quedanFich = rutaLocEnv.listFiles()
+        val continuar = (quedanFich.isEmpty())
+
+        if (continuar) {
+            val lClientes = fClientes.abrirParaEnviar(queNumExportacion)
+            if (lClientes.isNotEmpty()) {
+                hayClientes = true
+                enviarClientes(lClientes)
             }
-            val quedanFich = rutaLocEnv.listFiles()
-            val continuar = (quedanFich.isEmpty())
 
-            if (continuar) {
-                val lClientes = fClientes.abrirParaEnviar(queNumExportacion)
-                if (lClientes.isNotEmpty()) {
-                    hayClientes = true
-                    enviarClientes(lClientes)
-                }
+            val direccCltesDao: DireccCltesDao? = MyDatabase.getInstance(fContext)?.direccCltesDao()
+            val lDirecciones: List<DireccCltesEnt> = if (queNumExportacion > 0)
+                direccCltesDao?.getDirParaEnvExp(queNumExportacion) ?: emptyList<DireccCltesEnt>().toMutableList()
+            else
+                direccCltesDao?.getDirParaEnv() ?: emptyList<DireccCltesEnt>().toMutableList()
+            if (lDirecciones.isNotEmpty()) {
+                hayDirecc = true
+                enviarDirecciones(lDirecciones)
+            }
 
-                val direccCltesDao: DireccCltesDao? = MyDatabase.getInstance(fContext)?.direccCltesDao()
-                val lDirecciones: List<DireccCltesEnt> = if (queNumExportacion > 0)
-                    direccCltesDao?.getDirParaEnvExp(queNumExportacion) ?: emptyList<DireccCltesEnt>().toMutableList()
-                else
-                    direccCltesDao?.getDirParaEnv() ?: emptyList<DireccCltesEnt>().toMutableList()
-                if (lDirecciones.isNotEmpty()) {
-                    hayDirecc = true
-                    enviarDirecciones(lDirecciones)
-                }
+            val cTelfClteDao: ContactosCltesDao? = MyDatabase.getInstance(fContext)?.contactosCltesDao()
+            val lTelefonos: List<ContactosCltesEnt> = if (queNumExportacion > 0)
+                cTelfClteDao?.getTlfsParaEnvExp(queNumExportacion) ?: emptyList<ContactosCltesEnt>().toMutableList()
+            else
+                cTelfClteDao?.getTlfsParaEnviar() ?: emptyList<ContactosCltesEnt>().toMutableList()
+            if (lTelefonos.isNotEmpty()) {
+                hayContactos = true
+                enviarContactos(lTelefonos)
+            }
 
-                val cTelfClteDao: ContactosCltesDao? = MyDatabase.getInstance(fContext)?.contactosCltesDao()
-                val lTelefonos: List<ContactosCltesEnt> = if (queNumExportacion > 0)
-                    cTelfClteDao?.getTlfsParaEnvExp(queNumExportacion) ?: emptyList<ContactosCltesEnt>().toMutableList()
-                else
-                    cTelfClteDao?.getTlfsParaEnviar() ?: emptyList<ContactosCltesEnt>().toMutableList()
-                if (lTelefonos.isNotEmpty()) {
-                    hayContactos = true
-                    enviarContactos(lTelefonos)
-                }
+            if (queNumExportacion == 0) fClientes.marcarComoExportados(iSigExportacion)
 
-                if (queNumExportacion == 0) fClientes.marcarComoExportados(iSigExportacion)
-                fClientes.close()
+            val lNotas = fNotas.abrirParaEnviar(queNumExportacion)
+            if (lNotas.isNotEmpty()) {
+                hayNotas = true
+                enviarNotas(lNotas)
+            }
 
-                val lNotas = fNotas.abrirParaEnviar(queNumExportacion)
-                if (lNotas.isNotEmpty()) {
-                    hayNotas = true
-                    enviarNotas(lNotas)
-                }
+            if (queNumExportacion == 0) fNotas.marcarComoExportadas(iSigExportacion)
 
-                if (queNumExportacion == 0) fNotas.marcarComoExportadas(iSigExportacion)
+            if (enviarCargas(queNumExportacion, iSigExportacion)) hayCargas = true
+            if (enviarCabeceras(queNumExportacion, iSigExportacion)) hayDocumentos = true
+            if (enviarCobros(queNumExportacion, iSigExportacion)) hayCobros = true
+            if (enviarPendiente(queNumExportacion, iSigExportacion)) hayPendiente = true
 
-                if (enviarCargas(queNumExportacion, iSigExportacion)) hayCargas = true
-                if (enviarCabeceras(queNumExportacion, iSigExportacion)) hayDocumentos = true
-                if (enviarCobros(queNumExportacion, iSigExportacion)) hayCobros = true
-                if (enviarPendiente(queNumExportacion, iSigExportacion)) hayPendiente = true
+            if (hayClientes || hayDirecc || hayContactos || hayNotas || hayDocumentos || hayCobros || hayPendiente || hayCargas) {
+                // Enviamos información técnica de la tablet
+                enviarInfTecnica()
 
-                if (hayClientes || hayDirecc || hayContactos || hayNotas || hayDocumentos || hayCobros || hayPendiente || hayCargas) {
-                    // Enviamos información técnica de la tablet
-                    enviarInfTecnica()
+                crearLog(
+                    hayClientes,
+                    hayDirecc,
+                    hayContactos,
+                    hayNotas,
+                    hayDocumentos,
+                    hayCobros,
+                    hayPendiente,
+                    hayCargas
+                )
+                crearCadenaResumen(hayClientes, hayDirecc, hayContactos, hayNotas, hayDocumentos, hayCobros, hayPendiente, hayCargas)
 
-                    crearLog(
-                        hayClientes,
-                        hayDirecc,
-                        hayContactos,
-                        hayNotas,
-                        hayDocumentos,
-                        hayCobros,
-                        hayPendiente,
-                        hayCargas
-                    )
-                    crearCadenaResumen(hayClientes, hayDirecc, hayContactos, hayNotas, hayDocumentos, hayCobros, hayPendiente, hayCargas)
+                // Una vez que hemos preparado los XML para enviar, haremos una copia.
+                // De esta forma siempre tendremos una copia de lo último que hayamos enviado.
+                copiarEnvio()
 
-                    // Una vez que hemos preparado los XML para enviar, haremos una copia.
-                    // De esta forma siempre tendremos una copia de lo último que hayamos enviado.
-                    copiarEnvio()
-
-                    if (queNumExportacion == 0) {
-                        if (!fDesdeServicio) {
-                            prefs.edit().putInt("num_sig_exportacion", iSigExportacion + 1).apply()
-                            fNumExportaciones.guardarExportacion(iSigExportacion)
-                        }
+                if (queNumExportacion == 0) {
+                    if (!fDesdeServicio) {
+                        prefs.edit().putInt("num_sig_exportacion", iSigExportacion + 1).apply()
+                        fNumExportaciones.guardarExportacion(iSigExportacion)
                     }
-                    // Guardamos también en las preferencias la fecha y hora del último envío.
-                    val tim = System.currentTimeMillis()
-                    val df = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
-                    val fFecha = df.format(tim)
-                    prefs.edit().putString("fecha_ult_envio", fFecha).apply()
+                }
+                // Guardamos también en las preferencias la fecha y hora del último envío.
+                val tim = System.currentTimeMillis()
+                val df = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
+                val fFecha = df.format(tim)
+                prefs.edit().putString("fecha_ult_envio", fFecha).apply()
 
-                    if (fDesdeServicio) {
-                        resultado = comprimirEnvio()
-                    } else {
-                        val msg = Message()
-                        msg.obj = fContext.getString(string.msj_FinPrep)
-                        puente.sendMessage(msg)
-
-                        resultado = true
-                    }
+                if (fDesdeServicio) {
+                    resultado = comprimirEnvio()
                 } else {
                     val msg = Message()
-                    msg.obj = fContext.getString(string.msj_NoDatosExport)
+                    msg.obj = fContext.getString(string.msj_FinPrep)
                     puente.sendMessage(msg)
+
+                    resultado = true
                 }
             } else {
                 val msg = Message()
                 msg.obj = fContext.getString(string.msj_NoDatosExport)
                 puente.sendMessage(msg)
             }
-        } finally {
-            fClientes.close()
+        } else {
+            val msg = Message()
+            msg.obj = fContext.getString(string.msj_NoDatosExport)
+            puente.sendMessage(msg)
         }
 
         return resultado
@@ -3527,7 +3522,6 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
     fun actualizarNumPaquete(fNumPaquete: Int) {
         val fClientes = ClientesClase(fContext)
         fClientes.marcarNumExport(fNumPaquete)
-        fClientes.close()
 
         val fNotas = NotasClientes(fContext)
         fNotas.marcarNumExport(fNumPaquete)

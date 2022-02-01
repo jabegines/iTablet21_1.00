@@ -1,9 +1,9 @@
 package es.albainformatica.albamobileandroid.dao
 
-import android.database.Cursor
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import es.albainformatica.albamobileandroid.DatosFPago
 import es.albainformatica.albamobileandroid.entity.FormasPagoEnt
 
 
@@ -29,12 +29,13 @@ interface FormasPagoDao {
     fun getDescripcion(queCodigo: String): String
 
 
-    @Query("SELECT codigo _id, descripcion FROM FormasPago")
-    fun getAllFPago(): Cursor
+    @Query("SELECT codigo, descripcion FROM FormasPago")
+    fun getAllFPago(): List<DatosFPago>
 
-    @Query("SELECT Codigo _id, Descripcion, PideAnotacion, Anotacion FROM FormasPago" +
+
+    @Query("SELECT codigo, descripcion FROM FormasPago" +
             " WHERE GeneraCobro = 'T' AND PideDivisas = 'T' ORDER BY Orden")
-    fun abrirSoloContado(): Cursor
+    fun abrirSoloContado(): List<DatosFPago>
 
 
     @Query("SELECT codigo FROM FormasPago WHERE descripcion = :queDescripcion")

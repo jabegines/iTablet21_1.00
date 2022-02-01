@@ -74,11 +74,6 @@ class VtaDetallesCat: AppCompatActivity() {
     }
 
 
-    override fun onDestroy() {
-        fArticulos.close()
-        super.onDestroy()
-    }
-
     private fun escogerLineaArt(fArticulo: Int) {
         val listItems: MutableList<String> = ArrayList()
 

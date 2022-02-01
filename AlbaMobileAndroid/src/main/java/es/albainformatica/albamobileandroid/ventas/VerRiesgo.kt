@@ -46,11 +46,6 @@ class VerRiesgo: AppCompatActivity() {
     }
 
 
-    override fun onDestroy() {
-        //fPendiente.close()
-        fClientes.close()
-        super.onDestroy()
-    }
 
     private fun inicializarControles() {
         // Si el usuario no tiene permiso para vender con el riesgo superado ocultamos el botón de Aceptar.

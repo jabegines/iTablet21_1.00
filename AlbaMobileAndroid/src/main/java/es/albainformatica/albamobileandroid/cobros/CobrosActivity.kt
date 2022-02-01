@@ -9,7 +9,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Looper
 import androidx.preference.PreferenceManager
-import android.text.Html
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
@@ -17,6 +16,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -101,11 +101,6 @@ class CobrosActivity: AppCompatActivity() {
         inicializarControles()
     }
 
-
-    override fun onDestroy() {
-        fClientes.close()
-        super.onDestroy()
-    }
 
 
     private fun inicializarControles() {
@@ -250,29 +245,6 @@ class CobrosActivity: AppCompatActivity() {
     }
 
 
-    /*
-    private fun formatearColumnasCobros() {
-        adapterCobros.viewBinder = SimpleCursorAdapter.ViewBinder { view: View, cursor: Cursor, column: Int ->
-                val tv = view as TextView
-
-                // Formateamos el tipo de documento.
-                if (column == 2) {
-                    if (cursor.getString(cursor.getColumnIndex("tipodoc")) != "") tv.text =
-                        tipoDocAsString(cursor.getString(cursor.getColumnIndex("tipodoc")).toShort()) else tv.text = ""
-                    return@ViewBinder true
-                }
-                // Formateamos el total.
-                if (column == 9) {
-                    val sTotal =
-                        cursor.getString(cursor.getColumnIndex("cobro")).replace(',', '.')
-                    val dTotal = sTotal.toDouble()
-                    tv.text = String.format(fFtoDecImpIva, dTotal)
-                    return@ViewBinder true
-                }
-                false
-            }
-    }
-    */
 
     private fun prepararEdit() {
         edtCodClte.setOnKeyListener { v: View, keyCode: Int, event: KeyEvent ->
@@ -296,7 +268,7 @@ class CobrosActivity: AppCompatActivity() {
         view.getTag(0)          // Para que no dé warning el compilador
 
         val builder = AlertDialog.Builder(this)
-        builder.setTitle(Html.fromHtml("<font color='#000000'>Introducir fechas</font>"))
+        builder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Introducir fechas</font>", HtmlCompat.FROM_HTML_MODE_LEGACY))
         val inflater = layoutInflater
         val dialogLayout = inflater.inflate(R.layout.alert_dialog_pedir_fechas, null)
         builder.setView(dialogLayout)
@@ -550,8 +522,6 @@ class CobrosActivity: AppCompatActivity() {
 
                                     enviarPorWhatsapPdf(this@CobrosActivity, documPDF.nombrePDF, numeroTelefono)
                                     MsjAlerta(this@CobrosActivity).alerta("Se terminó de exportar")
-
-                                    fClientes.close()
                                 }
                             }
                             aldDialog.setCancelable(true)

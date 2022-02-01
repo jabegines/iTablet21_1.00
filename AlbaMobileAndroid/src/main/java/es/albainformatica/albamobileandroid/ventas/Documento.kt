@@ -137,8 +137,6 @@ class Documento(private val fContexto: Context) {
 
     fun close() {
         fBases.close()
-        fClientes.close()
-        fArticulos.close()
     }
 
     fun abrirLineas() {

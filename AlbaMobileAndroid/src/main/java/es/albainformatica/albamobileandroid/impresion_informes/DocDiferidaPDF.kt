@@ -86,10 +86,6 @@ class DocDiferidaPDF(private val fContexto: Context, idDocumento: Int) {
     }
 
 
-    protected fun onDestroy() {
-        fClientes.close()
-    }
-
 
     // Agrega las lineas en blanco especificadas a un parrafo especificado
     private fun agregarLineasEnBlanco(parrafo: Paragraph, nLineas: Int) {

@@ -2,8 +2,7 @@ package es.albainformatica.albamobileandroid.maestros
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.database.Cursor
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.cobros.FormasPagoClase
 import es.albainformatica.albamobileandroid.cobros.PendienteClase
@@ -27,7 +26,6 @@ class ClientesClase(val contexto: Context) {
     private var fConfiguracion: Configuracion = Comunicador.fConfiguracion
     private var fFPago: FormasPagoClase = FormasPagoClase(contexto)
 
-    lateinit var cursor: Cursor
 
     private var fCliente = 0
     var fCodigo: String = ""
@@ -60,11 +58,6 @@ class ClientesClase(val contexto: Context) {
         fEmpresaActual = prefs.getInt("ultima_empresa", 0)
     }
 
-
-    fun close() {
-        if (this::cursor.isInitialized)
-            cursor.close()
-    }
 
 
     fun abrirUnCliente(queCliente: Int): Boolean {
@@ -217,8 +210,10 @@ class ClientesClase(val contexto: Context) {
         clteEnt.aplIva = aDatosClte[14]
         clteEnt.aplRec = aDatosClte[15]
         clteEnt.tipoIva = 1
-        clteEnt.tarifaId = aDatosClte[9].toShort()
-        clteEnt.tarifaDtoId = aDatosClte[10].toShort()
+        if (aDatosClte[9] == "") clteEnt.tarifaId = 0
+        else clteEnt.tarifaId = aDatosClte[9].toShort()
+        if (aDatosClte[10] == "") clteEnt.tarifaDtoId = 0
+        else clteEnt.tarifaDtoId = aDatosClte[10].toShort()
         clteEnt.fPago = aDatosClte[11]
         clteEnt.rutaId = aDatosClte[12].toShort()
         clteEnt.riesgo = aDatosClte[13]
