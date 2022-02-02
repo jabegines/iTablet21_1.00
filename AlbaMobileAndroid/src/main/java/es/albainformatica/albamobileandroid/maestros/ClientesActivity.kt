@@ -294,66 +294,6 @@ class ClientesActivity: AppCompatActivity(), View.OnClickListener {
         }
     }
 
-/*
-    private fun formatearColumnas() {
-        adapterClientes.viewBinder = SimpleCursorAdapter.ViewBinder { view: View, cursor: Cursor, column: Int ->
-            if (column == 2 || column == 3) {
-                // Nombre fiscal o comercial. Los pondremos en negrita si el registro es el seleccionado. Idem con el código.
-                val tv = view as TextView
-                if (cursor.getInt(cursor.getColumnIndex("_id")) == fCliente) tv.setTypeface(null, Typeface.BOLD)
-                else tv.setTypeface(null, Typeface.NORMAL)
-                // Tengo que hacer esto porque si no, me desaparece el código, me pone siempre: 'Clientes'.
-                tv.text = cursor.getString(column)
-                true
-            }
-            if (column == 4) {
-                val iv = view as ImageView
-                val queFlag = cursor.getInt(cursor.getColumnIndex("flag"))
-                if (queFlag and FLAGCLIENTE_NOVENDER > 0) {
-                    iv.visibility = View.VISIBLE
-                } else {
-                    iv.visibility = View.INVISIBLE
-                }
-                true
-            }
-            false
-        }
-    }
-*/
-/*
-    private fun prepararListView(clteBuscar: String) {
-        val cadenaLike: String
-        val columns = arrayOf("codigo", "nombre", "nombre2", "flag")
-        val to = intArrayOf(R.id.lyclt_codclte, R.id.lyclt_nombreclte, R.id.lyclt_nombreclte2, R.id.lyclt_imgNoVender)
-        // Presentaremos primero el nombre comercial o el fiscal según la ordenación que estemos aplicando.
-        sQueryCursor = if (queOrdenacion.toInt() == 1) "SELECT cliente _id, codigo, nomco nombre, nomfi nombre2, flag FROM clientes"
-        else "SELECT cliente _id, codigo, nomfi nombre, nomco nombre2, flag FROM clientes"
-
-        if (clteBuscar != "") {
-            cadenaLike = "LIKE('%$clteBuscar%')"
-            sQueryCursor = "$sQueryCursor WHERE nomfi $cadenaLike OR nomco $cadenaLike OR codigo $cadenaLike"
-        }
-        sQueryCursor = if (queOrdenacion.toInt() == 0) "$sQueryCursor ORDER BY nomfi" else if (queOrdenacion.toInt() == 1) "$sQueryCursor ORDER BY nomco" else "$sQueryCursor ORDER BY codigo"
-        cursorClientes = dbAlba.rawQuery(sQueryCursor, null)
-        adapterClientes = SimpleCursorAdapter(this, R.layout.layout_clientes, cursorClientes, columns, to, 0)
-        formatearColumnas()
-        listView.adapter = adapterClientes
-
-        // Establecemos el evento on click del ListView.
-        listView.onItemClickListener =
-            AdapterView.OnItemClickListener { adapter: AdapterView<*>, _: View?, position: Int, _: Long ->
-                val cursor = adapter.getItemAtPosition(position) as Cursor
-                // Tomamos el campo cliente de la fila en la que hemos pulsado
-                fCliente = cursor.getInt(cursor.getColumnIndexOrThrow("_id"))
-                cursorClientes = dbAlba.rawQuery(sQueryCursor, null)
-                adapterClientes.changeCursor(cursorClientes)
-                if (fBuscar) seleccionar()
-            }
-
-        // Cargamos el Map con las posiciones para la búsqueda por letra.
-        getIndexList()
-    }
-*/
 
     private fun seleccionar() {
         // Devolvemos el cliente que tengamos seleccionado (fCliente).

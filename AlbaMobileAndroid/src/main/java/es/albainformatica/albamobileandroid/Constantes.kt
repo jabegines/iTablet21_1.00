@@ -2,7 +2,7 @@ package es.albainformatica.albamobileandroid
 
 
 
-const val VERSION_PROGRAMA = "1.00"
+const val VERSION_PROGRAMA = "2.00"
 const val COMPILACION_PROGRAMA = ".1"
 const val VERSION_BD = 1
 

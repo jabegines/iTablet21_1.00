@@ -917,8 +917,7 @@ class VentasLineas: AppCompatActivity() {
         // Si estuviéramos modificando tendríamos que cambiar también el registro de la tabla cabecera.
         if (fDocNuevo) {
             val dialog = SeleccDocFragment()
-            val fm = supportFragmentManager
-            dialog.show(fm, "customDialog")
+            dialog.show(supportFragmentManager, "customDialog")
         }
     }
 

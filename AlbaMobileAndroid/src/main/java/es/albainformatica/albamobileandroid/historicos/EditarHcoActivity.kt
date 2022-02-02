@@ -22,7 +22,7 @@ import java.util.*
 
 
 class EditarHcoActivity: AppCompatActivity() {
-    private var fDocumento = Comunicador.fDocumento
+    private lateinit var fDocumento: Documento
     private var fHistorico = Comunicador.fHistorico
     private lateinit var fHistMes: HistoricoMes
     private var fConfiguracion = Comunicador.fConfiguracion
@@ -87,6 +87,7 @@ class EditarHcoActivity: AppCompatActivity() {
 
         // Nos posicionamos en el articulo de la linea del historico (nos servira para calcular las unidades por caja, etc.).
         if (fDesdeHcoArtClte) {
+            fDocumento = Comunicador.fDocumento
             fArticulos.existeArticulo(intent.getIntExtra("articulo", 0))
         } else {
             fArticulos.existeArticulo(fHistorico.lDatosHistorico[fPosicion].articuloId)

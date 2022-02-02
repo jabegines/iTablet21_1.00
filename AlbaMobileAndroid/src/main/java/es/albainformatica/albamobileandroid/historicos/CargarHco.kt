@@ -5,7 +5,7 @@ import android.app.AlertDialog
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.content.Intent
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.content.DialogInterface
 import android.view.KeyEvent
@@ -58,7 +58,13 @@ class CargarHco: Activity() {
         fDesdeCltes = i.getBooleanExtra("desdecltes", false)
         fEmpresaActual = i.getShortExtra("empresa", 0)
         fConfiguracion = Comunicador.fConfiguracion
-        fHistorico = if (fDesdeCltes) Historico(this) else Comunicador.fHistorico
+
+        if (fDesdeCltes) {
+            fHistorico = Historico(this)
+            Comunicador.fHistorico = fHistorico
+        }
+        else fHistorico = Comunicador.fHistorico
+
         inicializarControles()
     }
 
@@ -120,14 +126,17 @@ class CargarHco: Activity() {
     private fun prepararRecyclerView(queBuscar: String) {
         fAdapter = HcoRvAdapter(getHco(queBuscar), fIvaIncluido, fAplicarIva, this, object: HcoRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: DatosHistorico) {
-                // Tomamos el campo historicoId de la fila en la que hemos pulsado.
-                fLinea = data.historicoId
+                if (!fDesdeCltes) {
+                    // Tomamos el campo historicoId de la fila en la que hemos pulsado.
+                    fLinea = data.historicoId
 
-                val i = Intent(this@CargarHco, EditarHcoActivity::class.java)
-                i.putExtra("linea", fLinea)
-                i.putExtra("empresa", fEmpresaActual)
-                i.putExtra("posicion", fAdapter.selectedPos)
-                startActivityForResult(i, fRequestEditarHco)
+                    val i = Intent(this@CargarHco, EditarHcoActivity::class.java)
+                    i.putExtra("linea", fLinea)
+                    i.putExtra("empresa", fEmpresaActual)
+                    i.putExtra("posicion", fAdapter.selectedPos)
+                    i.putExtra("desdeHcoArtClte", true)
+                    startActivityForResult(i, fRequestEditarHco)
+                }
             }
         })
 
