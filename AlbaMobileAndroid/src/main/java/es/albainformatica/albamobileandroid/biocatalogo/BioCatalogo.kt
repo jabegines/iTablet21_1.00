@@ -43,6 +43,7 @@ import es.albainformatica.albamobileandroid.ventas.Documento
 import es.albainformatica.albamobileandroid.ventas.VentasDatosLinea
 import kotlinx.android.synthetic.main.bio_catalogo.*
 import kotlinx.android.synthetic.main.bio_fragment_page.*
+import kotlinx.android.synthetic.main.nav_header_biocat.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.yesButton
 import java.io.File
@@ -186,8 +187,8 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
             1 -> if (fCatalogos.lClasCat.count() > 0)
                 txtDescrCat.text = fCatalogos.lClasCat[0].descripcion
             2 -> if (fViendoDep) {
-                if (fDepartamentos.lDepartamentos.count() > 0)
-                    txtDescrCat.text = fDepartamentos.lDepartamentos[0].descripcion
+                if (fDepartamentos.lDepCat.count() > 0)
+                    txtDescrCat.text = fDepartamentos.lDepCat[0].descripcion
             }
             3 -> txtDescrCat.text = resources.getString(R.string.btn_hco)
         }
@@ -469,10 +470,39 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
     }
 
     private fun prepararRvCatalogos() {
-        fAdpCatalogos = CatalogosRvAdapter(getCatalogos(), this, object: CatalogosRvAdapter.OnItemClickListener {
-            override fun onClick(view: View, data: ClasifParaCat) {
-            }
-        })
+        if (fCatalogos.lClasCat.count() > 0) {
+            fModoVtaCat = 1
+            nhTvTipoCatalogo.text = resources.getString(R.string.cat_catalogos)
+
+            // Por ahora abrimos el primer catálogo de la tabla de catálogos
+            fIdCatalogo = fCatalogos.lClasCat[0].clasificadorId
+
+            fAdpCatalogos = CatalogosRvAdapter(getCatalogos(), this, object : CatalogosRvAdapter.OnItemClickListener {
+                    override fun onClick(view: View, data: ClasifParaCat) {
+                        // Primero guardamos en el documento para mantener las cantidades pedidas
+                        if (fUsarFormatos) {
+                            bioCat2DocFtos()
+                        } else {
+                            bioCat2Doc(false)
+                        }
+                        // Tomamos el campo _id de la fila en la que hemos pulsado y cerramos el DrawerLayout
+                        fIdCatalogo = data.clasificadorId
+                        dwLayout.closeDrawer(GravityCompat.START)
+                        // Volvemos a cargar los arrays
+                        setImagesData()
+
+                        // Reiniciamos el adaptador y demás controles
+                        reiniciarAdaptador(false, data.descripcion)
+                        if (fImagPorPagina == 1)
+                            verImpte()
+                    }
+                })
+
+            fRecyclerLeftD.adapter = fAdpCatalogos
+        }
+        else {
+            prepararRvGrupos()
+        }
     }
 
 
@@ -482,16 +512,26 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
 
     private fun prepararRvGrupos() {
-        fAdpGrupos = GruposRvAdapter(getGrupos(), this, object: GruposRvAdapter.OnItemClickListener {
-            override fun onClick(view: View, data: GruposParaCat) {
-                fIdGrupo = data.codigo
-                //val fDescrGrupo = data.descripcion
-                // Cargamos los departamentos del grupo
-                prepararRvDepartamentos()
-            }
-        })
+        if (fGrupos.lGrupCat.count() > 0) {
+            fModoVtaCat = 2
+            nhTvTipoCatalogo.text = resources.getString(R.string.grupos)
 
-        fRecyclerLeftD.adapter = fAdpGrupos
+            fAdpGrupos = GruposRvAdapter(getGrupos(), this, object : GruposRvAdapter.OnItemClickListener {
+                    override fun onClick(view: View, data: GruposParaCat) {
+                        fIdGrupo = data.codigo
+                        // Cargamos los departamentos del grupo
+                        prepararRvDepartamentos(data.descripcion)
+                    }
+                })
+
+            fRecyclerLeftD.adapter = fAdpGrupos
+
+        } else {
+            alert("No tiene ningún grupo") {
+                title = "Información"
+                yesButton {}
+            }.show()
+        }
     }
 
 
@@ -500,7 +540,10 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
     }
 
 
-    private fun prepararRvDepartamentos() {
+    private fun prepararRvDepartamentos(fDescrGrupo: String) {
+        fViendoDep = true
+        nhTvTipoCatalogo.text = fDescrGrupo
+
         fAdpDepart = DepartRvAdapter(getDepartam(), this, object: DepartRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: DepartParaCat) {
                 // Primero guardamos en el documento para mantener las cantidades pedidas
@@ -516,7 +559,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
                 setImagesData()
 
                 // Reiniciamos el adaptador y demás controles
-                reiniciarAdaptador(false)
+                reiniciarAdaptador(false, data.descripcion)
                 if (fImagPorPagina == 1)
                     verImpte()
             }
@@ -567,7 +610,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
             setImagesData()
 
             // Reiniciamos el adaptador y demás controles
-            reiniciarAdaptador(false)
+            reiniciarAdaptador(false, "")
             if (fImagPorPagina == 1)
                 verImpte()
 
@@ -640,7 +683,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
 
     @SuppressLint("SetTextI18n")
-    private fun reiniciarAdaptador(irAUltItem: Boolean) {
+    private fun reiniciarAdaptador(irAUltItem: Boolean, descrCat: String) {
         fPagina = 0
         fPosicion = (fPagina * fImagPorPagina)
 
@@ -648,8 +691,8 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         inicAdaptadorViewPager()
         // Reiniciamos el TextView con el contador
         when (fModoVtaCat) {
-            1 -> txtDescrCat.text = fCatalogos.lClasCat[0].descripcion
-            2 -> if (fViendoDep) txtDescrCat.text = fDepartamentos.lDepartamentos[0].descripcion
+            1 -> txtDescrCat.text = descrCat
+            2 -> if (fViendoDep) txtDescrCat.text = descrCat
             3 -> txtDescrCat.text = resources.getString(R.string.btn_hco)
         }
 
@@ -675,7 +718,6 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
         if (!fBuscando) {
             if (fModoVtaCat == 3) prepararRvCatalogos()
-                //prepararLVCatalogos()
             dwLayout.openDrawer(GravityCompat.START)
         }
         else
@@ -1204,7 +1246,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
             // Volvemos a cargar los arrays
             setImagesData()
             // Reiniciamos el adaptador y demás controles
-            reiniciarAdaptador(true)
+            reiniciarAdaptador(true, "")
             if (fImagPorPagina == 1)
                 verImpte()
             // Preparamos los datos adicionales del artículo
@@ -1238,7 +1280,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         setImagesData()
 
         // Reiniciamos el adaptador y demás controles
-        reiniciarAdaptador(false)
+        reiniciarAdaptador(false, "")
         if (fImagPorPagina == 1)
             verImpte()
     }
@@ -1268,7 +1310,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
                 }
 
                 // Reiniciamos el adaptador y demás controles
-                reiniciarAdaptador(false)
+                reiniciarAdaptador(false, "")
                 if (fImagPorPagina == 1)
                     verImpte()
 
@@ -1550,7 +1592,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == fRequestVtaFormatos) {
             if (resultCode == Activity.RESULT_OK) {
-                reiniciarAdaptador(true)
+                reiniciarAdaptador(true, "")
             }
         }
 
@@ -1625,7 +1667,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
                 }
 
                 fArtSeleccCat = 0
-                reiniciarAdaptador(false)
+                reiniciarAdaptador(false, "")
             }
         }
     }

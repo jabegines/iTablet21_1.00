@@ -119,8 +119,10 @@ class ArticulosClase(val contexto: Context) {
             fCodProv = datosArticulo.proveedorId
             fPeso = if (datosArticulo.peso != "") datosArticulo.peso.replace(',', '.').toDouble() else 0.0
             fUCaja = if (datosArticulo.uCaja != "") datosArticulo.uCaja.replace(',', '.').toDouble() else 0.0
-            entradas = if (datosArticulo.ent != null) datosArticulo.ent?.replace(',', '.')?.toDouble() ?: 0.0 else 0.0
-            salidas = if (datosArticulo.sal != null) datosArticulo.sal?.replace(',', '.')?.toDouble() ?: 0.0 else 0.0
+            entradas = if (datosArticulo.ent != null && datosArticulo.ent != "")
+                datosArticulo.ent?.replace(',', '.')?.toDouble() ?: 0.0 else 0.0
+            salidas = if (datosArticulo.sal != null && datosArticulo.sal != "")
+                datosArticulo.sal?.replace(',', '.')?.toDouble() ?: 0.0 else 0.0
 
             true
         }

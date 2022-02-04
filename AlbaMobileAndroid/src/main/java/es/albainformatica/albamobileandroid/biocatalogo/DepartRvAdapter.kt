@@ -51,8 +51,8 @@ class DepartRvAdapter(var grupos: List<DepartParaCat>, val context: Context,
         private val tvNumDep = itemView.findViewById(R.id.tvBioCaptArt) as TextView
 
         fun bind(departamento: DepartParaCat) {
-            //tvDescr.text = grupo.descripcion
-            //tvNumDep.text = grupo.numDepartamentos.toString()
+            tvDescr.text = departamento.descripcion
+            tvNumDep.text = departamento.numArticulos.toString()
         }
 
     }

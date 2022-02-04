@@ -135,6 +135,7 @@ class CargarHco: Activity() {
                     i.putExtra("empresa", fEmpresaActual)
                     i.putExtra("posicion", fAdapter.selectedPos)
                     i.putExtra("desdeHcoArtClte", true)
+                    i.putExtra("articuloId", data.articuloId)
                     startActivityForResult(i, fRequestEditarHco)
                 }
             }
@@ -146,10 +147,10 @@ class CargarHco: Activity() {
 
     private fun getHco(queBuscar: String): List<DatosHistorico> {
         return if (queBuscar != "") {
-            fHistorico.abrirConBusqueda(fCliente, queBuscar)
+            fHistorico.abrirConBusqueda(fCliente, fEmpresaActual, queBuscar)
             fHistorico.lDatosHistorico
         } else {
-            fHistorico.abrir(fCliente)
+            fHistorico.abrir(fCliente, fEmpresaActual)
             fHistorico.lDatosHistorico
         }
     }

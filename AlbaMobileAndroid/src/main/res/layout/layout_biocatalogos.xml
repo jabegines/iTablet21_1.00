@@ -2,9 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     >
 
   <TextView
@@ -36,7 +35,8 @@
       android:layout_weight="1"
       android:text="@string/articulos"
       app:layout_constraintLeft_toRightOf="@+id/tvBioNumArt"
-      app:layout_constraintTop_toBottomOf="@+id/tvBioDescr"/>
+      app:layout_constraintTop_toBottomOf="@+id/tvBioDescr"
+      android:layout_marginStart="5dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

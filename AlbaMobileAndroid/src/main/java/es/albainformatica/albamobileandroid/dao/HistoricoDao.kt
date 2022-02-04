@@ -20,12 +20,12 @@ interface HistoricoDao {
             " LEFT JOIN Articulos B ON B.articuloId = A.articuloId " +
             " LEFT JOIN TmpHco C ON C.linea = A.historicoId " +
             " LEFT JOIN Ivas D ON D.tipo = B.tipoIva " +
-            " LEFT JOIN Stock E ON E.articuloId = A.articuloId " +
+            " LEFT JOIN Stock E ON E.articuloId = A.articuloId AND E.empresa = :queEmpresa " +
             " LEFT JOIN Formatos F ON F.formatoId = A.formatoId " +
             " LEFT JOIN ArtHabituales G ON G.articuloId = A.articuloId AND G.formatoId = A.formatoId AND G.clienteId = :queCliente" +
             " WHERE A.clienteId = :queCliente AND B.descripcion LIKE(:queBuscar) " +
             " ORDER BY B.descripcion")
-    fun abrirConBusqueda(queCliente: Int, queBuscar: String): List<DatosHistorico>
+    fun abrirConBusqueda(queCliente: Int, queEmpresa: Short, queBuscar: String): List<DatosHistorico>
 
 
     @Query("SELECT A.*, B.codigo, B.descripcion, C.piezas piezPedida, C.cantidad cantPedida, D.porcIva, " +
@@ -33,12 +33,12 @@ interface HistoricoDao {
             " LEFT JOIN Articulos B ON B.articuloId = A.articuloId " +
             " LEFT JOIN TmpHco C ON C.linea = A.historicoId " +
             " LEFT JOIN Ivas D ON D.tipo = B.tipoIva " +
-            " LEFT JOIN Stock E ON E.articuloId = A.articuloId " +
+            " LEFT JOIN Stock E ON E.articuloId = A.articuloId AND E.empresa = :queEmpresa" +
             " LEFT JOIN Formatos F ON F.formatoId = A.formatoId " +
             " LEFT JOIN ArtHabituales G ON G.articuloId = A.articuloId AND G.formatoId = A.formatoId AND G.clienteId = :queCliente" +
             " WHERE A.clienteId = :queCliente " +
             " ORDER BY B.descripcion")
-    fun abrir(queCliente: Int): List<DatosHistorico>
+    fun abrir(queCliente: Int, queEmpresa: Short): List<DatosHistorico>
 
 
     @Query("SELECT articuloId FROM Historico " +

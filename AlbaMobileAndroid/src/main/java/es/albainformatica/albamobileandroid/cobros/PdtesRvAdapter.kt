@@ -83,6 +83,7 @@ class PdtesRvAdapter(private var lPendiente: List<PendienteEnt>, val context: Co
         private val serie = itemView.findViewById(R.id.lyvpSerie) as TextView
         private val numero = itemView.findViewById(R.id.lyvpNumero) as TextView
         private val importe = itemView.findViewById(R.id.lyvpImporte) as TextView
+        private val cobrado = itemView.findViewById(R.id.lyvpCobrado) as TextView
         private val tvFlag = itemView.findViewById(R.id.lyvpFlag) as TextView
 
         fun bind(pendiente: PendienteEnt, fFtoDecImpIva: String) {
@@ -92,6 +93,8 @@ class PdtesRvAdapter(private var lPendiente: List<PendienteEnt>, val context: Co
             if (pendiente.tipoDoc != 33.toShort()) numero.text = pendiente.numero.toString()
             else numero.text = ""
             importe.text = String.format(fFtoDecImpIva ,pendiente.importe.replace(',', '.').toDouble())
+            cobrado.text = String.format(fFtoDecImpIva, pendiente.cobrado.replace(',', '.').toDouble())
+
             if (pendiente.flag and FLAGPENDIENTE_EN_CARTERA > 0) tvFlag.text = "*"
             else tvFlag.text = ""
         }

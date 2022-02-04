@@ -22,6 +22,7 @@ class RepartoDevoluciones: Activity() {
 
 
     private var fCliente = 0
+    private var fEmpresa: Short = 0
     private var fLinea = 0
 
     private val fRequestDatosDevolucion = 1
@@ -33,6 +34,7 @@ class RepartoDevoluciones: Activity() {
 
         val i = intent
         fCliente = i.getIntExtra("cliente", 0)
+        fEmpresa = i.getShortExtra("empresa", 0)
         fConfiguracion = Comunicador.fConfiguracion
         fHistorico = Historico(this)
         Comunicador.fHistorico = fHistorico
@@ -65,7 +67,7 @@ class RepartoDevoluciones: Activity() {
 
 
     private fun getDatosHco(): List<DatosHistorico> {
-        fHistorico.abrir(fCliente)
+        fHistorico.abrir(fCliente, fEmpresa)
         return fHistorico.lDatosHistorico
     }
 

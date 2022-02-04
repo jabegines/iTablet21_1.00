@@ -57,12 +57,12 @@ class Historico(contexto: Context)  {
         lDatDocHcoArtClte = hcoPorArticClteDao?.abrirDocsHcoPorArtClte(queArticulo, queCliente) ?: emptyList<DatosDocsHcArtClte>().toMutableList()
     }
 
-    fun abrirConBusqueda(queCliente: Int, queBuscar: String) {
-        lDatosHistorico = historicoDao?.abrirConBusqueda(queCliente, "%$queBuscar%") ?: emptyList<DatosHistorico>().toMutableList()
+    fun abrirConBusqueda(queCliente: Int, queEmpresa: Short, queBuscar: String) {
+        lDatosHistorico = historicoDao?.abrirConBusqueda(queCliente, queEmpresa, "%$queBuscar%") ?: emptyList<DatosHistorico>().toMutableList()
     }
 
-    fun abrir(queCliente: Int) {
-        lDatosHistorico = historicoDao?.abrir(queCliente) ?: emptyList<DatosHistorico>().toMutableList()
+    fun abrir(queCliente: Int, queEmpresa: Short) {
+        lDatosHistorico = historicoDao?.abrir(queCliente, queEmpresa) ?: emptyList<DatosHistorico>().toMutableList()
     }
 
 
@@ -89,6 +89,7 @@ class Historico(contexto: Context)  {
         fIncidencia = 0
         fLineaPorPiezas = false
     }
+
 
     fun aceptarCambios(fLinea: Int) {
         var fInsertando = true

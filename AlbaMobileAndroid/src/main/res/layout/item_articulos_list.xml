@@ -87,7 +87,8 @@
                         android:gravity="end"
                         android:padding="3dp"
                         android:text="@string/precio"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:drawableLeft="@drawable/ctlg_precio" />
 
                     <TextView
                         android:id="@+id/tvDescuento"
@@ -101,7 +102,9 @@
                         android:gravity="end"
                         android:padding="3dp"
                         android:text="@string/porcentaje"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:layout_marginLeft="3dp"
+                        android:drawableLeft="@drawable/ctlg_dto" />
 
                     <TextView
                         android:id="@+id/tvPrCajas"
@@ -115,7 +118,9 @@
                         android:gravity="end"
                         android:padding="3dp"
                         android:text="@string/precio"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:layout_marginLeft="3dp"
+                        android:drawableLeft="@drawable/ctlg_precio" />
 
                 </LinearLayout>
 
@@ -135,7 +140,8 @@
                         android:gravity="end"
                         android:padding="3dp"
                         android:text="@string/cajas"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:drawableLeft="@drawable/ctlg_cajas" />
 
                     <TextView
                         android:id="@+id/tvExistencias"
@@ -149,7 +155,9 @@
                         android:gravity="end"
                         android:padding="3dp"
                         android:text="@string/stock"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:layout_marginLeft="3dp"
+                        android:drawableLeft="@drawable/ctlg_stock" />
 
 
                 </LinearLayout>

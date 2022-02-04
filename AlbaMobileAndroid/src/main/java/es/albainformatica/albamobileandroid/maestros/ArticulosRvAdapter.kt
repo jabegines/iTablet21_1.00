@@ -71,12 +71,27 @@ class ArticulosRvAdapter(var articulos: MutableList<ListaArticulos>, val context
             if (articulo.idOferta == 0) imgOfta.visibility = View.GONE
             else imgOfta.visibility = View.VISIBLE
 
-            val quePrecio = String.format(fFtoPrecio, articulo.precio?.toDouble()) + " €"
-            val quePrCajas = String.format(fFtoPrecio, articulo.prCaja?.toDouble()) + " €"
-            val dDto = articulo.dto?.toDouble()
-            val queDto: String = String.format("%.2f", articulo.dto?.toDouble()) + context.resources.getString(R.string.porcentaje)
+            val quePrecio = if (articulo.precio != null)
+                String.format(fFtoPrecio, articulo.precio?.toDouble()) + " €"
+            else ""
+
+            val dDto = if (articulo.dto != null)
+                articulo.dto?.toDouble()
+            else "0.0"
+
+            val quePrCajas = if (articulo.prCaja != null)
+                String.format(fFtoPrecio, articulo.prCaja?.toDouble()) + " €"
+            else ""
+
+            val queDto = if (articulo.dto != null)
+                String.format("%.2f", articulo.dto?.toDouble()) + context.resources.getString(R.string.porcentaje)
+            else ""
+
             val dUCaja = articulo.ucaja?.toDouble()
-            val queUCaja = String.format("%.0f", dUCaja) + context.resources.getString(R.string.unidades)
+            val queUCaja = if (dUCaja != null)
+                String.format("%.0f", dUCaja) + context.resources.getString(R.string.unidades)
+            else ""
+
             val queStock = articulo.stock ?: "0"
             val dStock = queStock.toDouble()
 

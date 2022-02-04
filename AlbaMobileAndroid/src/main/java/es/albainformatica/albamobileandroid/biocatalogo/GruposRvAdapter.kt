@@ -49,7 +49,7 @@ class GruposRvAdapter(var grupos: List<GruposParaCat>, val context: Context,
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         private val tvDescr = itemView.findViewById(R.id.tvBioDescr) as TextView
-        private val tvNumDep = itemView.findViewById(R.id.tvBioCaptArt) as TextView
+        private val tvNumDep = itemView.findViewById(R.id.tvBioNumArt) as TextView
 
         fun bind(grupo: GruposParaCat) {
             tvDescr.text = grupo.descripcion

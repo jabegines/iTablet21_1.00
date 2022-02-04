@@ -308,7 +308,9 @@ class ClientesClase(val contexto: Context) {
 
 
     private fun getPendiente(queCliente: Int): Double {
-        return saldosDao?.getPendienteClte(queCliente, fEmpresaActual)?.replace(",", ".")?.toDouble() ?: 0.0
+        var quePendiente = saldosDao?.getPendienteClte(queCliente, fEmpresaActual) ?: "0.0"
+        if (quePendiente == "") quePendiente = "0.0"
+        return quePendiente.replace(",", ".").toDouble()
     }
 
 

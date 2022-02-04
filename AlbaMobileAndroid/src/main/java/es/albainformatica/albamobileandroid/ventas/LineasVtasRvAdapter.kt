@@ -209,7 +209,7 @@ class LineasVtasRvAdapter(var lineas: List<DatosLinVtas>, val fIvaIncluido: Bool
                     val queFlag3 = linea.flag3
                     val fLineaPorPiezas = (queFlag3 and FLAG3LINEAVENTA_PRECIO_POR_PIEZAS > 0)
                     if (fLineaPorPiezas) tvPiezas.setBackgroundColor(Color.parseColor("#979797"))
-                    else tvPiezas.setBackgroundColor(getColor(tvPiezas, R.color.gris_alba))
+                    else tvPiezas.setBackgroundColor(Color.parseColor("#efefef"))
                 }
                 else tvPiezas.text = ""
 

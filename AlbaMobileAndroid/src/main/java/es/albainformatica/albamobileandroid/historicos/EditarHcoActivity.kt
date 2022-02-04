@@ -88,7 +88,7 @@ class EditarHcoActivity: AppCompatActivity() {
         // Nos posicionamos en el articulo de la linea del historico (nos servira para calcular las unidades por caja, etc.).
         if (fDesdeHcoArtClte) {
             fDocumento = Comunicador.fDocumento
-            fArticulos.existeArticulo(intent.getIntExtra("articulo", 0))
+            fArticulos.existeArticulo(intent.getIntExtra("articuloId", 0))
         } else {
             fArticulos.existeArticulo(fHistorico.lDatosHistorico[fPosicion].articuloId)
         }
@@ -108,8 +108,6 @@ class EditarHcoActivity: AppCompatActivity() {
             darFocoAEdit()
         }
     }
-
-
 
 
     private fun inicializarControles() {
@@ -537,16 +535,14 @@ class EditarHcoActivity: AppCompatActivity() {
                 if (fIvaIncluido) {
                     // Si tenemos el flag de precio de rating (fPrecioRating) y hemos modificado el precio, quitaremos dicho flag.
                     if (fDocumento.fPrecioRating) {
-                        if (fDocumento.fPrecioII != sPrecio.toDouble()) fDocumento.fPrecioRating =
-                            false
+                        if (fDocumento.fPrecioII != sPrecio.toDouble()) fDocumento.fPrecioRating = false
                     }
                     fDocumento.fPrecioII = sPrecio.toDouble()
                     fDocumento.calculaPrBase()
                 } else {
                     // Si tenemos el flag de precio de rating (fPrecioRating) y hemos modificado el precio, quitaremos dicho flag.
                     if (fDocumento.fPrecioRating) {
-                        if (fDocumento.fPrecio != sPrecio.toDouble()) fDocumento.fPrecioRating =
-                            false
+                        if (fDocumento.fPrecio != sPrecio.toDouble()) fDocumento.fPrecioRating = false
                     }
                     fDocumento.fPrecio = sPrecio.toDouble()
                     fDocumento.calculaPrecioII()

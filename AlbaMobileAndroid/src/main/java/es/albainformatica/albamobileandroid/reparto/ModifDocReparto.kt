@@ -213,6 +213,7 @@ class ModifDocReparto: Activity() {
         if (fEstado == est_Vl_Browse) {
             val i = Intent(this, RepartoDevoluciones::class.java)
             i.putExtra("cliente", fDocumento.fCliente)
+            i.putExtra("empresa", fDocumento.fEmpresa)
             startActivityForResult(i, fRequestDevoluciones)
         }
     }
