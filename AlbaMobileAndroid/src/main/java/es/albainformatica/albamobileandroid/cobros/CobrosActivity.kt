@@ -392,7 +392,7 @@ class CobrosActivity: AppCompatActivity() {
                 } else MsjAlerta(this).alerta(resources.getString(R.string.msj_VtoYaEsPagare))
             }
         } else {
-            if (fCliente > 0) {
+            if (fCliente > 0 && fConfiguracion.hacerEntrCta()) {
                 val i = Intent(this, Cobrar::class.java)
                 i.putExtra("espendiente", false)
                 i.putExtra("fpagoDoc", "")

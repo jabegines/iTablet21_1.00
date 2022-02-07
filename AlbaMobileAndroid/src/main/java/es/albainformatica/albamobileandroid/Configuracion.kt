@@ -310,6 +310,10 @@ class Configuracion(queContexto: Context) {
     }
     */
 
+    fun hacerEntrCta(): Boolean {
+        val queValor = configuracionDao?.getValor(500) ?: "F"
+        return (queValor == "T")
+    }
 
     fun hacerFacturas(): Boolean {
         val queValor = configuracionDao?.getValor(502) ?: "F"

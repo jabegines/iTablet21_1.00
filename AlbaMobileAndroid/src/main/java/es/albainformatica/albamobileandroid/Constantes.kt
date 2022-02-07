@@ -453,7 +453,7 @@ class DatosArtHcArtClte {
     var articuloId:  Int = 0
     var codigo: String = ""
     var descripcion: String = ""
-    var cantPedida: String = ""
+    var cantPedida: String? = null
     var porcDevol: String = ""
 }
 
@@ -463,6 +463,7 @@ class DatosDocsHcArtClte {
     var articuloId: Int = 0
     var tipoDoc: Short = 0
     var serie: String = ""
+    var numero: Int = 0
     var fecha: String = ""
     var ventas: String = ""
     var devoluciones: String = ""

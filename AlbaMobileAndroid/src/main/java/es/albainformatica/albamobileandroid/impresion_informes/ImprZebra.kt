@@ -227,7 +227,7 @@ import java.util.*
      private fun imprDatClteDoc80(): String {
          var result: String
          val sLongDatosClte = anchoPapel
-         result = ajustarCadena(ponerCeros(fDocumento.fClientes.fCodigo.toString(), ancho_codclte) + " " +
+         result = ajustarCadena(ponerCeros(fDocumento.fClientes.fCodigo, ancho_codclte) + " " +
                  fDocumento.fClientes.fNombre, sLongDatosClte.toInt(), true) + fCR + fLF
          result = result + ajustarCadena(fDocumento.fClientes.fNomComercial, sLongDatosClte.toInt(), true) + fCR + fLF
          result = result + ajustarCadena(fDocumento.fClientes.fDireccion, sLongDatosClte.toInt(), true) + fCR + fLF
@@ -645,6 +645,9 @@ import java.util.*
              result.append("^FT0,90^AKN,20")
              result.append("^FD").append(fDocumento.fObs2).append("^FS").append(fCR).append(fLF)
          }
+         else {
+             result.append(result.append("^FT0,120^AKN,20")).append("^FD").append(" ").append("^FS").append(fCR).append(fLF)
+         }
          result.append("^XZ")
 
          return result.toString()
@@ -775,7 +778,7 @@ import java.util.*
          var x = y
          // Si la línea tiene cajas las imprimimos
          if (linea.cajas.toDouble() != 0.0) {
-             x += 20
+             x += 40
              result.append("^FT0,$x^AKN,20")
              result.append("^FD").append("Cajas: ").append(ajustarCadena(sCajas, lCajas, false)).append("^FS")
              result.append(fCR).append(fLF)
@@ -783,7 +786,7 @@ import java.util.*
          // Si la línea tiene descuento lo imprimimos
          if (linea.dto.toDouble() != 0.0) {
              sDto = linea.dto
-             x += 20
+             x += 40
              result.append("^FT0,$x^AKN,20")
              result.append("^FD").append("% dto.: ").append(ajustarCadena(sDto, 5, false)).append("^FS")
              result.append(fCR).append(fLF)
@@ -791,7 +794,7 @@ import java.util.*
          // Si la línea tiene número de lote lo imprimimos.
          if (linea.lote != "") {
              sLote = linea.lote
-             x += 20
+             x += 40
              result.append("^FT0,$x^AKN,20")
              result.append("^FD").append("Numero lote: ").append(ajustarCadena(sLote, lLote, true)).append("^FS")
              result.append(fCR).append(fLF)
@@ -802,7 +805,7 @@ import java.util.*
              val tiposIncDao = MyDatabase.getInstance(fContexto)?.tiposIncDao()
              val queDescrInc = tiposIncDao?.dimeDescripcion(fIncidencia) ?: ""
              if (queDescrInc != "") {
-                 x += 20
+                 x += 40
                  result.append("^FT0,$x^AKN,20")
                  result.append("^FD").append("Incidencia: ").append(fIncidencia).append(" ").append(queDescrInc).append("^FS")
                  result.append(fCR).append(fLF)

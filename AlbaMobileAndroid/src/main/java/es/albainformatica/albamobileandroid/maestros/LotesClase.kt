@@ -38,8 +38,10 @@ class LotesClase(queContexto: Context) {
 
 
     fun getAllLotesArticulo(queArticulo: Int, sumarEmpresas: Boolean): List<LotesEnt> {
-        return if (sumarEmpresas) lotesDao?.getAllLotesArtSum(queArticulo) ?: emptyList<LotesEnt>().toMutableList()
+        lLotes = if (sumarEmpresas) lotesDao?.getAllLotesArtSum(queArticulo) ?: emptyList<LotesEnt>().toMutableList()
         else lotesDao?.getAllLotesArticulo(queArticulo) ?: emptyList<LotesEnt>().toMutableList()
+
+        return lLotes
     }
 
 

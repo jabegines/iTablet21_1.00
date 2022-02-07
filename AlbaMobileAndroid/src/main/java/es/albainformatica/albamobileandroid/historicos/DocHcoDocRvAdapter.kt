@@ -10,7 +10,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.DatosDocsHcArtClte
 import es.albainformatica.albamobileandroid.R
+import es.albainformatica.albamobileandroid.tipoDocResumAsString
 import kotlinx.android.synthetic.main.item_hcodoc_list.view.*
+import kotlinx.android.synthetic.main.ly_hco_doc.view.*
 
 
 class DocHcoDocRvAdapter(var docs: List<DatosDocsHcArtClte>, val context: Context, var listener: OnItemClickListener):
@@ -27,28 +29,26 @@ class DocHcoDocRvAdapter(var docs: List<DatosDocsHcArtClte>, val context: Contex
         holder.bind(item)
 
         if (selectedPos == fPosicion) {
-            holder.itemView.tvHcoArtClCodArt.setTextColor(Color.BLACK)
-            holder.itemView.tvHcoArtClDescr.setTextColor(Color.BLACK)
-            holder.itemView.tvHcoArtClPorcDevol.setTextColor(Color.BLACK)
+            holder.itemView.tvHcoArtClTipoDoc.setTextColor(Color.BLACK)
+            holder.itemView.tvHcoArtClSerieNum.setTextColor(Color.BLACK)
+            holder.itemView.tvHcoArtClFecha.setTextColor(Color.BLACK)
         }
         else
         {
-            holder.itemView.tvHcoArtClCodArt.setTextColor(Color.GRAY)
-            holder.itemView.tvHcoArtClDescr.setTextColor(Color.GRAY)
-            holder.itemView.tvHcoArtClPorcDevol.setTextColor(Color.GRAY)
+            holder.itemView.tvHcoArtClTipoDoc.setTextColor(Color.GRAY)
+            holder.itemView.tvHcoArtClSerieNum.setTextColor(Color.GRAY)
+            holder.itemView.tvHcoArtClFecha.setTextColor(Color.GRAY)
         }
-        holder.itemView.tvHcoArtClCantPed.setTextColor(Color.MAGENTA)
-
 
         holder.itemView.setOnClickListener {
             // Tenemos en cuenta si el registro sobre el que pulsamos estaba anteriormente seleccionado
-            //Deseleccionamos el registro
+            // Deseleccionamos el registro
             if (selectedPos == fPosicion) {
                 articuloId = 0
                 idHco = 0
                 selectedPos = RecyclerView.NO_POSITION
             }
-            //Seleccionamos el registro
+            // Seleccionamos el registro
             else
             {
                 //articuloId = docs[fPosicion].articuloId
@@ -83,17 +83,20 @@ class DocHcoDocRvAdapter(var docs: List<DatosDocsHcArtClte>, val context: Contex
 
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        private val tvCodArt = itemView.findViewById(R.id.tvHcoArtClCodArt) as TextView
-        private val tvDescr = itemView.findViewById(R.id.tvHcoArtClDescr) as TextView
-        private val tvPorcDev = itemView.findViewById(R.id.tvHcoArtClPorcDevol) as TextView
-        private val tvCantPedida = itemView.findViewById(R.id.tvHcoArtClCantPed) as TextView
+        private val tvTipoDoc = itemView.findViewById(R.id.tvHcoArtClTipoDoc) as TextView
+        private val tvSerieNum = itemView.findViewById(R.id.tvHcoArtClSerieNum) as TextView
+        private val tvFecha = itemView.findViewById(R.id.tvHcoArtClFecha) as TextView
+        private val tvVentas = itemView.findViewById(R.id.tvHcoArtClVentas) as TextView
+        private val tvDevoluciones = itemView.findViewById(R.id.tvHcoArtClDevoluciones) as TextView
+
 
         @SuppressLint("SetTextI18n")
         fun bind(documento: DatosDocsHcArtClte) {
-            //tvCodArt.text = documento.codigo
-            //tvDescr.text = documento.descripcion
-            //tvPorcDev.text = documento.porcDevol + "%"
-            //tvCantPedida.text = documento.cantPedida
+            tvTipoDoc.text = tipoDocResumAsString(documento.tipoDoc)
+            tvSerieNum.text = documento.serie + " " + documento.numero
+            tvFecha.text = documento.fecha
+            tvVentas.text = documento.ventas
+            tvDevoluciones.text = documento.devoluciones
         }
     }
 

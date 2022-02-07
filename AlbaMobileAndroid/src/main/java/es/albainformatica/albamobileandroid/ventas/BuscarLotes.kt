@@ -64,6 +64,8 @@ class BuscarLotes: Activity() {
                 finish()
             }
         })
+
+        fRecyclerView.adapter = fAdapter
     }
 
     private fun getLotes(): List<LotesEnt> {

@@ -85,7 +85,10 @@ class CobrosRvAdapter(
             fecha.text = cobro.fechaCobro
             tipoDoc.text = tipoDocResumAsString(cobro.tipoDoc)
             serie.text = cobro.serie
-            numero.text = cobro.numero.toString()
+            if (cobro.numero > 0)
+                numero.text = cobro.numero.toString()
+            else
+                numero.text = ""
             total.text = cobro.cobro
         }
     }

@@ -121,8 +121,8 @@ class CargarHcoPorDoc: AppCompatActivity() {
 
                 val i = Intent(this@CargarHcoPorDoc, EditarHcoActivity::class.java)
                 i.putExtra("linea", data.hcoPorArticClteId)
-                i.putExtra("desdeHcoDoc", true)
-                i.putExtra("articulo", data.articuloId)
+                i.putExtra("desdeHcoArtClte", true)
+                i.putExtra("articuloId", data.articuloId)
                 startActivityForResult(i, fRequestEditarHco)
             }
         })
@@ -145,7 +145,7 @@ class CargarHcoPorDoc: AppCompatActivity() {
             val i = Intent(this, EditarHcoActivity::class.java)
             i.putExtra("linea", fAdpArt.idHco)
             i.putExtra("desdeHcoArtClte", true)
-            i.putExtra("articulo", fAdpArt.articuloId)
+            i.putExtra("articuloId", fAdpArt.articuloId)
             startActivityForResult(i, fRequestEditarHco)
         }
     }

@@ -415,7 +415,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                                 sCampo.equals("Prov", true) -> articEnt.proveedorId = parser.getAttributeValue("", sCampo).toInt()
                                 sCampo.equals("UCaja", true) -> articEnt.uCaja = parser.getAttributeValue("", sCampo)
                                 sCampo.equals("Flag1", true) -> articEnt.flag1 = parser.getAttributeValue("", sCampo).toInt()
-                                sCampo.equals("Faag2", true) -> articEnt.flag2 = parser.getAttributeValue("", sCampo).toInt()
+                                sCampo.equals("Flag2", true) -> articEnt.flag2 = parser.getAttributeValue("", sCampo).toInt()
                                 sCampo.equals("Medida", true) -> articEnt.medida = parser.getAttributeValue("", sCampo)
                                 sCampo.equals("Grupo", true) -> articEnt.grupoId = parser.getAttributeValue("", sCampo).toShort()
                                 sCampo.equals("Dpto", true) -> articEnt.departamentoId = parser.getAttributeValue("", sCampo).toShort()
@@ -1351,7 +1351,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                             }
                         }
                         if (notaEnt.clienteId > 0) {
-                            notasCltesDao?.vaciar()
+                            notasCltesDao?.insertar(notaEnt)
                         }
                     }
                     event = parser.next()

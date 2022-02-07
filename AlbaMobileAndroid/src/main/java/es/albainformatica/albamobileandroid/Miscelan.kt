@@ -177,8 +177,9 @@ fun redondear(dNumero: Float, iDecimales: Int): Float {
         val sTipoDoc: String = when (fTipoDoc) {
             1.toShort() -> "Fra"
             2.toShort() -> "Alb"
+            3.toShort() -> "Ped"
             6.toShort() -> "Prsp"
-            else -> "Ped"
+            else -> ""
         }
         return sTipoDoc
     }

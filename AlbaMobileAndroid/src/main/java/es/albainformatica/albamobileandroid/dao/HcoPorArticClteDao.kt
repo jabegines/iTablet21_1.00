@@ -25,7 +25,7 @@ interface HcoPorArticClteDao {
     fun abrirArtsHcoPorArtClte(queCliente: Int, queOrdenacion: Short): List<DatosArtHcArtClte>
 
 
-    @Query("SELECT hcoPorArticClteId, articuloId, tipoDoc, serie, fecha, ventas, devoluciones FROM HcoPorArticClte" +
+    @Query("SELECT hcoPorArticClteId, articuloId, tipoDoc, serie, numero, fecha, ventas, devoluciones FROM HcoPorArticClte" +
             " WHERE articuloId = :queArticulo AND clienteId = :queCliente " +
             " ORDER BY substr(fecha, 7)||substr(fecha, 4, 2)||substr(fecha, 1, 2) DESC")
     fun abrirDocsHcoPorArtClte(queArticulo: Int, queCliente: Int): List<DatosDocsHcArtClte>

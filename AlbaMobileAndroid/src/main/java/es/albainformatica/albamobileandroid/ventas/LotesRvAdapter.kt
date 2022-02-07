@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.R
 import es.albainformatica.albamobileandroid.entity.LotesEnt
-import kotlinx.android.synthetic.main.item_cargas_list.view.*
+import kotlinx.android.synthetic.main.layout_lotes.view.*
 
 
 class LotesRvAdapter(var lotes: List<LotesEnt>, private val fFtoCantidad: String, val context: Context,
@@ -26,25 +26,17 @@ class LotesRvAdapter(var lotes: List<LotesEnt>, private val fFtoCantidad: String
         holder.bind(item, fFtoCantidad)
 
         if (selectedPos == fPosicion) {
-            holder.itemView.tvCargaId.setTextColor(Color.BLACK)
-            holder.itemView.tvCargaId.typeface = Typeface.DEFAULT_BOLD
-            holder.itemView.tvEmpresaCarga.setTextColor(Color.BLACK)
-            holder.itemView.tvEmpresaCarga.typeface = Typeface.DEFAULT_BOLD
-            holder.itemView.tvFechaCarga.setTextColor(Color.BLACK)
-            holder.itemView.tvFechaCarga.typeface = Typeface.DEFAULT_BOLD
-            holder.itemView.tvHoraCarga.setTextColor(Color.BLACK)
-            holder.itemView.tvHoraCarga.typeface = Typeface.DEFAULT_BOLD
+            holder.itemView.lylot_lote.setTextColor(Color.BLACK)
+            holder.itemView.lylot_lote.typeface = Typeface.DEFAULT_BOLD
+            holder.itemView.lylot_stock.setTextColor(Color.BLACK)
+            holder.itemView.lylot_stock.typeface = Typeface.DEFAULT_BOLD
         }
         else
         {
-            holder.itemView.tvCargaId.setTextColor(Color.GRAY)
-            holder.itemView.tvCargaId.typeface = Typeface.DEFAULT
-            holder.itemView.tvEmpresaCarga.setTextColor(Color.GRAY)
-            holder.itemView.tvEmpresaCarga.typeface = Typeface.DEFAULT
-            holder.itemView.tvFechaCarga.setTextColor(Color.GRAY)
-            holder.itemView.tvFechaCarga.typeface = Typeface.DEFAULT
-            holder.itemView.tvHoraCarga.setTextColor(Color.GRAY)
-            holder.itemView.tvHoraCarga.typeface = Typeface.DEFAULT
+            holder.itemView.lylot_lote.setTextColor(Color.GRAY)
+            holder.itemView.lylot_lote.typeface = Typeface.DEFAULT
+            holder.itemView.lylot_stock.setTextColor(Color.GRAY)
+            holder.itemView.lylot_stock.typeface = Typeface.DEFAULT
         }
 
         holder.itemView.setOnClickListener {
