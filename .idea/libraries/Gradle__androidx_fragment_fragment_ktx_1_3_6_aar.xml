@@ -1,9 +1,10 @@
 <component name="libraryTable">
   <library name="Gradle: androidx.fragment:fragment-ktx:1.3.6@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/8de6834f3ada31ae97c84164bd3dc69c/transformed/jetified-fragment-ktx-1.3.6/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/8de6834f3ada31ae97c84164bd3dc69c/transformed/jetified-fragment-ktx-1.3.6/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/8de6834f3ada31ae97c84164bd3dc69c/transformed/jetified-fragment-ktx-1.3.6/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/43bd58a3a4945a6e2c9432551e644367/transformed/jetified-fragment-ktx-1.3.6/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/43bd58a3a4945a6e2c9432551e644367/transformed/jetified-fragment-ktx-1.3.6/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/43bd58a3a4945a6e2c9432551e644367/transformed/jetified-fragment-ktx-1.3.6/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

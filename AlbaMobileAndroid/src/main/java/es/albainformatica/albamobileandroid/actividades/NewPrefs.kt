@@ -1,6 +1,7 @@
 package es.albainformatica.albamobileandroid.actividades
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Environment
@@ -9,10 +10,8 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import es.albainformatica.albamobileandroid.R
+import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.comunicaciones.MiscServicio
-import es.albainformatica.albamobileandroid.docDefectoAsString
-import es.albainformatica.albamobileandroid.modoVtaAsString
 import kotlinx.android.synthetic.main.new_prefs.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.doAsync
@@ -213,6 +212,25 @@ class NewPrefs: AppCompatActivity() {
         }
         builder.setNegativeButton("Cancelar") { _, _ -> }
         builder.show()
+    }
+
+
+    fun actualizarApk(view: View) {
+        view.getTag(0)          // Para que no dé warning el compilador
+
+        // Antes de actualizar comprobaremos que no tengamos nada pendiente de enviar
+        if (puedoRecibir(this)) {
+            val aldDialog = nuevoAlertBuilder(this, "Actualizar", "¿Actualizar la aplicación?", true)
+
+            aldDialog.setPositiveButton("Sí") { _, _ ->
+                val i = Intent(this, ActualizarApk::class.java)
+                startActivity(i)
+            }
+            val alert = aldDialog.create()
+            alert.show()
+        } else {
+            MsjAlerta(this).alerta("Tiene documentos o cobros pendientes de enviar. No podrá actualizar.")
+        }
     }
 
 

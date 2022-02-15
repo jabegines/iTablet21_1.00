@@ -34,10 +34,6 @@
     android:title="@string/mni_confimpr"
     android:icon="@android:drawable/ic_menu_preferences" />
 
-  <item android:id="@+id/mni_actualizar"
-    android:title="@string/mni_actualizar"
-    android:icon="@android:drawable/ic_menu_upload" />
-
   <item android:id="@+id/mni_verID"
     android:title="@string/mni_verID"
     android:icon="@android:drawable/ic_menu_info_details" />

@@ -42,5 +42,13 @@
         android:defaultValue="/sdcard/alba"
         android:selectAllOnFocus="true" />
 
+    <Button
+        android:id="@+id/btnProbarServ"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:onClick="actualizarApk"
+        android:text="@string/mni_actualizar" />
+
 
 </LinearLayout>

@@ -13,7 +13,7 @@ interface RutasDao {
     fun dimeNombre(queRuta: Short): String
 
 
-    @Query("SELECT rutaId || ' ' || descripcion FROM Rutas ORDER BY rutaId")
+    @Query("SELECT rutaId || '  ' || descripcion FROM Rutas ORDER BY rutaId")
     fun abrir(): Array<String>
 
 

@@ -524,13 +524,6 @@ class Main: AppCompatActivity() {
         item = menu.findItem(R.id.mni_confimpresora)
         item.title = text4
 
-        val text5 = SpannableStringBuilder()
-        text5.append(resources.getString(R.string.mni_actualizar))
-        text5.setSpan(ForegroundColorSpan(Color.parseColor(COLOR_MENUS)), 0, text5.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        item = menu.findItem(R.id.mni_actualizar)
-        item.title = text5
-        item.isVisible = !fUsarServicio
-
         val text6 = SpannableStringBuilder()
         text6.append(resources.getString(R.string.mni_verID))
         text6.setSpan(ForegroundColorSpan(Color.parseColor(COLOR_MENUS)), 0, text6.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -573,6 +566,7 @@ class Main: AppCompatActivity() {
                 return true
             }
 
+            /*
             R.id.mni_actualizar -> {
                 // Antes de actualizar comprobaremos que no tengamos nada pendiente de enviar
                 if (puedoRecibir(this)) {
@@ -587,7 +581,8 @@ class Main: AppCompatActivity() {
 
                 return true
             }
-
+            */
+            
             R.id.mni_verID -> {
                 val fDispositivoId = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
                 MsjAlerta(this).informacion(fDispositivoId)

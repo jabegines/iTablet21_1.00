@@ -55,6 +55,7 @@
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-sw600dp/docs_reparto.xml" value="0.26416666666666666" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-sw600dp/ly_dev_reparto.xml" value="0.26416666666666666" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-sw600dp/modif_doc_reparto.xml" value="0.26416666666666666" />
+        <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-sw600dp/new_prefs.xml" value="0.30083333333333334" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-sw600dp/reparto_datos_devol.xml" value="0.26416666666666666" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-sw600dp/reparto_devoluciones.xml" value="0.26416666666666666" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout-sw600dp/ventas_datoslinea.xml" value="0.30083333333333334" />
@@ -92,6 +93,8 @@
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout/mostrar_oft_vol_doc.xml" value="0.26416666666666666" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout/nav_header_biocat.xml" value="0.26416666666666666" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout/nueva_carga.xml" value="0.26416666666666666" />
+        <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout/prefs_conf_servicio.xml" value="0.26416666666666666" />
+        <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout/prefs_conf_terminal.xml" value="0.26416666666666666" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout/reparto_devoluciones.xml" value="0.990625" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout/ventas_cp.xml" value="0.26416666666666666" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/menu/menu_configuracion.xml" value="0.26416666666666666" />
