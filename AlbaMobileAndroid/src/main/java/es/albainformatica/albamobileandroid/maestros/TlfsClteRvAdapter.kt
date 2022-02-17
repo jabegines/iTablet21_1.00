@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.R
 import es.albainformatica.albamobileandroid.entity.ContactosCltesEnt
 import es.albainformatica.albamobileandroid.entity.NumExportEnt
+import kotlinx.android.synthetic.main.layout_telf_cltes.view.*
 import kotlinx.android.synthetic.main.ly_numexportac.view.*
 
 
@@ -26,19 +27,19 @@ class TlfsClteRvAdapter(private var lTelefonos: MutableList<ContactosCltesEnt>, 
         holder.bind(item)
 
         if (selectedPos == fPosicion) {
-            holder.itemView.tvNumExpNumero.setTextColor(Color.BLACK)
-            holder.itemView.tvNumExpNumero.typeface = Typeface.DEFAULT_BOLD
-            holder.itemView.tvNumExpFecha.setTextColor(Color.BLACK)
-            holder.itemView.tvNumExpFecha.typeface = Typeface.DEFAULT_BOLD
-            holder.itemView.tvNumExpHora.setTextColor(Color.BLACK)
-            holder.itemView.tvNumExpHora.typeface = Typeface.DEFAULT_BOLD
+            holder.itemView.ly_contacto.setTextColor(Color.BLACK)
+            holder.itemView.ly_contacto.typeface = Typeface.DEFAULT_BOLD
+            holder.itemView.ly_telf1.setTextColor(Color.BLACK)
+            holder.itemView.ly_telf1.typeface = Typeface.DEFAULT_BOLD
+            holder.itemView.ly_telf2.setTextColor(Color.BLACK)
+            holder.itemView.ly_telf2.typeface = Typeface.DEFAULT_BOLD
         } else {
-            holder.itemView.tvNumExpNumero.setTextColor(Color.GRAY)
-            holder.itemView.tvNumExpNumero.typeface = Typeface.DEFAULT
-            holder.itemView.tvNumExpFecha.setTextColor(Color.GRAY)
-            holder.itemView.tvNumExpFecha.typeface = Typeface.DEFAULT
-            holder.itemView.tvNumExpHora.setTextColor(Color.GRAY)
-            holder.itemView.tvNumExpHora.typeface = Typeface.DEFAULT
+            holder.itemView.ly_contacto.setTextColor(Color.GRAY)
+            holder.itemView.ly_contacto.typeface = Typeface.DEFAULT
+            holder.itemView.ly_telf1.setTextColor(Color.GRAY)
+            holder.itemView.ly_telf1.typeface = Typeface.DEFAULT
+            holder.itemView.ly_telf2.setTextColor(Color.GRAY)
+            holder.itemView.ly_telf2.typeface = Typeface.DEFAULT
         }
 
         holder.itemView.setOnClickListener {
