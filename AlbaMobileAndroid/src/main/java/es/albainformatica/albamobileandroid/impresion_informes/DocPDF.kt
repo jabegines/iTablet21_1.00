@@ -616,14 +616,14 @@ class DocPDF(contexto: Context) {
     }
 
     private fun enviar() {
-        //val to = arrayOfNulls<String>(slEmails.size)
-        val to = arrayListOf<String>()
-        to.addAll(slEmails)
-        //slEmails.toArray<String>(to)
+        val to: Array<String> = Array(slEmails.size) {""}
+        for ((x, correo) in slEmails.withIndex()) {
+            to[x] = correo
+        }
+
         val cc = arrayOf("")
         val asunto = "Envío de documento."
-        val mensaje =
-            ("Estimado cliente, el fichero pdf adjuntado en el mensaje corresponde al documento "
+        val mensaje = ("Estimado cliente, el fichero pdf adjuntado en el mensaje corresponde al documento "
                     + fDocumento.serie + "/" + fDocumento.numero)
         val emailIntent = Intent(Intent.ACTION_SEND)
         emailIntent.data = Uri.parse("mailto:")

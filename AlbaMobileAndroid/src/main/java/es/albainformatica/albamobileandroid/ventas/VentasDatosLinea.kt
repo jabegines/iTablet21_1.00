@@ -895,10 +895,10 @@ class VentasDatosLinea: Activity() {
             imm.showSoftInput(edtCodArt, 0)
 
             // Si estamos vendiendo el artículo enlazado lo que hacemos es poner en el control edtCodArt
-            // el código de éste y además le añadimos el carácter RETURN, para que el evento addTextChangedListener lo procese y,
+            // el código de éste, para que el evento addTextChangedListener lo procese y,
             // a partir de ahí, continuamos como si hubiéramos introducido el código a mano.
             if (fVendiendoEnlace) {
-                val queCodEnlazado = fCodArtEnlazado + "\r"
+                val queCodEnlazado = fCodArtEnlazado
                 edtCodArt.setText(queCodEnlazado)
                 edtCantidad.setText(
                     String.format(
