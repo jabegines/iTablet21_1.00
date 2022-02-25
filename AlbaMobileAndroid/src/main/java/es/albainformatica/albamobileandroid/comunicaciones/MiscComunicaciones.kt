@@ -110,10 +110,11 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
         val xmlFiles = rutarecepcion.listFiles()
         if (xmlFiles != null && xmlFiles.isNotEmpty()) {
             fImportando = true
-            // Si no estamos usando el servicio y la fecha del último envío de la tablet es mayor que la de la última preparación del PC, no recogeremos,
-            // ya que eso implica que el ordenador preparó los datos antes de que la tablet enviara.
-            // Así intentamos evitar tener problemas con los contadores, etc.
+            // Si la versión de comunicación que viene de ibsTablet es menor que la nuestra, no recogeremos
             if (comprobarVerCom()) {
+                // Si no estamos usando el servicio y la fecha del último envío de la tablet es mayor que la de la última preparación del PC, no recogeremos,
+                // ya que eso implica que el ordenador preparó los datos antes de que la tablet enviara.
+                // Así intentamos evitar tener problemas con los contadores, etc.
                 if (fDesdeServicio || comprobarFechas(rutaLocal)) {
 
                     // Hacemos algunos borrados necesarios
