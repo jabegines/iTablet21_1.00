@@ -377,7 +377,8 @@ class GrvImageArticulosAdapter: BaseAdapter {
 
         // Unidades por caja
         item.undCaja
-        val sUdsCaja = item.undCaja.replace(',', '.')
+        var sUdsCaja = item.undCaja.replace(',', '.')
+        if (sUdsCaja == "") sUdsCaja = "0.0"
         val dUdsCaja = sUdsCaja.toDouble()
         if (dUdsCaja != 0.0) {
             if (fVendiendo) {

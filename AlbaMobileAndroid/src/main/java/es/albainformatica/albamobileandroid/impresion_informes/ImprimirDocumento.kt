@@ -33,7 +33,7 @@ import java.util.*
  */
 class ImprimirDocumento(contexto: Context): Runnable {
     private var fContexto: Context = contexto
-    private var fDocumento: Documento = Comunicador.fDocumento
+    private lateinit var fDocumento: Documento
     private var fConfiguracion: Configuracion = Comunicador.fConfiguracion
     private var fFormasPago: FormasPagoClase = FormasPagoClase(contexto)
     private var fPendiente: PendienteClase = PendienteClase(contexto)
@@ -114,10 +114,10 @@ class ImprimirDocumento(contexto: Context): Runnable {
             } else {
                 // Leemos la dirección de la impresora Bluetooth de las preferencias.
                 val mDeviceAddress = prefs.getString("impresoraBT", "")
+                fDocumento = Comunicador.fDocumento
                 queImprimir = fImprimirDocumento
                 fImprSinValorar = sinValorar
-                fVtaIvaIncluido =
-                    fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
+                fVtaIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
                 mBluetoothDevice = mBluetoothAdapter.getRemoteDevice(mDeviceAddress)
                 mBluetoothConnectProgressDialog = ProgressDialog.show(
                     fContexto,

@@ -6,6 +6,8 @@ const val VERSION_PROGRAMA = "2.00"
 const val COMPILACION_PROGRAMA = ".1"
 const val VERSION_BD = 1
 
+const val VERSION_COMUNICACION = 1
+
 
 const val est_Telef_Browse: Byte = 1
 const val est_Telef_Nuevo: Byte = 2

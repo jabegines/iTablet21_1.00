@@ -110,163 +110,144 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
         val xmlFiles = rutarecepcion.listFiles()
         if (xmlFiles != null && xmlFiles.isNotEmpty()) {
             fImportando = true
-            // Si no estamos usando el servicio y la fecha del último envío del terminal es mayor que la de la última preparación del PC, no recogeremos,
-            // ya que eso implica que el ordenador preparó los datos antes de que el terminal enviara.
+            // Si no estamos usando el servicio y la fecha del último envío de la tablet es mayor que la de la última preparación del PC, no recogeremos,
+            // ya que eso implica que el ordenador preparó los datos antes de que la tablet enviara.
             // Así intentamos evitar tener problemas con los contadores, etc.
-            if (fDesdeServicio || comprobarFechas(rutaLocal)) {
+            if (comprobarVerCom()) {
+                if (fDesdeServicio || comprobarFechas(rutaLocal)) {
 
-                // Vaciamos todas las tablas si no estamos usando el servicio
-                if (!fDesdeServicio) {
-                    val cursor = MyDatabase.getInstance(fContext)?.openHelper?.readableDatabase?.query("SELECT name FROM sqlite_master WHERE type = 'table'")
-                    val sqlDatabase = MyDatabase.getInstance(fContext)?.openHelper?.writableDatabase
-                    if (cursor != null) {
-                        if (cursor.moveToFirst()) {
-                            while (!cursor.isAfterLast) {
-                                val tableName = cursor.getString(0) ?: ""
-                                if (tableName != "android_metadata"
-                                    && tableName != "sqlite_sequence"
-                                    && tableName != "room_master_table") {
-                                    sqlDatabase?.delete(tableName, null, null)
-                                }
-                                cursor.moveToNext()
-                            }
+                    // Hacemos algunos borrados necesarios
+                    if (fDesdeServicio) borrarDesdeServicio()
+                    else borrarDesdeWifi()
+
+                    val numArchivos = xmlFiles.size
+                    var i = 1
+                    // Bucle que recorre la lista de ficheros.
+                    for (file in xmlFiles) {
+                        nombreFich = file.name
+                        if ((nombreFich != "Clientes.xml") && (nombreFich != "ConClientes.xml") &&
+                            (nombreFich != "DirClientes.xml") && (nombreFich != "DtosClientes.xml") &&
+                            (nombreFich != "NotasClientes.xml") && (nombreFich != "Proveedores.xml")
+                        ) {
+                            mensajeAActivity(file.name, numArchivos, i)
+                            i++
+                        }
+
+                        when {
+                            nombreFich.equals("Articulos.xml", true) -> importarArticulos()
+                            nombreFich.equals(
+                                "ArticulosHabituales.xml",
+                                true
+                            ) -> importarArtHabituales()
+                            nombreFich.equals("Busquedas.xml", true) -> importarBusquedas()
+                            // Estos tres archivos no los vaciamos totalmente
+                            nombreFich.equals(
+                                "Facturas.xml",
+                                true
+                            ) -> importarCabeceras("Facturas.xml", TIPODOC_FACTURA)
+                            nombreFich.equals(
+                                "Albaranes.xml",
+                                true
+                            ) -> importarCabeceras("Albaranes.xml", TIPODOC_ALBARAN)
+                            nombreFich.equals(
+                                "Pedidos.xml",
+                                true
+                            ) -> importarCabeceras("Pedidos.xml", TIPODOC_PEDIDO)
+                            nombreFich.equals(
+                                "Presupuestos.xml",
+                                true
+                            ) -> importarCabeceras("Presupuestos.xml", TIPODOC_PRESUPUESTO)
+                            nombreFich.equals("Pendiente.xml", true) -> importarPendiente()
+                            nombreFich.equals("FrasDiferidas.xml", true) -> importarFrasDiferidas()
+
+                            nombreFich.equals("CnfTarifas.xml", true) -> importarCnfTarifas()
+                            nombreFich.equals("Configuracion.xml", true) -> importarConfiguracion()
+                            nombreFich.equals("Divisas.xml", true) -> importarDivisas()
+                            nombreFich.equals("FormasPago.xml", true) -> importarFPago()
+
+                            nombreFich.equals("Historico.xml", true) -> importarHco()
+                            nombreFich.equals("HistMes.xml", true) -> importarHcoMes()
+                            nombreFich.equals("HistRep.xml", true) -> importarHcoRepre()
+                            nombreFich.equals("HcoCompSemMes.xml", true) -> importarHcoCompSemMes()
+                            nombreFich.equals("HcoPorArticClte.xml", true) -> importarHcoArticClte()
+                            nombreFich.equals("EstadDevoluc.xml", true) -> importarEstadDevoluc()
+
+                            nombreFich.equals("Series.xml", true) -> importarSeries(ejercActual)
+                            nombreFich.equals("Ejercicios.xml", true) -> importarEjercicios()
+                            nombreFich.equals("Ivas.xml", true) -> importarIvas()
+                            nombreFich.equals("Ofertas.xml", true) -> importarOfertas()
+                            nombreFich.equals("OfertasVol.xml", true) -> importarOfVolumen()
+                            nombreFich.equals("OfVolRangos.xml", true) -> importarOfVolRangos()
+                            nombreFich.equals("CantOfertas.xml", true) -> importarOfCantRangos()
+                            nombreFich.equals("RatingArt.xml", true) -> importarRatingArt()
+                            nombreFich.equals("RatingGru.xml", true) -> importarRatingGrupos()
+                            nombreFich.equals("RatingPro.xml", true) -> importarRatingProv()
+                            nombreFich.equals("Rutas.xml", true) -> importarRutas()
+                            nombreFich.equals("Rutero.xml", true) -> importarRutero()
+                            nombreFich.equals("Saldos.xml", true) -> importarSaldos()
+                            nombreFich.equals("Stock.xml", true) -> importarStock()
+                            nombreFich.equals("Tarifas.xml", true) -> importarTarifas()
+                            nombreFich.equals("Lotes.xml", true) -> importarLotes()
+                            nombreFich.equals("Grupos.xml", true) -> importarGrupos()
+                            nombreFich.equals("Departamentos.xml", true) -> importarDepartamentos()
+                            nombreFich.equals(
+                                "Clasificadores.xml",
+                                true
+                            ) -> importarClasificadores()
+                            nombreFich.equals("ArticClasif.xml", true) -> importarArticClasif()
+                            nombreFich.equals(
+                                "DatAdicArticulos.xml",
+                                true
+                            ) -> importarDatAdicArtic()
+                            nombreFich.equals("Formatos.xml", true) -> importarFormatos()
+                            nombreFich.equals("TarifasFormatos.xml", true) -> importarTrfFormatos()
+                            nombreFich.equals("TiposInc.xml", true) -> importarTiposIncidencia()
+                            nombreFich.equals("Almacenes.xml", true) -> importarAlmacenes()
+                            nombreFich.equals("Empresas.xml", true) -> importarEmpresas()
+                            nombreFich.equals("Costos.xml", true) -> importarCostos()
+                            nombreFich.equals("DocsCabPies.xml", true) -> importarDocsCabPies()
+                        }
+                        if ((nombreFich != "Clientes.xml") && (nombreFich != "ConClientes.xml") &&
+                            (nombreFich != "DirClientes.xml") && (nombreFich != "DtosClientes.xml") &&
+                            (nombreFich != "NotasClientes.xml") && (nombreFich != "Proveedores.xml")
+                        ) {
+                            // Borramos el fichero XML de la carpeta de recepción.
+                            file.delete()
                         }
                     }
-                }
 
-                val numArchivos = xmlFiles.size
-                var i = 1
+                    // Importamos ahora los clientes y los proveedores
+                    clientesABaseDatos(xmlFiles, i)
 
-                // Borraremos aquí los documentos enviados porque puede darse el caso de que hayamos enviado documentos pero
-                // no recibimos desde la central, en cuyo caso no se llamará a importarCabeceras(). Idem con el pendiente.
-                if (fDesdeServicio) {
-                    try {
-                        lineasDao?.borrarEnviadas()
-                        cabecerasDao?.borrarEnviadas()
+                    // Recalculamos stocks
+                    // Estas llamadas a fConfiguracion.loquesea no pueden estar dentro del bloque beginTransaction - endTransaction, porque
+                    // al abrir el cursor de fConfiguracion la apk se queda colgada. Entiendo que es porque no podemos tener dos instancias
+                    // de dbAlba abiertas a la misma vez.
+                    if (fDesdeServicio) {
+                        if (fConfiguracion.controlarStock())
+                            recalcularStocks()
+                        if (fConfiguracion.usarTrazabilidad())
+                            recalcularLotes()
 
-                        // Dejamos sin borrar aquellos vencimientos que tengamos que enviar (porque los hayamos creado en la tablet)
-                        // y aquellos que hemos recibido de la gestión pero hemos cobrado en la tablet y aún no los hemos enviado.
-                        val pendienteDao: PendienteDao? = MyDatabase.getInstance(fContext)?.pendienteDao()
-                        pendienteDao?.borrarEnviados()
-
-                        // Borramos histRepre porque si no lo recibimos tendremos el histórico anterior
-                        val histRepreDao: HistRepreDao? = MyDatabase.getInstance(fContext)?.histRepreDao()
-                        histRepreDao?.vaciar()
-
-                        // Idem con proveedores
-                        val proveedoresDao: ProveedoresDao? = MyDatabase.getInstance(fContext)?.proveedoresDao()
-                        proveedoresDao?.vaciar()
-
-                        // Idem con ofertas
-                        val ofertasDao: OfertasDao? = MyDatabase.getInstance(fContext)?.ofertasDao()
-                        ofertasDao?.vaciar()
-
-                        // Idem con costos
-                        val costosDao: CostosArticulosDao? = MyDatabase.getInstance(fContext)?.costosArticulosDao()
-                        costosDao?.vaciar()
-
-                    } catch (e: Exception) {
-                        mostrarExcepcion(e)
-                    }
-                }
-
-                // Bucle que recorre la lista de ficheros.
-                for (file in xmlFiles) {
-                    nombreFich = file.name
-                    if ((nombreFich != "Clientes.xml") && (nombreFich != "ConClientes.xml") &&
-                            (nombreFich != "DirClientes.xml") && (nombreFich != "DtosClientes.xml") &&
-                            (nombreFich != "NotasClientes.xml") && (nombreFich != "Proveedores.xml")) {
-                        mensajeAActivity(file.name, numArchivos, i)
-                        i++
+                        // Borramos los cobros enviados anteriores a x días
+                        borrarCobrosEnviados(fConfiguracion)
                     }
 
-                    when {
-                        nombreFich.equals("Articulos.xml", true) -> importarArticulos()
-                        nombreFich.equals("ArticulosHabituales.xml", true) -> importarArtHabituales()
-                        nombreFich.equals("Busquedas.xml", true) -> importarBusquedas()
-                        // Estos tres archivos no los vaciamos totalmente
-                        nombreFich.equals("Facturas.xml", true) -> importarCabeceras("Facturas.xml", TIPODOC_FACTURA)
-                        nombreFich.equals("Albaranes.xml", true) -> importarCabeceras("Albaranes.xml", TIPODOC_ALBARAN)
-                        nombreFich.equals("Pedidos.xml", true) -> importarCabeceras("Pedidos.xml", TIPODOC_PEDIDO)
-                        nombreFich.equals("Presupuestos.xml", true) -> importarCabeceras("Presupuestos.xml", TIPODOC_PRESUPUESTO)
-                        nombreFich.equals("Pendiente.xml", true) -> importarPendiente()
-                        nombreFich.equals("FrasDiferidas.xml", true) -> importarFrasDiferidas()
+                    // Hemos decidido borrar la carpeta de PDF'S en este momento.
+                    borrarPDFS()
 
-                        nombreFich.equals("CnfTarifas.xml", true) -> importarCnfTarifas()
-                        nombreFich.equals("Configuracion.xml", true) -> importarConfiguracion()
-                        nombreFich.equals("Divisas.xml", true) -> importarDivisas()
-                        nombreFich.equals("FormasPago.xml", true) -> importarFPago()
+                    fImportando = false
 
-                        nombreFich.equals("Historico.xml", true) -> importarHco()
-                        nombreFich.equals("HistMes.xml", true) -> importarHcoMes()
-                        nombreFich.equals("HistRep.xml", true) -> importarHcoRepre()
-                        nombreFich.equals("HcoCompSemMes.xml", true) -> importarHcoCompSemMes()
-                        nombreFich.equals("HcoPorArticClte.xml", true) -> importarHcoArticClte()
-                        nombreFich.equals("EstadDevoluc.xml", true) -> importarEstadDevoluc()
-
-                        nombreFich.equals("Series.xml", true) -> importarSeries(ejercActual)
-                        nombreFich.equals("Ejercicios.xml", true) -> importarEjercicios()
-                        nombreFich.equals("Ivas.xml", true) -> importarIvas()
-                        nombreFich.equals("Ofertas.xml", true) -> importarOfertas()
-                        nombreFich.equals("OfertasVol.xml", true) -> importarOfVolumen()
-                        nombreFich.equals("OfVolRangos.xml", true) -> importarOfVolRangos()
-                        nombreFich.equals("CantOfertas.xml", true) -> importarOfCantRangos()
-                        nombreFich.equals("RatingArt.xml", true) -> importarRatingArt()
-                        nombreFich.equals("RatingGru.xml", true) -> importarRatingGrupos()
-                        nombreFich.equals("RatingPro.xml", true) -> importarRatingProv()
-                        nombreFich.equals("Rutas.xml", true) -> importarRutas()
-                        nombreFich.equals("Rutero.xml", true) -> importarRutero()
-                        nombreFich.equals("Saldos.xml", true) -> importarSaldos()
-                        nombreFich.equals("Stock.xml", true) -> importarStock()
-                        nombreFich.equals("Tarifas.xml", true) -> importarTarifas()
-                        nombreFich.equals("Lotes.xml", true) -> importarLotes()
-                        nombreFich.equals("Grupos.xml", true) -> importarGrupos()
-                        nombreFich.equals("Departamentos.xml", true) -> importarDepartamentos()
-                        nombreFich.equals("Clasificadores.xml", true) -> importarClasificadores()
-                        nombreFich.equals("ArticClasif.xml", true) -> importarArticClasif()
-                        nombreFich.equals("DatAdicArticulos.xml", true) -> importarDatAdicArtic()
-                        nombreFich.equals("Formatos.xml", true) -> importarFormatos()
-                        nombreFich.equals("TarifasFormatos.xml", true) -> importarTrfFormatos()
-                        nombreFich.equals("TiposInc.xml", true) -> importarTiposIncidencia()
-                        nombreFich.equals("Almacenes.xml", true) -> importarAlmacenes()
-                        nombreFich.equals("Empresas.xml", true) -> importarEmpresas()
-                        nombreFich.equals("Costos.xml", true) -> importarCostos()
-                        nombreFich.equals("DocsCabPies.xml", true) -> importarDocsCabPies()
-                    }
-                    if ((nombreFich != "Clientes.xml") && (nombreFich != "ConClientes.xml") &&
-                            (nombreFich != "DirClientes.xml") && (nombreFich != "DtosClientes.xml") &&
-                            (nombreFich != "NotasClientes.xml") && (nombreFich != "Proveedores.xml")) {
-                        // Borramos el fichero XML de la carpeta de recepción.
-                        file.delete()
-                    }
+                } else {
+                    val msgFNoValida = Message()
+                    msgFNoValida.obj = '\n' + fContext.getString(string.msj_FPrepNoValida)
+                    puente.sendMessage(msgFNoValida)
+                    fImportando = false
                 }
-
-                // Importamos ahora los clientes y los proveedores
-                clientesABaseDatos(xmlFiles, i)
-
-                // Recalculamos stocks
-                // Estas llamadas a fConfiguracion.loquesea no pueden estar dentro del bloque beginTransaction - endTransaction, porque
-                // al abrir el cursor de fConfiguracion la apk se queda colgada. Entiendo que es porque no podemos tener dos instancias
-                // de dbAlba abiertas a la misma vez.
-                if (fDesdeServicio) {
-                    if (fConfiguracion.controlarStock())
-                        recalcularStocks()
-                    if (fConfiguracion.usarTrazabilidad())
-                        recalcularLotes()
-
-                    // Borramos los cobros enviados anteriores a x días
-                    borrarCobrosEnviados(fConfiguracion)
-                }
-
-                // Hemos decidido borrar la carpeta de PDF'S en este momento.
-                borrarPDFS()
-
-                fImportando = false
-
             } else {
-                val msgFNoValida = Message()
-                msgFNoValida.obj = '\n' + fContext.getString(string.msj_FPrepNoValida)
-                puente.sendMessage(msgFNoValida)
+                val msgVerComNoValida = Message()
+                msgVerComNoValida.obj = '\n' + fContext.getString(string.msj_VerComNoValida)
+                puente.sendMessage(msgVerComNoValida)
                 fImportando = false
             }
         } else {
@@ -277,6 +258,57 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
         }
     }
 
+    private fun borrarDesdeServicio() {
+        try {
+            // Borraremos aquí los documentos enviados porque puede darse el caso de que hayamos enviado documentos pero
+            // no recibimos desde la central, en cuyo caso no se llamará a importarCabeceras(). Idem con el pendiente.
+            lineasDao?.borrarEnviadas()
+            cabecerasDao?.borrarEnviadas()
+
+            // Dejamos sin borrar aquellos vencimientos que tengamos que enviar (porque los hayamos creado en la tablet)
+            // y aquellos que hemos recibido de la gestión pero hemos cobrado en la tablet y aún no los hemos enviado.
+            val pendienteDao: PendienteDao? = MyDatabase.getInstance(fContext)?.pendienteDao()
+            pendienteDao?.borrarEnviados()
+
+            // Borramos histRepre porque si no lo recibimos tendremos el histórico anterior
+            val histRepreDao: HistRepreDao? = MyDatabase.getInstance(fContext)?.histRepreDao()
+            histRepreDao?.vaciar()
+
+            // Idem con proveedores
+            val proveedoresDao: ProveedoresDao? = MyDatabase.getInstance(fContext)?.proveedoresDao()
+            proveedoresDao?.vaciar()
+
+            // Idem con ofertas
+            val ofertasDao: OfertasDao? = MyDatabase.getInstance(fContext)?.ofertasDao()
+            ofertasDao?.vaciar()
+
+            // Idem con costos
+            val costosDao: CostosArticulosDao? = MyDatabase.getInstance(fContext)?.costosArticulosDao()
+            costosDao?.vaciar()
+
+        } catch (e: Exception) {
+            mostrarExcepcion(e)
+        }
+    }
+
+    private fun borrarDesdeWifi() {
+        // Vaciamos todas las tablas si no estamos usando el servicio
+        val cursor = MyDatabase.getInstance(fContext)?.openHelper?.readableDatabase?.query("SELECT name FROM sqlite_master WHERE type = 'table'")
+        val sqlDatabase = MyDatabase.getInstance(fContext)?.openHelper?.writableDatabase
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast) {
+                    val tableName = cursor.getString(0) ?: ""
+                    if (tableName != "android_metadata"
+                        && tableName != "sqlite_sequence"
+                        && tableName != "room_master_table") {
+                        sqlDatabase?.delete(tableName, null, null)
+                    }
+                    cursor.moveToNext()
+                }
+            }
+        }
+    }
 
     private fun clientesABaseDatos(xmlFiles: Array<File>, i: Int) {
         val numArchivos = xmlFiles.size
@@ -318,7 +350,47 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
     }
 
 
-    @SuppressLint("SimpleDateFormat")
+    private fun comprobarVerCom(): Boolean {
+        var sCampo: String
+        try {
+            val f = File(rutaLocal, "Tecnica.xml")
+            val fin = FileInputStream(f)
+
+            val parser = Xml.newPullParser()
+            try {
+                parser.setInput(fin, "UTF-8")
+                var event = parser.next()
+
+                while (event != XmlPullParser.END_DOCUMENT && !fTerminar) {
+                    if (event == XmlPullParser.START_TAG) {
+
+                        for (i: Int in 0 until parser.attributeCount) {
+                            sCampo = parser.getAttributeName(i)
+
+                            // Si la versión de comunicación de ibsTablet (la que viene del central) es menor
+                            // que la nuestra, no recogeremos
+                            if (sCampo.equals("VERSION_COMUNICACION", true)) {
+                                val fVersComIbsTablet = parser.getAttributeValue("", sCampo).toInt()
+                                return (VERSION_COMUNICACION <= fVersComIbsTablet)
+                            }
+                        }
+                    }
+                    event = parser.next()
+                }
+                fin.close()
+                return false
+
+            } catch (e: Exception) {
+                mostrarExcepcion(e)
+                return false
+            }
+        } catch (e: Exception) {
+            mostrarExcepcion(e)
+            return false
+        }
+    }
+
+
     private fun comprobarFechas(rutaLocal: String): Boolean {
         val fUltEnvio = prefs.getString("fecha_ult_envio", "") ?: ""
         var sCampo: String
@@ -343,7 +415,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                                 if (sCampo.equals("FECHA_PREPARACION", true)) {
                                     val fUltPreparacion = parser.getAttributeValue("", sCampo) ?: ""
 
-                                    val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
+                                    val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
                                     val dFUltPreparacion = sdf.parse(fUltPreparacion) ?: Date()
                                     val dFUltEnvio = sdf.parse(fUltEnvio)
 
@@ -3620,6 +3692,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                 serializer.attribute(null, "VERSION", VERSION_PROGRAMA)
                 serializer.attribute(null, "COMPILACION", COMPILACION_PROGRAMA.substring(1, COMPILACION_PROGRAMA.length))
                 serializer.attribute(null, "MODO_VENTA", prefs.getString("modo_venta", "1"))
+                serializer.attribute(null, "VERSION_COMUNICACION", VERSION_COMUNICACION.toString())
             serializer.endTag("", "record")
             serializer.endTag("", "consulta")
             serializer.endDocument()

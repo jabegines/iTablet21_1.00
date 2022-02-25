@@ -438,6 +438,7 @@
     <string name="msj_FPrepNoValida">La fecha del último envío es mayor que la de la última preparación, no se importará.</string>
     <string name="msj_ConfigGuardada">La configuración ha sido guardada</string>
     <string name="msj_MarcarPagare">¿Marcar como pagaré?</string>
+    <string name="msj_VerComNoValida">"La versión de comunicación no es válida"</string>
     <string name="msj_VtoCobrado">El vencimiento ya está cobrado</string>
     <string name="msj_VtoDeFra">Solo podrá convertir a pagaré un vencimento de factura</string>
     <string name="msj_VtoYaEsPagare">El vencimiento ya es un pagaré</string>

@@ -216,7 +216,7 @@ class VerCargas: AppCompatActivity() {
                         dStock *= -1
 
                         fLotes.actStockLote(loteEnt.articuloId, dStock, loteEnt.lote, queEmpresa)
-                        fArticulos.actualizarStock(loteEnt.articuloId, queEmpresa, dStock, 0.0, false)
+                        fArticulos.actualizarStock(loteEnt.articuloId, queEmpresa, dStock, 0.0, true)
                     }
 
                 }
@@ -257,7 +257,7 @@ class VerCargas: AppCompatActivity() {
                         // Actualizamos el stock del artículo. Antes ponemos fCajas y fExistencias en negativo, para que resten.
                         fCajas *= -1
                         fExistencias *= -1
-                        fArticulos.actualizarStock(stockEnt.articuloId, queEmpresa, fExistencias, 0.0, false)
+                        fArticulos.actualizarStock(stockEnt.articuloId, queEmpresa, fExistencias, 0.0, true)
                     }
                 }
             }
