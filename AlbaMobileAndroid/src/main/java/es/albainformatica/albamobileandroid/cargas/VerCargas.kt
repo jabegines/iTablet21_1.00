@@ -212,10 +212,10 @@ class VerCargas: AppCompatActivity() {
 
                         cargasLineasDao?.insertar(lineaEnt)
 
-                        // Actualizamos el stock del lote y también del artículo. Antes ponemos la cantidad en negativo, para que sume.
-                        dStock *= -1
-
+                        // Actualizamos el stock del lote y también del artículo.
                         fLotes.actStockLote(loteEnt.articuloId, dStock, loteEnt.lote, queEmpresa)
+                        // Ponemos la cantidad en negativo, para que sume.
+                        dStock *= -1
                         fArticulos.actualizarStock(loteEnt.articuloId, queEmpresa, dStock, 0.0, true)
                     }
 

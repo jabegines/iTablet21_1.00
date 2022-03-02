@@ -30,7 +30,7 @@ interface CobrosDao {
             " FROM Cobros A " +
             " LEFT JOIN Clientes B ON B.clienteId = A.clienteId " +
             " LEFT JOIN Cabeceras C ON C.tipoDoc = A.tipoDoc AND C.almacen = A.almacen " +
-            " AND c.serie = A.serie AND C.numero = A.numero AND C.ejercicio = A.ejercicio " +
+            " AND C.serie = A.serie AND C.numero = A.numero AND C.ejercicio = A.ejercicio " +
             " WHERE (A.vApunte > 0 OR (A.estado = 'N' AND C.estado = 'X')) " +
             " AND (julianday(substr(A.fechacobro, 7, 4) || '-' || substr(A.fechacobro, 4, 2) " +
             " || '-' || substr(A.fechacobro, 1, 2)) >= julianday(:desdeFecha)) " +

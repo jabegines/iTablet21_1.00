@@ -2365,6 +2365,27 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
                             if (serieNoExiste(seriesDao, serieEnt.serie, queEjercicio)) {
                                 seriesDao?.insertar(serieEnt)
+                            // Si la serie existe comprobaremos si los contadores que vienen de la gestión son
+                            // más altos que los que tenemos en la tablet. Si es así, actualizaremos el contador
+                            // con el que tenga la gestión, ya que ello nos indicará que en la gestión existen
+                            // documentos con los números que vamos a realizar en la tablet y, al recibirlos,
+                            // obtendremos el mensaje de que los documentos ya existen.
+                            } else {
+                                val queNumPedido = seriesDao?.getNumPedido(serieEnt.serie, queEjercicio.toInt()) ?: 0
+                                if (queNumPedido < serieEnt.pedido)
+                                    seriesDao?.setNumPedido(serieEnt.serie, queEjercicio.toInt(), queNumPedido)
+
+                                val queNumFra = seriesDao?.getNumFactura(serieEnt.serie, queEjercicio.toInt()) ?: 0
+                                if (queNumFra < serieEnt.factura)
+                                    seriesDao?.setNumFactura(serieEnt.serie, queEjercicio.toInt(), queNumFra)
+
+                                val queNumAlb = seriesDao?.getNumAlbaran(serieEnt.serie, queEjercicio.toInt()) ?: 0
+                                if (queNumFra < serieEnt.albaran)
+                                    seriesDao?.setNumAlbaran(serieEnt.serie, queEjercicio.toInt(), queNumAlb)
+
+                                val queNumPres = seriesDao?.getNumPresupuesto(serieEnt.serie, queEjercicio.toInt()) ?: 0
+                                if (queNumPres < serieEnt.presupuesto)
+                                    seriesDao?.setNumPresupuesto(serieEnt.serie, queEjercicio.toInt(), queNumPres)
                             }
                         }
                     }
