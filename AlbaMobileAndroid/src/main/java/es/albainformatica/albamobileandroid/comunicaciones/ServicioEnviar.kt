@@ -352,23 +352,34 @@ class ServicioEnviar: AppCompatActivity() {
             val request = Request.Builder().url(url).post(requestBody).build()
             val response = client.newCall(request).execute()
             if (response.isSuccessful) {
-                // Si hemos recibido Success:true en la respuesta seguimos trabajando
                 val queRespuesta = response.body()!!.string()
+
+                // Si hemos recibido Success:true en la respuesta seguimos trabajando
                 return if (respuestaCorrecta(queRespuesta)) {
                     // Vemos el número de paquete que nos ha devuelto el servicio. Este número es el que estableceremos
                     // como número de exportación, de esta forma podremos hacer consultas al servicio acerca de este paquete.
                     obtenerNumPaquete(queRespuesta)
 
                     // Una vez hemos enviado, borramos los ficheros de la carpeta local.
-                    val rutaLocEnv = File(miscCom.rutaLocalEnvio)
-                    val xmlFiles = rutaLocEnv.listFiles()
-                    for (File in xmlFiles) {
-                        File.delete()
-                    }
+                    borrarFichCarpLocal()
 
                     true
 
-                } else false
+                } else {
+                    // Si la respuesta no ha sido correcta comprobaremos si el paquete está subido al servicio
+                    // para, en este caso, dar por bueno el resultado del envío.
+                    obtenerNumPaquete(queRespuesta)
+                    if (fNumPaquete > 0) {
+                        val quePaquete = paqueteEnServicio(fNumPaquete)
+                        if (quePaquete > 0) {
+                            // Una vez hemos enviado, borramos los ficheros de la carpeta local.
+                            borrarFichCarpLocal()
+                            return true
+                        }
+                    }
+
+                    false
+                }
             } else return false
 
         } catch (e: Exception) {
@@ -377,8 +388,58 @@ class ServicioEnviar: AppCompatActivity() {
     }
 
 
+    private fun borrarFichCarpLocal() {
+        val rutaLocEnv = File(miscCom.rutaLocalEnvio)
+        val xmlFiles = rutaLocEnv.listFiles()
+        for (File in xmlFiles) {
+            File.delete()
+        }
+    }
+
+
+    @SuppressLint("HardwareIds")
+    private fun paqueteEnServicio(fNumPaquete: Int): Int {
+        val fEmail = prefs.getString("usuario_servicio", "") ?: ""
+        val fHuella = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
+        val fPassword = prefs.getString("password_servicio", "")
+        val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+        val fFechaHora = sdf.format(Date()).replace("/", "").replace(":", "").replace(" ", "")
+        val fAccion = "13"
+        val fAppId = "1"
+
+        val quePaquete = Base64.encodeBase64String(fNumPaquete.toString().toByteArray()).replace("\r\n", "")
+        var fFirma = fEmail + ";;;" + fHuella + ";;;" + (fEmail + fHuella).length + ";;;" + fPassword +
+                ";;;" + fAccion + ";;;" + fAppId + ";;;" + fFechaHora
+        fFirma = fFirma + ";;;" + sha1(fFirma)
+        fFirma = Base64.encodeBase64String(fFirma.toByteArray())
+        fFirma = fFirma.replace("\r", "").replace("\n", "").replace("+", "-").replace("\\", "_").replace("=", "*")
+
+        val client = OkHttpClient.Builder().readTimeout(5, TimeUnit.MINUTES).build()
+        val queUrl = "$urlServicio/Service/Action/ActualStatePackage"
+        val call = client.newCall(Request.Builder()
+            .url("$queUrl?Sign=$fFirma&SystemId=$fSistemaId&Package=$quePaquete")
+            .get()
+            .build())
+
+        val response = call.execute()
+        if (response.isSuccessful) {
+            val queRespuesta = response.body()?.string() ?: ""
+            if (respuestaCorrecta(queRespuesta)) {
+                return fNumPaquete
+            }
+        }
+
+        return 0
+    }
+
+
     private fun respuestaCorrecta(queRespuesta: String): Boolean {
-        return queRespuesta.substring(11, 15) == "true"
+        var posicion = queRespuesta.indexOf("Success") + 9
+        var queCadena = queRespuesta.substring(posicion, queRespuesta.length)
+        posicion = queCadena.indexOf(",")
+        queCadena = queCadena.substring(0, posicion)
+
+        return queCadena == "true"
     }
 
     private fun obtenerNumPaquete(queRespuesta: String) {

@@ -173,7 +173,13 @@ class ModifDocReparto: Activity() {
         fAdapter = LinRepVtasRvAdapter(getLineasDoc(), fIvaIncluido, fAplicarIva, this,
                             object: LinRepVtasRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: DatosLinVtas) {
-                fLinea = data.lineaId
+                if (data.articuloId > 0) {
+                    fLinea = data.lineaId
+                }
+                else
+                    alert("La línea no tiene código de artículo") {
+                        positiveButton("Ok") { fLinea = 0 }
+                    }.show()
             }
         })
 

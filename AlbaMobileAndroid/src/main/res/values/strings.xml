@@ -107,7 +107,7 @@
     <string name="ftpusuario">Usuario FTP:</string>
     <string name="getFechaVto">Indique la fecha de vencimiento:</string>
     <string name="grupos_y_dep">Grupos y departamentos</string>
-    <string name="guardar_conf">Deberá de guardar la configuración antes de probar</string>
+    <string name="guardar_conf">Deberá guardar la configuración antes de probar</string>
     <string name="hasta_fecha">Hasta fecha:</string>
     <string name="hco_art_clte">Histórico del artículo y cliente</string>
     <string name="hora">Hora</string>
