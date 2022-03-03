@@ -12,9 +12,9 @@ data class CatalogoLineasEnt (
 
     var linea: Int = 0,
     var articuloId: Int = 0,
-    var cajas: String = "",
+    var cajas: String = "0.0",
     var cantidad: String = "",
-    var piezas: String = "",
+    var piezas: String = "0.0",
     var precio: String = "",
     var precioII: String = "",
     var dto: String = "",

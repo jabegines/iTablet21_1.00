@@ -1881,6 +1881,9 @@ class Documento(private val fContexto: Context) {
 
         val sCantCajas = arrayOf("F", "0", "0", "0.0", "0.0", "0.0", "")
         if (lDatosCat.isNotEmpty()) {
+            if (lDatosCat[0].cajas == "") lDatosCat[0].cajas = "0.0"
+            if (lDatosCat[0].cantidad == "") lDatosCat[0].cantidad = "0.0"
+
             sCantCajas[0] = "T"
             sCantCajas[1] = String.format(Locale.getDefault(), "%.0f", lDatosCat[0].cajas.toDouble())
             sCantCajas[2] = String.format(Locale.getDefault(), "%.0f", lDatosCat[0].cantidad.toDouble())
