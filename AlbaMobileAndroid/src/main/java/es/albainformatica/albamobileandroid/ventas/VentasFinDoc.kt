@@ -23,6 +23,7 @@ import es.albainformatica.albamobileandroid.dao.CabecerasDao
 import es.albainformatica.albamobileandroid.dao.DtosCltesDao
 import es.albainformatica.albamobileandroid.dao.TiposIncDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
+import es.albainformatica.albamobileandroid.entity.DtosCltesEnt
 import es.albainformatica.albamobileandroid.entity.TiposIncEnt
 import es.albainformatica.albamobileandroid.reparto.FirmarDoc
 import java.text.DecimalFormat
@@ -208,12 +209,14 @@ class VentasFinDoc: AppCompatActivity() {
 
     private fun cargarDtosClte() {
 
-        val lDtosClte = dtosCltesDao?.getDtosClte(fDocumento.fCliente) ?: emptyList<String>().toMutableList()
+        val lDtosClte = dtosCltesDao?.getDtosClte(fDocumento.fCliente) ?: emptyList<DtosCltesEnt>().toMutableList()
 
-        if (lDtosClte.count() > 0) edtDtoPie1.setText(lDtosClte[0])
-        if (lDtosClte.count() > 1) edtDtoPie2.setText(lDtosClte[1])
-        if (lDtosClte.count() > 2) edtDtoPie3.setText(lDtosClte[2])
-        if (lDtosClte.count() > 3) edtDtoPie4.setText(lDtosClte[3])
+        for (dtoClte in lDtosClte) {
+            if (dtoClte.idDescuento == 1) edtDtoPie1.setText(dtoClte.dto)
+            if (dtoClte.idDescuento == 2) edtDtoPie2.setText(dtoClte.dto)
+            if (dtoClte.idDescuento == 3) edtDtoPie3.setText(dtoClte.dto)
+            if (dtoClte.idDescuento == 4) edtDtoPie4.setText(dtoClte.dto)
+        }
     }
 
     private fun cargarDatos() {

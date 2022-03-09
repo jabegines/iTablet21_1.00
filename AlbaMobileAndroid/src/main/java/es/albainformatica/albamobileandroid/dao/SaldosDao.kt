@@ -9,7 +9,7 @@ import es.albainformatica.albamobileandroid.entity.SaldosEnt
 @Dao
 interface SaldosDao {
 
-    @Query("UPDATE Saldos SET saldo = saldo + :queImporte WHERE clienteId = :queCliente AND empresa = :queEmpresa")
+    @Query("UPDATE Saldos SET saldo = `REPLACE`(saldo, ',', '.') + :queImporte WHERE clienteId = :queCliente AND empresa = :queEmpresa")
     fun actualizarSaldo(queCliente: Int, queEmpresa: Short, queImporte: Double)
 
     @Query("INSERT INTO Saldos (clienteId, empresa, saldo, facturasPtes, albaranesPtes, pedidosPtes)" +
