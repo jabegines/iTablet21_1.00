@@ -2373,19 +2373,19 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                             } else {
                                 val queNumPedido = seriesDao?.getNumPedido(serieEnt.serie, queEjercicio.toInt()) ?: 0
                                 if (queNumPedido < serieEnt.pedido)
-                                    seriesDao?.setNumPedido(serieEnt.serie, queEjercicio, queNumPedido)
+                                    seriesDao?.setNumPedido(serieEnt.serie, queEjercicio, serieEnt.pedido)
 
                                 val queNumFra = seriesDao?.getNumFactura(serieEnt.serie, queEjercicio.toInt()) ?: 0
                                 if (queNumFra < serieEnt.factura)
-                                    seriesDao?.setNumFactura(serieEnt.serie, queEjercicio, queNumFra)
+                                    seriesDao?.setNumFactura(serieEnt.serie, queEjercicio, serieEnt.factura)
 
                                 val queNumAlb = seriesDao?.getNumAlbaran(serieEnt.serie, queEjercicio.toInt()) ?: 0
                                 if (queNumFra < serieEnt.albaran)
-                                    seriesDao?.setNumAlbaran(serieEnt.serie, queEjercicio, queNumAlb)
+                                    seriesDao?.setNumAlbaran(serieEnt.serie, queEjercicio, serieEnt.albaran)
 
                                 val queNumPres = seriesDao?.getNumPresupuesto(serieEnt.serie, queEjercicio.toInt()) ?: 0
                                 if (queNumPres < serieEnt.presupuesto)
-                                    seriesDao?.setNumPresupuesto(serieEnt.serie, queEjercicio, queNumPres)
+                                    seriesDao?.setNumPresupuesto(serieEnt.serie, queEjercicio, serieEnt.presupuesto)
                             }
                         }
                     }

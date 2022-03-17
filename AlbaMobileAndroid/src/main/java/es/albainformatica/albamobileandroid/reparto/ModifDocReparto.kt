@@ -289,6 +289,12 @@ class ModifDocReparto: Activity() {
     }
 
 
+    // No hacemos nada, está para que no nos dé error si pulsamos en el número de documento
+    fun dialogoCambiarTipoDoc(view: View) {
+        view.getTag(0)          // Para que no dé warning el compilador
+    }
+
+
     private fun grabarPieDoc(resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_OK) {
             fDocumento.fObs1 = data?.getStringExtra("obs1") ?: ""

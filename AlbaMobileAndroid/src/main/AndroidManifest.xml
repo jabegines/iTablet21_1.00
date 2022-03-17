@@ -275,6 +275,7 @@
             android:name=".reparto.ModifDocReparto"
             android:label="Anomalias"
             android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         />
         <activity
             android:name=".ventas.VentasIncidencia"
