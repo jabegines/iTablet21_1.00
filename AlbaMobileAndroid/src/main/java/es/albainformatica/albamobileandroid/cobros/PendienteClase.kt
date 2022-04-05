@@ -208,6 +208,8 @@ class PendienteClase(queContexto: Context) {
         // Comprobamos si hemos liquidado el pendiente.
         if (cobrado.toDouble() + queImporte.toDouble() >= importe.toDouble())
             pendienteDao?.marcarComoLiquidado(queIdPendiente)
+        else
+            pendienteDao?.marcarComoCobrParcial(queIdPendiente)
     }
 
 

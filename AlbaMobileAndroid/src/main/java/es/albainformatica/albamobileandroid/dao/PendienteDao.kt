@@ -31,6 +31,8 @@ interface PendienteDao {
     @Query("UPDATE Pendiente SET Estado = 'L' WHERE PendienteId = :quePendienteId")
     fun marcarComoLiquidado(quePendienteId: Int)
 
+    @Query("UPDATE Pendiente SET Estado = 'CP' WHERE PendienteId = :quePendienteId")
+    fun marcarComoCobrParcial(quePendienteId: Int)
 
     @Query("SELECT * FROM Pendiente WHERE PendienteId = :quePendienteId")
     fun abrirPendienteId(quePendienteId: Int): PendienteEnt
@@ -98,7 +100,8 @@ interface PendienteDao {
     fun abrirFPagoDoc(queAlmacen: Short, queSerie: String, queNumero: Int, queEjercicio: Short): String
 
 
-    @Query("DELETE FROM pendiente WHERE (enviar <> 'T' AND estado <> 'L') OR (estado = 'L' AND numexport > 0)")
+    @Query("DELETE FROM pendiente WHERE (enviar <> 'T' AND estado <> 'L' AND estado <> 'CP') " +
+            " OR (estado = 'L' AND numexport > 0)")
     fun borrarEnviados()
 
 

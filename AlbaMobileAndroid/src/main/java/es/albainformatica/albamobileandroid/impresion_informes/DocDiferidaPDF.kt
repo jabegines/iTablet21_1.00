@@ -401,29 +401,38 @@ class DocDiferidaPDF(private val fContexto: Context, idDocumento: Int) {
     @SuppressLint("Range")
     fun recalcularBases() {
         fBases.fLista.clear()
-        val fDecImpII = fConfiguracion.decimalesImpII()
+        //val fDecImpII = fConfiguracion.decimalesImpII()
         configurarBases()
 
         for (linea in lLineas) {
             val fImporte = linea.importe.replace(',', '.').toDouble()
-            var fImpteII: Double
-            if (fExentoIva) fImpteII = fImporte else {
+            //var fImpteII: Double
+            //if (fExentoIva) fImpteII = fImporte else {
 
-                val fPorcIva = linea.porcIva.replace(',', '.').toDouble()
+                //val fPorcIva = linea.porcIva.replace(',', '.').toDouble()
 
-                fImpteII = fImporte + fImporte * fPorcIva / 100
-                fImpteII = redondear(fImpteII, fDecImpII)
-            }
+                //fImpteII = fImporte + fImporte * fPorcIva / 100
+                //fImpteII = redondear(fImpteII, fDecImpII)
+            //}
             val fCodigoIva = linea.codigoIva
-            if (fBases.fIvaIncluido) fBases.calcularBase(fCodigoIva, fImpteII)
-            else fBases.calcularBase(fCodigoIva, fImporte)
+            //if (fBases.fIvaIncluido) fBases.calcularBase(fCodigoIva, fImpteII)
+            //else fBases.calcularBase(fCodigoIva, fImporte)
+
+            // La gestión siempre calcula las facturas diferidas desde la base imponible, nosotros hacemos igual
+            fBases.calcularBase(fCodigoIva, fImporte)
+
+            if (linea.porcDtoAlb.toDouble() != 0.0) {
+                fBases.calcularDtosPie(linea.porcDtoAlb.toDouble(), 0.0, 0.0, 0.0)
+            }
         }
     }
 
     private fun configurarBases() {
         fBases.fAplicarIva = fClientes.fAplIva
         fBases.fAplicarRecargo = fBases.fAplicarIva && fClientes.fAplRec
-        fBases.fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresaActual)
+        //fBases.fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresaActual)
+        // La gestión siempre calcula las facturas diferidas desde la base imponible, nosotros hacemos igual
+        fBases.fIvaIncluido = false
         fBases.fDecImpBase = fConfiguracion.decimalesImpBase()
         fBases.fDecImpII = fConfiguracion.decimalesImpII()
     }

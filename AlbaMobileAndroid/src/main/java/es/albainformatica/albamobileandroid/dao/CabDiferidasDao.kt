@@ -22,5 +22,5 @@ interface CabDiferidasDao {
     fun vaciar()
 
     @Insert
-    fun insertar(cabDiferida: CabDiferidasEnt)
+    fun insertar(cabDiferida: CabDiferidasEnt): Long
 }

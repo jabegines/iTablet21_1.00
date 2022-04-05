@@ -871,7 +871,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
                 parser.setInput(fin, "UTF-8")
                 var event = parser.next()
-                val cabeceraId: Long = 0
+                var cabeceraId: Long = 0
 
                 while (event != XmlPullParser.END_DOCUMENT && !fTerminar) {
                     if (event == XmlPullParser.START_TAG) {
@@ -905,7 +905,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                                 }
                             }
                             if (cabDifEnt.clienteId > 0) {
-                                cabDiferidasDao?.insertar(cabDifEnt)
+                                cabeceraId = cabDiferidasDao?.insertar(cabDifEnt) ?: 0
                             }
                         } else if (parser.name == "linea") {
                             val linDifEnt = LineasDifEnt()
@@ -920,6 +920,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                                         val sFecha2 = (sFecha.substring(8, 10) + "/" + sFecha.substring(5, 7) + "/" + sFecha.substring(0, 4))
                                         linDifEnt.fecha = sFecha2
                                     }
+                                    sCampo.equals("PorcDtoAlb", ignoreCase = true) -> linDifEnt.porcDtoAlb = parser.getAttributeValue("", sCampo)
                                     sCampo.equals("Linea", ignoreCase = true) -> linDifEnt.linea = parser.getAttributeValue("", sCampo).toShort()
                                     sCampo.equals("Articulo", ignoreCase = true) -> linDifEnt.articuloId = parser.getAttributeValue("", sCampo).toInt()
                                     sCampo.equals("Codigo", ignoreCase = true) -> linDifEnt.codigo = parser.getAttributeValue("", sCampo)

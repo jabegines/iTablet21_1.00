@@ -13,6 +13,7 @@ data class LineasDifEnt (
     var serie: String = "",
     var numero: Int = 0,
     var fecha: String = "",
+    var porcDtoAlb: String = "",
     var linea: Short = 0,
     var articuloId: Int = 0,
     var codigo: String = "",

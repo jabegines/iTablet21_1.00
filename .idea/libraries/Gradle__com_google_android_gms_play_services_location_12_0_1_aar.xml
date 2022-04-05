@@ -7,8 +7,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/25ac9b1327eb173ea3490d4b809e9e3c/transformed/jetified-play-services-location-12.0.1/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/2cc393fff55a9b004bbe0d1978d723d8/transformed/jetified-play-services-location-12.0.1/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/3de108a3dd476115708d15ee3bf65b87/transformed/jetified-play-services-location-12.0.1/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/3de108a3dd476115708d15ee3bf65b87/transformed/jetified-play-services-location-12.0.1/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/3de108a3dd476115708d15ee3bf65b87/transformed/jetified-play-services-location-12.0.1/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/fe73289e86d942875ab36f7b24663e69/transformed/jetified-play-services-location-12.0.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/fe73289e86d942875ab36f7b24663e69/transformed/jetified-play-services-location-12.0.1/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/fe73289e86d942875ab36f7b24663e69/transformed/jetified-play-services-location-12.0.1/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
