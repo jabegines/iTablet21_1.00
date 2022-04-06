@@ -10,7 +10,8 @@ import es.albainformatica.albamobileandroid.entity.LineasDifEnt
 @Dao
 interface LineasDifDao {
 
-    @Query("SELECT A.codigo, A.descripcion, A.cajas, A.cantidad, A.precio, A.dto, A.importe, A.codigoIva, B.porcIva " +
+    @Query("SELECT A.codigo, A.descripcion, A.cajas, A.cantidad, A.precio, A.dto, A.importe, A.codigoIva, " +
+            " B.porcIva, A.porcDtoAlb " +
             " FROM LineasDiferidas A" +
             " LEFT JOIN Ivas B ON B.codigo = A.codigoIva" +
             " WHERE A.cabeceraId = :queIdDocumento")

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "bd5640b0f04027f0a239092689226d91",
+    "identityHash": "0bf55ae5bd566faac4a728aac29ee69f",
     "entities": [
       {
         "tableName": "Almacenes",
@@ -2542,7 +2542,7 @@
       },
       {
         "tableName": "LineasDiferidas",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`lineaDiferidaId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `cabeceraId` INTEGER NOT NULL, `serie` TEXT NOT NULL, `numero` INTEGER NOT NULL, `fecha` TEXT NOT NULL, `linea` INTEGER NOT NULL, `articuloId` INTEGER NOT NULL, `codigo` TEXT NOT NULL, `descripcion` TEXT NOT NULL, `precio` TEXT NOT NULL, `cajas` TEXT NOT NULL, `cantidad` TEXT NOT NULL, `piezas` TEXT NOT NULL, `importe` TEXT NOT NULL, `dto` TEXT NOT NULL, `codigoIva` INTEGER NOT NULL, `flag` INTEGER NOT NULL, `flag3` INTEGER NOT NULL, `formatoId` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`lineaDiferidaId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `cabeceraId` INTEGER NOT NULL, `serie` TEXT NOT NULL, `numero` INTEGER NOT NULL, `fecha` TEXT NOT NULL, `porcDtoAlb` TEXT NOT NULL, `linea` INTEGER NOT NULL, `articuloId` INTEGER NOT NULL, `codigo` TEXT NOT NULL, `descripcion` TEXT NOT NULL, `precio` TEXT NOT NULL, `cajas` TEXT NOT NULL, `cantidad` TEXT NOT NULL, `piezas` TEXT NOT NULL, `importe` TEXT NOT NULL, `dto` TEXT NOT NULL, `codigoIva` INTEGER NOT NULL, `flag` INTEGER NOT NULL, `flag3` INTEGER NOT NULL, `formatoId` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "lineaDiferidaId",
@@ -2571,6 +2571,12 @@
           {
             "fieldPath": "fecha",
             "columnName": "fecha",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "porcDtoAlb",
+            "columnName": "porcDtoAlb",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -4376,7 +4382,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bd5640b0f04027f0a239092689226d91')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0bf55ae5bd566faac4a728aac29ee69f')"
     ]
   }
 }

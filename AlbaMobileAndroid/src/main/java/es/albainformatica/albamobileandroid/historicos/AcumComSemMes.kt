@@ -47,7 +47,7 @@ class AcumComSemMes: AppCompatActivity() {
         fRecyclerView = rvAcumCompSemMes
         fRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        prepararRecyclerView()
+        //prepararRecyclerView()
         porSemanas(null)
     }
 

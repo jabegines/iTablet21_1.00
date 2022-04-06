@@ -246,6 +246,7 @@ class DatosLinDocDif {
     var importe: String = ""
     var codigoIva: Short = 0
     var porcIva: String = ""
+    var porcDtoAlb: String = ""
 }
 
 
