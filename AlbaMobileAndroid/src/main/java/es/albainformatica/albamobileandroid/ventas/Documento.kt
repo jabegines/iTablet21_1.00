@@ -17,18 +17,22 @@ import java.lang.NumberFormatException
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 /**
  * Created by jabegines on 14/10/13.
  */
 class Documento(private val fContexto: Context) {
     private val cabeceraDao: CabecerasDao? = getInstance(fContexto)?.cabecerasDao()
     private val lineasDao: LineasDao? = getInstance(fContexto)?.lineasDao()
+    private val facturasDao: FacturasDao? = getInstance(fContexto)?.facturasDao()
+    private val lineasFrasDao: LineasFrasDao? = getInstance(fContexto)?.lineasFrasDao()
     private val ofertasDao: OfertasDao? = getInstance(fContexto)?.ofertasDao()
     private val ofVolRangosDao: OftVolRangosDao? = getInstance(fContexto)?.oftVolRangosDao()
     private val oftCantRangosDao: OftCantRangosDao? = getInstance(fContexto)?.oftCantRangosDao()
     private val ratingProvDao: RatingProvDao? = getInstance(fContexto)?.ratingProvDao()
     private val ratingArtDao: RatingArtDao? = getInstance(fContexto)?.ratingArtDao()
     private val dtosLineasDao: DtosLineasDao? = getInstance(fContexto)?.dtosLineasDao()
+    private val dtosLinFrasDao: DtosLinFrasDao? = getInstance(fContexto)?.dtosLinFrasDao()
     private val tmpHcoDao: TmpHcoDao? = getInstance(fContexto)?.tmpHcoDao()
     private val tarifasDao: TarifasDao? = getInstance(fContexto)?.tarifasDao()
     private val trfFormatosDao: TrfFormatosDao? = getInstance(fContexto)?.trfFormatosDao()
@@ -42,6 +46,7 @@ class Documento(private val fContexto: Context) {
 
     lateinit var lLineas: List<DatosLinVtas>
     lateinit var cabActualEnt: CabecerasEnt
+    lateinit var factActualEnt: FacturasEnt
 
     private val fDtosCascada: DtosCascada = DtosCascada(fContexto)
     var fClientes: ClientesClase = ClientesClase(fContexto)
@@ -99,8 +104,7 @@ class Documento(private val fContexto: Context) {
     var fDtoRatingImp: Double = 0.0
     var fLineaConDtCasc: Boolean = false
     var fLineaEsEnlace: Boolean = false
-    var fPrecioTarifa: Double =
-        0.0 // Nos servirán para saber si modificamos el precio de tarifa y, en este caso,
+    var fPrecioTarifa: Double = 0.0 // Nos servirán para saber si modificamos el precio de tarifa y, en este caso,
     var fDtoLinTarifa: Double = 0.0 // no aplicar ofertas por volumen.
 
     var fCajas: Double = 0.0
@@ -140,11 +144,13 @@ class Documento(private val fContexto: Context) {
     }
 
     fun abrirLineas() {
-        lLineas = lineasDao?.abrirLineas(fIdDoc) ?: emptyList<DatosLinVtas>().toMutableList()
+        lLineas = if (fTipoDoc == TIPODOC_FACTURA) lineasFrasDao?.abrirLineas(fIdDoc) ?: emptyList<DatosLinVtas>().toMutableList()
+        else lineasDao?.abrirLineas(fIdDoc) ?: emptyList<DatosLinVtas>().toMutableList()
     }
 
     fun borrarOftVolumen(recBases: Boolean) {
-        lineasDao?.borrarOftVolumen(fIdDoc)
+        if (fTipoDoc == TIPODOC_FACTURA) lineasFrasDao?.borrarOftVolumen(fIdDoc)
+        else lineasDao?.borrarOftVolumen(fIdDoc)
 
         if (recBases) recalcularBases()
     }
@@ -156,10 +162,10 @@ class Documento(private val fContexto: Context) {
         if (lLinSinCab.isNotEmpty()) {
             for (linea in lLinSinCab) {
                 val fLinea = linea.lineaId
-                val queArticulo = linea.articuloId
-                val queCajas = linea.cajas.toDouble()
-                val queCantidad = linea.cantidad.toDouble()
-                val queLote = linea.lote
+                //val queArticulo = linea.articuloId
+                //val queCajas = linea.cajas.toDouble()
+                //val queCantidad = linea.cantidad.toDouble()
+                //val queLote = linea.lote
 
                 lineasDao?.borrarLinea(fLinea)
 
@@ -167,20 +173,31 @@ class Documento(private val fContexto: Context) {
                 dtosLineasDao?.borrarLinea(fLinea)
 
                 // Actualizamos el stock del artículo
-                fControlarStock = fConfiguracion.controlarStock()
-                fUsarTrazabilidad = fConfiguracion.usarTrazabilidad()
-                fTipoDoc = linea.tipoDoc
-                if (fControlarStock && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN))
-                    fArticulos.actualizarStock(queArticulo, fEmpresa, -queCantidad, -queCajas, false)
+                //fControlarStock = fConfiguracion.controlarStock()
+                //fUsarTrazabilidad = fConfiguracion.usarTrazabilidad()
+                //fTipoDoc = linea.tipoDoc
+                //if (fControlarStock && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN))
+                //    fArticulos.actualizarStock(queArticulo, fEmpresa, -queCantidad, -queCajas, false)
 
                 // Actualizamos el stock del lote.
-                if (fUsarTrazabilidad && queLote != "" && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN))
-                    fLotes.actStockLote(queArticulo, -queCantidad, queLote, fEmpresa)
+                //if (fUsarTrazabilidad && queLote != "" && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN))
+                //    fLotes.actStockLote(queArticulo, -queCantidad, queLote, fEmpresa)
             }
-
-            // Borro el histórico, por si he estado indicando cantidades en modo catálogo.
-            tmpHcoDao?.vaciar()
         }
+
+        val lLinFrSinCab = lineasFrasDao?.getLineasHuerfanas() ?: emptyList<DatosLinVtas>().toMutableList()
+        if (lLinFrSinCab.isNotEmpty()) {
+            for (linea in lLinSinCab) {
+                val fLinea = linea.lineaId
+                lineasFrasDao?.borrarLinea(fLinea)
+
+                // Borramos las posibles líneas de descuentos en cascada
+                dtosLinFrasDao?.borrarLinea(fLinea)
+            }
+        }
+
+        // Borro el histórico, por si he estado indicando cantidades en modo catálogo.
+        tmpHcoDao?.vaciar()
     }
 
 
@@ -375,7 +392,7 @@ class Documento(private val fContexto: Context) {
             lineaEnt.cajasOrg = lineaOrg.cajas.replace(',', '.')
             lineaEnt.cantidadOrg = lineaOrg.cantidad.replace(',', '.')
             lineaEnt.piezasOrg = lineaOrg.piezas.replace(',', '.')
-            lineaEnt.modif_nueva = "F"
+            lineaEnt.modifNueva = "F"
 
             lineasDao?.insertar(lineaEnt)
 
@@ -385,7 +402,7 @@ class Documento(private val fContexto: Context) {
 
     private fun copiarDtosCascAAlbaran(viejaLinea: Int) {
 
-        val lDtos = dtosLineasDao?.getAllDtosLinea(viejaLinea) ?: emptyList<DtosLineasEnt>().toMutableList()
+        val lDtos = dtosLineasDao?.getAllDtosLinea(viejaLinea) ?: emptyList<DescuentosLinea>().toMutableList()
 
         for (dtoOrg in lDtos) {
             val dtoLineaEnt = DtosLineasEnt()
@@ -408,7 +425,7 @@ class Documento(private val fContexto: Context) {
         for (linea in lLineas) {
             val fLinea = linea.lineaId
 
-            if (linea.modif_nueva.equals("F", ignoreCase = true)) {
+            if (linea.modifNueva.equals("F", ignoreCase = true)) {
                 borrarLinea(linea, false)
 
             } else {
@@ -517,15 +534,58 @@ class Documento(private val fContexto: Context) {
             // fTotalAnterior nos servirá para las modificaciones (por ahora para recalcular el pendiente del cliente).
             // Limpiamos fBases1 antes de cargar.
             fBases.fLista.clear()
-            fBases.cargarDesdeDoc(fIdDoc)
+            fBases.cargarDesdeDoc(fIdDoc, fTipoDoc)
             fTotalAnterior = fBases.totalConImptos
         }
     }
 
+    fun cargarFactura(queIdDoc: Int, borrarOftVol: Boolean) {
+        factActualEnt = facturasDao?.cargarDoc(queIdDoc) ?: FacturasEnt()
+
+        if (factActualEnt.facturaId > 0) {
+            // Establezco el cliente del documento y las propiedades necesarias para cargar las líneas y el pie del documento.
+            fIdDoc = queIdDoc
+            setCliente(factActualEnt.clienteId)
+            fTipoDoc = TIPODOC_FACTURA
+            fAlmacen = factActualEnt.almacen
+            serie = factActualEnt.serie
+            numero = factActualEnt.numero
+            fEjercicio = factActualEnt.ejercicio
+            fEmpresa = factActualEnt.empresa
+            fFecha = factActualEnt.fecha
+            fHora = factActualEnt.hora
+            fObs1 = factActualEnt.observ1
+            fObs2 = factActualEnt.observ2
+            fIncidenciaDoc = factActualEnt.tipoIncidencia
+            fTextoIncidencia = factActualEnt.textoIncidencia
+            fPago = factActualEnt.fPago
+
+            fDtoPie1 = if (factActualEnt.dto == "") 0.0 else factActualEnt.dto.replace(',', '.').toDouble()
+            fDtoPie2 = if (factActualEnt.dto2 == "") 0.0 else factActualEnt.dto2.replace(',', '.').toDouble()
+            fDtoPie3 = if (factActualEnt.dto3 == "") 0.0 else factActualEnt.dto3.replace(',', '.').toDouble()
+            fDtoPie4 = if (factActualEnt.dto4 == "") 0.0 else factActualEnt.dto4.replace(',', '.').toDouble()
+
+            // Abrimos el cursor con las líneas del documento.
+            abrirLineas()
+            // Borramos las líneas de oferta por volumen
+            if (borrarOftVol) {
+                borrarOftVolumen(false)
+                refrescarLineas()
+            }
+
+            // Vemos si el documento es exento
+            setExento()
+            // Le digo al objeto fBases1 que se recalcule.
+            // fTotalAnterior nos servirá para las modificaciones (por ahora para recalcular el pendiente del cliente).
+            // Limpiamos fBases1 antes de cargar.
+            fBases.fLista.clear()
+            fBases.cargarDesdeDoc(fIdDoc, fTipoDoc)
+            fTotalAnterior = fBases.totalConImptos
+        }
+    }
 
     fun esContado(): Boolean {
-        val generaCobro =
-            pendienteDao?.esContado(fEmpresa, fAlmacen, serie, numero, fEjercicio) ?: "F"
+        val generaCobro = pendienteDao?.esContado(fEmpresa, fAlmacen, serie, numero, fEjercicio) ?: "F"
         return generaCobro == "T"
     }
 
@@ -592,6 +652,7 @@ class Documento(private val fContexto: Context) {
         }
     }
 
+
     fun setExento() {
         val fClteExento = !fClientes.fAplIva
         val queFlag = seriesDao?.getFlag(serie, fEjercicio.toInt()) ?: 0
@@ -630,9 +691,16 @@ class Documento(private val fContexto: Context) {
         fBases.fDecImpII = fConfiguracion.decimalesImpII()
     }
 
+
     private fun serieNumeroValidos(): Boolean {
-        val queNumero = cabeceraDao?.getSerieNum(fTipoDoc, fAlmacen, serie, numero, fEjercicio) ?:  0
-        return (queNumero == 0)
+        return if (fTipoDoc == TIPODOC_FACTURA) {
+            val queNumero = facturasDao?.getSerieNum(fAlmacen, serie, numero, fEjercicio) ?: 0
+            (queNumero == 0)
+
+        } else {
+            val queNumero = cabeceraDao?.getSerieNum(fTipoDoc, fAlmacen, serie, numero, fEjercicio) ?: 0
+            (queNumero == 0)
+        }
     }
 
     private fun actualizarNumero() {
@@ -683,6 +751,7 @@ class Documento(private val fContexto: Context) {
         fLineaEsEnlace = false
     }
 
+
     fun cargarLinea(fLinea: Int): Boolean {
         var fEncontrada = false
         val sPorcIva: String
@@ -732,7 +801,8 @@ class Documento(private val fContexto: Context) {
             fAlmacPedido = datosLinVta.almacenPedido
 
             // Vemos si la línea tiene descuentos en cascada.
-            val queLinea = dtosLineasDao?.getLinea(fLinea)?: 0
+            val queLinea = if (fTipoDoc == TIPODOC_FACTURA) dtosLinFrasDao?.getLinea(fLinea) ?: 0
+                            else dtosLineasDao?.getLinea(fLinea) ?: 0
             fLineaConDtCasc = (queLinea > 0)
 
             fLote = datosLinVta.lote
@@ -836,9 +906,9 @@ class Documento(private val fContexto: Context) {
     }
 
     fun insertarLinea() {
-        val lineaEnt = LineasEnt()
+        //val lineaEnt = LineasEnt()
+        val lineaEnt = DatosLinVtas()
 
-        //values.put("linea", siguienteLinea())
         lineaEnt.cabeceraId = fIdDoc
         lineaEnt.articuloId = fArticulo
         lineaEnt.codArticulo = fCodArt
@@ -862,7 +932,7 @@ class Documento(private val fContexto: Context) {
         lineaEnt.tasa2 = fTasa2.toString()
         lineaEnt.tipoIncId = fCodIncidencia
         lineaEnt.textoLinea = fTextoLinea
-        lineaEnt.modif_nueva = "T"
+        lineaEnt.modifNueva = "T"
         lineaEnt.precioTarifa = fPrecioTarifa.toString() // Nos servirán para saber si modificamos el precio de tarifa y, en este caso,
         lineaEnt.dtoTarifa = fDtoLinTarifa.toString()    // no aplicar oferta por volumen.
         lineaEnt.almacenPedido = fAlmacPedido
@@ -872,8 +942,8 @@ class Documento(private val fContexto: Context) {
         if (fArtSinCargo) queFlag = queFlag or FLAGLINEAVENTA_SIN_CARGO
         if (fPrecioRating) queFlag = queFlag or FLAGLINEAVENTA_PRECIO_RATING
         if (fHayCambPrecio) queFlag = queFlag or FLAGLINEAVENTA_CAMBIAR_PRECIO
-        if (fArtEnOferta && !fPrecioRating && !fHayCambPrecio) queFlag =
-            queFlag or FLAGLINEAVENTA_ARTICULO_EN_OFERTA
+        if (fArtEnOferta && !fPrecioRating && !fHayCambPrecio)
+            queFlag = queFlag or FLAGLINEAVENTA_ARTICULO_EN_OFERTA
         // Si el artículo está en oferta pero vamos a aplicar el precio por rating lo marcamos como posible oferta,
         // siempre que no hayamos cambiado el precio
         if (fArtEnOferta && fPrecioRating && !fHayCambPrecio)
@@ -889,7 +959,12 @@ class Documento(private val fContexto: Context) {
         lineaEnt.flag = queFlag
         lineaEnt.flag3 =  queFlag3
 
-        val fIdLinea = lineasDao?.insertar(lineaEnt)?.toInt() ?: -1
+        val fIdLinea = if (fTipoDoc == TIPODOC_FACTURA) {
+            lineasFrasDao?.insertar(datosLinVt2LinFra(lineaEnt))?.toInt() ?: -1
+        }
+        else {
+            lineasDao?.insertar(datosLinVt2LinVta(lineaEnt))?.toInt() ?: -1
+        }
 
         // Si la línea tiene descuentos en cascada lo que hacemos es reemplazar en la tabla "desctoslineas"
         // el campo linea, que estará a -1, por el id de la línea que acabamos de insertar.
@@ -910,6 +985,87 @@ class Documento(private val fContexto: Context) {
         abrirLineas()
     }
 
+    private fun datosLinVt2LinVta(lineaEnt: DatosLinVtas): LineasEnt {
+        val queLinea = LineasEnt()
+        queLinea.cabeceraId = lineaEnt.cabeceraId
+        queLinea.articuloId = lineaEnt.articuloId
+        queLinea.codArticulo = lineaEnt.codArticulo
+        queLinea.descripcion = lineaEnt.descripcion
+        queLinea.tarifaId = lineaEnt.tarifaId
+        queLinea.precio = lineaEnt.precio
+        queLinea.precioII = lineaEnt.precioII
+        queLinea.codigoIva = lineaEnt.codigoIva
+        queLinea.cajas = lineaEnt.cajas
+        queLinea.cajasOrg = lineaEnt.cajasOrg
+        queLinea.cantidad = lineaEnt.cantidad
+        queLinea.cantidadOrg = lineaEnt.cantidadOrg
+        queLinea.piezas = lineaEnt.piezas
+        queLinea.piezasOrg = lineaEnt.piezasOrg
+        queLinea.formatoId = lineaEnt.formatoId
+        queLinea.importe = lineaEnt.importe
+        queLinea.importeII = lineaEnt.importeII
+        queLinea.dto = lineaEnt.dto
+        queLinea.dtoImpte = lineaEnt.dtoImpte
+        queLinea.dtoImpteII = lineaEnt.dtoImpteII
+        queLinea.lote = lineaEnt.lote
+        queLinea.flag = lineaEnt.flag
+        queLinea.flag3 = lineaEnt.flag3
+        queLinea.flag5 = lineaEnt.flag5
+        queLinea.tasa1 = lineaEnt.tasa1
+        queLinea.tasa2 = lineaEnt.tasa2
+        queLinea.tipoIncId = lineaEnt.tipoIncId
+        queLinea.textoLinea = lineaEnt.textoLinea
+        queLinea.modifNueva = lineaEnt.modifNueva
+        queLinea.precioTarifa = lineaEnt.precioTarifa
+        queLinea.dtoTarifa = lineaEnt.dtoTarifa
+        queLinea.almacenPedido = lineaEnt.almacenPedido
+        queLinea.ofertaId = lineaEnt.ofertaId
+        queLinea.dtoOftVol = lineaEnt.dtoOftVol
+        queLinea.esEnlace = lineaEnt.esEnlace
+
+        return queLinea
+    }
+
+    private fun datosLinVt2LinFra(lineaEnt: DatosLinVtas): LineasFrasEnt {
+        val queLinea = LineasFrasEnt()
+        queLinea.facturaId = lineaEnt.cabeceraId
+        queLinea.articuloId = lineaEnt.articuloId
+        queLinea.codArticulo = lineaEnt.codArticulo
+        queLinea.descripcion = lineaEnt.descripcion
+        queLinea.tarifaId = lineaEnt.tarifaId
+        queLinea.precio = lineaEnt.precio
+        queLinea.precioII = lineaEnt.precioII
+        queLinea.codigoIva = lineaEnt.codigoIva
+        queLinea.cajas = lineaEnt.cajas
+        queLinea.cajasOrg = lineaEnt.cajasOrg
+        queLinea.cantidad = lineaEnt.cantidad
+        queLinea.cantidadOrg = lineaEnt.cantidadOrg
+        queLinea.piezas = lineaEnt.piezas
+        queLinea.piezasOrg = lineaEnt.piezasOrg
+        queLinea.formatoId = lineaEnt.formatoId
+        queLinea.importe = lineaEnt.importe
+        queLinea.importeII = lineaEnt.importeII
+        queLinea.dto = lineaEnt.dto
+        queLinea.dtoImpte = lineaEnt.dtoImpte
+        queLinea.dtoImpteII = lineaEnt.dtoImpteII
+        queLinea.lote = lineaEnt.lote
+        queLinea.flag = lineaEnt.flag
+        queLinea.flag3 = lineaEnt.flag3
+        queLinea.flag5 = lineaEnt.flag5
+        queLinea.tasa1 = lineaEnt.tasa1
+        queLinea.tasa2 = lineaEnt.tasa2
+        queLinea.tipoIncId = lineaEnt.tipoIncId
+        queLinea.textoLinea = lineaEnt.textoLinea
+        queLinea.modifNueva = lineaEnt.modifNueva
+        queLinea.precioTarifa = lineaEnt.precioTarifa
+        queLinea.dtoTarifa = lineaEnt.dtoTarifa
+        queLinea.almacenPedido = lineaEnt.almacenPedido
+        queLinea.ofertaId = lineaEnt.ofertaId
+        queLinea.dtoOftVol = lineaEnt.dtoOftVol
+        queLinea.esEnlace = lineaEnt.esEnlace
+
+        return queLinea
+    }
 
     // Vemos si el artículo tiene texto habitual
     fun textoArtHabitual(): String {
@@ -925,7 +1081,8 @@ class Documento(private val fContexto: Context) {
     }
 
     private fun asignarLineaADtos(fIdLinea: Int) {
-        dtosLineasDao?.asignarLinea(fIdLinea)
+        if (fTipoDoc == TIPODOC_FACTURA) dtosLinFrasDao?.asignarLinea(fIdLinea)
+        else dtosLineasDao?.asignarLinea(fIdLinea)
     }
 
 
@@ -933,16 +1090,23 @@ class Documento(private val fContexto: Context) {
         dtosLineasDao?.insertar(dtoLineaEnt)
     }
 
+    fun insertarDtoCascFras(dtoLineaEnt: DtosLinFrasEnt) {
+        dtosLinFrasDao?.insertar(dtoLineaEnt)
+    }
+
+
     fun editarDtoCasc(dtoId: Int, dtoLineaEnt: DtosLineasEnt) {
         dtosLineasDao?.actualizar(dtoId, dtoLineaEnt.descuento, dtoLineaEnt.importe, dtoLineaEnt.cantidad1, dtoLineaEnt.cantidad2)
     }
 
     fun borrarDtosCasc(fIdLinea: Long) {
-        dtosLineasDao?.borrarLinea(fIdLinea.toInt())
+        if (fTipoDoc == TIPODOC_FACTURA) dtosLinFrasDao?.borrarLinea(fIdLinea.toInt())
+        else dtosLineasDao?.borrarLinea(fIdLinea.toInt())
     }
 
     fun editarLinea(fLinea: Int) {
-        val datosLinVta = lineasDao?.getLinea(fLinea) ?: DatosLinVtas()
+        val datosLinVta = if (fTipoDoc == TIPODOC_FACTURA) lineasFrasDao?.getLinea(fLinea) ?: DatosLinVtas()
+            else lineasDao?.getLinea(fLinea) ?: DatosLinVtas()
 
         val fOldImpte = datosLinVta.importe.toDouble()
         var fOldImpteII: Double
@@ -956,7 +1120,7 @@ class Documento(private val fContexto: Context) {
             }
         }
 
-        val lineaEnt = LineasEnt()
+        val lineaEnt = DatosLinVtas()
         lineaEnt.lineaId = fLinea
         lineaEnt.cabeceraId = datosLinVta.cabeceraId
         lineaEnt.articuloId = datosLinVta.articuloId
@@ -990,7 +1154,7 @@ class Documento(private val fContexto: Context) {
         lineaEnt.textoLinea = fTextoLinea
         lineaEnt.flag5 = fFlag5
         lineaEnt.almacenPedido = fAlmacPedido
-        lineaEnt.modif_nueva = "T"
+        lineaEnt.modifNueva = "T"
 
         var queFlag = 0
         // Si la línea no tiene cargo guardamos el flag y el código de incidencia.
@@ -1019,7 +1183,8 @@ class Documento(private val fContexto: Context) {
         lineaEnt.flag = queFlag
         lineaEnt.flag3 = queFlag3
 
-        lineasDao?.actualizar(lineaEnt)
+        if (fTipoDoc == TIPODOC_FACTURA) lineasFrasDao?.actualizar(datosLinVt2LinFra(lineaEnt))
+        else lineasDao?.actualizar(datosLinVt2LinVta(lineaEnt))
 
         // Actualizamos el stock del artículo
         if (fControlarStock && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN))
@@ -1229,7 +1394,7 @@ class Documento(private val fContexto: Context) {
 
     private fun insertarLineaOftVol(dDto: Double, oftVol: ListOftVol) {
         val fFtoDecImpBase = fConfiguracion.formatoDecImptesBase()
-        val lineaEnt = LineasEnt()
+        val lineaEnt = DatosLinVtas()
         lineaEnt.cabeceraId = fIdDoc
         lineaEnt.articuloId = oftVol.articuloDesct
         lineaEnt.tarifaId = oftVol.tarifa.toShort()
@@ -1272,7 +1437,8 @@ class Documento(private val fContexto: Context) {
         lineaEnt.ofertaId = oftVol.idOferta
         lineaEnt.dtoOftVol = dDto.toString()
 
-        lineasDao?.insertar(lineaEnt)
+        if (fTipoDoc == TIPODOC_FACTURA) lineasFrasDao?.insertar(datosLinVt2LinFra(lineaEnt))
+        else lineasDao?.insertar(datosLinVt2LinVta(lineaEnt))
 
         // Recalculamos las bases
         if (fBases.fIvaIncluido) fBases.calcularBase(fCodigoIva, fImpteII)
@@ -1344,7 +1510,6 @@ class Documento(private val fContexto: Context) {
                 fTarifaDoc = fClientes.fTarifa
         }
         // La tarifa de descuento será la que tenga el cliente en su ficha y, si no, la que esté en configuración.
-        //if (!fClientes.getTarifaDto().equals("0"))
         fTarifaDto = if (fClientes.fTrfDto > 0) fClientes.fTrfDto
         else fConfiguracion.tarifaDto()
         // Por ahora la tarifa de la línea será la del documento, a no ser que cambiemos luego.
@@ -1454,8 +1619,7 @@ class Documento(private val fContexto: Context) {
                 fPrecioOfta = fPrecio
                 fDtoOfta = fDtoLin
             }
-            fPrecio1 =
-                if (fDtoRatingImp != 0.0) fPrRating - fDtoRatingImp else fPrRating - fPrRating * fDtoRating / 100
+            fPrecio1 = if (fDtoRatingImp != 0.0) fPrRating - fDtoRatingImp else fPrRating - fPrRating * fDtoRating / 100
             fPrecio2 = fPrecioOfta - fPrecioOfta * fDtoOfta / 100
             if (fPrecio1 != 0.0) {
                 if (fPrecio2 != 0.0) {
@@ -1463,8 +1627,7 @@ class Documento(private val fContexto: Context) {
                     if (fPrecio1 < fPrecio2) {
                         fPrecioRating = true
                         fPrecio = fPrRating
-                        fArtEnOferta =
-                            false // Nos aseguramos de quitar el flag si no vamos a aplicar la oferta
+                        fArtEnOferta = false // Nos aseguramos de quitar el flag si no vamos a aplicar la oferta
                         if (fDtoRatingImp == 0.0) fDtoLin = fDtoRating
                     } else {
                         fPrecio = fPrecioOfta

@@ -253,7 +253,7 @@ class DatosLinDocDif {
 class DatosLinVtas {
     var lineaId: Int = 0
     var cabeceraId: Int = 0
-    var tipoDoc: Short = 0
+    //var tipoDoc: Short = 0
     var articuloId: Int = 0
     var codArticulo: String = ""
     var descripcion: String = ""
@@ -282,7 +282,7 @@ class DatosLinVtas {
     var descrFto: String? = ""
     var tipoIncId: Int = 0
     var textoLinea: String = ""
-    var modif_nueva: String = ""
+    var modifNueva: String = ""
     var almacenPedido: String = ""
     var ofertaId: Int = 0
     var dtoOftVol: String = ""
@@ -636,5 +636,18 @@ class ListaPreciosEsp {
     var prTrfFto: String? = null
     var dtoTrfFto: String? = null
 }
+
+
+class DescuentosLinea {
+    var descuentoId: Int = 0
+    var lineaId: Int = 0
+    var orden: Short = 0
+    var descuento: String = ""
+    var importe: String = ""
+    var cantidad1: String = ""
+    var cantidad2: String = ""
+    var desdeRating: String = ""
+}
+
 
 var fArtSeleccCat = 0

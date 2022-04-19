@@ -20,5 +20,5 @@ data class HistMesEnt (
     var cajas: String = "",
     var cajasAnt: String = "",
     var piezas: String = "",
-    var piezasAnt: String = "",
+    var piezasAnt: String = ""
 )

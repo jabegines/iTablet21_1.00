@@ -22,6 +22,5 @@ data class DireccCltesEnt(
     var direccionDoc: String = "",
     var direccionMerc: String = "",
     var estado: String = "",
-    var numExport: Int = 0,
-    var matricula: String = ""
+    var numExport: Int = 0
 )

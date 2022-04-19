@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Gradle: androidx.media2:media2:1.0.0-alpha02@aar">
     <ANNOTATIONS>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/a01f97660b4a418a15884fac6a1c08d8/transformed/jetified-media2-1.0.0-alpha02/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/e0e61e414f372b578a27873cb4eec80b/transformed/jetified-media2-1.0.0-alpha02/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/9bc9218d82545e405cef9b25042c1fe2/transformed/jetified-media2-1.0.0-alpha02/res" />
@@ -10,9 +10,10 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/fec4887dbd06dc34fba17cef34bb25ce/transformed/jetified-media2-1.0.0-alpha02/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/7751dfd7b493ac87bc6b05cf055837f8/transformed/jetified-media2-1.0.0-alpha02/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/16a79e9c122a7eb722ab5e6199209a6d/transformed/jetified-media2-1.0.0-alpha02/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/a01f97660b4a418a15884fac6a1c08d8/transformed/jetified-media2-1.0.0-alpha02/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/a01f97660b4a418a15884fac6a1c08d8/transformed/jetified-media2-1.0.0-alpha02/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/a01f97660b4a418a15884fac6a1c08d8/transformed/jetified-media2-1.0.0-alpha02/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/e0e61e414f372b578a27873cb4eec80b/transformed/jetified-media2-1.0.0-alpha02/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/e0e61e414f372b578a27873cb4eec80b/transformed/jetified-media2-1.0.0-alpha02/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/e0e61e414f372b578a27873cb4eec80b/transformed/jetified-media2-1.0.0-alpha02/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

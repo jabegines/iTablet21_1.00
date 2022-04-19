@@ -28,6 +28,7 @@ import es.albainformatica.albamobileandroid.dao.OftCantRangosDao
 import es.albainformatica.albamobileandroid.dao.TiposIncDao
 import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.getInstance
 import es.albainformatica.albamobileandroid.entity.CnfTarifasEnt
+import es.albainformatica.albamobileandroid.entity.DtosLinFrasEnt
 import es.albainformatica.albamobileandroid.entity.DtosLineasEnt
 import es.albainformatica.albamobileandroid.entity.TiposIncEnt
 import es.albainformatica.albamobileandroid.historicos.VerHcoArtCliente
@@ -73,7 +74,6 @@ class VentasDatosLinea: Activity() {
     private var fVendiendoEnlace: Boolean = false
     private var fCantParaEnlace: Double = 0.0
 
-    //private Boolean fPrimeraVez;
     private var fDecPrBase = 0
     private var fFtoDecPrBase: String = ""
     private var fFtoDecPrII: String = ""
@@ -129,7 +129,7 @@ class VentasDatosLinea: Activity() {
         fAlmacenes = AlmacenesClase(this)
         val i = intent
         fEstado = i.getByteExtra("estado", est_Vl_Nueva)
-        //fPrimeraVez = i.getBooleanExtra("primera_vez", false);
+
         fVendiendoEnlace = false
         fCantParaEnlace = 0.0
         fHeElegidoTarifa = false
@@ -641,9 +641,9 @@ class VentasDatosLinea: Activity() {
         if (fPedirPiezas) {
             edtPiezas.isEnabled = fArticulos.usarPiezas()
         } else edtPiezas.isEnabled = false
-        if (edtPiezas.isEnabled) edtPiezas.keyListener =
-            DigitsKeyListener.getInstance(true, true)
+        if (edtPiezas.isEnabled) edtPiezas.keyListener = DigitsKeyListener.getInstance(true, true)
     }
+
 
     private fun activarCajas() {
         // Si el artículo tiene unidades por caja, pedimos las cajas. En caso contrario, no.
@@ -651,15 +651,16 @@ class VentasDatosLinea: Activity() {
         if (fPedirCajas) {
             if (fArticulos.fUCaja != 0.0) {
                 edtCajas.isEnabled = true
-                if (fEditAlmEnabled) imgBuscaArt.nextFocusDownId =
-                    edtAlmacen.id else imgBuscaArt.nextFocusDownId = edtCajas.id
-                if (edtPiezas.isEnabled) edtCajas.nextFocusDownId =
-                    edtPiezas.id else edtCajas.nextFocusDownId = edtCantidad.id
+                if (fEditAlmEnabled) imgBuscaArt.nextFocusDownId = edtAlmacen.id
+                else imgBuscaArt.nextFocusDownId = edtCajas.id
+                if (edtPiezas.isEnabled) edtCajas.nextFocusDownId = edtPiezas.id
+                else edtCajas.nextFocusDownId = edtCantidad.id
             } else {
                 edtCajas.isEnabled = false
-                if (fEditAlmEnabled) imgBuscaArt.nextFocusDownId = edtAlmacen.id else {
-                    if (edtPiezas.isEnabled) imgBuscaArt.nextFocusDownId =
-                        edtPiezas.id else imgBuscaArt.nextFocusDownId = edtCantidad.id
+                if (fEditAlmEnabled) imgBuscaArt.nextFocusDownId = edtAlmacen.id
+                else {
+                    if (edtPiezas.isEnabled) imgBuscaArt.nextFocusDownId = edtPiezas.id
+                    else imgBuscaArt.nextFocusDownId = edtCantidad.id
                 }
             }
         } else {
@@ -667,8 +668,8 @@ class VentasDatosLinea: Activity() {
             if (fEditAlmEnabled) {
                 imgBuscaArt.nextFocusDownId = edtAlmacen.id
             } else {
-                if (edtPiezas.isEnabled) imgBuscaArt.nextFocusDownId =
-                    edtPiezas.id else imgBuscaArt.nextFocusDownId = edtCantidad.id
+                if (edtPiezas.isEnabled) imgBuscaArt.nextFocusDownId = edtPiezas.id
+                else imgBuscaArt.nextFocusDownId = edtCantidad.id
             }
         }
         if (edtCajas.isEnabled) edtCajas.keyListener = DigitsKeyListener.getInstance(true, true)
@@ -739,16 +740,11 @@ class VentasDatosLinea: Activity() {
 
                 // Mostramos el precio neto.
                 if (fIvaIncluido && fAplicarIva) {
-                    var fDtoRatingImpII =
-                        fDocumento.fDtoRatingImp + fDocumento.fDtoRatingImp * fDocumento.fPorcIva / 100
+                    var fDtoRatingImpII = fDocumento.fDtoRatingImp + fDocumento.fDtoRatingImp * fDocumento.fPorcIva / 100
                     fDtoRatingImpII = redondear(fDtoRatingImpII, 2)
-                    tvPrNeto.text =
-                        String.format(fFtoDecPrII, fDocumento.fPrecioII - fDtoRatingImpII)
+                    tvPrNeto.text = String.format(fFtoDecPrII, fDocumento.fPrecioII - fDtoRatingImpII)
                 } else {
-                    tvPrNeto.text = String.format(
-                        fFtoDecPrBase,
-                        fDocumento.fPrecio - fDocumento.fDtoRatingImp
-                    )
+                    tvPrNeto.text = String.format(fFtoDecPrBase, fDocumento.fPrecio - fDocumento.fDtoRatingImp)
                 }
             }
         }
@@ -761,17 +757,33 @@ class VentasDatosLinea: Activity() {
     }
 
     private fun anyadirDtoCascada() {
-        val dtoLineaEnt = DtosLineasEnt()
-        dtoLineaEnt.lineaId = -1
-        dtoLineaEnt.orden = 1
-        dtoLineaEnt.descuento = "0.0"
-        dtoLineaEnt.importe = fDocumento.fDtoRatingImp.toString()
-        dtoLineaEnt.cantidad1 = "0.0"
-        dtoLineaEnt.cantidad2 =  "0.0"
-        dtoLineaEnt.desdeRating = "T"
+        if (fDocumento.fTipoDoc == TIPODOC_FACTURA) {
+            val dtoLineaEnt = DtosLinFrasEnt()
+            dtoLineaEnt.lineaId = -1
+            dtoLineaEnt.orden = 1
+            dtoLineaEnt.descuento = "0.0"
+            dtoLineaEnt.importe = fDocumento.fDtoRatingImp.toString()
+            dtoLineaEnt.cantidad1 = "0.0"
+            dtoLineaEnt.cantidad2 = "0.0"
+            dtoLineaEnt.desdeRating = "T"
 
-        fDocumento.insertarDtoCasc(dtoLineaEnt)
+            fDocumento.insertarDtoCascFras(dtoLineaEnt)
 
+        } else {
+
+            val dtoLineaEnt = DtosLineasEnt()
+            dtoLineaEnt.lineaId = -1
+            dtoLineaEnt.orden = 1
+            dtoLineaEnt.descuento = "0.0"
+            dtoLineaEnt.importe = fDocumento.fDtoRatingImp.toString()
+            dtoLineaEnt.cantidad1 = "0.0"
+            dtoLineaEnt.cantidad2 = "0.0"
+            dtoLineaEnt.desdeRating = "T"
+
+            fDocumento.insertarDtoCasc(dtoLineaEnt)
+        }
+
+        fDtosCascada.fTipoDoc = fDocumento.fTipoDoc
         fDtosCascada.abrir(-1)
         // Configuramos el objeto de los dtos. en cascada
         fDtosCascada.fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
@@ -841,38 +853,13 @@ class VentasDatosLinea: Activity() {
         val queTarifa = "Tarifa: " + fDocumento.fTarifaLin
         tvTarifa.text = queTarifa
         tvFormato.text = fDocumento.getDescrFormato(fDocumento.fFormatoLin.toInt())
-        edtCajas.setText(
-            String.format(
-                fConfiguracion.formatoDecCantidad(),
-                fDocumento.fCajas
-            )
-        )
-        edtPiezas.setText(
-            String.format(
-                fConfiguracion.formatoDecCantidad(),
-                fDocumento.fPiezas
-            )
-        )
-        edtCantidad.setText(
-            String.format(
-                fConfiguracion.formatoDecCantidad(),
-                fDocumento.fCantidad
-            )
-        )
+        edtCajas.setText(String.format(fConfiguracion.formatoDecCantidad(), fDocumento.fCajas))
+        edtPiezas.setText(String.format(fConfiguracion.formatoDecCantidad(), fDocumento.fPiezas))
+        edtCantidad.setText(String.format(fConfiguracion.formatoDecCantidad(), fDocumento.fCantidad))
         if (fIvaIncluido && fAplicarIva) {
-            edtPrecio.setText(
-                String.format(
-                    fConfiguracion.formatoDecPrecioIva(),
-                    fDocumento.fPrecioII
-                )
-            )
+            edtPrecio.setText(String.format(fConfiguracion.formatoDecPrecioIva(), fDocumento.fPrecioII))
         } else {
-            edtPrecio.setText(
-                String.format(
-                    fConfiguracion.formatoDecPrecioBase(),
-                    fDocumento.fPrecio
-                )
-            )
+            edtPrecio.setText(String.format(fConfiguracion.formatoDecPrecioBase(), fDocumento.fPrecio))
         }
         edtDto.setText(String.format(Locale.getDefault(), "%.2f", fDocumento.fDtoLin))
         edtLote.setText(fDocumento.fLote)
@@ -900,12 +887,7 @@ class VentasDatosLinea: Activity() {
             if (fVendiendoEnlace) {
                 val queCodEnlazado = fCodArtEnlazado
                 edtCodArt.setText(queCodEnlazado)
-                edtCantidad.setText(
-                    String.format(
-                        fConfiguracion.formatoDecCantidad(),
-                        fCantParaEnlace
-                    )
-                )
+                edtCantidad.setText(String.format(fConfiguracion.formatoDecCantidad(), fCantParaEnlace))
             }
         } else if (fEstado == est_Vl_Editar) {
             fDocumento.cargarLinea(fLinea)
@@ -941,20 +923,19 @@ class VentasDatosLinea: Activity() {
         if (puedoSalvar()) {
             if (edtCajas.isEnabled) {
                 val sCajas = edtCajas.text.toString().replace(',', '.')
-                if (sCajas != "" && sCajas != "." && sCajas != "-") fDocumento.fCajas =
-                    sCajas.toDouble() else fDocumento.fCajas = 0.0
+                if (sCajas != "" && sCajas != "." && sCajas != "-") fDocumento.fCajas = sCajas.toDouble()
+                else fDocumento.fCajas = 0.0
             }
             if (edtPiezas.isEnabled) {
                 val sPiezas = edtPiezas.text.toString().replace(',', '.')
                 if (sPiezas != "") fDocumento.fPiezas = sPiezas.toDouble()
             }
             val sCantidad = edtCantidad.text.toString().replace(',', '.')
-            if (sCantidad == "" || sCantidad == "." || sCantidad == "-") fDocumento.fCantidad =
-                0.0 else fDocumento.fCantidad = sCantidad.toDouble()
+            if (sCantidad == "" || sCantidad == "." || sCantidad == "-") fDocumento.fCantidad = 0.0
+            else fDocumento.fCantidad = sCantidad.toDouble()
             // Tomamos aquí la cantidad por si el artículo tuviera otro enlazado.
             if (!fVendiendoEnlace) {
-                fCantParaEnlace =
-                    if (fConfiguracion.igualarCantArtEnlace()) fDocumento.fCantidad else 1.0
+                fCantParaEnlace = if (fConfiguracion.igualarCantArtEnlace()) fDocumento.fCantidad else 1.0
             }
 
             // Establecemos el precio de la línea.
@@ -965,23 +946,22 @@ class VentasDatosLinea: Activity() {
             // Por eso mantenemos el porcentaje de descuento que hemos calculado en los dtos. en cascada.
             if (!fDocumento.fLineaConDtCasc) {
                 val sDto = edtDto.text.toString().replace(',', '.')
-                if (sDto == "") fDocumento.fDtoLin = 0.0 else fDocumento.fDtoLin =
-                    sDto.toDouble()
+                if (sDto == "") fDocumento.fDtoLin = 0.0
+                else fDocumento.fDtoLin = sDto.toDouble()
             } else {
                 // Puede ser que estemos modificando la línea y cambiemos el precio. Si la línea tenía descuentos en cascada
                 // hay que recalcular el descuento equivalente, puesto que al cambiar el precio el dto. equivalente ya no es el mismo.
                 // Lo mismo nos puede pasar en nueva línea, porque podríamos cambiar el precio después de tener calculados los descuentos
                 // en cascada, p.ej. cuando tenemos un descuento por importe desde rating.
-                if (fEstado == est_Vl_Editar) fDtosCascada.abrir(fLinea) else fDtosCascada.abrir(
-                    -1
-                )
+                fDtosCascada.fTipoDoc = fDocumento.fTipoDoc
+                if (fEstado == est_Vl_Editar) fDtosCascada.abrir(fLinea)
+                else fDtosCascada.abrir(-1)
                 // Configuramos el objeto de los dtos. en cascada
                 fDtosCascada.fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
                 fDtosCascada.fAplicarIva = fDocumento.fClientes.fAplIva
                 fDtosCascada.fPorcIva = fDocumento.fPorcIva
                 fDtosCascada.fDecPrBase = fConfiguracion.decimalesPrecioBase()
-                fDocumento.fDtoLin = fDtosCascada.calcularDtoEquiv(fDocumento.fPrecio, fDecPrBase)
-                        .toDouble()
+                fDocumento.fDtoLin = fDtosCascada.calcularDtoEquiv(fDocumento.fPrecio, fDecPrBase).toDouble()
             }
             var continuar: Boolean
             if (fIvaIncluido && fAplicarIva) {

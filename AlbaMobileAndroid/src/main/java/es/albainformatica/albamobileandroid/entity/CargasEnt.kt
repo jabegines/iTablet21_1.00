@@ -15,6 +15,5 @@ data class CargasEnt (
     var hora: String = "",
     var esFinDeDia: String = "",
     var estado: String = "",
-    var numExport: Int = 0,
-    var matricula: String = ""
+    var numExport: Int = 0
 )

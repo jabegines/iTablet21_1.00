@@ -8,7 +8,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Looper
 import android.os.SystemClock
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
@@ -31,7 +31,6 @@ import kotlinx.android.synthetic.main.ver_documentos.*
 
 class VerDocumentosActivity: Activity() {
     private lateinit var fDocumento: Documento
-    private lateinit var adapterLineas: SimpleCursorAdapter
     private lateinit var fConfiguracion: Configuracion
 
     private var fIdDocumento = 0
@@ -305,6 +304,7 @@ class VerDocumentosActivity: Activity() {
                 val i = Intent(this, VentasLineas::class.java)
                 i.putExtra("nuevo", false)
                 i.putExtra("iddoc", fIdDocumento)
+                intent.putExtra("tipodoc", fTipoDoc)
                 startActivityForResult(i, fRequestVenta)
             } else MsjAlerta(this).alerta(resources.getString(R.string.msj_Modificar))
         } else MsjAlerta(this).alerta(resources.getString(R.string.msj_NoRegSelecc))
@@ -367,6 +367,7 @@ class VerDocumentosActivity: Activity() {
             i.putExtra("nuevo", false)
             i.putExtra("solover", true)
             i.putExtra("iddoc", fIdDocumento)
+            intent.putExtra("tipodoc", fTipoDoc)
             startActivity(i)
         } else MsjAlerta(this).alerta(resources.getString(R.string.msj_NoRegSelecc))
     }

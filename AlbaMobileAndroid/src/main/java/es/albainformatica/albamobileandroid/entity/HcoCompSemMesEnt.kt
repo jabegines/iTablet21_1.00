@@ -13,5 +13,5 @@ data class HcoCompSemMesEnt (
     var fecha: String = "",
     var clienteId: Int = 0,
     var articuloId: Int = 0,
-    var cantidad: String = "",
+    var cantidad: String = ""
 )

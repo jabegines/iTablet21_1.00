@@ -287,6 +287,7 @@ class DocsReparto: AppCompatActivity() {
             i.putExtra("nuevo", false)
             i.putExtra("solover", true)
             i.putExtra("iddoc", fIdDocumento)
+            i.putExtra("tipodoc", fTipoDoc)
             startActivity(i)
         } else MsjAlerta(this).alerta(resources.getString(R.string.msj_NoRegSelecc))
     }

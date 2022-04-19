@@ -3,6 +3,7 @@ package es.albainformatica.albamobileandroid.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import es.albainformatica.albamobileandroid.DescuentosLinea
 import es.albainformatica.albamobileandroid.entity.DtosLineasEnt
 
 
@@ -10,7 +11,7 @@ import es.albainformatica.albamobileandroid.entity.DtosLineasEnt
 interface DtosLineasDao {
 
     @Query("SELECT * FROM DtosLineas WHERE lineaId = :queLinea")
-    fun getAllDtosLinea(queLinea: Int): List<DtosLineasEnt>
+    fun getAllDtosLinea(queLinea: Int): List<DescuentosLinea>
 
 
     @Query("SELECT lineaId FROM DtosLineas WHERE lineaId = :queLinea")

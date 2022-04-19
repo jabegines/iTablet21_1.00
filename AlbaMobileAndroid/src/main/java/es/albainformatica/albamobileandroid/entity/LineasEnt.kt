@@ -38,7 +38,7 @@ data class LineasEnt (
     var tasa2: String = "",
     var tipoIncId: Int = 0,
     var textoLinea: String = "",
-    var modif_nueva: String = "",
+    var modifNueva: String = "",
     var precioTarifa: String = "",
     var dtoTarifa: String = "",
     var almacenPedido: String = "",

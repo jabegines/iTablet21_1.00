@@ -20,5 +20,5 @@ data class RatingArtEnt (
     var formatoId: Short = 0,
     var precio: String = "",
     var dto: String = "",
-    var flag: Int = 0,
+    var flag: Int = 0
 )

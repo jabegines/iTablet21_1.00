@@ -7,12 +7,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.Comunicador
+import es.albainformatica.albamobileandroid.DescuentosLinea
 import es.albainformatica.albamobileandroid.R
 import es.albainformatica.albamobileandroid.entity.DtosLineasEnt
 
 
-class DtosCascRvAdapter(var desctos: List<DtosLineasEnt>, val context: Context,
-                          private var listener: OnItemClickListener): RecyclerView.Adapter<DtosCascRvAdapter.ViewHolder>() {
+class DtosCascRvAdapter(var desctos: List<DescuentosLinea>, val context: Context,
+                        private var listener: OnItemClickListener): RecyclerView.Adapter<DtosCascRvAdapter.ViewHolder>() {
 
     private val fDecPrBase = Comunicador.fConfiguracion.decimalesImpBase()
 
@@ -45,7 +46,7 @@ class DtosCascRvAdapter(var desctos: List<DtosLineasEnt>, val context: Context,
     }
 
     interface OnItemClickListener {
-        fun onClick(view: View, data: DtosLineasEnt)
+        fun onClick(view: View, data: DescuentosLinea)
     }
 
 
@@ -63,7 +64,7 @@ class DtosCascRvAdapter(var desctos: List<DtosLineasEnt>, val context: Context,
         private val tvDto = itemView.findViewById(R.id.ly_vl_dto) as TextView
         private val tvTasa2 = itemView.findViewById(R.id.ly_vl_tasa2) as TextView
 
-        fun bind(dto: DtosLineasEnt, fDecPrBase: Int) {
+        fun bind(dto: DescuentosLinea, fDecPrBase: Int) {
 
             //tvDescr.text = linea.descripcion
             //tvImporte.text = String.format("%." + fDecPrBase + "f", linea.importe.toDouble())

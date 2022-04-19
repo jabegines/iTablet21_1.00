@@ -111,7 +111,7 @@ class EditarDtosCascada: Activity(), OnFocusChangeListener {
 
     private fun prepararRecyclerView() {
         fAdapter = DtosCascRvAdapter(getDtosCascada(), this, object: DtosCascRvAdapter.OnItemClickListener {
-            override fun onClick(view: View, data: DtosLineasEnt) {
+            override fun onClick(view: View, data: DescuentosLinea) {
                 fIdDto = data.descuentoId
             }
         })
@@ -119,7 +119,7 @@ class EditarDtosCascada: Activity(), OnFocusChangeListener {
         fRecyclerView.adapter = fAdapter
     }
 
-    private fun getDtosCascada(): List<DtosLineasEnt> {
+    private fun getDtosCascada(): List<DescuentosLinea> {
         return fDtosCascada.lDescuentos
     }
 
@@ -213,7 +213,7 @@ class EditarDtosCascada: Activity(), OnFocusChangeListener {
     }
 
 
-    private fun llenarControles(dto: DtosLineasEnt) {
+    private fun llenarControles(dto: DescuentosLinea) {
         when {
             dto.descuento.toDouble() != 0.0 -> {
                 fPorcDto.setText(String.format(Locale.getDefault(), "%.2f", dto.descuento.toDouble()))

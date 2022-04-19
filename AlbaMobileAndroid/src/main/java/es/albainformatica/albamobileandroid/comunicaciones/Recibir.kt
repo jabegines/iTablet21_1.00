@@ -662,7 +662,8 @@ class Recibir : Activity() {
             for (file in xmlFiles) {
                 try {
                     val fin = FileInputStream(file)
-                    val ret = convertStreamToString(fin)
+                    //val ret = convertStreamToString(fin)      // Esta línea daba error
+                    val ret = fin.bufferedReader().use { it.readText() }  // defaults to UTF-8
                     fin.close()
                     val outFile = File(carpetaImagenes + "/" + file.name.replace(".txt", ""))
                     val fos = FileOutputStream(outFile)

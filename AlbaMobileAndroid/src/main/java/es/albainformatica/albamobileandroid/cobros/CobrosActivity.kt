@@ -560,6 +560,7 @@ class CobrosActivity: AppCompatActivity() {
                     i.putExtra("nuevo", false)
                     i.putExtra("solover", true)
                     i.putExtra("iddoc", fIdDocumento)
+                    i.putExtra("tipodoc", fPendiente.tipoDoc)
                     startActivity(i)
                 } else MsjAlerta(this).alerta(resources.getString(R.string.msj_DocNoCargado))
             } else MsjAlerta(this).alerta(resources.getString(R.string.msj_NoRegSelecc))

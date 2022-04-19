@@ -1,28 +1,32 @@
 package es.albainformatica.albamobileandroid.ventas
 
 import android.content.Context
+import es.albainformatica.albamobileandroid.DescuentosLinea
+import es.albainformatica.albamobileandroid.TIPODOC_FACTURA
+import es.albainformatica.albamobileandroid.dao.DtosLinFrasDao
 import es.albainformatica.albamobileandroid.redondear
 import es.albainformatica.albamobileandroid.dao.DtosLineasDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
-import es.albainformatica.albamobileandroid.entity.DtosLineasEnt
 
 /**
  * Created by jabegines on 30/05/2014.
  */
 class DtosCascada(fContexto: Context) {
     private val dtosLineasDao: DtosLineasDao? = MyDatabase.getInstance(fContexto)?.dtosLineasDao()
+    private val dtosLinFrasDao: DtosLinFrasDao? = MyDatabase.getInstance(fContexto)?.dtosLinFrasDao()
 
+    var fTipoDoc: Short = 0
     var fIvaIncluido: Boolean = false
     var fAplicarIva: Boolean = true
     var fPorcIva: Double = 0.0
     var fDecPrBase = 0
 
-    lateinit var lDescuentos: List<DtosLineasEnt>
-
+    lateinit var lDescuentos: List<DescuentosLinea>
 
 
     fun abrir(queLinea: Int) {
-        lDescuentos = dtosLineasDao?.getAllDtosLinea(queLinea) ?: emptyList<DtosLineasEnt>().toMutableList()
+        lDescuentos = if (fTipoDoc == TIPODOC_FACTURA) dtosLinFrasDao?.getAllDtosLinea(queLinea) ?: emptyList<DescuentosLinea>().toMutableList()
+        else dtosLineasDao?.getAllDtosLinea(queLinea) ?: emptyList<DescuentosLinea>().toMutableList()
     }
 
 
@@ -66,23 +70,25 @@ class DtosCascada(fContexto: Context) {
             fImporte = redondear(fImporte, 4)
             fImporte = redondear(fImporte, fDecPrBase)
         }
-        val fDescuento: Float = if (precio == 0.0) 0.0f else {
-            val sPrecio = precio.toString()
-            val fPrecio = sPrecio.toFloat()
-            (1 - fImporte / fPrecio) * 100
-        }
+        val fDescuento: Float = if (precio == 0.0) 0.0f
+            else {
+                val sPrecio = precio.toString()
+                val fPrecio = sPrecio.toFloat()
+                (1 - fImporte / fPrecio) * 100
+            }
         return fDescuento
     }
 
 
     fun borrar(queId: Int) {
-        dtosLineasDao?.borrarDto(queId)
+        if (fTipoDoc == TIPODOC_FACTURA) dtosLinFrasDao?.borrarDto(queId)
+        else dtosLineasDao?.borrarDto(queId)
     }
 
 
     // Si estamos vendiendo iva incluído, le quitamos el iva al importe del descuento.
     // El cálculo lo hago con fDecPrBase+1 porque creo que la gestión también lo hace así.
-    private fun getImpDto(dto: DtosLineasEnt): Double {
+    private fun getImpDto(dto: DescuentosLinea): Double {
 
         var sImporte = dto.importe
         return if (sImporte != "") {
@@ -101,7 +107,7 @@ class DtosCascada(fContexto: Context) {
     }
 
 
-    private fun getCant1(dto: DtosLineasEnt): Double {
+    private fun getCant1(dto: DescuentosLinea): Double {
 
         var sCantidad = dto.cantidad1
         return if (sCantidad != "") {
@@ -112,7 +118,7 @@ class DtosCascada(fContexto: Context) {
     }
 
 
-    private fun getCant2(dto: DtosLineasEnt): Double {
+    private fun getCant2(dto: DescuentosLinea): Double {
 
         var sCantidad = dto.cantidad2
         return if (sCantidad != "") {

@@ -100,8 +100,13 @@ interface PendienteDao {
     fun abrirFPagoDoc(queAlmacen: Short, queSerie: String, queNumero: Int, queEjercicio: Short): String
 
 
-    @Query("DELETE FROM pendiente WHERE (enviar <> 'T' AND estado <> 'L' AND estado <> 'CP') " +
-            " OR (estado = 'L' AND numexport > 0)")
+    // Hemos quitado la comprobación de estado <> 'CP' por el bts de Maquinex nº: 53348,
+    // donde teníamos un albarán parcialmente cobrado y luego recibíamos la factura diferida; al no borrarse
+    // el albarán (estado='CP'), se daba el caso de tener el albarán y la factura en el pendiente del cliente
+
+    //@Query("DELETE FROM pendiente WHERE (enviar <> 'T' AND estado <> 'L' AND estado <> 'CP') " +
+    //        " OR (estado = 'L' AND numexport > 0)")
+    @Query("DELETE FROM pendiente WHERE (enviar <> 'T' AND estado <> 'L') OR (estado = 'L' AND numexport > 0)")
     fun borrarEnviados()
 
 

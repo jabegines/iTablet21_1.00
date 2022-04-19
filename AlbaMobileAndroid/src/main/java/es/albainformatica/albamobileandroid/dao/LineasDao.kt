@@ -55,7 +55,7 @@ interface LineasDao {
     @Query("SELECT A.lineaId, A.cabeceraId, 0 AS tipoDoc, A.articuloId, A.codArticulo, A.descripcion, A.tarifaId, " +
             " A.codigoIva, A.cantidad, A.cantidadOrg, A.cajas, A.cajasOrg, A.piezas, A.piezasOrg, A.lote, A.precio, " +
             " A.precioII, A.precioTarifa, A.importe, A.importeII, A.dto, A.dtoImpte, A.dtoImpteII, A.dtoTarifa, " +
-            " A.tasa1, A.tasa2, A.flag, A.flag3, A.flag5, A.tipoIncId, A.formatoId, A.textoLinea, A.modif_nueva, " +
+            " A.tasa1, A.tasa2, A.flag, A.flag3, A.flag5, A.tipoIncId, A.formatoId, A.textoLinea, A.modifNueva, " +
             " A.almacenPedido, A.dtoOftVol, A.ofertaId,  A.esEnlace, B.porcIva, C.descripcion descrFto " +
             " FROM Lineas A " +
             " LEFT JOIN Ivas B ON B.codigo = A.codigoIva " +
@@ -67,7 +67,7 @@ interface LineasDao {
     @Query("SELECT A.lineaId, A.cabeceraId, 0 AS tipoDoc, A.articuloId, A.codArticulo, A.descripcion, A.tarifaId, " +
             " A.codigoIva, A.cantidad, A.cantidadOrg, A.cajas, A.cajasOrg, A.piezas, A.piezasOrg, A.lote, A.precio, " +
             " A.precioII, A.precioTarifa, A.importe, A.importeII, A.dto, A.dtoImpte, A.dtoImpteII, A.dtoTarifa, " +
-            " A.tasa1, A.tasa2, A.flag, A.flag3, A.flag5, A.tipoIncId, A.formatoId, A.textoLinea, A.modif_nueva, " +
+            " A.tasa1, A.tasa2, A.flag, A.flag3, A.flag5, A.tipoIncId, A.formatoId, A.textoLinea, A.modifNueva, " +
             " A.almacenPedido, A.dtoOftVol, A.ofertaId, A.esEnlace, B.porcIva, C.descripcion descrFto " +
             " FROM Lineas A " +
             " LEFT JOIN Ivas B ON B.codigo = A.codigoIva " +
@@ -82,10 +82,10 @@ interface LineasDao {
     fun getNoEnviadas(): List<DatosLinRecStock>
 
 
-    @Query("SELECT A.lineaId, A.cabeceraId, 0 AS tipoDoc, A.articuloId, A.codArticulo, A.descripcion, A.tarifaId, " +
+    @Query("SELECT A.lineaId, A.cabeceraId, A.articuloId, A.codArticulo, A.descripcion, A.tarifaId, " +
             " A.codigoIva, A.cantidad, A.cantidadOrg, A.cajas, A.cajasOrg, A.piezas, A.piezasOrg, A.lote, A.precio, " +
             " A.precioII, A.precioTarifa, A.importe, A.importeII, A.dto, A.dtoImpte, A.dtoImpteII, A.dtoTarifa, " +
-            " A.tasa1, A.tasa2, A.flag, A.flag3, A.flag5, A.tipoIncId, A.formatoId, A.textoLinea, A.modif_nueva, " +
+            " A.tasa1, A.tasa2, A.flag, A.flag3, A.flag5, A.tipoIncId, A.formatoId, A.textoLinea, A.modifNueva, " +
             " A.almacenPedido,  A.dtoOftVol, A.ofertaId, A.esEnlace, 0 AS porcIva, '' AS descrFto " +
             " FROM Lineas A " +
             " WHERE A.cabeceraId <= 0")

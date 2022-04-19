@@ -698,11 +698,12 @@ class Main: AppCompatActivity() {
         startActivity(i)
     }
 
-
+    /*
     private fun lanzarActualizar() {
         val i = Intent(this, ActualizarApk::class.java)
         startActivity(i)
     }
+    */
 
 
     fun lanzarArticulos(view: View) {

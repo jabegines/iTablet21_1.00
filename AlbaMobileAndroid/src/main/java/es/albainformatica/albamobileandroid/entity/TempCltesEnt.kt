@@ -37,6 +37,5 @@ data class TempCltesEnt(
     var numExport: Int = 0,
     var tieneIncid: String = "",
     var maxDias: Int = 0,
-    var maxFrasPdtes: Int = 0,
-    var matricula: String = ""
+    var maxFrasPdtes: Int = 0
 )

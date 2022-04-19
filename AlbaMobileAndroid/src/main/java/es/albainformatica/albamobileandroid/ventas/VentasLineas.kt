@@ -159,12 +159,11 @@ class VentasLineas: AppCompatActivity() {
             // Vemos si el documento es exento o no
             fDocumento.setExento()
 
-            // Abrimos el cursor con las líneas del documento.
-            //fDocumento.abrirLineas()
-
         } else {
             fIdDoc = intent.getIntExtra("iddoc", 0)
-            fDocumento.cargarDocumento(fIdDoc, !fSoloVer)
+            val queTipoDoc = intent.getShortExtra("tipodoc", 0.toShort())
+            if (queTipoDoc == TIPODOC_FACTURA) fDocumento.cargarFactura(fIdDoc, !fSoloVer)
+            else fDocumento.cargarDocumento(fIdDoc, !fSoloVer)
 
             // Tenemos que llamar a fDocumento.calcularDtosPie() porque el documento no trae los descuentos a pie calculados,
             // ya que fDocumento.cargarDocumento() no lo hace. Esto lo hacemos si estamos visualizando, en caso de modificar no lo hacemos.
@@ -174,12 +173,7 @@ class VentasLineas: AppCompatActivity() {
             if (fDocumento.fTipoDoc == TIPODOC_FACTURA && !fSoloVer) {
                 if (fDocumento.esContado()) {
                     continuar = false
-                    val aldDialog = nuevoAlertBuilder(
-                        this,
-                        "Salir",
-                        resources.getString(R.string.msj_DocContado),
-                        false
-                    )
+                    val aldDialog = nuevoAlertBuilder(this, "Salir", resources.getString(R.string.msj_DocContado), false)
                     aldDialog.setPositiveButton("OK") { _: DialogInterface?, _: Int -> finish() }
                     val alert = aldDialog.create()
                     alert.show()
@@ -226,7 +220,7 @@ class VentasLineas: AppCompatActivity() {
         btnHco.isEnabled = !fSoloVer
         btnTerminar.isEnabled = !fSoloVer
 
-        // Si sólo estamos viendo, no aparecerán los botones de Modificar ni Borrar
+        // Si sólo estamos viendo no aparecerán los botones de Modificar ni Borrar
         if (fSoloVer) {
             btnEditarLin.visibility = View.GONE
             btnBorrarLin.visibility = View.GONE
@@ -273,8 +267,7 @@ class VentasLineas: AppCompatActivity() {
 
 
     private fun prepararRecyclerView() {
-        fAdapter = LineasVtasRvAdapter(getLineasDoc(), fIvaIncluido, fAplicarIva, this,
-                            object: LineasVtasRvAdapter.OnItemClickListener {
+        fAdapter = LineasVtasRvAdapter(getLineasDoc(), fIvaIncluido, fAplicarIva, this, object: LineasVtasRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: DatosLinVtas) {
                 fLinea = data.lineaId
             }
@@ -440,12 +433,9 @@ class VentasLineas: AppCompatActivity() {
 
 
 
-    @SuppressLint("SetTextI18n")
     private fun indicarTipoDoc() {
-        val tvTipoDoc =
-            findViewById<TextView>(R.id.tvVL_TipoDoc)
-        val tvSerieNum =
-            findViewById<TextView>(R.id.tvVL_SerieNum)
+        val tvTipoDoc = findViewById<TextView>(R.id.tvVL_TipoDoc)
+        val tvSerieNum = findViewById<TextView>(R.id.tvVL_SerieNum)
         tvTipoDoc.text = tipoDocAsString(fDocumento.fTipoDoc)
         tvSerieNum.text = fDocumento.serie + '/' + fDocumento.numero
     }

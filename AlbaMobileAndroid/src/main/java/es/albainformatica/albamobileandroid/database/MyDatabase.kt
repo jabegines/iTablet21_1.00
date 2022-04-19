@@ -15,14 +15,14 @@ import es.albainformatica.albamobileandroid.entity.*
     CargasEnt::class, CargasLineasEnt::class, CatalogoLineasEnt::class, ClientesEnt::class, CnfTarifasEnt::class,
     CobrosEnt::class, ConfiguracionEnt::class, ContactosCltesEnt::class, CostosArticulosEnt::class,
     DepartamentosEnt::class, DireccCltesEnt::class, DivisasEnt::class, DocsCabPiesEnt::class, DtosCltesEnt::class,
-    DtosLineasEnt::class, EjerciciosEnt::class, EmpresasEnt::class, EstadDevolucEnt::class, FormasPagoEnt::class,
-    FormatosEnt::class, FtosLineasEnt::class, GruposEnt::class, HcoCompSemMesEnt::class, HcoPorArticClteEnt::class,
-    HistMesEnt::class, HistoricoEnt::class, HistRepreEnt::class, IvasEnt::class, LineasDifEnt::class, LineasEnt::class,
-    LotesEnt::class, NotasCltesEnt::class, NumExportEnt::class, OfertasEnt::class, OftCantRangosEnt::class,
-    OftVolRangosEnt::class, OftVolumenEnt::class, PendienteEnt::class, ProveedoresEnt::class, RatingArtEnt::class,
-    RatingGruposEnt::class, RatingProvEnt::class, RutasEnt::class, RuterosEnt::class, SaldosEnt::class,
-    SeriesEnt::class, StockEnt::class, TarifasEnt::class, TempCltesEnt::class, TiposIncEnt::class, TmpHcoEnt::class,
-    TrfFormatosEnt::class],
+    DtosLineasEnt::class, DtosLinFrasEnt::class, EjerciciosEnt::class, EmpresasEnt::class, EstadDevolucEnt::class,
+    FacturasEnt::class, FormasPagoEnt::class, FormatosEnt::class, FtosLineasEnt::class, FtosLinFrasEnt::class,
+    GruposEnt::class, HcoCompSemMesEnt::class, HcoPorArticClteEnt::class, HistMesEnt::class, HistoricoEnt::class,
+    HistRepreEnt::class, IvasEnt::class, LineasDifEnt::class, LineasEnt::class, LineasFrasEnt::class, LotesEnt::class,
+    NotasCltesEnt::class, NumExportEnt::class, OfertasEnt::class, OftCantRangosEnt::class, OftVolRangosEnt::class,
+    OftVolumenEnt::class, PendienteEnt::class, ProveedoresEnt::class, RatingArtEnt::class, RatingGruposEnt::class,
+    RatingProvEnt::class, RutasEnt::class, RuterosEnt::class, SaldosEnt::class, SeriesEnt::class, StockEnt::class,
+    TarifasEnt::class, TempCltesEnt::class, TiposIncEnt::class, TmpHcoEnt::class, TrfFormatosEnt::class],
     version = VERSION_BD,
     exportSchema = true
 )
@@ -52,12 +52,15 @@ abstract class MyDatabase: RoomDatabase() {
     abstract fun docsCabPiesDao(): DocsCabPiesDao
     abstract fun dtosCltesDao(): DtosCltesDao
     abstract fun dtosLineasDao(): DtosLineasDao
+    abstract fun dtosLinFrasDao(): DtosLinFrasDao
     abstract fun ejerciciosDao(): EjerciciosDao
     abstract fun empresasDao(): EmpresasDao
     abstract fun estadDevolucDao(): EstadDevolucDao
+    abstract fun facturasDao(): FacturasDao
     abstract fun formasPagoDao(): FormasPagoDao
     abstract fun formatosDao(): FormatosDao
     abstract fun ftosLineasDao(): FtosLineasDao
+    abstract fun ftosLinFrasDao(): FtosLinFrasDao
     abstract fun gruposDao(): GruposDao
     abstract fun hcoCompSemMesDao(): HcoCompSemMesDao
     abstract fun hcoPorArticClteDao(): HcoPorArticClteDao
@@ -67,6 +70,7 @@ abstract class MyDatabase: RoomDatabase() {
     abstract fun ivasDao(): IvasDao
     abstract fun lineasDifDao(): LineasDifDao
     abstract fun lineasDao(): LineasDao
+    abstract fun lineasFrasDao(): LineasFrasDao
     abstract fun lotesDao(): LotesDao
     abstract fun notasCltesDao(): NotasCltesDao
     abstract fun numExportDao(): NumExportDao

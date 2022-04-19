@@ -2,9 +2,11 @@ package es.albainformatica.albamobileandroid.ventas
 
 import android.content.Context
 import es.albainformatica.albamobileandroid.DatosLinIva
+import es.albainformatica.albamobileandroid.TIPODOC_FACTURA
 import es.albainformatica.albamobileandroid.redondear
 import es.albainformatica.albamobileandroid.dao.IvasDao
 import es.albainformatica.albamobileandroid.dao.LineasDao
+import es.albainformatica.albamobileandroid.dao.LineasFrasDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.entity.IvasEnt
 import java.util.ArrayList
@@ -14,7 +16,9 @@ import java.util.ArrayList
  */
 class ListaBasesDoc(contexto: Context) {
     private val lineasDao: LineasDao? = MyDatabase.getInstance(contexto)?.lineasDao()
+    private val lineasFrasDao: LineasFrasDao? = MyDatabase.getInstance(contexto)?.lineasFrasDao()
     private val ivasDao: IvasDao? = MyDatabase.getInstance(contexto)?.ivasDao()
+
     var fLista: ArrayList<TBaseDocumento> = ArrayList()
     var fAplicarIva: Boolean = true
     var fAplicarRecargo: Boolean = false
@@ -142,13 +146,16 @@ class ListaBasesDoc(contexto: Context) {
         }
 
 
-    fun cargarDesdeDoc(fIdDoc: Int) {
+    fun cargarDesdeDoc(fIdDoc: Int, fTipoDoc: Short) {
         var fCodigoIva: Short
         var fImporte: Double
         var fImporteII: Double
         var dPorcIva: Double
 
-        val lLineas = lineasDao?.cargarDatosIva(fIdDoc) ?: emptyList<DatosLinIva>().toMutableList()
+        val lLineas: List<DatosLinIva> = if (fTipoDoc == TIPODOC_FACTURA)
+            lineasFrasDao?.cargarDatosIva(fIdDoc) ?: emptyList<DatosLinIva>().toMutableList()
+        else
+            lineasDao?.cargarDatosIva(fIdDoc) ?: emptyList<DatosLinIva>().toMutableList()
 
         for (linea in lLineas) {
             fCodigoIva = linea.codigoIva

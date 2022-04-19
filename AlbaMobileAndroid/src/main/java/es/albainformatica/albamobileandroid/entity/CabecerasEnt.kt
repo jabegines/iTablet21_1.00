@@ -51,6 +51,5 @@ data class CabecerasEnt (
     var tipoPedido: Short = 0,
     var almDireccion: String = "",
     var ordenDireccion: String = "",
-    var imprimido: String = "",
-    var matricula: String = ""
+    var imprimido: String = ""
 )
