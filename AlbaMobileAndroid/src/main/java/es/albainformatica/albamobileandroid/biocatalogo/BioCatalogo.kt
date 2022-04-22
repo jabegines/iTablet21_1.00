@@ -253,8 +253,14 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
                     viewSeleccionada = image1
                     if (!fUsarFormatos) {
                         val aDatosArt = fDocumento.datosArtEnCatLineas(aImages[fPosicion])
-                        if (aDatosArt[0] != "F") edtCantidad.setText(String.format("%.0f", aDatosArt[2].toDouble()))
-                        else edtCantidad.setText("0")
+                        if (aDatosArt[0] != "F") {
+                            edtCantidad.setText(String.format("%.0f", aDatosArt[2].toDouble()))
+                            edtCajas.setText(String.format("%.0f", aDatosArt[1].toDouble()))
+                        }
+                        else {
+                            edtCantidad.setText("0")
+                            edtCajas.setText("0")
+                        }
 
                         verImpte()
                     }

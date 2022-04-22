@@ -227,10 +227,17 @@ class Documento(private val fContexto: Context) {
         if (fBases.fIvaIncluido) fBases.calcularBase(queCodIva, -fOldImpteII)
         else fBases.calcularBase(queCodIva, -fOldImpte)
 
-        lineasDao?.borrarLinea(linea.lineaId)
+        if (fTipoDoc == TIPODOC_FACTURA) {
+            lineasFrasDao?.borrarLinea(linea.lineaId)
+            dtosLinFrasDao?.borrarLinea(linea.lineaId)
+        }
+        else {
+            lineasDao?.borrarLinea(linea.lineaId)
 
-        // Borramos las posibles líneas de descuentos en cascada
-        dtosLineasDao?.borrarLinea(linea.lineaId)
+            // Borramos las posibles líneas de descuentos en cascada
+            dtosLineasDao?.borrarLinea(linea.lineaId)
+        }
+
 
         // Actualizamos el stock del artículo
         if (fControlarStock && (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN))
@@ -987,6 +994,7 @@ class Documento(private val fContexto: Context) {
 
     private fun datosLinVt2LinVta(lineaEnt: DatosLinVtas): LineasEnt {
         val queLinea = LineasEnt()
+        queLinea.lineaId = lineaEnt.lineaId
         queLinea.cabeceraId = lineaEnt.cabeceraId
         queLinea.articuloId = lineaEnt.articuloId
         queLinea.codArticulo = lineaEnt.codArticulo
@@ -1028,6 +1036,7 @@ class Documento(private val fContexto: Context) {
 
     private fun datosLinVt2LinFra(lineaEnt: DatosLinVtas): LineasFrasEnt {
         val queLinea = LineasFrasEnt()
+        queLinea.lineaId = lineaEnt.lineaId
         queLinea.facturaId = lineaEnt.cabeceraId
         queLinea.articuloId = lineaEnt.articuloId
         queLinea.codArticulo = lineaEnt.codArticulo
@@ -1206,7 +1215,112 @@ class Documento(private val fContexto: Context) {
         refrescarLineas()
     }
 
+
     fun terminarDoc(docNuevo: Boolean, queEstado: String) {
+
+        if (fTipoDoc == TIPODOC_FACTURA) {
+            val facturaEnt = tomarDatosFra(docNuevo, queEstado)
+
+            if (docNuevo) {
+                    fIdDoc = facturasDao?.insertar(facturaEnt)?.toInt() ?: -1
+
+                    // En las líneas del nuevo documento hemos ido guardando cabeceraId a -1 y ahora lo actualizamos
+                    lineasFrasDao?.actualizarCabId(fIdDoc)
+
+                // Actualizamos el contador.
+                actualizarNumero()
+
+            } else {
+                facturasDao?.actualizar(facturaEnt)
+            }
+        }
+        else
+        {
+            val cabeceraEnt = tomarDatosCabecera(docNuevo, queEstado)
+
+            if (docNuevo) {
+                    fIdDoc = cabeceraDao?.insertar(cabeceraEnt)?.toInt() ?: -1
+
+                    // En las líneas del nuevo documento hemos ido guardando cabeceraId a -1 y ahora lo actualizamos
+                    lineasDao?.actualizarCabId(fIdDoc)
+
+                // Actualizamos el contador.
+                actualizarNumero()
+
+                // Si estamos haciendo un pedido actualizaremos el pendiente del cliente.
+                if (fTipoDoc == TIPODOC_PEDIDO) actualizarPendiente(true)
+
+            } else {
+                cabeceraDao?.actualizar(cabeceraEnt)
+
+                // Si estamos haciendo un pedido actualizaremos el pendiente del cliente.
+                if (fTipoDoc == TIPODOC_PEDIDO) actualizarPendiente(false)
+            }
+        }
+    }
+
+
+    private fun tomarDatosFra(docNuevo: Boolean, queEstado: String): FacturasEnt {
+        val facturaEnt: FacturasEnt
+
+        if (docNuevo) {
+            facturaEnt = FacturasEnt()
+
+            facturaEnt.almacen = fAlmacen
+            facturaEnt.serie = serie
+            facturaEnt.numero = numero
+            facturaEnt.ejercicio = fEjercicio
+            facturaEnt.empresa = fEmpresa
+            facturaEnt.fecha = fFecha
+            facturaEnt.hora = fHora
+            facturaEnt.clienteId = fCliente
+            facturaEnt.ruta = fClientes.fRuta
+        } else {
+            facturaEnt = factActualEnt
+        }
+        facturaEnt.aplicarIva = logicoACadena(fAplicarIva)
+        facturaEnt.aplicarRe = logicoACadena(fAplicarRe)
+        facturaEnt.dto = fDtoPie1.toString()
+        facturaEnt.dto2 = fDtoPie2.toString()
+        facturaEnt.dto3 = fDtoPie3.toString()
+        facturaEnt.dto4 = fDtoPie4.toString()
+        facturaEnt.fPago = fPago
+        facturaEnt.bruto = fBases.totalBruto.toString()
+        facturaEnt.base = fBases.totalBases.toString()
+        facturaEnt.iva = fBases.totalIva.toString()
+        facturaEnt.recargo = fBases.totalRe.toString()
+        facturaEnt.total = fBases.totalConImptos.toString()
+        if (queEstado == "") facturaEnt.estado = "N"
+        else facturaEnt.estado = queEstado
+
+        // Por ahora el flag "AplicarIvaCliente" no se usa, ya que no viene en la configuración.
+        if (fConfiguracion.ivaIncluido(fEmpresa))
+            facturaEnt.flag = FLAGCABECERAVENTA_PRECIOS_IVA_INCLUIDO
+        else
+            facturaEnt.flag = 0
+
+        facturaEnt.observ1 = fObs1
+        facturaEnt.observ2 = fObs2
+        facturaEnt.tipoIncidencia = fIncidenciaDoc
+        facturaEnt.textoIncidencia = fTextoIncidencia
+        // Dirección para el pedido
+        facturaEnt.almDireccion = fAlmDireccion
+        facturaEnt.ordenDireccion = fOrdenDireccion
+
+        // Si el documento es un pedido de Bionat grabamos si hemos aplicado las ofertas o no. Para ello aprovechamos
+        // el campo 'Hoja', ya que Bionat no lo utiliza
+        if (docNuevo && fTipoDoc == TIPODOC_PEDIDO && fConfiguracion.codigoProducto() == "UY6JK-6KAYw-PO0Py-6OX9B-OJOPY") {
+            if (fAplOftEnPed)
+                facturaEnt.hojaReparto = 1
+            else
+                facturaEnt.hojaReparto = 0
+        }
+
+        return facturaEnt
+    }
+
+
+    private fun tomarDatosCabecera(docNuevo: Boolean, queEstado: String): CabecerasEnt {
         val cabeceraEnt: CabecerasEnt
 
         if (docNuevo) {
@@ -1266,26 +1380,9 @@ class Documento(private val fContexto: Context) {
             else
                 cabeceraEnt.hojaReparto = 0
         }
-        if (docNuevo) {
-            fIdDoc = cabeceraDao?.insertar(cabeceraEnt)?.toInt() ?: -1
 
-            // En las líneas del nuevo documento hemos ido guardando cabeceraId a -1 y ahora lo actualizamos
-            lineasDao?.actualizarCabId(fIdDoc)
-
-            // Actualizamos el contador.
-            actualizarNumero()
-
-            // Si estamos haciendo un pedido actualizaremos el pendiente del cliente.
-            if (fTipoDoc == TIPODOC_PEDIDO) actualizarPendiente(true)
-
-        } else {
-            cabeceraDao?.actualizar(cabeceraEnt)
-
-            // Si estamos haciendo un pedido actualizaremos el pendiente del cliente.
-            if (fTipoDoc == TIPODOC_PEDIDO) actualizarPendiente(false)
-        }
+        return cabeceraEnt
     }
-
 
     private fun actualizarPendiente(docNuevo: Boolean) {
         val fTotalDoc = fBases.totalConImptos

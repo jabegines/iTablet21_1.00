@@ -118,12 +118,6 @@ interface CobrosDao {
     fun abrirExportacion(queNumExportacion: Int): MutableList<CobrosEnt>
 
 
-    @Query("SELECT COUNT(*) numCobros FROM cobros" +
-            " WHERE estado = 'N'")
-            //" LEFT JOIN cabeceras B ON B.tipodoc = A.tipodoc AND B.alm = A.alm AND B.serie = A.serie AND B.numero = A.numero AND B.ejer = A.ejer" +
-            //" WHERE A.estado = 'N' AND (B.estado <> 'P' OR B.estado IS NULL")
-    fun hayCobrosParaEnviar(): Int
-
 
     @Query("SELECT COUNT(*) numCobros FROM cobros WHERE numExport = :queNumExportacion")
     fun hayCobrosEnExport(queNumExportacion: Int): Int

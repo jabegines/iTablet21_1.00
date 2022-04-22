@@ -5,11 +5,25 @@ import androidx.room.Insert
 import androidx.room.Query
 import es.albainformatica.albamobileandroid.DescuentosLinea
 import es.albainformatica.albamobileandroid.entity.DtosLinFrasEnt
-
+import es.albainformatica.albamobileandroid.entity.DtosLineasEnt
 
 
 @Dao
 interface DtosLinFrasDao {
+
+    @Query("SELECT A.* FROM DtosLinFras A " +
+            " LEFT JOIN LineasFras C ON C.lineaId = A.lineaId " +
+            " LEFT JOIN Facturas B ON B.facturaId = C.facturaId" +
+            " WHERE B.estado = 'N' OR B.estado = 'R'")
+    fun abrirParaEnviar(): MutableList<DtosLinFrasEnt>
+
+
+    @Query("SELECT A.* FROM DtosLinFras A " +
+            " LEFT JOIN LineasFras C ON C.lineaId = A.lineaId " +
+            " LEFT JOIN Facturas B ON B.facturaId = C.facturaId" +
+            " WHERE B.numExport = :queNumExportacion AND B.estadoInicial IS NULL")
+    fun abrirParaEnvExp(queNumExportacion: Int): MutableList<DtosLinFrasEnt>
+
 
     @Query("UPDATE DtosLinFras SET lineaId = :queLinea WHERE lineaId = -1")
     fun asignarLinea(queLinea: Int)

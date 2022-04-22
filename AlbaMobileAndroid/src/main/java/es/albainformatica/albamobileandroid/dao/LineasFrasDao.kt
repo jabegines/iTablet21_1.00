@@ -6,11 +6,23 @@ import androidx.room.Query
 import androidx.room.Update
 import es.albainformatica.albamobileandroid.DatosLinIva
 import es.albainformatica.albamobileandroid.DatosLinVtas
+import es.albainformatica.albamobileandroid.entity.LineasEnt
 import es.albainformatica.albamobileandroid.entity.LineasFrasEnt
 
 
 @Dao
 interface LineasFrasDao {
+
+    @Query("SELECT A.* FROM LineasFras A " +
+            " LEFT JOIN Facturas B ON B.facturaId = A.facturaId " +
+            " WHERE B.estado = 'N' OR B.estado = 'R'")
+    fun abrirParaEnviar(): MutableList<LineasFrasEnt>
+
+
+    @Query("SELECT A.* FROM LineasFras A " +
+            " LEFT JOIN Facturas B ON B.facturaId = A.facturaId " +
+            " WHERE B.numExport = :queNumExportacion AND B.estadoInicial IS NULL")
+    fun abrirParaEnvExp(queNumExportacion: Int): MutableList<LineasFrasEnt>
 
 
     @Query("SELECT A.lineaId, A.facturaId AS cabeceraId, 0 AS tipoDoc, A.articuloId, A.codArticulo, A.descripcion, A.tarifaId, " +
@@ -56,6 +68,10 @@ interface LineasFrasDao {
 
     @Query("DELETE FROM LineasFras WHERE facturaId = :queIdDoc AND flag3 = 128")
     fun borrarOftVolumen(queIdDoc: Int)
+
+
+    @Query("UPDATE LineasFras SET facturaId = :queIdDoc WHERE facturaId = -1")
+    fun actualizarCabId(queIdDoc: Int)
 
 
     @Query("DELETE FROM LineasFras WHERE lineaId = :queLineaId")

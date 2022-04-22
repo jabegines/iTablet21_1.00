@@ -425,6 +425,7 @@ class VentasFinDoc: AppCompatActivity() {
 
         val i = Intent(this, FirmarDoc::class.java)
         i.putExtra("id_doc", fDocumento.fIdDoc)
+        i.putExtra("tipo_doc", fDocumento.fTipoDoc)
         startActivity(i)
     }
 

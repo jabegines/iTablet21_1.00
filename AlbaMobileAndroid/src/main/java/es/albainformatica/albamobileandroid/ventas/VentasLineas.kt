@@ -719,6 +719,7 @@ class VentasLineas: AppCompatActivity() {
             if (fDocNuevo) {
                 val i = Intent(this, FirmarDoc::class.java)
                 i.putExtra("id_doc", fDocumento.fIdDoc)
+                i.putExtra("tipo_doc", fDocumento.fTipoDoc)
                 startActivityForResult(i, fRequestFirmarDoc)
             } else imprimirDoc()
         } else imprimirDoc()

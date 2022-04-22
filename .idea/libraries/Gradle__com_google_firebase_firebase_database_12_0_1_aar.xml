@@ -11,9 +11,10 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/2d210c536b14b2e2187250adad430176/transformed/jetified-firebase-database-12.0.1/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/2d210c536b14b2e2187250adad430176/transformed/jetified-firebase-database-12.0.1/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/bc75916a2e99fddbc2212a66bca44f70/transformed/jetified-firebase-database-12.0.1/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/916771f550beedcc0b889b37beb83382/transformed/jetified-firebase-database-12.0.1/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/916771f550beedcc0b889b37beb83382/transformed/jetified-firebase-database-12.0.1/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/916771f550beedcc0b889b37beb83382/transformed/jetified-firebase-database-12.0.1/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/04d85ea8bf9d01354feef0995374f732/transformed/jetified-firebase-database-12.0.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/04d85ea8bf9d01354feef0995374f732/transformed/jetified-firebase-database-12.0.1/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/04d85ea8bf9d01354feef0995374f732/transformed/jetified-firebase-database-12.0.1/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

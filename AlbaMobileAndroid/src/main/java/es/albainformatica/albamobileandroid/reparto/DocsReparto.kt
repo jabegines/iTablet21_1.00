@@ -304,6 +304,7 @@ class DocsReparto: AppCompatActivity() {
                 if (fTipoDoc == TIPODOC_ALBARAN || fTipoDoc == TIPODOC_FACTURA) {
                     val i = Intent(this, ModifDocReparto::class.java)
                     i.putExtra("iddoc", fIdDocumento)
+                    i.putExtra("tipoDocOrg", fTipoDoc)
                     startActivityForResult(i, fRequestModifDocReparto)
                 }
                 //else new MsjAlerta(this).alerta("En reparto sólo podrá modificar albaranes");
@@ -450,6 +451,7 @@ class DocsReparto: AppCompatActivity() {
             } else {
                 val i = Intent(this, FirmarDoc::class.java)
                 i.putExtra("id_doc", fIdDocumento)
+                i.putExtra("tipo_doc", fDocumento.fTipoDoc)
                 startActivityForResult(i, fRequestFirmarDoc)
             }
         } else MsjAlerta(this).alerta(resources.getString(R.string.msj_NoRegSelecc))

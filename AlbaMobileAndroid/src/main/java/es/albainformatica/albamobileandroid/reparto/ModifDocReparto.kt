@@ -34,6 +34,7 @@ class ModifDocReparto: Activity() {
     private lateinit var fAdapter: LinRepVtasRvAdapter
 
     private var fIdDocOriginal = 0
+    private var fTipoDocOriginal: Short = TIPODOC_ALBARAN
     private var fTotalDocOriginal: Double = 0.0
     private var fIdAlbNuevo = 0
     private var fHayDosFirmas: Boolean = false
@@ -88,6 +89,7 @@ class ModifDocReparto: Activity() {
 
     private fun inicializarDocumento(intent: Intent) {
         fIdDocOriginal = intent.getIntExtra("iddoc", 0)
+        fTipoDocOriginal = intent.getShortExtra("tipoDocOrg", TIPODOC_ALBARAN)
         // Comprobamos si podemos aplicar la tarifa de cajas en el documento, por si nos hiciera falta para algún artículo.
         // Hacemos esta comprobación porque hay quien tiene artículos con tarifa de cajas pero no envían la tarifa de cajas
         // a la tablet, y quieren que en este caso se aplique la tarifa normal.
@@ -395,8 +397,10 @@ class ModifDocReparto: Activity() {
         if (fPedirFirma) {
             val i = Intent(this, FirmarDoc::class.java)
             i.putExtra("id_doc", queIdDocNuevo)
+            i.putExtra("tipo_doc", fDocumento.fTipoDoc)
             if (otroDoc > 0) {
                 i.putExtra("otro_doc", otroDoc)
+                i.putExtra("otro_tipo_doc", fTipoDocOriginal)
                 fHayDosFirmas = true
             }
             startActivityForResult(i, fRequestFirmarDoc)

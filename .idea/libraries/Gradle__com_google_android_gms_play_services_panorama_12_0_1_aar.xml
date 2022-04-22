@@ -8,9 +8,10 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/e6a2ee6ba61c58f7a68bd509e6f07e1c/transformed/jetified-play-services-panorama-12.0.1/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/070d5150425752e8abd561841716df5b/transformed/jetified-play-services-panorama-12.0.1/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/b83644b52753cb6d35d9d7228aaa364e/transformed/jetified-play-services-panorama-12.0.1/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/fc069ca666db6e92282b9fb1f4d9675d/transformed/jetified-play-services-panorama-12.0.1/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/fc069ca666db6e92282b9fb1f4d9675d/transformed/jetified-play-services-panorama-12.0.1/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/fc069ca666db6e92282b9fb1f4d9675d/transformed/jetified-play-services-panorama-12.0.1/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/e06f20d8a8c8870f0eed301d0ff86224/transformed/jetified-play-services-panorama-12.0.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/e06f20d8a8c8870f0eed301d0ff86224/transformed/jetified-play-services-panorama-12.0.1/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/e06f20d8a8c8870f0eed301d0ff86224/transformed/jetified-play-services-panorama-12.0.1/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

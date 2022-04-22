@@ -4,7 +4,7 @@ import es.albainformatica.albamobileandroid.dao.*
 import android.content.ContentValues
 import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.entity.ConfiguracionEnt
 import java.text.ParseException

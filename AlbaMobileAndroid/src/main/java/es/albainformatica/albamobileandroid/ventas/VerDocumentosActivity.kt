@@ -590,6 +590,7 @@ class VerDocumentosActivity: Activity() {
             } else {
                 val i = Intent(this, FirmarDoc::class.java)
                 i.putExtra("id_doc", fIdDocumento)
+                i.putExtra("tipo_doc", fDocumento.fTipoDoc)
                 startActivityForResult(i, fRequestFirmarDoc)
             }
         } else MsjAlerta(this).alerta(resources.getString(R.string.msj_NoRegSelecc))

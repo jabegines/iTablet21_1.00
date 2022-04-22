@@ -28,8 +28,10 @@ import java.util.zip.ZipOutputStream
 import kotlin.collections.ArrayList
 
 class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
-    private var cabecerasDao: CabecerasDao? = MyDatabase.getInstance(context)?.cabecerasDao()
+    private val cabecerasDao: CabecerasDao? = MyDatabase.getInstance(context)?.cabecerasDao()
     private val lineasDao: LineasDao? = MyDatabase.getInstance(context)?.lineasDao()
+    private val facturasDao: FacturasDao? = MyDatabase.getInstance(context)?.facturasDao()
+    private val linFrasDao: LineasFrasDao? = MyDatabase.getInstance(context)?.lineasFrasDao()
     private val cargasLineasDao: CargasLineasDao? = MyDatabase.getInstance(context)?.cargasLineasDao()
     private var prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
@@ -53,6 +55,8 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
     private var fTamNotasCltes: Long = 0
     private var fTamCabec: Long = 0
     private var fTamLineas: Long = 0
+    private var fTamFacturas: Long = 0
+    private var fTamLinFras: Long = 0
     private var fTamCobros: Long = 0
     private var fTamPdte: Long = 0
     private var fTamCargas: Long = 0
@@ -2381,7 +2385,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                                     seriesDao?.setNumFactura(serieEnt.serie, queEjercicio, serieEnt.factura)
 
                                 val queNumAlb = seriesDao?.getNumAlbaran(serieEnt.serie, queEjercicio.toInt()) ?: 0
-                                if (queNumFra < serieEnt.albaran)
+                                if (queNumAlb < serieEnt.albaran)
                                     seriesDao?.setNumAlbaran(serieEnt.serie, queEjercicio, serieEnt.albaran)
 
                                 val queNumPres = seriesDao?.getNumPresupuesto(serieEnt.serie, queEjercicio.toInt()) ?: 0
@@ -3499,7 +3503,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
         val fNumExportaciones = NumExportaciones(fContext)
 
         var hayClientes = false; var hayDirecc = false; var hayContactos = false; var hayNotas = false
-        var hayDocumentos = false; var hayCobros = false; var hayPendiente = false; var hayCargas = false
+        var hayDocumentos = false; var hayFacturas = false; var hayCobros = false; var hayPendiente = false; var hayCargas = false
         // Si estamos enviando desde el servicio primero asignamos el número de exportación a -1 y luego
         // actualizaremos los registros que tengan este número con el número de paquete que nos devuelva el servicio.
         val iSigExportacion: Int = if (fDesdeServicio) -1
@@ -3559,16 +3563,17 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
             if (enviarCargas(queNumExportacion, iSigExportacion)) hayCargas = true
             if (enviarCabeceras(queNumExportacion, iSigExportacion)) hayDocumentos = true
+            if (enviarFacturas(queNumExportacion, iSigExportacion)) hayFacturas = true
             if (enviarCobros(queNumExportacion, iSigExportacion)) hayCobros = true
             if (enviarPendiente(queNumExportacion, iSigExportacion)) hayPendiente = true
 
-            if (hayClientes || hayDirecc || hayContactos || hayNotas || hayDocumentos || hayCobros || hayPendiente || hayCargas) {
+            if (hayClientes || hayDirecc || hayContactos || hayNotas || hayDocumentos || hayFacturas || hayCobros || hayPendiente || hayCargas) {
                 // Enviamos información técnica de la tablet
                 enviarInfTecnica()
 
-                crearLog(hayClientes, hayDirecc, hayContactos, hayNotas, hayDocumentos, hayCobros,
+                crearLog(hayClientes, hayDirecc, hayContactos, hayNotas, hayDocumentos, hayFacturas, hayCobros,
                     hayPendiente, hayCargas)
-                crearCadenaResumen(hayClientes, hayDirecc, hayContactos, hayNotas, hayDocumentos, hayCobros, hayPendiente, hayCargas)
+                crearCadenaResumen(hayClientes, hayDirecc, hayContactos, hayNotas, hayDocumentos, hayFacturas, hayCobros, hayPendiente, hayCargas)
 
                 // Una vez que hemos preparado los XML para enviar, haremos una copia.
                 // De esta forma siempre tendremos una copia de lo último que hayamos enviado.
@@ -4026,6 +4031,74 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
     }
 
 
+    private fun enviarFacturas(queNumExportacion: Int, iSigExportacion: Int): Boolean {
+        val fConfiguracion = Comunicador.fConfiguracion
+
+        val dtosLinFrasDao: DtosLinFrasDao? = MyDatabase.getInstance(fContext)?.dtosLinFrasDao()
+
+        val lCabeceras: MutableList<FacturasEnt> = if (queNumExportacion == 0) {
+            // Si tenemos rutero_reparto mandaremos también las cabeceras de las facturas
+            // que estén firmados o tengan alguna incidencia (sólo las cabeceras)
+            if (fConfiguracion.hayReparto()) {
+                facturasDao?.abrirParaEnvReparto() ?: emptyList<FacturasEnt>().toMutableList()
+            } else {
+                facturasDao?.abrirParaEnviar() ?: emptyList<FacturasEnt>().toMutableList()
+            }
+        } else {
+            facturasDao?.abrirParaEnvExp(queNumExportacion) ?: emptyList<FacturasEnt>().toMutableList()
+        }
+
+        if (lCabeceras.isNotEmpty()) {
+            val msg = Message()
+            msg.obj = "Preparando facturas"
+            puente.sendMessage(msg)
+
+            facturasAXML(lCabeceras)
+
+            // No enviaremos las líneas de facturas importadas que han sido firmadas o marcadas con alguna incidencia
+            // (desde el módulo de repartos)
+            val lLineas: MutableList<LineasFrasEnt> = if (queNumExportacion == 0) {
+                linFrasDao?.abrirParaEnviar() ?: emptyList<LineasFrasEnt>().toMutableList()
+            } else {
+                linFrasDao?.abrirParaEnvExp(queNumExportacion) ?: emptyList<LineasFrasEnt>().toMutableList()
+            }
+
+            linFrasAXML(lLineas)
+
+            // Exportamos los descuentos en cascada
+            val lDtos: MutableList<DtosLinFrasEnt> = if (queNumExportacion == 0) {
+                dtosLinFrasDao?.abrirParaEnviar() ?: emptyList<DtosLinFrasEnt>().toMutableList()
+            } else {
+                dtosLinFrasDao?.abrirParaEnvExp(queNumExportacion) ?: emptyList<DtosLinFrasEnt>().toMutableList()
+            }
+
+            linFrasDtoAXML(lDtos)
+
+            // Si hemos ido guardando las imágenes con las firmas digitales, las enviamos
+            // Si ya han sido enviadas antes desde enviarCabeceras() no hay problema, los ficheros
+            // se habrán borrado
+            if (fDesdeServicio) {
+                if (fConfiguracion.activarFirmaDigital() || fConfiguracion.hayReparto()) {
+                    enviarFirmas()
+                }
+            }
+
+            // Marcamos las cabeceras como exportadas
+            if (queNumExportacion == 0) {
+                if (fConfiguracion.hayReparto())
+                    facturasDao?.marcarComoExpReparto(iSigExportacion)
+                else
+                    facturasDao?.marcarComoExportadas(iSigExportacion)
+            }
+
+            return true
+
+        } else {
+            return false
+        }
+    }
+
+
     @Throws(Exception::class)
     private fun enviarFirmas() {
         val dirlocFirmas = dimeRutaLocalFirmas()
@@ -4231,6 +4304,90 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
     }
 
 
+    private fun facturasAXML(lCabeceras: MutableList<FacturasEnt>) {
+        try {
+            val outputFile = File(rutaLocalEnvio, "Facturas.xml")
+            val fout = FileOutputStream(outputFile, false)
+
+            val serializer = Xml.newSerializer()
+            serializer.setOutput(fout, "UTF-8")
+            serializer.startDocument(null, true)
+            serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true)
+
+            serializer.startTag("", "consulta")
+            for (cabeceraEnt in lCabeceras) {
+                // Añadimos el id del documento al array aCabeceras
+                aCabeceras.add(cabeceraEnt.facturaId)
+
+                serializer.startTag("", "record")
+                serializer.attribute(null, "IdDoc", cabeceraEnt.facturaId.toString())
+                serializer.attribute(null, "TIPODOC", TIPODOC_FACTURA.toString())
+                serializer.attribute(null, "ALM", cabeceraEnt.almacen.toString())
+                serializer.attribute(null, "SERIE", cabeceraEnt.serie)
+                serializer.attribute(null, "NUMERO", cabeceraEnt.numero.toString())
+                serializer.attribute(null, "EJER", cabeceraEnt.ejercicio.toString())
+                serializer.attribute(null, "EMPRESA", cabeceraEnt.empresa.toString())
+                serializer.attribute(null, "FECHA", cabeceraEnt.fecha)
+                serializer.attribute(null, "HORA", cabeceraEnt.hora)
+                serializer.attribute(null, "CLIENTE", cabeceraEnt.clienteId.toString())
+                serializer.attribute(null, "RUTA", cabeceraEnt.ruta.toString())
+                serializer.attribute(null, "APLIVA", cabeceraEnt.aplicarIva)
+                serializer.attribute(null, "APLREC", cabeceraEnt.aplicarRe)
+                serializer.attribute(null, "BRUTO", cabeceraEnt.bruto.replace('.', ','))
+                serializer.attribute(null, "DTO", cabeceraEnt.dto.replace('.', ','))
+                serializer.attribute(null, "DTO2", cabeceraEnt.dto2.replace('.', ','))
+                serializer.attribute(null, "DTO3", cabeceraEnt.dto3.replace('.', ','))
+                serializer.attribute(null, "DTO4", cabeceraEnt.dto4.replace('.', ','))
+                serializer.attribute(null, "BASE", cabeceraEnt.base.replace('.', ','))
+                serializer.attribute(null, "IVA", cabeceraEnt.iva.replace('.', ','))
+                serializer.attribute(null, "RECARGO", cabeceraEnt.recargo.replace('.', ','))
+                serializer.attribute(null, "TOTAL", cabeceraEnt.total.replace('.', ','))
+                serializer.attribute(null, "FLAG", cabeceraEnt.flag.toString())
+                serializer.attribute(null, "OBS1", cabeceraEnt.observ1)
+                serializer.attribute(null, "OBS2", cabeceraEnt.observ2)
+                serializer.attribute(null, "FPAGO", cabeceraEnt.fPago)
+                serializer.attribute(null, "TIPOINCIDENCIA", cabeceraEnt.tipoIncidencia.toString())
+                serializer.attribute(null, "TEXTOINCIDENCIA", cabeceraEnt.textoIncidencia)
+                serializer.attribute(null, "ENTREGADO", cabeceraEnt.firmado)
+                serializer.attribute(null, "FECHAFIRMA", cabeceraEnt.fechaFirma)
+                serializer.attribute(null, "HORAFIRMA", cabeceraEnt.horaFirma)
+
+                val df = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                val fFecha = df.format(System.currentTimeMillis())
+                serializer.attribute(null, "FECHAENVIO", fFecha)
+                val dfHora = SimpleDateFormat("HH:mm", Locale.getDefault())
+                val fHora = dfHora.format(System.currentTimeMillis())
+                serializer.attribute(null, "HORAENVIO", fHora)
+
+                if (cabeceraEnt.estadoInicial != "")
+                    if (cabeceraEnt.estadoInicial == "0")
+                        serializer.attribute(null, "ESTADO", "E")
+                    else
+                        serializer.attribute(null, "ESTADO", "N")
+                else
+                    serializer.attribute(null, "ESTADO", "N")
+
+                // Si damos de alta una dirección en la tablet, la gestión la asigna siempre al almacén 0, por eso indicamos
+                // aquí siempre el almacén 0.
+                serializer.attribute(null, "ALMDIRECCIONCLTE", "000")
+                serializer.attribute(null, "ORDENDIRECCIONCLTE", cabeceraEnt.ordenDireccion)
+                serializer.endTag("", "record")
+            }
+            serializer.endTag("", "consulta")
+
+            serializer.endDocument()
+            serializer.flush()
+            fout.close()
+            fTamFacturas = outputFile.length()
+
+        } catch (e: FileNotFoundException) {
+            mostrarExcepcion(e)
+        } catch (e: Exception) {
+            mostrarExcepcion(e)
+        }
+    }
+
+
     private fun lineasAXML(lLineas: MutableList<LineasEnt>) {
 
         try {
@@ -4289,10 +4446,105 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
     }
 
 
+    private fun linFrasAXML(lLineas: MutableList<LineasFrasEnt>) {
+
+        try {
+            val outputFile = File(rutaLocalEnvio, "LinFras.xml")
+            val fout = FileOutputStream(outputFile, false)
+
+            val serializer = Xml.newSerializer()
+            serializer.setOutput(fout, "UTF-8")
+            serializer.startDocument(null, true)
+            serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true)
+
+            serializer.startTag("", "consulta")
+            for (lineaEnt in lLineas) {
+                serializer.startTag("", "record")
+                // Enviamos el id de la linea para poder enlazar con los descuentos en cascada.
+                serializer.attribute(null, "Id", lineaEnt.lineaId.toString())
+                serializer.attribute(null, "CabeceraId", lineaEnt.facturaId.toString())
+                serializer.attribute(null, "ARTICULO", lineaEnt.articuloId.toString())
+                serializer.attribute(null, "CODIGO", lineaEnt.codArticulo)
+                serializer.attribute(null, "DESCR", lineaEnt.descripcion)
+                serializer.attribute(null, "TARIFA", lineaEnt.tarifaId.toString())
+                serializer.attribute(null, "PRECIO", lineaEnt.precio.replace('.', ','))
+                serializer.attribute(null, "TIPOIVA", lineaEnt.codigoIva.toString())
+                serializer.attribute(null, "CAJAS", lineaEnt.cajas.replace('.', ','))
+                serializer.attribute(null, "CANTIDAD", lineaEnt.cantidad.replace('.', ','))
+                serializer.attribute(null, "PIEZAS", lineaEnt.piezas.replace('.', ','))
+                serializer.attribute(null, "DTO", lineaEnt.dto.replace('.', ','))
+                serializer.attribute(null, "DTOI", lineaEnt.dtoImpte.replace('.', ','))
+                serializer.attribute(null, "LOTE", lineaEnt.lote)
+                serializer.attribute(null, "FLAG", lineaEnt.flag.toString())
+                serializer.attribute(null, "FLAG3", lineaEnt.flag3.toString())
+                serializer.attribute(null, "FLAG5", lineaEnt.flag5.toString())
+                serializer.attribute(null, "TASA1", lineaEnt.tasa1.replace('.', ','))
+                serializer.attribute(null, "TASA2", lineaEnt.tasa2.replace('.', ','))
+                serializer.attribute(null, "FORMATO", lineaEnt.formatoId.toString())
+                serializer.attribute(null, "INC", lineaEnt.tipoIncId.toString())
+                serializer.attribute(null, "TEXTOLINEA", lineaEnt.textoLinea)
+                serializer.attribute(null, "ALMACENPEDIDO", lineaEnt.almacenPedido)
+                serializer.attribute(null, "IDOFERTA", lineaEnt.ofertaId.toString())
+                serializer.attribute(null, "DTOOFTVOL", lineaEnt.dtoOftVol)
+
+                serializer.endTag("", "record")
+            }
+            serializer.endTag("", "consulta")
+
+            serializer.endDocument()
+            serializer.flush()
+            fout.close()
+            fTamLinFras = outputFile.length()
+
+        } catch (e: FileNotFoundException) {
+            mostrarExcepcion(e)
+        } catch (e: Exception) {
+            mostrarExcepcion(e)
+        }
+    }
+
+
     private fun lineasDtoAXML(lDtos: MutableList<DtosLineasEnt>) {
 
         try {
             val outputFile = File(rutaLocalEnvio, "DesctosLineas.xml")
+            val fout = FileOutputStream(outputFile, false)
+
+            val serializer = Xml.newSerializer()
+            serializer.setOutput(fout, "UTF-8")
+            serializer.startDocument(null, true)
+            serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true)
+
+            serializer.startTag("", "consulta")
+            for (dtoEnt in lDtos) {
+                serializer.startTag("", "record")
+                serializer.attribute(null, "Linea", dtoEnt.lineaId.toString())
+                serializer.attribute(null, "Orden", dtoEnt.orden.toString())
+                serializer.attribute(null, "Descuento", dtoEnt.descuento.replace('.', ','))
+                serializer.attribute(null, "Importe", dtoEnt.importe.replace('.', ','))
+                serializer.attribute(null, "Cantidad1", dtoEnt.cantidad1.replace('.', ','))
+                serializer.attribute(null, "Cantidad2", dtoEnt.cantidad2.replace('.', ','))
+                serializer.endTag("", "record")
+            }
+            serializer.endTag("", "consulta")
+
+            serializer.endDocument()
+            serializer.flush()
+            fout.close()
+
+        } catch (e: FileNotFoundException) {
+            mostrarExcepcion(e)
+        } catch (e: Exception) {
+            mostrarExcepcion(e)
+        }
+    }
+
+
+
+    private fun linFrasDtoAXML(lDtos: MutableList<DtosLinFrasEnt>) {
+
+        try {
+            val outputFile = File(rutaLocalEnvio, "DesctosLinFras.xml")
             val fout = FileOutputStream(outputFile, false)
 
             val serializer = Xml.newSerializer()
@@ -4497,7 +4749,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
 
     private fun crearCadenaResumen(hayClientes: Boolean, hayDirecc: Boolean, hayContactos: Boolean, hayNotas: Boolean,
-                                   hayDocumentos: Boolean, hayCobros: Boolean, hayPendiente: Boolean, hayCargas: Boolean) {
+                                   hayDocumentos: Boolean, hayFacturas: Boolean, hayCobros: Boolean, hayPendiente: Boolean, hayCargas: Boolean) {
         cadenaResumen = ""
 
         try {
@@ -4510,6 +4762,11 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                 cadenaResumen += cadenaResFichero("Cabeceras.xml")
                 cadenaResumen += cadenaResFichero("Lineas.xml")
                 cadenaResumen += cadenaResFichero("DesctosLineas.xml")
+            }
+            if (hayFacturas) {
+                cadenaResumen += cadenaResFichero("Facturas.xml")
+                cadenaResumen += cadenaResFichero("LinFras.xml")
+                cadenaResumen += cadenaResFichero("DesctosLinFras.xml")
             }
 
             if (hayCobros) cadenaResumen += cadenaResFichero("Cobros.xml")
@@ -4544,7 +4801,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
 
     private fun crearLog(hayClientes: Boolean, hayDirecc: Boolean, hayContactos: Boolean, hayNotas: Boolean,
-                         hayDocumentos: Boolean, hayCobros: Boolean, hayPendiente: Boolean, hayCargas: Boolean) {
+                         hayDocumentos: Boolean, hayFacturas: Boolean, hayCobros: Boolean, hayPendiente: Boolean, hayCargas: Boolean) {
         try {
             val outputFile = File(rutaLocalEnvio, "Log.xml")
             val fout = FileOutputStream(outputFile, false)
@@ -4590,6 +4847,17 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                     serializer.startTag("", "record")
                     serializer.attribute(null, "Table", "Lineas.xml")
                     serializer.attribute(null, "Size", fTamLineas.toString())
+                    serializer.endTag("", "record")
+                }
+                if (hayFacturas) {
+                    serializer.startTag("", "record")
+                    serializer.attribute(null, "Table", "Facturas.xml")
+                    serializer.attribute(null, "Size", fTamFacturas.toString())
+                    serializer.endTag("", "record")
+
+                    serializer.startTag("", "record")
+                    serializer.attribute(null, "Table", "LinFras.xml")
+                    serializer.attribute(null, "Size", fTamLinFras.toString())
                     serializer.endTag("", "record")
                 }
                 if (hayCobros) {

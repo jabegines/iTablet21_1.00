@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.content.Intent
 import android.graphics.*
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.graphics.drawable.BitmapDrawable
 import android.view.View.OnTouchListener
 import android.view.MotionEvent
@@ -14,6 +14,8 @@ import android.widget.Toast
 import android.view.View
 import android.widget.ImageView
 import es.albainformatica.albamobileandroid.R
+import es.albainformatica.albamobileandroid.TIPODOC_ALBARAN
+import es.albainformatica.albamobileandroid.TIPODOC_FACTURA
 import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.queBDRoom
 import java.io.File
 import java.io.FileOutputStream
@@ -23,11 +25,13 @@ import java.lang.Exception
 /**
  * Created by jabegines on 11/06/2014.
  */
-class FirmarDoc : Activity() {
+class FirmarDoc: Activity() {
     private lateinit var prefs: SharedPreferences
     private var usarMultisistema: Boolean = false
     private var fIdDoc = 0
+    private var fTipoDoc: Short = TIPODOC_ALBARAN
     private var fOtroDoc = 0
+    private var fTipoOtroDoc: Short = TIPODOC_ALBARAN
     private lateinit var imgFirma: ImageView
     private var downx = 0f
     private var downy = 0f
@@ -44,7 +48,9 @@ class FirmarDoc : Activity() {
 
         val intent = intent
         fIdDoc = intent.getIntExtra("id_doc", 0)
+        fTipoDoc = intent.getShortExtra("tipo_doc", TIPODOC_ALBARAN)
         fOtroDoc = intent.getIntExtra("otro_doc", 0)
+        fTipoOtroDoc = intent.getShortExtra("otro_tipo_doc", TIPODOC_ALBARAN)
         inicializarControles()
     }
 
@@ -105,10 +111,12 @@ class FirmarDoc : Activity() {
             if (usarMultisistema) "$rutaLocal/firmas/$queBDRoom"
             else "$rutaLocal/firmas/"
         }
+
         try {
             val rutaFichFirma = File(rutaLocal)
             if (!rutaFichFirma.exists()) rutaFichFirma.mkdirs()
-            var sdImageMainDirectory = File(rutaFichFirma, "$fIdDoc.jpg")
+            var sdImageMainDirectory = if (fTipoDoc == TIPODOC_FACTURA) File(rutaFichFirma, "F_$fIdDoc.jpg")
+                else File(rutaFichFirma, "$fIdDoc.jpg")
             fOut = FileOutputStream(sdImageMainDirectory)
             try {
                 bm.compress(Bitmap.CompressFormat.JPEG, 100, fOut)
@@ -117,7 +125,8 @@ class FirmarDoc : Activity() {
 
                 // Vemos si queremos copiar la firma en otro fichero.
                 if (fOtroDoc > 0) {
-                    sdImageMainDirectory = File(rutaFichFirma, "$fOtroDoc.jpg")
+                    sdImageMainDirectory = if (fTipoOtroDoc == TIPODOC_FACTURA) File(rutaFichFirma, "F_$fOtroDoc.jpg")
+                        else File(rutaFichFirma, "$fOtroDoc.jpg")
                     fOut = FileOutputStream(sdImageMainDirectory)
                     try {
                         bm.compress(Bitmap.CompressFormat.JPEG, 100, fOut)
@@ -129,8 +138,7 @@ class FirmarDoc : Activity() {
             } catch (ignored: Exception) {
             }
         } catch (e: Exception) {
-            Toast.makeText(this, "Ha ocurrido un error, intentelo de nuevo", Toast.LENGTH_SHORT)
-                .show()
+            Toast.makeText(this, "Ha ocurrido un error, intentelo de nuevo", Toast.LENGTH_SHORT).show()
         }
         val returnIntent = Intent()
         setResult(RESULT_OK, returnIntent)

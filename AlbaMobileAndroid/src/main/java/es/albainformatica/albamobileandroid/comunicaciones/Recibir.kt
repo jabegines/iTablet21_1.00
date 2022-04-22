@@ -3,7 +3,7 @@ package es.albainformatica.albamobileandroid.comunicaciones
 import android.app.Activity
 import android.content.SharedPreferences
 import android.database.sqlite.SQLiteDatabase
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import androidx.core.content.ContextCompat
 import android.Manifest.permission
 import android.content.pm.PackageManager
@@ -18,7 +18,13 @@ import android.view.View
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import es.albainformatica.albamobileandroid.*
+import es.albainformatica.albamobileandroid.dao.CabecerasDao
+import es.albainformatica.albamobileandroid.dao.CargasDao
+import es.albainformatica.albamobileandroid.dao.CobrosDao
+import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.queBDRoom
+import es.albainformatica.albamobileandroid.entity.CobrosEnt
+import kotlinx.android.synthetic.main.prefs_conf_articulos.*
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.util.Base64
 import java.io.*
@@ -41,7 +47,6 @@ class Recibir : Activity() {
     private var fTerminar: Boolean = false
     private lateinit var thread: Thread
     private lateinit var prefs: SharedPreferences
-    private lateinit var dbAlba: SQLiteDatabase
 
     private var fServidor: String = ""
     private var fUsuario: String = ""
@@ -106,7 +111,7 @@ class Recibir : Activity() {
     }
 
     // No podremos recibir siempre que:
-    // - tengamos documentos pendientes de enviar
+    // - tengamos documentos o cobros pendientes de enviar
     // - tengamos ficheros preparados y no enviados
     // - tengamos cargas
     // - la fecha del último envío desde el terminal sea mayor que la de la última preparación desde el PC.
@@ -115,27 +120,27 @@ class Recibir : Activity() {
 
         // Puede ocurrir que no tengamos aún la base de datos creada, por eso tenemos que controlar la excepción.
         try {
-            val cCabeceras = dbAlba.rawQuery(
-                "SELECT _id FROM cabeceras WHERE estado = 'N' OR estado = 'R'",
-                null
-            )
-            if (cCabeceras.moveToFirst()) {
+            val cabecerasDao: CabecerasDao? = MyDatabase.getInstance(this)?.cabecerasDao()
+            val queCabId = cabecerasDao?.hayDocsParaEnviar() ?: 0
+            if (queCabId > 0) {
                 MsjAlerta(this).alerta("Tiene documentos pendientes de enviar. No podrá recibir.")
                 resultado = false
             }
-            cCabeceras.close()
-
+            // Vemos si tenemos algún cobro
+            val cobrosDao: CobrosDao? = MyDatabase.getInstance(this)?.cobrosDao()
+            val lCobros = cobrosDao?.abrirParaExportar() ?: emptyList<CobrosEnt>().toMutableList()
+            if (lCobros.isNotEmpty()) {
+                MsjAlerta(this).alerta("Tiene cobros pendientes de enviar. No podrá recibir.")
+                resultado = false
+            }
             // Vemos si tenemos alguna carga
             if (resultado) {
-                val cCargas = dbAlba.rawQuery(
-                    "SELECT cargaId FROM cargas WHERE estado = 'N' or estado = 'R'",
-                    null
-                )
-                if (cCargas.moveToFirst()) {
+                val cargasDao: CargasDao? = MyDatabase.getInstance(this)?.cargasDao()
+                val lCargas = cargasDao?.getPdtesEnviar() ?: emptyList<Int>().toMutableList()
+                if (lCargas.isNotEmpty()) {
                     MsjAlerta(this).alerta("Tiene cargas pendientes de enviar. No podrá recibir.")
                     resultado = false
                 }
-                cCargas.close()
             }
             // Vemos si hay ficheros preparados
             if (resultado) {
@@ -748,6 +753,7 @@ class Recibir : Activity() {
     }
 
 
+    /*
     @Throws(Exception::class)
     fun convertStreamToString(`is`: InputStream): String {
         val reader = BufferedReader(InputStreamReader(`is`))
@@ -759,5 +765,7 @@ class Recibir : Activity() {
         reader.close()
         return sb.toString()
     }
+    */
+
 
 }

@@ -545,9 +545,14 @@ class VentasActivity: AppCompatActivity() {
                 MsjAlerta(this).alerta(getString(R.string.msj_SinClte))
             }
         } else {
-            val queCodClte = edtCodClte.text.toString()
-            //queCodClte = ponerCeros(queCodClte, ancho_codclte)
-            queCliente = fClientes.existeCodigo(queCodClte.toInt())
+            if (edtCodClte.text.toString() != "") {
+                val queCodClte = edtCodClte.text.toString()
+                queCliente = fClientes.existeCodigo(queCodClte.toInt())
+            }
+            else {
+                queCliente = 0
+                MsjAlerta(this).alerta(getString(R.string.msj_SinClte))
+            }
         }
 
         if (queCliente > 0) {
