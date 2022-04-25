@@ -21,7 +21,7 @@ interface LineasFrasDao {
 
     @Query("SELECT A.* FROM LineasFras A " +
             " LEFT JOIN Facturas B ON B.facturaId = A.facturaId " +
-            " WHERE B.numExport = :queNumExportacion AND B.estadoInicial IS NULL")
+            " WHERE B.numExport = :queNumExportacion AND (B.estadoInicial IS NULL OR B.estadoInicial = '')")
     fun abrirParaEnvExp(queNumExportacion: Int): MutableList<LineasFrasEnt>
 
 

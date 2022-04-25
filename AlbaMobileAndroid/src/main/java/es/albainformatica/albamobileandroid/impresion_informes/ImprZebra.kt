@@ -697,10 +697,15 @@ import java.util.*
                      texto.append("^FD").append(ajustarCadena(sImpDto, lImpDto, false)).append("^FS").append(fCR).append(fLF)
                      texto.append("^FT200,$y^AKN,20")
                      texto.append("^FD").append(ajustarCadena(sBase, lBase, false)).append("^FS").append(fCR).append(fLF)
-                     texto.append("^FT310,$y^AKN,20")
-                     texto.append("^FD").append(ajustarCadena(sPorcIva, 7, false)).append("^FS").append(fCR).append(fLF)
-                     texto.append("^FT420,$y^AKN,20")
-                     texto.append("^FD").append(ajustarCadena(sImpIva, lImpIva, false)).append("^FS").append(fCR).append(fLF)
+                     if (fDocumento.fSerieExenta) {
+                         texto.append("^FT310,$y^AKN,20")
+                         texto.append("^FD").append("INVERSION SUJETO PASIVO").append("^FS").append(fCR).append(fLF)
+                     } else {
+                         texto.append("^FT310,$y^AKN,20")
+                         texto.append("^FD").append(ajustarCadena(sPorcIva, 7, false)).append("^FS").append(fCR).append(fLF)
+                         texto.append("^FT420,$y^AKN,20")
+                         texto.append("^FD").append(ajustarCadena(sImpIva, lImpIva, false)).append("^FS").append(fCR).append(fLF)
+                     }
 
                      if (primeraLinea) {
                          y += 40
