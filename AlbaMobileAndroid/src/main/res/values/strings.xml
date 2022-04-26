@@ -105,6 +105,7 @@
     <string name="ftppassword">Password FTP:</string>
     <string name="ftpservidor">Servidor FTP:</string>
     <string name="ftpusuario">Usuario FTP:</string>
+    <string name="getFechaPagare">Indique la fecha del pagaré:</string>
     <string name="getFechaVto">Indique la fecha de vencimiento:</string>
     <string name="grupos_y_dep">Grupos y departamentos</string>
     <string name="guardar_conf">Deberá guardar la configuración antes de probar</string>

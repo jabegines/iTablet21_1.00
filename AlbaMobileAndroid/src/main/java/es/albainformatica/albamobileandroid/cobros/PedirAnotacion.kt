@@ -14,7 +14,7 @@ import es.albainformatica.albamobileandroid.R
  */
 class PedirAnotacion: Activity() {
     private lateinit var edtAnotacion: EditText
-    private lateinit var dpFechaVto: DatePicker
+    private lateinit var dpFechaPagare: DatePicker
 
 
     public override fun onCreate(savedInstance: Bundle?) {
@@ -25,7 +25,7 @@ class PedirAnotacion: Activity() {
 
     private fun inicializarControles() {
         edtAnotacion = findViewById<View>(R.id.edt_Anotacion) as EditText
-        dpFechaVto = findViewById<View>(R.id.dpFechaVto) as DatePicker
+        dpFechaPagare = findViewById<View>(R.id.dpFechaPagare) as DatePicker
     }
 
 
@@ -42,14 +42,14 @@ class PedirAnotacion: Activity() {
 
         val returnIntent = Intent()
         returnIntent.putExtra("anotacion", edtAnotacion.text.toString())
-        val day = dpFechaVto.dayOfMonth
-        val month = dpFechaVto.month + 1
-        val year = dpFechaVto.year
+        val day = dpFechaPagare.dayOfMonth
+        val month = dpFechaPagare.month + 1
+        val year = dpFechaPagare.year
         val numCeros: Byte = 2
-        var sFechaVto = ponerCeros(day.toString(), numCeros)
-        sFechaVto += '/'.toString() + ponerCeros(month.toString(), numCeros)
-        sFechaVto += "/$year"
-        returnIntent.putExtra("fechavto", sFechaVto)
+        var sFechaPagare = ponerCeros(day.toString(), numCeros)
+        sFechaPagare += '/'.toString() + ponerCeros(month.toString(), numCeros)
+        sFechaPagare += "/$year"
+        returnIntent.putExtra("fechaPagare", sFechaPagare)
         setResult(RESULT_OK, returnIntent)
         finish()
     }

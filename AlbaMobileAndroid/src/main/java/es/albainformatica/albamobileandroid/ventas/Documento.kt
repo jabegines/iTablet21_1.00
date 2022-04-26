@@ -662,7 +662,7 @@ class Documento(private val fContexto: Context) {
 
     fun setExento() {
         val fClteExento = !fClientes.fAplIva
-        val queFlag = seriesDao?.getFlag(serie, fEjercicio.toInt()) ?: 0
+        val queFlag = seriesDao?.getFlag(serie, fEjercicio) ?: 0
         fSerieExenta = queFlag and FLAGSERIE_INV_SUJ_PASIVO > 0
         val fParaFraSimpl = queFlag and FLAGSERIE_PARA_FRA_SIMPL > 0
 

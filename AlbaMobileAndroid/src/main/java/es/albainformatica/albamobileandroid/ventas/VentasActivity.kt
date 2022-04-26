@@ -610,8 +610,10 @@ class VentasActivity: AppCompatActivity() {
             }
         } else {
             val queCodClte = edtCodClte.text.toString()
-            //queCodClte = ponerCeros(queCodClte, ancho_codclte)
-            queCliente = fClientes.existeCodigo(queCodClte.toInt())
+            queCliente = if (queCodClte != "")
+                fClientes.existeCodigo(queCodClte.toInt())
+            else
+                0
         }
 
         if (queCliente > 0) {

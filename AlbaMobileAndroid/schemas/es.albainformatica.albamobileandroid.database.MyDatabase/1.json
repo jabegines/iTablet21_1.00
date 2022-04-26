@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "07e6d74ad6a556f61cd544480670cc52",
+    "identityHash": "a6b1f92308056865e864027d87b090a4",
     "entities": [
       {
         "tableName": "Almacenes",
@@ -3884,7 +3884,7 @@
       },
       {
         "tableName": "Pendiente",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pendienteId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `clienteId` INTEGER NOT NULL, `ejercicio` INTEGER NOT NULL, `empresa` INTEGER NOT NULL, `almacen` INTEGER NOT NULL, `tipoDoc` INTEGER NOT NULL, `fPago` TEXT NOT NULL, `fechaDoc` TEXT NOT NULL, `serie` TEXT NOT NULL, `numero` INTEGER NOT NULL, `importe` TEXT NOT NULL, `cobrado` TEXT NOT NULL, `fechaVto` TEXT NOT NULL, `estado` TEXT NOT NULL, `enviar` TEXT NOT NULL, `cAlmacen` TEXT NOT NULL, `cPuesto` TEXT NOT NULL, `cApunte` TEXT NOT NULL, `cEjercicio` TEXT NOT NULL, `numExport` INTEGER NOT NULL, `flag` INTEGER NOT NULL, `anotacion` TEXT NOT NULL, `hoja` INTEGER NOT NULL, `orden` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pendienteId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `clienteId` INTEGER NOT NULL, `ejercicio` INTEGER NOT NULL, `empresa` INTEGER NOT NULL, `almacen` INTEGER NOT NULL, `tipoDoc` INTEGER NOT NULL, `fPago` TEXT NOT NULL, `fechaDoc` TEXT NOT NULL, `serie` TEXT NOT NULL, `numero` INTEGER NOT NULL, `importe` TEXT NOT NULL, `cobrado` TEXT NOT NULL, `fechaVto` TEXT NOT NULL, `fechaCartera` TEXT NOT NULL, `estado` TEXT NOT NULL, `enviar` TEXT NOT NULL, `cAlmacen` TEXT NOT NULL, `cPuesto` TEXT NOT NULL, `cApunte` TEXT NOT NULL, `cEjercicio` TEXT NOT NULL, `numExport` INTEGER NOT NULL, `flag` INTEGER NOT NULL, `anotacion` TEXT NOT NULL, `hoja` INTEGER NOT NULL, `orden` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "pendienteId",
@@ -3961,6 +3961,12 @@
           {
             "fieldPath": "fechaVto",
             "columnName": "fechaVto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fechaCartera",
+            "columnName": "fechaCartera",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -5008,7 +5014,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '07e6d74ad6a556f61cd544480670cc52')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a6b1f92308056865e864027d87b090a4')"
     ]
   }
 }

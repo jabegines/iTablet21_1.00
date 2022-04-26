@@ -22,6 +22,7 @@ data class PendienteEnt (
     var importe: String = "",
     var cobrado: String = "",
     var fechaVto: String = "",
+    var fechaCartera: String = "",
     var estado: String = "",
     var enviar: String = "",
     var cAlmacen: String = "",

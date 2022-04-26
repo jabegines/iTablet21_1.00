@@ -4722,6 +4722,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                 serializer.attribute(null, "IMPORTE", pendiente.importe.replace('.', ','))
                 serializer.attribute(null, "COBRADO", pendiente.cobrado.replace('.', ','))
                 serializer.attribute(null, "FECHAVTO", pendiente.fechaVto)
+                serializer.attribute(null, "FECHACARTERA", pendiente.fechaCartera)
                 serializer.attribute(null, "ESTADO", pendiente.estado)
                 serializer.attribute(null, "ENVIAR", pendiente.enviar)
                 serializer.attribute(null, "CALMACEN", pendiente.cAlmacen)

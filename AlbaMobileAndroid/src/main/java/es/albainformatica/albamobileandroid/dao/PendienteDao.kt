@@ -1,6 +1,5 @@
 package es.albainformatica.albamobileandroid.dao
 
-import android.database.Cursor
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -81,9 +80,9 @@ interface PendienteDao {
     fun abrirDocDiferido(queSerie: String, queNumero: Int, queEjercicio: Short): PendienteEnt
 
 
-    @Query("UPDATE Pendiente SET FechaVto = :queFechaVto, Anotacion = :queAnotacion," +
+    @Query("UPDATE Pendiente SET FechaCartera = :queFechaPagare, Anotacion = :queAnotacion," +
             " Enviar = 'T', Flag = :queFlag WHERE PendienteId = :quePendienteId")
-    fun actualizarFechaVto(quePendienteId: Int, queFechaVto: String, queAnotacion: String, queFlag: Int)
+    fun actualizarFechaPagare(quePendienteId: Int, queFechaPagare: String, queAnotacion: String, queFlag: Int)
 
 
     @Query("SELECT pendienteId FROM Pendiente WHERE tipoDoc = :queTipoDoc" +

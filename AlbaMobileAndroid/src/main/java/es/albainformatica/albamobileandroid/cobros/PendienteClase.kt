@@ -184,9 +184,9 @@ class PendienteClase(queContexto: Context) {
     }
 
 
-    fun actualizarFechaVto(queFechaVto: String, queAnotacion: String) {
+    fun actualizarFechaPagare(queFechaPagare: String, queAnotacion: String) {
         val queFlag = flag or FLAGPENDIENTE_EN_CARTERA
-        pendienteDao?.actualizarFechaVto(pendienteId, queFechaVto, queAnotacion, queFlag)
+        pendienteDao?.actualizarFechaPagare(pendienteId, queFechaPagare, queAnotacion, queFlag)
     }
 
 

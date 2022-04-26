@@ -340,14 +340,12 @@ class CobrosActivity: AppCompatActivity() {
     }
 
 
-    private fun continuarPagare(queAnotacion: String, queFechaVto: String) {
+    private fun continuarPagare(queAnotacion: String, queFechaPagare: String) {
         val aldDialog = nuevoAlertBuilder(this, "Marcar", resources.getString(R.string.msj_MarcarPagare), true)
         aldDialog.setPositiveButton("OK") { _: DialogInterface?, _: Int ->
-            fPendiente.actualizarFechaVto(queFechaVto, queAnotacion)
+            fPendiente.actualizarFechaPagare(queFechaPagare, queAnotacion)
 
-            // Tengo que cerrar y abrir fPendiente porque si no, no refresca el listView de pendientes.
             idPendiente = 0
-
             prepararRecPdtes()
             // Ocultamos el teclado
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
@@ -426,13 +424,13 @@ class CobrosActivity: AppCompatActivity() {
                 mostrarCliente(fCliente)
             }
         } else if (requestCode == fRequestPedirAnotacion) {
-            var queAnotacion: String? = ""
-            var queFechaVto: String? = ""
+            var queAnotacion = ""
+            var queFechaPagare = ""
             if (resultCode == RESULT_OK) {
-                queAnotacion = data?.getStringExtra("anotacion")
-                queFechaVto = data?.getStringExtra("fechavto")
+                queAnotacion = data?.getStringExtra("anotacion") ?: ""
+                queFechaPagare = data?.getStringExtra("fechaPagare") ?: ""
             }
-            continuarPagare(queAnotacion!!, queFechaVto!!)
+            continuarPagare(queAnotacion, queFechaPagare)
         }
     }
 

@@ -341,19 +341,22 @@ class ImprimirDocumento(contexto: Context): Runnable {
                     sImpIva = String.format(fFtoImpBase, x.fImporteIva)
                     sPorcRe = String.format(fFtoImpBase, x.fPorcRe)
                     sImpRe = String.format(fFtoImpBase, x.fImporteRe)
+
                     texto.append(ajustarCadena(sBruto, lBruto, false)).append(stringOfChar(" ", 1))
                         .append(ajustarCadena(sImpDto, lImpDto, false)).append(stringOfChar(" ", 1))
                         .append(ajustarCadena(sBase, lBase, false)).append(stringOfChar(" ", 2))
-                        .append(ajustarCadena(sPorcIva, 5, false)).append(stringOfChar(" ", 1))
-                        .append(ajustarCadena(sImpIva, lImpIva, false)).append(stringOfChar(" ", 1))
+
+                    if (fDocumento.fSerieExenta) {
+                        texto.append("INVERSION SUJETO PASIVO").append(stringOfChar(" ", 1))
+                    } else {
+                        texto.append(ajustarCadena(sPorcIva, 5, false)).append(stringOfChar(" ", 1))
+                            .append(ajustarCadena(sImpIva, lImpIva, false))
+                            .append(stringOfChar(" ", 1))
+                    }
+
                     if (x.fImporteRe != 0.0) texto.append(ajustarCadena(sPorcRe, 5, false))
-                        .append(stringOfChar(" ", 1)).append(
-                        ajustarCadena(
-                            sImpRe,
-                            lImpRe,
-                            false
-                        )
-                    ) else texto.append(stringOfChar(" ", 6 + lImpRe))
+                        .append(stringOfChar(" ", 1)).append(ajustarCadena(sImpRe, lImpRe, false))
+                    else texto.append(stringOfChar(" ", 6 + lImpRe))
                     texto.append(ccSaltoLinea)
                     fLineasImpresas++
                 }
@@ -361,9 +364,7 @@ class ImprimirDocumento(contexto: Context): Runnable {
             sTotal = String.format(fFtoImpII, fDocumento.fBases.totalConImptos)
             texto.append(ccSaltoLinea)
             texto.append(stringOfChar(" ", 10)).append("TOTAL IMPORTE: ").append(ccDobleAncho)
-                .append(ajustarCadena(sTotal, lTotal, false)).append(
-                    ccNormal
-            ).append("  Euros").append(ccSaltoLinea)
+                .append(ajustarCadena(sTotal, lTotal, false)).append(ccNormal).append("  Euros").append(ccSaltoLinea)
             fLineasImpresas += 2
             os.write(texto.toString().toByteArray())
             // Pausa

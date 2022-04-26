@@ -10,6 +10,7 @@ import es.albainformatica.albamobileandroid.entity.SeriesEnt
 @Dao
 interface SeriesDao {
 
+
     @Query("SELECT ejercicio FROM series WHERE serie = :queSerie")
     fun ejercicioSerie(queSerie: String): MutableList<Short>
 
@@ -19,7 +20,7 @@ interface SeriesDao {
 
 
     @Query("SELECT Flag FROM Series WHERE Serie = :queSerie AND Ejercicio = :queEjercicio")
-    fun getFlag(queSerie: String, queEjercicio: Int): Int
+    fun getFlag(queSerie: String, queEjercicio: Short): Int
 
 
     @Query("SELECT Factura FROM Series WHERE Serie = :queSerie AND Ejercicio = :queEjercicio")

@@ -83,6 +83,7 @@ const val FLAGCNFTARIFAS_PARA_PIEZAS = 1
 // Series
 const val FLAGSERIE_INV_SUJ_PASIVO = 16
 const val FLAGSERIE_PARA_FRA_SIMPL = 128
+const val FLAGSERIE_FORZAR_PR_IVA_INCL = 1024
 
 
 // Flag cabecera

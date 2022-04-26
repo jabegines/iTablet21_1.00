@@ -10,13 +10,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.color.MaterialColors.getColor
 import es.albainformatica.albamobileandroid.Comunicador.Companion.fConfiguracion
 import es.albainformatica.albamobileandroid.DatosLinVtas
 import es.albainformatica.albamobileandroid.FLAG3LINEAVENTA_PRECIO_POR_PIEZAS
 import es.albainformatica.albamobileandroid.FLAGLINEAVENTA_SIN_CARGO
 import es.albainformatica.albamobileandroid.R
-import kotlinx.android.synthetic.main.item_cargas_list.view.*
 import kotlinx.android.synthetic.main.ly_lineas_ventas.view.*
 import java.util.*
 

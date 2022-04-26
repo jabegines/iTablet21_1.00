@@ -332,9 +332,14 @@ class ImprGenerica(contexto: Context): Runnable {
                     texto.append(fMargenIzq).append(ajustarCadena(sBruto, lBruto, false))
                         .append(stringOfChar(" ", 1)).append(ajustarCadena(sImpDto, lImpDto, false))
                         .append(stringOfChar(" ", 1)).append(ajustarCadena(sBase, lBase, false))
-                        .append(stringOfChar(" ", 2)).append(ajustarCadena(sPorcIva, 7, false))
-                        .append(stringOfChar(" ", 1)).append(ajustarCadena(sImpIva, lImpIva, false))
-                        .append(stringOfChar(" ", 1))
+
+                    if (fDocumento.fSerieExenta) {
+                        texto.append("INVERSION SUJETO PASIVO")
+                    } else {
+                        texto.append(stringOfChar(" ", 2)).append(ajustarCadena(sPorcIva, 7, false))                            .append(stringOfChar(" ", 1))
+                            .append(ajustarCadena(sImpIva, lImpIva, false))
+                            .append(stringOfChar(" ", 1))
+                    }
                     texto.append(ccSaltoLinea)
                 }
             }

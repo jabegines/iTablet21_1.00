@@ -49,11 +49,11 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="40dp"
-      android:text="@string/getFechaVto"
+      android:text="@string/getFechaPagare"
       style="@style/Texto16.Negrita"/>
 
     <DatePicker
-      android:id="@+id/dpFechaVto"
+      android:id="@+id/dpFechaPagare"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="20dp"

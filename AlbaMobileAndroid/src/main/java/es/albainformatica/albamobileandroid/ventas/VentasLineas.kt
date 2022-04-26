@@ -30,6 +30,7 @@ import es.albainformatica.albamobileandroid.reparto.FirmarDoc
 import es.albainformatica.albamobileandroid.cobros.Cobrar
 import es.albainformatica.albamobileandroid.cobros.CobrosActivity
 import es.albainformatica.albamobileandroid.dao.ContactosCltesDao
+import es.albainformatica.albamobileandroid.dao.SeriesDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.entity.ContactosCltesEnt
 import es.albainformatica.albamobileandroid.impresion_informes.ImprDocFormato2
@@ -240,7 +241,11 @@ class VentasLineas: AppCompatActivity() {
         tvNombreClte.text = fDocumento.fClientes.fCodigo + " - " + fDocumento.nombreCliente()
         tvNComClte.text = fDocumento.nombreComClte()
         fEstado = est_Vl_Browse
-        fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
+
+        val fSeriesDao: SeriesDao? = MyDatabase.getInstance(this)?.seriesDao()
+        val queFlagSerie = fSeriesDao?.getFlag(fSerie, fDocumento.fEjercicio) ?: 0
+        val fForzarPrIvaIncl = queFlagSerie and FLAGSERIE_FORZAR_PR_IVA_INCL > 0
+        fIvaIncluido = fForzarPrIvaIncl || fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
 
         fRecyclerView = rvVL_LineasDoc
         fRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -528,102 +533,113 @@ class VentasLineas: AppCompatActivity() {
     private fun imprimirDoc() {
         var fExportar = pref.getBoolean("ventas_exportar_pdf", false)
         if (fExportar && fDocumento.fTipoDoc == TIPODOC_PEDIDO) {
-            if (pref.getBoolean("ventas_enviar_guardar", false)) fExportar =
-                fDocEnviarGuardar == 1
+            if (pref.getBoolean("ventas_enviar_guardar", false))
+                fExportar = fDocEnviarGuardar == 1
         } else fExportar = false
+
         if (fConfiguracion.imprimir() || fExportar) {
 
-            // Volvemos a recalcular el documento, para que no pase lo que le ha pasado a Artesantequera,
-            // que le ha imprimido tres líneas y las bases corresponden sólo a dos de ellas.
-            fDocumento.recalcularBases()
-            val imprDoc = ImprimirDocumento(this@VentasLineas)
-            val imprDocDtmApex2 = ImprDocDatamaxApex2(this@VentasLineas)
-            val imprDocIntermec = ImprIntermecPB51(this)
-            val imprDocBixolon = ImprGenerica(this)
-            val imprZebra = ImprZebra(this)
+            // Comprobamos si tenemos alguna impresora configurada para imprimir
+            val mDeviceAddress: String = pref.getString("impresoraBT", "") ?: ""
+            if (fExportar || mDeviceAddress != "") {
 
-            // Lo primero que debemos hacer es rescatar el layout creado para el prompt.
-            val li = LayoutInflater.from(this)
-            val prompt =
-                li.inflate(R.layout.imprimir_doc, null)
-            // Luego, creamos un constructor de Alert Dialog que nos ayudará a utilizar nuestro layout.
-            val alertDialogBuilder = AlertDialog.Builder(this)
-            alertDialogBuilder.setView(prompt)
+                // Volvemos a recalcular el documento, para que no pase lo que le ha pasado a Artesantequera,
+                // que le ha imprimido tres líneas y las bases corresponden sólo a dos de ellas.
+                fDocumento.recalcularBases()
+                val imprDoc = ImprimirDocumento(this@VentasLineas)
+                val imprDocDtmApex2 = ImprDocDatamaxApex2(this@VentasLineas)
+                val imprDocIntermec = ImprIntermecPB51(this)
+                val imprDocBixolon = ImprGenerica(this)
+                val imprZebra = ImprZebra(this)
 
-            // Por ultimo, creamos el cuadro de dialogo y las acciones requeridas al aceptar o cancelar el prompt.
-            // Creamos un AlertDialog y lo mostramos
-            val alertDialog = alertDialogBuilder.create()
-            alertDialog.setCancelable(false)
-            alertDialog.show()
+                // Lo primero que debemos hacer es rescatar el layout creado para el prompt.
+                val li = LayoutInflater.from(this)
+                val prompt = li.inflate(R.layout.imprimir_doc, null)
+                // Luego, creamos un constructor de Alert Dialog que nos ayudará a utilizar nuestro layout.
+                val alertDialogBuilder = AlertDialog.Builder(this)
+                alertDialogBuilder.setView(prompt)
 
-            // Establecemos los eventos para los distintos botones del layout del diálogo.
-            val btnImpr =
-                alertDialog.findViewById<Button>(R.id.btnImprDoc)
-            if (fConfiguracion.imprimir()) {
-                btnImpr.setOnClickListener {
-                    fDocImprimido = true
-                    val chkSinValorar = alertDialog.findViewById<CheckBox>(es.albainformatica.albamobileandroid.R.id.chkSinValorar)
-                    val btnNoImpr = alertDialog.findViewById<Button>(es.albainformatica.albamobileandroid.R.id.btnNoImpr)
-                    btnNoImpr.visibility = View.GONE
-                    chkSinValorar.visibility = View.GONE
-                    comenzarImprDoc(chkSinValorar.isChecked, imprDocDtmApex2, imprDocIntermec, imprDocBixolon,
-                        imprZebra, imprDoc, alertDialog, btnImpr)
-                }
-            } else btnImpr.visibility = View.GONE
-            val btnNoImpr = alertDialog.findViewById<Button>(es.albainformatica.albamobileandroid.R.id.btnNoImpr)
-            btnNoImpr.setOnClickListener {
-                alertDialog.cancel()
-                finalizarVenta()
-            }
+                // Por ultimo, creamos el cuadro de dialogo y las acciones requeridas al aceptar o cancelar el prompt.
+                // Creamos un AlertDialog y lo mostramos
+                val alertDialog = alertDialogBuilder.create()
+                alertDialog.setCancelable(false)
+                alertDialog.show()
 
-            // Establecemos la visibilidad del check 'Sin Valorar'
-            val chkSinValorar =
-                alertDialog.findViewById<CheckBox>(es.albainformatica.albamobileandroid.R.id.chkSinValorar)
-            if (fConfiguracion.imprimir()) {
-                // Si el documento no es albarán ni pedido no presentaremos el botón para imprimir sin valorar
-                if (fDocumento.fTipoDoc != TIPODOC_ALBARAN && fDocumento.fTipoDoc != TIPODOC_PEDIDO) {
-                    chkSinValorar.visibility = View.GONE
-                }
-            } else chkSinValorar.visibility = View.GONE
-
-            // Comprobamos si tenemos algun email para enviar. Si no, desactivamos la exportacion a PDF.
-            val documPDF = DocPDF(this@VentasLineas)
-            val btnExpPDF = alertDialog.findViewById<Button>(R.id.btnExpPDFDoc)
-
-            if (documPDF.dimeNumEmailsClte() > 0) {
-                btnExpPDF.setOnClickListener { v: View ->
-                    fDocImprimido = true
-                    documPDF.crearPDF()
-
-                    // Comprobamos si el Whatsapp está instalado
-                    if (whatsappInstalado(this)) {
-                        val aldDialog =
-                            nuevoAlertBuilder(this, "Escoja", "Enviar documento PDF", true)
-                        aldDialog.setPositiveButton("Por email") { _: DialogInterface?, _: Int ->
-                            //Toast.makeText(VentasLineas.this, getString(R.string.tst_docpdf), Toast.LENGTH_LONG).show();
-                            documPDF.enviarPorEmail()
-                            v.isEnabled = false
-                        }
-                        aldDialog.setNegativeButton("Por whatsapp") { _: DialogInterface?, _: Int ->
-                            val telfDao: ContactosCltesDao? = MyDatabase.getInstance(this@VentasLineas)?.contactosCltesDao()
-                            val lTelfs = telfDao?.getTlfsCliente(fDocumento.fCliente) ?: emptyList<ContactosCltesEnt>().toMutableList()
-                            var numeroTelefono = lTelfs[0].telefono1
-                            if (numeroTelefono == "") numeroTelefono = lTelfs[0].telefono2
-                            // Si no añadimos el prefijo no funciona
-                            if (!numeroTelefono.startsWith("34"))
-                                numeroTelefono = "34$numeroTelefono"
-                            enviarPorWhatsapPdf(this, documPDF.nombrePDF, numeroTelefono)
-                            v.isEnabled = false
-                        }
-                        aldDialog.setCancelable(true)
-                        val alert = aldDialog.create()
-                        alert.show()
-                    } else {
-                        documPDF.enviarPorEmail()
+                // Establecemos los eventos para los distintos botones del layout del diálogo.
+                val btnImpr = alertDialog.findViewById<Button>(R.id.btnImprDoc)
+                if (fConfiguracion.imprimir()) {
+                    btnImpr.setOnClickListener {
+                        fDocImprimido = true
+                        val chkSinValorar =
+                            alertDialog.findViewById<CheckBox>(es.albainformatica.albamobileandroid.R.id.chkSinValorar)
+                        val btnNoImpr =
+                            alertDialog.findViewById<Button>(es.albainformatica.albamobileandroid.R.id.btnNoImpr)
+                        btnNoImpr.visibility = View.GONE
+                        chkSinValorar.visibility = View.GONE
+                        comenzarImprDoc(chkSinValorar.isChecked, imprDocDtmApex2, imprDocIntermec,
+                            imprDocBixolon, imprZebra, imprDoc, alertDialog, btnImpr)
                     }
+                } else btnImpr.visibility = View.GONE
+                val btnNoImpr =
+                    alertDialog.findViewById<Button>(es.albainformatica.albamobileandroid.R.id.btnNoImpr)
+                btnNoImpr.setOnClickListener {
+                    alertDialog.cancel()
+                    finalizarVenta()
                 }
-            } else btnExpPDF.visibility = View.GONE
-        } else {
+
+                // Establecemos la visibilidad del check 'Sin Valorar'
+                val chkSinValorar =
+                    alertDialog.findViewById<CheckBox>(es.albainformatica.albamobileandroid.R.id.chkSinValorar)
+                if (fConfiguracion.imprimir()) {
+                    // Si el documento no es albarán ni pedido no presentaremos el botón para imprimir sin valorar
+                    if (fDocumento.fTipoDoc != TIPODOC_ALBARAN && fDocumento.fTipoDoc != TIPODOC_PEDIDO) {
+                        chkSinValorar.visibility = View.GONE
+                    }
+                } else chkSinValorar.visibility = View.GONE
+
+                // Comprobamos si tenemos algun email para enviar. Si no, desactivamos la exportacion a PDF.
+                val documPDF = DocPDF(this@VentasLineas)
+                val btnExpPDF = alertDialog.findViewById<Button>(R.id.btnExpPDFDoc)
+
+                if (documPDF.dimeNumEmailsClte() > 0) {
+                    btnExpPDF.setOnClickListener { v: View ->
+                        fDocImprimido = true
+                        documPDF.crearPDF()
+
+                        // Comprobamos si el Whatsapp está instalado
+                        if (whatsappInstalado(this)) {
+                            val aldDialog =
+                                nuevoAlertBuilder(this, "Escoja", "Enviar documento PDF", true)
+                            aldDialog.setPositiveButton("Por email") { _: DialogInterface?, _: Int ->
+                                //Toast.makeText(VentasLineas.this, getString(R.string.tst_docpdf), Toast.LENGTH_LONG).show();
+                                documPDF.enviarPorEmail()
+                                v.isEnabled = false
+                            }
+                            aldDialog.setNegativeButton("Por whatsapp") { _: DialogInterface?, _: Int ->
+                                val telfDao: ContactosCltesDao? =
+                                    MyDatabase.getInstance(this@VentasLineas)?.contactosCltesDao()
+                                val lTelfs = telfDao?.getTlfsCliente(fDocumento.fCliente)
+                                    ?: emptyList<ContactosCltesEnt>().toMutableList()
+                                var numeroTelefono = lTelfs[0].telefono1
+                                if (numeroTelefono == "") numeroTelefono = lTelfs[0].telefono2
+                                // Si no añadimos el prefijo no funciona
+                                if (!numeroTelefono.startsWith("34"))
+                                    numeroTelefono = "34$numeroTelefono"
+                                enviarPorWhatsapPdf(this, documPDF.nombrePDF, numeroTelefono)
+                                v.isEnabled = false
+                            }
+                            aldDialog.setCancelable(true)
+                            val alert = aldDialog.create()
+                            alert.show()
+                        } else {
+                            documPDF.enviarPorEmail()
+                        }
+                    }
+                } else btnExpPDF.visibility = View.GONE
+            }
+            else finalizarVenta()
+        }
+        else {
             finalizarVenta()
         }
     }
