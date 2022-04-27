@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Environment
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.provider.Settings
 import android.util.Log
 import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.queBDRoom
@@ -49,7 +49,7 @@ class MiscServicio(context: Context) {
         val usarMultisistema = prefs.getBoolean("usar_multisistema", false)
         fSistemaId = if (usarMultisistema) {
             val queBD = queBDRoom
-            queBD.substring(queBD.length-2, queBD.length)
+            queBD.substring(queBD.length-5, queBD.length-3)
         }
         else {
             prefs.getString("sistemaId_servicio", "00") ?: "00"
@@ -68,7 +68,7 @@ class MiscServicio(context: Context) {
                 ";;;" + fAccion + ";;;" + fAppId + ";;;" + fFechaHora
 
         val queSha = sha1(fFirma)
-        fFirma = fFirma + ";;;" + queSha //sha1(fFirma)
+        fFirma = "$fFirma;;;$queSha" //sha1(fFirma)
         fFirma = Base64.encodeBase64String(fFirma.toByteArray())
         fFirma = fFirma.replace("\r", "").replace("\n", "").replace("+", "-").replace("\\", "_").replace("=", "*")
 
@@ -100,13 +100,11 @@ class MiscServicio(context: Context) {
             val fAccion = "16"
             val fAppId = "1"
 
-            var fFirma =
-                fEmail + ";;;" + fHuella + ";;;" + (fEmail + fHuella).length + ";;;" + fPassword +
+            var fFirma = fEmail + ";;;" + fHuella + ";;;" + (fEmail + fHuella).length + ";;;" + fPassword +
                         ";;;" + fAccion + ";;;" + fAppId + ";;;" + fFechaHora
             fFirma = fFirma + ";;;" + sha1(fFirma)
             fFirma = Base64.encodeBase64String(fFirma.toByteArray())
-            fFirma = fFirma.replace("\r", "").replace("\n", "").replace("+", "-").replace("\\", "_")
-                .replace("=", "*")
+            fFirma = fFirma.replace("\r", "").replace("\n", "").replace("+", "-").replace("\\", "_").replace("=", "*")
 
             val client = OkHttpClient.Builder().readTimeout(5, TimeUnit.MINUTES).build()
             val queUrl = "$urlServicio/Service/Action/GetVersionApp"

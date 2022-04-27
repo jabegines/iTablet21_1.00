@@ -6,6 +6,7 @@ import androidx.room.Query
 import androidx.room.Update
 import es.albainformatica.albamobileandroid.DatosLinIva
 import es.albainformatica.albamobileandroid.DatosLinVtas
+import es.albainformatica.albamobileandroid.DatosOftVol
 import es.albainformatica.albamobileandroid.entity.LineasEnt
 import es.albainformatica.albamobileandroid.entity.LineasFrasEnt
 
@@ -58,6 +59,13 @@ interface LineasFrasDao {
             " WHERE A.facturaId <= 0")
     fun getLineasHuerfanas(): List<DatosLinVtas>
 
+
+    @Query("SELECT lineaId FROM LineasFras WHERE facturaId = :queIdDoc AND flag3 = 128")
+    fun hayOftVolumen(queIdDoc: Int): Int
+
+
+    @Query("SELECT descripcion, importe FROM LineasFras WHERE flag3 = 128 AND facturaId = :queIdDoc")
+    fun cargarOftVol(queIdDoc: Int): List<DatosOftVol>
 
 
     @Query("SELECT A.codigoIva, A.importe, A.importeII, B.porcIva FROM LineasFras A " +

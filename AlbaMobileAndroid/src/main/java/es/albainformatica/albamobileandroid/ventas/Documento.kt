@@ -38,7 +38,7 @@ class Documento(private val fContexto: Context) {
     private val trfFormatosDao: TrfFormatosDao? = getInstance(fContexto)?.trfFormatosDao()
     private val seriesDao: SeriesDao? = getInstance(fContexto)?.seriesDao()
     private val pendienteDao: PendienteDao? = getInstance(fContexto)?.pendienteDao()
-    private val empresasDao: EmpresasDao? = getInstance(fContexto)?.empresasDao()
+    //private val empresasDao: EmpresasDao? = getInstance(fContexto)?.empresasDao()
     private val artHabitDao: ArtHabitualesDao? = getInstance(fContexto)?.artHabitualesDao()
     private val formatosDao: FormatosDao? = getInstance(fContexto)?.formatosDao()
     private val articulosDao: ArticulosDao? = getInstance(fContexto)?.articulosDao()
@@ -1544,13 +1544,16 @@ class Documento(private val fContexto: Context) {
 
 
     fun hayOftVolumen(): Boolean {
-        val queLinea = lineasDao?.hayOftVolumen(fIdDoc) ?: 0
+
+        val queLinea = if (fTipoDoc == TIPODOC_FACTURA) lineasFrasDao?.hayOftVolumen(fIdDoc) ?: 0
+            else lineasDao?.hayOftVolumen(fIdDoc) ?: 0
 
         return queLinea > 0
     }
 
 
     fun cargarListaOftVol(): List<DatosOftVol> {
+        if (fTipoDoc == TIPODOC_FACTURA) return lineasFrasDao?.cargarOftVol(fIdDoc) ?: emptyList<DatosOftVol>().toMutableList()
         return lineasDao?.cargarOftVol(fIdDoc) ?: emptyList<DatosOftVol>().toMutableList()
     }
 
