@@ -2362,6 +2362,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                                 sCampo.equals("Pedido", ignoreCase = true) -> serieEnt.pedido = parser.getAttributeValue("", sCampo).toInt()
                                 sCampo.equals("Presupuesto", ignoreCase = true) -> serieEnt.presupuesto = parser.getAttributeValue("", sCampo).toInt()
                                 sCampo.equals("Flag", ignoreCase = true) -> serieEnt.flag = parser.getAttributeValue("", sCampo).toInt()
+                                sCampo.equals("PorDefecto", ignoreCase = true) -> serieEnt.porDefecto = parser.getAttributeValue("", sCampo)
                             }
                         }
                         if (serieEnt.serie != "") {
@@ -2376,6 +2377,9 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                             // documentos con los números que vamos a realizar en la tablet y, al recibirlos,
                             // obtendremos el mensaje de que los documentos ya existen.
                             } else {
+                                // Aprovechamos y actualizamos el campo PorDefecto
+                                seriesDao?.setPorDefecto(serieEnt.serie, queEjercicio, serieEnt.porDefecto)
+
                                 val queNumPedido = seriesDao?.getNumPedido(serieEnt.serie, queEjercicio.toInt()) ?: 0
                                 if (queNumPedido < serieEnt.pedido)
                                     seriesDao?.setNumPedido(serieEnt.serie, queEjercicio, serieEnt.pedido)
@@ -2625,7 +2629,6 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                                 sCampo.equals("Codigo", ignoreCase = true) -> empresaEnt.codigo = parser.getAttributeValue("", sCampo).toInt()
                                 sCampo.equals("NombreFiscal", ignoreCase = true) -> empresaEnt.nombreFiscal = parser.getAttributeValue("", sCampo)
                                 sCampo.equals("NombreComercial", ignoreCase = true) -> empresaEnt.nombrecomercial = parser.getAttributeValue("", sCampo)
-                                sCampo.equals("Serie", ignoreCase = true) -> empresaEnt.serie = parser.getAttributeValue("", sCampo)
                                 sCampo.equals("VenderIvaIncl", ignoreCase = true) -> empresaEnt.venderIvaIncl = parser.getAttributeValue("", sCampo)
                             }
                         }

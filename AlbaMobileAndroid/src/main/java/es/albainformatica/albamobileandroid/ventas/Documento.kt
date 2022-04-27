@@ -296,8 +296,8 @@ class Documento(private val fContexto: Context) {
         val cabEntOrigen = cabeceraDao?.cargarDoc(queIdDoc) ?: CabecerasEnt()
         if (cabEntOrigen.cabeceraId > 0) {
             fTipoDoc = TIPODOC_ALBARAN
-            // Tomamos la serie configurada para la empresa
-            serie = empresasDao?.getSerieEmpresa(cabEntOrigen.empresa.toInt()) ?: ""
+            // Tomamos la serie por defecto para la empresa y ejercicio actual
+            serie = seriesDao?.getSeriePorDefEj(cabEntOrigen.empresa, fConfiguracion.ejercicio()) ?: ""
             haySerieNumero = setSerieNumero(serie)
             if (haySerieNumero) {
                 // Tomamos el total del documento para devolverlo.

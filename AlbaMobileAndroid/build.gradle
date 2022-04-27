@@ -61,6 +61,9 @@ android {
         targetCompatibility = "8"
         sourceCompatibility = "8"
     }
+    dexOptions {
+        javaMaxHeapSize "4G"
+    }
 
     //flavorDimensions 'default'
 }

@@ -24,9 +24,6 @@ interface EmpresasDao {
     @Query("SELECT codigo FROM Empresas")
     fun getCodigoEmpresa(): Int
 
-    @Query("SELECT serie FROM Empresas WHERE codigo = :queEmpresa")
-    fun getSerieEmpresa(queEmpresa: Int): String
-
 
     @Query("DELETE FROM Empresas")
     fun vaciar()

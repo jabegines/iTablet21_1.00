@@ -12,6 +12,5 @@ data class EmpresasEnt (
 
     var nombreFiscal: String = "",
     var nombrecomercial: String = "",
-    var serie: String = "",
     var venderIvaIncl: String = ""
 )

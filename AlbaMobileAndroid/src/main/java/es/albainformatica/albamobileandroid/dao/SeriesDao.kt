@@ -11,6 +11,10 @@ import es.albainformatica.albamobileandroid.entity.SeriesEnt
 interface SeriesDao {
 
 
+    @Query("SELECT Serie FROM Series WHERE Empresa = :queEmpresa AND Ejercicio = :queEjercicio " +
+            " AND PorDefecto = 'T'")
+    fun getSeriePorDefEj(queEmpresa: Short, queEjercicio: Short): String
+
     @Query("SELECT ejercicio FROM series WHERE serie = :queSerie")
     fun ejercicioSerie(queSerie: String): MutableList<Short>
 
@@ -44,6 +48,9 @@ interface SeriesDao {
 
     @Query("UPDATE Series SET Pedido = :queNumero WHERE Serie = :queSerie AND Ejercicio = :queEjercicio")
     fun setNumPedido(queSerie: String, queEjercicio: Short, queNumero: Int)
+
+    @Query("UPDATE Series SET PorDefecto = :quePorDef WHERE Serie = :queSerie AND Ejercicio = :queEjercicio")
+    fun setPorDefecto(queSerie: String, queEjercicio: Short, quePorDef: String)
 
     @Query("UPDATE Series SET Presupuesto = :queNumero WHERE Serie = :queSerie AND Ejercicio = :queEjercicio")
     fun setNumPresupuesto(queSerie: String, queEjercicio: Short, queNumero: Int)

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "a6b1f92308056865e864027d87b090a4",
+    "identityHash": "d2f6918afc8a67286eaacf91472418ff",
     "entities": [
       {
         "tableName": "Almacenes",
@@ -1890,7 +1890,7 @@
       },
       {
         "tableName": "Empresas",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`codigo` INTEGER NOT NULL, `nombreFiscal` TEXT NOT NULL, `nombrecomercial` TEXT NOT NULL, `serie` TEXT NOT NULL, `venderIvaIncl` TEXT NOT NULL, PRIMARY KEY(`codigo`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`codigo` INTEGER NOT NULL, `nombreFiscal` TEXT NOT NULL, `nombrecomercial` TEXT NOT NULL, `venderIvaIncl` TEXT NOT NULL, PRIMARY KEY(`codigo`))",
         "fields": [
           {
             "fieldPath": "codigo",
@@ -1907,12 +1907,6 @@
           {
             "fieldPath": "nombrecomercial",
             "columnName": "nombrecomercial",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "serie",
-            "columnName": "serie",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -4429,7 +4423,7 @@
       },
       {
         "tableName": "Series",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`serie` TEXT NOT NULL, `ejercicio` INTEGER NOT NULL, `empresa` INTEGER NOT NULL, `factura` INTEGER NOT NULL, `albaran` INTEGER NOT NULL, `pedido` INTEGER NOT NULL, `presupuesto` INTEGER NOT NULL, `flag` INTEGER NOT NULL, PRIMARY KEY(`serie`, `ejercicio`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`serie` TEXT NOT NULL, `ejercicio` INTEGER NOT NULL, `empresa` INTEGER NOT NULL, `factura` INTEGER NOT NULL, `albaran` INTEGER NOT NULL, `pedido` INTEGER NOT NULL, `presupuesto` INTEGER NOT NULL, `flag` INTEGER NOT NULL, `porDefecto` TEXT NOT NULL, PRIMARY KEY(`serie`, `ejercicio`))",
         "fields": [
           {
             "fieldPath": "serie",
@@ -4477,6 +4471,12 @@
             "fieldPath": "flag",
             "columnName": "flag",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "porDefecto",
+            "columnName": "porDefecto",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -5014,7 +5014,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a6b1f92308056865e864027d87b090a4')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd2f6918afc8a67286eaacf91472418ff')"
     ]
   }
 }

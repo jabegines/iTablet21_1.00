@@ -204,6 +204,15 @@ class VentasActivity: AppCompatActivity() {
             resultElegirEmpresa.launch(intent)
         }
 
+        // Vemos si tenemos alguna serie por defecto para el ejercicio actual
+        val queSerie = seriesDao?.getSeriePorDefEj(fEmpresaActual.toShort(), fConfiguracion.ejercicio()) ?: ""
+        if (queSerie != "") {
+            tvSerie.text = queSerie
+        } else {
+            MsjAlerta(this).alerta(resources.getString(R.string.msj_SerieNoEjerc))
+        }
+
+        /*
         val queSerie = empresasDao?.getSerieEmpresa(fEmpresaActual) ?: ""
 
         if (queSerie != "") {
@@ -223,6 +232,7 @@ class VentasActivity: AppCompatActivity() {
             }
         }
         else tvSerie.text = ""
+        */
     }
 
 
