@@ -31,6 +31,7 @@ import kotlinx.android.synthetic.main.ventas_rutero.*
 
 class VentasActivity: AppCompatActivity() {
     private val cabecerasDao: CabecerasDao? = MyDatabase.getInstance(this)?.cabecerasDao()
+    private val seriesDao: SeriesDao? = MyDatabase.getInstance(this)?.seriesDao()
     private lateinit var fConfiguracion: Configuracion
     private lateinit var prefs: SharedPreferences
     private lateinit var fRutero: Rutero
@@ -194,7 +195,6 @@ class VentasActivity: AppCompatActivity() {
 
     private fun mostrarEmpresaActual() {
         val empresasDao: EmpresasDao? = MyDatabase.getInstance(this)?.empresasDao()
-        val seriesDao: SeriesDao? = MyDatabase.getInstance(this)?.seriesDao()
         val tvTitulo = findViewById<TextView>(R.id.tvNombreActivity)
 
         tvTitulo.text = empresasDao?.getNombreEmpresa(fEmpresaActual) ?: "Sin empresa actual"
@@ -386,6 +386,9 @@ class VentasActivity: AppCompatActivity() {
                 else
                     siguienteClte()
             }
+            // Volvemos a aconsejar la serie por defecto para el ejercicio y empresa
+            val queSerie = seriesDao?.getSeriePorDefEj(fEmpresaActual.toShort(), fConfiguracion.ejercicio()) ?: ""
+            if (queSerie != "") tvSerie.text = queSerie
 
         } else if (result.resultCode == Activity.RESULT_CANCELED) {
             MsjAlerta(this).alerta(resources.getString(R.string.msj_SinSerie))

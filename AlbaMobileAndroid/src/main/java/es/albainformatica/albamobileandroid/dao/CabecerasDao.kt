@@ -81,7 +81,7 @@ interface CabecerasDao {
             " ELSE 1=1" +
             " END " +
             " ORDER BY substr(A.fecha, 7)||substr(A.fecha, 4, 2)||substr(A.fecha, 1, 2) DESC")
-    fun abrirTodosClte(queCliente: Int, queEmpresa: Int, queFiltro: Int): List<DatosVerDocs>
+    fun abrirTodosClte(queCliente: Int, queEmpresa: Int, queFiltro: Int): MutableList<DatosVerDocs>
 
 
     @Query("SELECT A.cabeceraId, A.tipoDoc, A.almacen, A.serie, A.numero, A.ejercicio, A.empresa, A.fecha, " +
@@ -106,7 +106,7 @@ interface CabecerasDao {
             " WHERE A.empresa = :queEmpresa " +
             " AND :cadFiltro " +
             " ORDER BY substr(A.fecha, 7)||substr(A.fecha, 4, 2)||substr(A.fecha, 1, 2) DESC")
-    fun abrirTodos(queEmpresa: Int, cadFiltro: String): List<DatosVerDocs>
+    fun abrirTodos(queEmpresa: Int, cadFiltro: String): MutableList<DatosVerDocs>
 
 
     @Query("SELECT * FROM Cabeceras WHERE estado = 'N' or estado = 'R' " +

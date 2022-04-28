@@ -126,7 +126,7 @@ class PendienteClase(queContexto: Context) {
     fun abrirDocumento(): Boolean {
         val fDocumento = Comunicador.fDocumento
         val pendienteEnt = pendienteDao?.abrirDocumento(fDocumento.fAlmacen, fDocumento.serie,
-                                    fDocumento.numero, fDocumento.fEjercicio)
+                                    fDocumento.numero, fDocumento.fEjercicio, fDocumento.fTipoDoc)
 
         val quePendienteId = pendienteEnt?.pendienteId ?: 0
         return if (quePendienteId > 0) {

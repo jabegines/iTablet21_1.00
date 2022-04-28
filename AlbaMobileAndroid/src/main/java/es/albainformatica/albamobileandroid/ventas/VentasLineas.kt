@@ -522,7 +522,7 @@ class VentasLineas: AppCompatActivity() {
 
     private fun finalizarVenta() {
         // Marcamos el documento como imprimido para no permitir modificarlo (si es que lo hemos imprimido)
-        if (fDocImprimido) fDocumento.marcarComoImprimido(fDocumento.fIdDoc)
+        if (fDocImprimido) fDocumento.marcarComoImprimido(fDocumento.fIdDoc, fDocumento.fTipoDoc)
 
         // Por ahora hemos desabilitado la comprobación del riesgo, ya que la hacemos de otra manera en grabarPieDoc()
         val returnIntent = Intent()

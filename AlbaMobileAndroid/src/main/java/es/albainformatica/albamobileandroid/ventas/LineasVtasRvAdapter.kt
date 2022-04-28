@@ -132,7 +132,9 @@ class LineasVtasRvAdapter(var lineas: List<DatosLinVtas>, val fIvaIncluido: Bool
             if (lineaSinCargo) {
                 tvImporte.setText(R.string.sincargo)
             } else {
-                val sImpte = linea.importe.replace(',', '.')
+                val sImpte = if (fIvaIncluido && linea.importeII != "") linea.importeII.replace(',', '.')
+                    else linea.importe.replace(',', '.')
+
                 var dImpte = sImpte.toDouble()
 
                 if (fIvaIncluido && fAplicarIva) {
@@ -181,7 +183,9 @@ class LineasVtasRvAdapter(var lineas: List<DatosLinVtas>, val fIvaIncluido: Bool
 
             if (fIvaIncluido && fAplicarIva) {
                 // El precio iva incluído vendrá a null desde la gestión, por eso lo calculamos.
-                val sPrecio = linea.precio.replace(',', '.')
+                val sPrecio = if (linea.precioII != "") linea.precioII.replace(',', '.')
+                    else linea.precio.replace(',', '.')
+
                 var dPrecio = sPrecio.toDouble()
 
                 if (linea.precioII == "") {
@@ -220,7 +224,6 @@ class LineasVtasRvAdapter(var lineas: List<DatosLinVtas>, val fIvaIncluido: Bool
 
             tvTarifa.text = linea.tarifaId.toString()
         }
-
     }
 
 

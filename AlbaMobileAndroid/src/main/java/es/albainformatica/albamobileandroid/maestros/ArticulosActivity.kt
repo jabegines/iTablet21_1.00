@@ -31,6 +31,7 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
     private var fTarifaCajas: Short = fConfiguracion.tarifaCajas()
     private var fProveedor = 0
     private var fEmpresaActual: Int = 0
+    private var fIvaIncluido: Boolean = false
 
     private lateinit var fRecyclerView: RecyclerView
     private lateinit var fAdapter: ArticulosRvAdapter
@@ -56,8 +57,9 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
 
         // Vemos si hemos sido llamados desde ventas, para entrar en modo búsqueda.
         val i = intent
-        fVendiendo = i != null && i.getBooleanExtra("vendiendo", false)
-        fBuscando = i != null && i.getBooleanExtra("buscando", false)
+        fVendiendo = i.getBooleanExtra("vendiendo", false)
+        fIvaIncluido = i.getBooleanExtra("ivaIncluido", false)
+        fBuscando = i.getBooleanExtra("buscando", false)
         if (i != null) queBuscar = i.getStringExtra("buscar") ?: ""
 
         // Vemos la tarifa que tendremos que utilizar para presentar los precios de cada artículo.
@@ -296,7 +298,7 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
 
 
     private fun prepararRecyclerView() {
-        fAdapter = ArticulosRvAdapter(getArticulos(), this, object: ArticulosRvAdapter.OnItemClickListener {
+        fAdapter = ArticulosRvAdapter(getArticulos(), fIvaIncluido, this, object: ArticulosRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: ListaArticulos) {
                 if (fVendiendo || fBuscando) seleccionar(data.articuloId)
                 else abrirFicha(data.articuloId)

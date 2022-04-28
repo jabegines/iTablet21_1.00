@@ -25,7 +25,9 @@ import androidx.core.content.ContextCompat
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.dao.CnfTarifasDao
 import es.albainformatica.albamobileandroid.dao.OftCantRangosDao
+import es.albainformatica.albamobileandroid.dao.SeriesDao
 import es.albainformatica.albamobileandroid.dao.TiposIncDao
+import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.getInstance
 import es.albainformatica.albamobileandroid.entity.CnfTarifasEnt
 import es.albainformatica.albamobileandroid.entity.DtosLinFrasEnt
@@ -177,7 +179,12 @@ class VentasDatosLinea: Activity() {
         imgBuscaArt = findViewById(R.id.imgBuscaArticulo)
         carpetaImagenes = dimeRutaImagenes(this)
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
+
+        val fSeriesDao: SeriesDao? = MyDatabase.getInstance(this)?.seriesDao()
+        val queFlagSerie = fSeriesDao?.getFlag(fDocumento.serie, fDocumento.fEjercicio) ?: 0
+        val fForzarPrIvaIncl = queFlagSerie and FLAGSERIE_FORZAR_PR_IVA_INCL > 0
+        fIvaIncluido = fForzarPrIvaIncl || fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
+
         fAplicarIva = fDocumento.fClientes.fAplIva
         fUsarTasa1 = fConfiguracion.usarTasa1()
         fUsarTasa2 = fConfiguracion.usarTasa2()
@@ -786,7 +793,7 @@ class VentasDatosLinea: Activity() {
         fDtosCascada.fTipoDoc = fDocumento.fTipoDoc
         fDtosCascada.abrir(-1)
         // Configuramos el objeto de los dtos. en cascada
-        fDtosCascada.fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
+        fDtosCascada.fIvaIncluido = fIvaIncluido //fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
         fDtosCascada.fAplicarIva = fDocumento.fClientes.fAplIva
         fDtosCascada.fPorcIva = fDocumento.fPorcIva
         fDtosCascada.fDecPrBase = fConfiguracion.decimalesPrecioBase()
@@ -957,7 +964,7 @@ class VentasDatosLinea: Activity() {
                 if (fEstado == est_Vl_Editar) fDtosCascada.abrir(fLinea)
                 else fDtosCascada.abrir(-1)
                 // Configuramos el objeto de los dtos. en cascada
-                fDtosCascada.fIvaIncluido = fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
+                fDtosCascada.fIvaIncluido = fIvaIncluido //fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
                 fDtosCascada.fAplicarIva = fDocumento.fClientes.fAplIva
                 fDtosCascada.fPorcIva = fDocumento.fPorcIva
                 fDtosCascada.fDecPrBase = fConfiguracion.decimalesPrecioBase()
@@ -1155,6 +1162,7 @@ class VentasDatosLinea: Activity() {
     private fun lanzarListaArticulos() {
         val i = Intent(this, ArticulosActivity::class.java)
         i.putExtra("vendiendo", true)
+        i.putExtra("ivaIncluido", fIvaIncluido)
         // Si tenemos algo en el TextView edtCodArt lo pasaremos como argumento de la búsqueda
         if (edtCodArt.text.toString() != "") i.putExtra("buscar", edtCodArt.text.toString())
         startActivityForResult(i, fRequestBuscarArt)

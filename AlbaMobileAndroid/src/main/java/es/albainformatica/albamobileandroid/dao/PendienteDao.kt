@@ -72,8 +72,9 @@ interface PendienteDao {
 
 
     @Query("SELECT * FROM Pendiente WHERE Almacen = :queAlmacen" +
-            " AND Serie = :queSerie AND Numero = :queNumero AND Ejercicio = :queEjercicio")
-    fun abrirDocumento(queAlmacen: Short, queSerie: String, queNumero: Int, queEjercicio: Short): PendienteEnt
+            " AND Serie = :queSerie AND Numero = :queNumero AND Ejercicio = :queEjercicio " +
+            " AND TipoDoc = :queTipoDoc")
+    fun abrirDocumento(queAlmacen: Short, queSerie: String, queNumero: Int, queEjercicio: Short, queTipoDoc: Short): PendienteEnt
 
 
     @Query("SELECT * FROM Pendiente WHERE Serie = :queSerie AND Numero = :queNumero AND Ejercicio = :queEjercicio")

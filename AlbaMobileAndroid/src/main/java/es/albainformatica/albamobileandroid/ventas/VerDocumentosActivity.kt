@@ -218,11 +218,6 @@ class VerDocumentosActivity: Activity() {
                     //val quePosicion = lvDocumentos.checkedItemPosition
                     fDocumento.reenviar(fDataActual) //fIdDocumento, fCliente, fEmpresaActual)
 
-                    //adapterLineas.changeCursor(fDocumento.cDocumentos)
-                    // Volvemos a señalar la fila en la que habíamos pulsado, ya que el listView, al perder el foco, no deja ninguna fila señalada.
-                    //lvDocumentos.requestFocusFromTouch()
-                    //lvDocumentos.setSelection(quePosicion)
-
                     // Llamamos a nuevoClick para refrescar los textView inferiores.
                     nuevoClick(fDataActual)
                     fEstado = ""
@@ -344,7 +339,7 @@ class VerDocumentosActivity: Activity() {
         } else if (requestCode == fRequestIncidencia) {
             if (resultCode == RESULT_OK) {
                 val textoIncidencia = data.getStringExtra("textoincid") ?: ""
-                fDocumento.setTextoIncidencia(fIdDocumento, textoIncidencia, fCliente, fEmpresaActual, fTipoIncidencia)
+                fDocumento.setTextoIncidencia(fTipoDoc, fIdDocumento, textoIncidencia, fCliente, fEmpresaActual, fTipoIncidencia)
                 //adapterLineas.changeCursor(fDocumento.cDocumentos)
                 refrescarLineas()
             }
@@ -367,7 +362,7 @@ class VerDocumentosActivity: Activity() {
             i.putExtra("nuevo", false)
             i.putExtra("solover", true)
             i.putExtra("iddoc", fIdDocumento)
-            intent.putExtra("tipodoc", fTipoDoc)
+            i.putExtra("tipodoc", fTipoDoc)
             startActivity(i)
         } else MsjAlerta(this).alerta(resources.getString(R.string.msj_NoRegSelecc))
     }
@@ -379,9 +374,10 @@ class VerDocumentosActivity: Activity() {
         if (fIdDocumento > 0) {
 
             Comunicador.fDocumento = fDocumento
-            fDocumento.cargarDocumento(fIdDocumento, false)
+            if (fTipoDoc == TIPODOC_FACTURA) fDocumento.cargarFactura(fIdDocumento, false)
+            else fDocumento.cargarDocumento(fIdDocumento, false)
 
-            fDocumento.marcarComoImprimido(fIdDocumento)
+            fDocumento.marcarComoImprimido(fIdDocumento, fTipoDoc)
             refrescarLineas()
             nuevoClick(fDataActual)
 
@@ -506,7 +502,9 @@ class VerDocumentosActivity: Activity() {
         if (fIdDocumento > 0) {
             if (fEstado == "N") {
                 Comunicador.fDocumento = fDocumento
-                fDocumento.cargarDocumento(fIdDocumento, false)
+                if (fTipoDoc == TIPODOC_FACTURA) fDocumento.cargarFactura(fIdDocumento, false)
+                else fDocumento.cargarDocumento(fIdDocumento, false)
+
                 // Tenemos que llamar a fDocumento.calcularDtosPie() porque el documento no trae los descuentos a pie calculados,
                 // ya que fDocumento.cargarDocumento() no lo hace.
                 fDocumento.calcularDtosPie()
@@ -531,7 +529,7 @@ class VerDocumentosActivity: Activity() {
                 // Establecemos los eventos para los distintos botones del layout del diálogo.
                 val btnImpr = alertDialog.findViewById<Button>(R.id.btnImprDoc)
                 btnImpr.setOnClickListener {
-                    fDocumento.marcarComoImprimido(fIdDocumento)
+                    fDocumento.marcarComoImprimido(fIdDocumento, fTipoDoc)
 
                     // Vemos si tenemos que pedir el formato con el que queremos imprimir o no.
                     if (fConfiguracion.pedirFormato()) {

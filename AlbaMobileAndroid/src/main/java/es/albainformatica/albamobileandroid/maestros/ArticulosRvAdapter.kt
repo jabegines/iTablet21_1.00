@@ -14,7 +14,8 @@ import es.albainformatica.albamobileandroid.ListaArticulos
 import es.albainformatica.albamobileandroid.R
 
 
-class ArticulosRvAdapter(var articulos: MutableList<ListaArticulos>, val context: Context, private var listener: OnItemClickListener): RecyclerView.Adapter<ArticulosRvAdapter.ViewHolder>() {
+class ArticulosRvAdapter(var articulos: MutableList<ListaArticulos>, val fIvaIncluido: Boolean, val context: Context,
+                 private var listener: OnItemClickListener): RecyclerView.Adapter<ArticulosRvAdapter.ViewHolder>() {
 
     private val fConfiguracion: Configuracion = Comunicador.fConfiguracion
     var articuloId: Int = 0
@@ -34,7 +35,7 @@ class ArticulosRvAdapter(var articulos: MutableList<ListaArticulos>, val context
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         setOnItemClickListener(listener)
         val layoutInflater = LayoutInflater.from(parent.context)
-        return ViewHolder(layoutInflater.inflate(R.layout.item_articulos_list, parent, false))
+        return ViewHolder(layoutInflater.inflate(R.layout.item_articulos_list, parent, false), fIvaIncluido)
     }
 
     override fun getItemCount(): Int {
@@ -49,7 +50,9 @@ class ArticulosRvAdapter(var articulos: MutableList<ListaArticulos>, val context
         fun onClick(view: View, data: ListaArticulos)
     }
 
-    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View, ivaIncluido: Boolean): RecyclerView.ViewHolder(itemView) {
+        private val fIvaIncluido = ivaIncluido
+
         private val fConfiguracion: Configuracion = Comunicador.fConfiguracion
         private val fRutaImagenes = fConfiguracion.rutaLocalComunicacion() + "/imagenes"
         private val imagen = itemView.findViewById(R.id.imgvArtIm) as ImageView
@@ -71,9 +74,15 @@ class ArticulosRvAdapter(var articulos: MutableList<ListaArticulos>, val context
             if (articulo.idOferta == 0) imgOfta.visibility = View.GONE
             else imgOfta.visibility = View.VISIBLE
 
-            val quePrecio = if (articulo.precio != null)
-                String.format(fFtoPrecio, articulo.precio?.toDouble()) + " €"
-            else ""
+            val quePrecio = if (articulo.precio != null) {
+                var dPrecio = articulo.precio?.toDouble() ?: 0.0
+                if (fIvaIncluido) {
+                    val dPorcIva = articulo.porcIva?.toDouble() ?: 0.0
+                    dPrecio += dPrecio * dPorcIva / 100
+                }
+
+                String.format(fFtoPrecio, dPrecio) + " €"
+            } else ""
 
             val dDto = if (articulo.dto != null)
                 articulo.dto?.toDouble()

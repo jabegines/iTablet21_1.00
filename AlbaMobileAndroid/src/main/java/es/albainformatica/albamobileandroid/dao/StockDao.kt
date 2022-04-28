@@ -12,6 +12,11 @@ import es.albainformatica.albamobileandroid.entity.StockEnt
 @Dao
 interface StockDao {
 
+    @Query("SELECT articuloId FROM Stock " +
+            " WHERE articuloId = :queArticulo AND empresa = :queEmpresa")
+    fun existeArtYEmpresa(queArticulo: Int, queEmpresa: Short): Int
+
+
     @Query("SELECT ent unidades, entc cajas FROM Stock " +
             " WHERE articuloId = :queArticulo AND empresa = :queEmpresa")
     fun getEntrArtEmpr(queArticulo: Int, queEmpresa: Short): DatosStock

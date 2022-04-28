@@ -83,6 +83,7 @@ class Documento(private val fContexto: Context) {
     var fPuedoAplTrfCajas = false
     var fFormatoLin: Short = 0
     var fPorcIva: Double = 0.0
+    var fIvaIncluido: Boolean = false
     var fAplicarIva: Boolean = true
     private var fAplicarRe: Boolean = false
     var fArtEnOferta: Boolean = false
@@ -270,6 +271,7 @@ class Documento(private val fContexto: Context) {
         cabeceraDao?.marcarParaEnviar(queIdDoc)
     }
 
+
     fun abrirTodos(queCliente: Int, queEmpresa: Int, queFiltro: Int): List<DatosVerDocs> {
         // Vemos si queremos filtrar por estado
         var sCadFiltro = ""
@@ -281,11 +283,20 @@ class Documento(private val fContexto: Context) {
             }
         } else sCadFiltro = "1=1"
 
-        return if (queCliente > 0) {
+        val lDocs: MutableList<DatosVerDocs> = if (queCliente > 0) {
             cabeceraDao?.abrirTodosClte(queCliente, queEmpresa, queFiltro) ?: emptyList<DatosVerDocs>().toMutableList()
         } else {
             cabeceraDao?.abrirTodos(queEmpresa, sCadFiltro) ?: emptyList<DatosVerDocs>().toMutableList()
         }
+
+        val lFras: MutableList<DatosVerDocs> = if (queCliente > 0) {
+            facturasDao?.abrirTodosClte(queCliente, queEmpresa, queFiltro) ?: emptyList<DatosVerDocs>().toMutableList()
+        } else {
+            facturasDao?.abrirTodas(queEmpresa, sCadFiltro) ?: emptyList<DatosVerDocs>().toMutableList()
+        }
+
+        lDocs.addAll(lFras)
+        return lDocs
     }
 
 
@@ -427,7 +438,7 @@ class Documento(private val fContexto: Context) {
 
     // Borraremos las líneas que no han sido modificadas ni insertadas.
     fun borrarLineasNoModif() {
-        val fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresa)
+        val fIvaIncluido = fIvaIncluido     //fConfiguracion.ivaIncluido(fEmpresa)
 
         for (linea in lLineas) {
             val fLinea = linea.lineaId
@@ -642,6 +653,10 @@ class Documento(private val fContexto: Context) {
             false
         } else {
             if (fTipoDoc > 0) {
+                val queFlagSerie = seriesDao?.getFlag(serie, fEjercicio) ?: 0
+                val fForzarPrIvaIncl = queFlagSerie and FLAGSERIE_FORZAR_PR_IVA_INCL > 0
+                fIvaIncluido = fForzarPrIvaIncl || fConfiguracion.ivaIncluido(fEmpresa)
+
                 numero = fConfiguracion.getNumero(serie, fEjercicio, fTipoDoc)
                 fEmpresa = seriesDao?.getEmpresa(serie, fEjercicio.toInt()) ?: 0
                 // Comprobaremos que no exista ya un documento con la serie y el número durante 20 intentos.
@@ -693,7 +708,7 @@ class Documento(private val fContexto: Context) {
         // le hacemos que aplique la configuración sobre su clase interna TBaseDocumento.
         fBases.fAplicarIva = fAplicarIva
         fBases.fAplicarRecargo = fAplicarRe
-        fBases.fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresa)
+        fBases.fIvaIncluido = fIvaIncluido  //fConfiguracion.ivaIncluido(fEmpresa)
         fBases.fDecImpBase = fConfiguracion.decimalesImpBase()
         fBases.fDecImpII = fConfiguracion.decimalesImpII()
     }
@@ -822,7 +837,7 @@ class Documento(private val fContexto: Context) {
     }
 
     fun grabarHistorico() {
-        val fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresa)
+        val fIvaIncluido = fIvaIncluido     //fConfiguracion.ivaIncluido(fEmpresa)
 
         val lineasHco = tmpHcoDao?.getAllLineas() ?: emptyList<TmpHcoEnt>().toMutableList()
         for (linHco in lineasHco) {
@@ -904,7 +919,7 @@ class Documento(private val fContexto: Context) {
 
         fDtosCascada.abrir(-1)
         // Configuramos el objeto de los dtos. en cascada
-        fDtosCascada.fIvaIncluido = fConfiguracion.ivaIncluido(fEmpresa)
+        fDtosCascada.fIvaIncluido = fIvaIncluido    //fConfiguracion.ivaIncluido(fEmpresa)
         fDtosCascada.fAplicarIva = fClientes.fAplIva
         fDtosCascada.fPorcIva = fPorcIva
         fDtosCascada.fDecPrBase = fConfiguracion.decimalesPrecioBase()
@@ -1294,7 +1309,7 @@ class Documento(private val fContexto: Context) {
         else facturaEnt.estado = queEstado
 
         // Por ahora el flag "AplicarIvaCliente" no se usa, ya que no viene en la configuración.
-        if (fConfiguracion.ivaIncluido(fEmpresa))
+        if (fIvaIncluido)
             facturaEnt.flag = FLAGCABECERAVENTA_PRECIOS_IVA_INCLUIDO
         else
             facturaEnt.flag = 0
@@ -1359,7 +1374,7 @@ class Documento(private val fContexto: Context) {
         else cabeceraEnt.estado = queEstado
 
         // Por ahora el flag "AplicarIvaCliente" no se usa, ya que no viene en la configuración.
-        if (fConfiguracion.ivaIncluido(fEmpresa))
+        if (fIvaIncluido)
             cabeceraEnt.flag = FLAGCABECERAVENTA_PRECIOS_IVA_INCLUIDO
         else
             cabeceraEnt.flag = 0
@@ -1624,8 +1639,9 @@ class Documento(private val fContexto: Context) {
         return fClientes.fNomComercial
     }
 
-    fun marcarComoImprimido(queId: Int) {
-        cabeceraDao?.marcarComoImprimido(queId)
+    fun marcarComoImprimido(queId: Int, queTipoDoc: Short) {
+        if (queTipoDoc == TIPODOC_FACTURA) facturasDao?.marcarComoImprimida(queId)
+        else cabeceraDao?.marcarComoImprimido(queId)
     }
 
     fun marcarComoEntregado(queId: Int, queCliente: Int, queEmpresa: Int, refrescar: Boolean) {
@@ -1642,18 +1658,23 @@ class Documento(private val fContexto: Context) {
         }
     }
 
-    fun setTextoIncidencia(queId: Int, queTexto: String, queCliente: Int, queEmpresa: Int, queTipoIncid: Int) {
+    fun setTextoIncidencia(queTipoDoc: Short, queId: Int, queTexto: String, queCliente: Int, queEmpresa: Int, queTipoIncid: Int) {
 
-        cabeceraDao?.setTextoIncidencia(queId, queTipoIncid, queTexto)
+        if (queTipoDoc == TIPODOC_FACTURA) facturasDao?.setTextoIncidencia(queId, queTipoIncid, queTexto)
+        else cabeceraDao?.setTextoIncidencia(queId, queTipoIncid, queTexto)
 
         // Refresco el cursor cerrándolo y volviéndolo a abrir.
         abrirTodos(queCliente, queEmpresa, 0)
     }
 
 
-    fun reenviar(dataActual: DatosVerDocs) {     //queId: Int, queCliente: Int, empresaActual: Int) {
+    fun reenviar(dataActual: DatosVerDocs) {
 
-        cabeceraDao?.reenviarDoc(dataActual.cabeceraId)
+        if (dataActual.tipoDoc == TIPODOC_FACTURA) {
+            facturasDao?.reenviarDoc(dataActual.cabeceraId)
+        } else {
+            cabeceraDao?.reenviarDoc(dataActual.cabeceraId)
+        }
 
         if (dataActual.tipoDoc == TIPODOC_FACTURA) {
             // Si marcamos para reenviar una factura también tendremos que reenviar el pendiente.

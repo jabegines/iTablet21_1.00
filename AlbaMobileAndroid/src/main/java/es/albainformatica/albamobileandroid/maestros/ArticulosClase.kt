@@ -394,7 +394,8 @@ class ArticulosClase(val contexto: Context) {
 
 
     fun actualizarStock(queArticulo: Int, queEmpresa: Short, dCantidad: Double, dCajas: Double, deEntradas: Boolean) {
-        var bInsertar = false
+        val iArticulo = stockDao?.existeArtYEmpresa(queArticulo, queEmpresa) ?: 0
+        val bInsertar = iArticulo == 0
 
         // Vemos si el artículo está en la tabla Stock
         if (deEntradas) {
@@ -421,7 +422,6 @@ class ArticulosClase(val contexto: Context) {
                 dEntradas = sEntradas.toDouble() + dCantidad
                 dEntCajas = sEntCajas.toDouble() + dCajas
             } else {
-                bInsertar = true
                 dEntradas = dCantidad
                 dEntCajas = dCajas
             }
@@ -466,7 +466,6 @@ class ArticulosClase(val contexto: Context) {
                 dSalidas = sSalidas.toDouble() + dCantidad
                 dSalCajas = sSalCajas.toDouble() + dCajas
             } else {
-                bInsertar = true
                 dSalidas = dCantidad
                 dSalCajas = dCajas
             }

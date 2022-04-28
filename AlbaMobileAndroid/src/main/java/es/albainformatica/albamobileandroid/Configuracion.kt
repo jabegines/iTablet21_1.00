@@ -199,11 +199,17 @@ class Configuracion(queContexto: Context) {
     }
 
     fun carpetaImportFTP(): String {
-        return configuracionDao?.getValor(154) ?: ""
+        var queValor = configuracionDao?.getValor(154) ?: ""
+        if (queValor == "") queValor = "import"
+
+        return queValor
     }
 
     fun carpetaExportFTP(): String {
-        return configuracionDao?.getValor(155) ?: ""
+        var queValor = configuracionDao?.getValor(155) ?: ""
+        if (queValor == "") queValor = "export"
+
+        return queValor
     }
 
     fun emailResumPedidos(): String {
