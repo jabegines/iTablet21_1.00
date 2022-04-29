@@ -2,7 +2,6 @@ package es.albainformatica.albamobileandroid.comunicaciones
 
 import android.app.Activity
 import android.content.SharedPreferences
-import android.database.sqlite.SQLiteDatabase
 import androidx.preference.PreferenceManager
 import androidx.core.content.ContextCompat
 import android.Manifest.permission
@@ -24,13 +23,10 @@ import es.albainformatica.albamobileandroid.dao.CobrosDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.queBDRoom
 import es.albainformatica.albamobileandroid.entity.CobrosEnt
-import kotlinx.android.synthetic.main.prefs_conf_articulos.*
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.util.Base64
 import java.io.*
 import java.lang.Exception
-import java.lang.StringBuilder
-import kotlin.Throws
 
 /**
  * Created by jabegines on 9/10/13.
