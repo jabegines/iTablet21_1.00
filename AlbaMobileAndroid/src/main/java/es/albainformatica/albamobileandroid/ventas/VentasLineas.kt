@@ -243,7 +243,7 @@ class VentasLineas: AppCompatActivity() {
         fEstado = est_Vl_Browse
 
         val fSeriesDao: SeriesDao? = MyDatabase.getInstance(this)?.seriesDao()
-        val queFlagSerie = fSeriesDao?.getFlag(fSerie, fDocumento.fEjercicio) ?: 0
+        val queFlagSerie = fSeriesDao?.getFlag(fDocumento.serie, fDocumento.fEjercicio) ?: 0
         val fForzarPrIvaIncl = queFlagSerie and FLAGSERIE_FORZAR_PR_IVA_INCL > 0
         fIvaIncluido = fForzarPrIvaIncl || fConfiguracion.ivaIncluido(fDocumento.fEmpresa)
 

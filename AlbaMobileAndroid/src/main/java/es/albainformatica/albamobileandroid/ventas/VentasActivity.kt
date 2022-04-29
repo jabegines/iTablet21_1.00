@@ -593,11 +593,11 @@ class VentasActivity: AppCompatActivity() {
                 0
         }
 
-        if (queCliente > 0) {
+        //if (queCliente > 0) {
             val i = Intent(this, VerDocumentosActivity::class.java)
             i.putExtra("cliente", queCliente)
             startActivity(i)
-        }
+        //}
     }
 
 
