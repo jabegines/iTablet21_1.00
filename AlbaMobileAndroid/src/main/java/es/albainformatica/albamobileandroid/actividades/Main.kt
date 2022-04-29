@@ -85,7 +85,7 @@ class Main: AppCompatActivity() {
 
         fSistemaId = if (fUsarMultisistema) {
             val queBD = queBDRoom
-            queBD.substring(queBD.length - 2, queBD.length)
+            queBD.substring(queBD.length - 5, queBD.length-3)
         }
         else {
             prefs?.getString("sistemaId_servicio", "00") ?: "00"

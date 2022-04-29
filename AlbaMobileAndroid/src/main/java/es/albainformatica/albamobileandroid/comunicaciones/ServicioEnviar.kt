@@ -77,7 +77,7 @@ class ServicioEnviar: AppCompatActivity() {
         val usarMultisistema = prefs.getBoolean("usar_multisistema", false)
         fSistemaId = if (usarMultisistema) {
             val queBD = queBDRoom
-            queBD.substring(queBD.length-2, queBD.length)
+            queBD.substring(queBD.length-5, queBD.length-3)
         }
         else {
             prefs.getString("sistemaId_servicio", "00") ?: "00"
