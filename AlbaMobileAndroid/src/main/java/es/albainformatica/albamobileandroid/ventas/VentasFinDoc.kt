@@ -123,16 +123,24 @@ class VentasFinDoc: AppCompatActivity() {
                 findViewById<Button>(R.id.btnMasDirecciones)
             btnMasDir.visibility = View.GONE
         }
+
         if (fConfiguracion.dtosPie()) {
-            edtDtoPie1.isEnabled = fConfiguracion.dtoPie1()
-            edtDtoPie2.isEnabled = fConfiguracion.dtoPie2()
-            edtDtoPie3.isEnabled = fConfiguracion.dtoPie3()
-            edtDtoPie4.isEnabled = fConfiguracion.dtoPie4()
+            // Vemos si tenemos configurado aplicar descuentos sólo en factura
+            if ((fDocumento.fTipoDoc == TIPODOC_FACTURA) || (!fConfiguracion.dtosCltesSoloFact()))  {
+                edtDtoPie1.isEnabled = fConfiguracion.dtoPie1()
+                edtDtoPie2.isEnabled = fConfiguracion.dtoPie2()
+                edtDtoPie3.isEnabled = fConfiguracion.dtoPie3()
+                edtDtoPie4.isEnabled = fConfiguracion.dtoPie4()
+            }
+            else {
+                val lyDtos = findViewById<LinearLayout>(R.id.llVFP_LyDtos)
+                lyDtos.visibility = View.GONE
+            }
         } else {
-            val lyDtos =
-                findViewById<LinearLayout>(R.id.llVFP_LyDtos)
+            val lyDtos = findViewById<LinearLayout>(R.id.llVFP_LyDtos)
             lyDtos.visibility = View.GONE
         }
+
         if (fConfiguracion.fTamanyoPantLargo) {
             fRecBases = findViewById(R.id.rvVl_BasesDoc)
             prepararBases()

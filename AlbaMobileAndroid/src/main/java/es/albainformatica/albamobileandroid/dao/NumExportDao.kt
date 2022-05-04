@@ -13,7 +13,7 @@ interface NumExportDao {
     fun getAllExport(): MutableList<NumExportEnt>
 
 
-    @Query("DELETE FROM NotasCltes WHERE numexport = :queNumPaquete")
+    @Query("DELETE FROM NumExport WHERE numexport = :queNumPaquete")
     fun borrarExp(queNumPaquete: Int)
 
 

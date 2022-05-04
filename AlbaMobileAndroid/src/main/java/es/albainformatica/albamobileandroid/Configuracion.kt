@@ -656,6 +656,11 @@ class Configuracion(queContexto: Context) {
         return (queValor == "T")
     }
 
+    fun dtosCltesSoloFact(): Boolean {
+        val queValor = configuracionDao?.getValor(913) ?: "F"
+        return (queValor == "T")
+    }
+
     fun claveSupervisor(): String {
         return configuracionDao?.getDescripcion(914) ?: ""
     }

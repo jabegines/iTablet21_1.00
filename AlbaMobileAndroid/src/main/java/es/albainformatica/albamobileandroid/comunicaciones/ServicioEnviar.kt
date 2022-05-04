@@ -9,7 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.provider.Settings
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -390,7 +390,7 @@ class ServicioEnviar: AppCompatActivity() {
 
     private fun borrarFichCarpLocal() {
         val rutaLocEnv = File(miscCom.rutaLocalEnvio)
-        val xmlFiles = rutaLocEnv.listFiles()
+        val xmlFiles = rutaLocEnv.listFiles() ?: emptyArray()
         for (File in xmlFiles) {
             File.delete()
         }
