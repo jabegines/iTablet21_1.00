@@ -381,10 +381,8 @@ class VentasFinDoc: AppCompatActivity() {
             val inflater = activity.layoutInflater
             // Obtenemos una referencia de la vista que inflaremos, para luego poder acceder a cualquier
             // control que esté dentro de ella (p.ej. EditText textoIncidencia). Esta vista es la que pasamos al AlertDialog.
-            val dialogView =
-                inflater.inflate(R.layout.incidencia_doc, null)
-            val edtTexto =
-                dialogView.findViewById<EditText>(R.id.edtIncidencia)
+            val dialogView = inflater.inflate(R.layout.incidencia_doc, null)
+            val edtTexto = dialogView.findViewById<EditText>(R.id.edtIncidencia)
             edtTexto.setText((activity as VentasFinDoc).fDocumento.fTextoIncidencia)
 
             // Llamamos a Inflate y establecemos un layout propio para el dialogo
