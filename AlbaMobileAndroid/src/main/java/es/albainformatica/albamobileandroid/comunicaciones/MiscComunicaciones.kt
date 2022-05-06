@@ -114,7 +114,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
         val xmlFiles = rutarecepcion.listFiles()
         if (xmlFiles != null && xmlFiles.isNotEmpty()) {
             fImportando = true
-            // Si la versión de comunicación que viene de ibsTablet es menor que la nuestra, no recogeremos
+            // Si la versión de comunicación que viene de ibsTablet es distinta a la nuestra, no recogeremos
             if (comprobarVerCom()) {
                 // Si no estamos usando el servicio y la fecha del último envío de la tablet es mayor que la de la última preparación del PC, no recogeremos,
                 // ya que eso implica que el ordenador preparó los datos antes de que la tablet enviara.
@@ -376,7 +376,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                             // que la nuestra, no recogeremos
                             if (sCampo.equals("VERSION_COMUNICACION", true)) {
                                 val fVersComIbsTablet = parser.getAttributeValue("", sCampo).toInt()
-                                return (VERSION_COMUNICACION <= fVersComIbsTablet)
+                                return (VERSION_COMUNICACION == fVersComIbsTablet)
                             }
                         }
                     }
@@ -455,7 +455,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
         val carpetaPdfs = File(rutaPdfs)
 
         if (carpetaPdfs.exists()) {
-            val pdfFiles = carpetaPdfs.listFiles()
+            val pdfFiles = carpetaPdfs.listFiles() ?: emptyArray()
             for (file in pdfFiles) {
                 file.delete()
             }
@@ -3520,11 +3520,11 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
         // Igualmente, nos aseguramos de que la carpeta esté vacía, para que no haya restos de un
         // envío anterior fallido.
         val rutaLocEnv = File(rutaLocalEnvio)
-        val xmlFiles = rutaLocEnv.listFiles()
+        val xmlFiles = rutaLocEnv.listFiles() ?: emptyArray()
         for (File in xmlFiles) {
             File.delete()
         }
-        val quedanFich = rutaLocEnv.listFiles()
+        val quedanFich = rutaLocEnv.listFiles() ?: emptyArray()
         val continuar = (quedanFich.isEmpty())
 
         if (continuar) {
@@ -3665,7 +3665,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
     private fun comprimirEnvio(): Boolean {
         try {
-            val files = File(rutaLocalEnvio).listFiles()
+            val files = File(rutaLocalEnvio).listFiles() ?: emptyArray()
 
             var origin: BufferedInputStream?
             val dest = FileOutputStream("$rutaLocalEnvio/envio.zip")

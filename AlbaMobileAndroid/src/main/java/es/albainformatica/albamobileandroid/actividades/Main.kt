@@ -403,7 +403,7 @@ class Main: AppCompatActivity() {
         val tvVendedor = findViewById<View>(R.id.tvMainVendedor) as TextView
         val tvTerminal = findViewById<View>(R.id.tvMainNombreTerm) as TextView
         val tvVersion = findViewById<View>(R.id.tvMainVersion) as TextView
-        val sVersion = resources.getString(R.string.version) + " " + VERSION_PROGRAMA + COMPILACION_PROGRAMA
+        val sVersion = resources.getString(R.string.version) + " " + VERSION_PROGRAMA + COMPILACION_PROGRAMA + "  VC: " + VERSION_COMUNICACION
         tvVersion.text = sVersion
         val tvVentas = findViewById<View>(R.id.tvVentas) as TextView
 

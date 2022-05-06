@@ -164,7 +164,7 @@ class Recibir : Activity() {
         val sFichero = queRutaEnv
         val fichero = File(sFichero)
         val ficheros = fichero.listFiles()
-        return ficheros.isNotEmpty()
+        return ficheros?.isNotEmpty() ?: false
     }
 
     private fun inicializarControles(puedoRecibir: Boolean) {
