@@ -43,6 +43,7 @@ class VerDocumentosActivity: Activity() {
     private lateinit var tvNombreComClte: TextView
     private lateinit var tvIncidencia: TextView
     private lateinit var btnEditar: Button
+    private lateinit var btnBorrar: Button
     private lateinit var imvFirma: ImageView
     private var fFtoDecImpIva: String = ""
     private lateinit var Dialogo: ProgressDialog
@@ -99,6 +100,7 @@ class VerDocumentosActivity: Activity() {
         }
 
         btnEditar = findViewById(R.id.btnVDEditar)
+        btnBorrar = findViewById(R.id.btnVDBorrar)
         // Idem con la impresión.
         val btnImpr = findViewById<Button>(R.id.btnVDImpr)
         if (!fConfiguracion.imprimir()) btnImpr.visibility = View.GONE
@@ -176,17 +178,28 @@ class VerDocumentosActivity: Activity() {
 
         // Si el documento es factura o albarán no permitiremos la modificación en ningún caso.
         // Si es pedido o presupuesto la permitiremos si no está firmado, ni imprimido ni comunicado.
+        // Idem con el borrado.
         if (fTipoDoc == TIPODOC_FACTURA || fTipoDoc == TIPODOC_ALBARAN) {
             btnEditar.isEnabled = false
+            btnBorrar.isEnabled = false
         } else {
-            if (fFirmado == "T" || fImprimido == "T") btnEditar.isEnabled = false
-            else btnEditar.isEnabled = fEstado == "N" || fEstado == "P"
+            if (fFirmado == "T" || fImprimido == "T") {
+                btnEditar.isEnabled = false
+                btnBorrar.isEnabled = false
+            }
+            else {
+                btnEditar.isEnabled = fEstado == "N" || fEstado == "P"
+                btnBorrar.isEnabled = fEstado == "N" || fEstado == "P"
+            }
         }
 
-        if (btnEditar.isEnabled)
+        if (btnEditar.isEnabled) {
             btnEditar.setTextColor(Color.parseColor("#415BB6"))
-        else
+            btnBorrar.setTextColor(Color.parseColor("#415BB6"))
+        } else {
             btnEditar.setTextColor(Color.LTGRAY)
+            btnBorrar.setTextColor(Color.LTGRAY)
+        }
 
         val bFacturado = cadenaALogico(data.facturado)
         if (bFacturado) {
@@ -305,6 +318,28 @@ class VerDocumentosActivity: Activity() {
         } else MsjAlerta(this).alerta(resources.getString(R.string.msj_NoRegSelecc))
     }
 
+
+    fun borrarDoc(view: View) {
+        view.getTag(0)          // Para que no dé warning el compilador
+
+        if (fIdDocumento > 0) {
+            if (fEstado == "N" || fEstado == "P") {
+                if (fTipoDoc == TIPODOC_PEDIDO || fTipoDoc == TIPODOC_PRESUPUESTO) {
+                    val aldDialog = AlertDialog.Builder(this)
+                    aldDialog.setTitle(resources.getString(R.string.tit_borrardoc))
+                    aldDialog.setMessage(R.string.dlg_borrarped)
+                    aldDialog.setPositiveButton(resources.getString(R.string.dlg_si)) { _, _ ->
+                        fDocumento.borrarDocumento(fIdDocumento)
+                        refrescarLineas()
+                        nuevoClick(fDataActual)
+                    }
+                    val alert = aldDialog.create()
+                    alert.show()
+
+                } else MsjAlerta(this).alerta(resources.getString(R.string.msj_Borrar))
+            } else MsjAlerta(this).alerta(resources.getString(R.string.msj_Borrar))
+        } else MsjAlerta(this).alerta(resources.getString(R.string.msj_NoRegSelecc))
+    }
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {

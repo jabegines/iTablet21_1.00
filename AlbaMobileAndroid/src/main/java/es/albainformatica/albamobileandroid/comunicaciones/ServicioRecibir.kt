@@ -63,7 +63,6 @@ class ServicioRecibir: AppCompatActivity() {
     private var fEmail: String = ""
     private var fHuella: String = ""
     private var fPassword: String = ""
-    //private var fPuedoRecibir: Boolean = true
     private var fRecibirPaquetes: Boolean = false
     private var fRecibirImag: Boolean = false
     private var fRecibirAutom: Boolean = false
@@ -86,25 +85,28 @@ class ServicioRecibir: AppCompatActivity() {
         // Inicializamos las variables
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
         fCodTerminal = prefs.getString("terminal", "") ?: ""
-        fEmail = prefs.getString("usuario_servicio", "") ?: ""
         fHuella = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
-        fPassword = prefs.getString("password_servicio", "") ?: ""
-        urlServicio = prefs.getString("url_servicio", "") ?: ""
         urlServBajarFich = "$urlServicio/Service/Action/DownloadPackage"
         urlServBajarImag = "$urlServicio/Service/Action/DownloadProductAttachment"
 
         val usarMultisistema = prefs.getBoolean("usar_multisistema", false)
-        fSistemaId = if (usarMultisistema) {
+         if (usarMultisistema) {
             val queBD = queBDRoom
-            queBD.substring(queBD.length - 5, queBD.length-3)
+            fSistemaId = queBD.substring(queBD.length - 5, queBD.length-3)
+             fEmail = prefs.getString(fSistemaId + "_usuario_servicio", "") ?: ""
+             fPassword = prefs.getString(fSistemaId + "_password_servicio", "") ?: ""
+             urlServicio = prefs.getString(fSistemaId + "_url_servicio", "") ?: ""
         }
-        else {
-            prefs.getString("sistemaId_servicio", "00") ?: "00"
+        else
+        {
+            fSistemaId = prefs.getString("sistemaId_servicio", "00") ?: "00"
+             fEmail = prefs.getString("usuario_servicio", "") ?: ""
+             fPassword = prefs.getString("password_servicio", "") ?: ""
+             urlServicio = prefs.getString("url_servicio", "") ?: ""
         }
         fSistemaId = Base64.encodeBase64String(fSistemaId.toByteArray()).replace("\r", "").replace("\n", "").replace("+", "-").replace("\\", "_").replace("=", "*")
 
         asignarRutas(usarMultisistema)
-        //fPuedoRecibir = Miscelan.puedoRecibir(this)
 
         val intent = intent
         fRecibirPaquetes = intent.getBooleanExtra("recibirPaquetes", false)
@@ -382,9 +384,9 @@ class ServicioRecibir: AppCompatActivity() {
 
     @SuppressLint("HardwareIds", "SimpleDateFormat")
     private fun confirmarPaquete(): Boolean {
-        val fEmail = prefs.getString("usuario_servicio", "") ?: ""
-        val fHuella = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
-        val fPassword = prefs.getString("password_servicio", "")
+        //val fEmail = prefs.getString("usuario_servicio", "") ?: ""
+        //val fHuella = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
+        //val fPassword = prefs.getString("password_servicio", "")
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         val fFechaHora = sdf.format(Date()).replace("/", "").replace(":", "").replace(" ", "")
         val fAccion = "4"
@@ -412,9 +414,9 @@ class ServicioRecibir: AppCompatActivity() {
 
     @SuppressLint("HardwareIds", "SimpleDateFormat")
     private fun recibirImagenesArt(): Boolean {
-        val fEmail = prefs.getString("usuario_servicio", "") ?: ""
-        val fHuella = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
-        val fPassword = prefs.getString("password_servicio", "")
+        //val fEmail = prefs.getString("usuario_servicio", "") ?: ""
+        //val fHuella = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
+        //val fPassword = prefs.getString("password_servicio", "")
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         val fFechaHora = sdf.format(Date()).replace("/", "").replace(":", "").replace(" ", "")
         val fAccion = "6"
@@ -498,9 +500,9 @@ class ServicioRecibir: AppCompatActivity() {
 
     @SuppressLint("SimpleDateFormat", "HardwareIds")
     private fun confirmarRecogidaImag(): Boolean {
-        val fEmail = prefs.getString("usuario_servicio", "") ?: ""
-        val fHuella = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
-        val fPassword = prefs.getString("password_servicio", "")
+        //val fEmail = prefs.getString("usuario_servicio", "") ?: ""
+        //val fHuella = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
+        //val fPassword = prefs.getString("password_servicio", "")
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         val fFechaHora = sdf.format(Date()).replace("/", "").replace(":", "").replace(" ", "")
         val fAccion = "10"
@@ -527,9 +529,9 @@ class ServicioRecibir: AppCompatActivity() {
 
     @SuppressLint("HardwareIds", "SimpleDateFormat")
     private fun recibirPaquete(): Boolean {
-        val fEmail = prefs.getString("usuario_servicio", "") ?: ""
-        val fHuella = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
-        val fPassword = prefs.getString("password_servicio", "")
+        //val fEmail = prefs.getString("usuario_servicio", "") ?: ""
+        //val fHuella = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
+        //val fPassword = prefs.getString("password_servicio", "")
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         val fFechaHora = sdf.format(Date()).replace("/", "").replace(":", "").replace(" ", "")
         val fAccion = "3"
@@ -727,9 +729,9 @@ class ServicioRecibir: AppCompatActivity() {
 
     @SuppressLint("HardwareIds", "SimpleDateFormat")
     private fun hayPaquetesParaTerminal() {
-        val fEmail = prefs.getString("usuario_servicio", "") ?: ""
-        val fHuella = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
-        val fPassword = prefs.getString("password_servicio", "")
+        //val fEmail = prefs.getString("usuario_servicio", "") ?: ""
+        //val fHuella = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
+        //val fPassword = prefs.getString("password_servicio", "")
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         val fFechaHora = sdf.format(Date()).replace("/", "").replace(":", "").replace(" ", "")
         val fAccion = "2"

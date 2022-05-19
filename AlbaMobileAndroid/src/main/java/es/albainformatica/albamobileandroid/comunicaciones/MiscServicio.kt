@@ -39,20 +39,23 @@ class MiscServicio(context: Context) {
 
 
      init {
-
         fCodTerminal = prefs.getString("terminal", "") ?: ""
-        fEmail = prefs.getString("usuario_servicio", "") ?: ""
         fHuella = Settings.Secure.getString(fContext.contentResolver, Settings.Secure.ANDROID_ID)
-        fPassword = prefs.getString("password_servicio", "") ?: ""
-        urlServicio = prefs.getString("url_servicio", "") ?: ""
 
         val usarMultisistema = prefs.getBoolean("usar_multisistema", false)
-        fSistemaId = if (usarMultisistema) {
+        if (usarMultisistema) {
             val queBD = queBDRoom
-            queBD.substring(queBD.length-5, queBD.length-3)
+            fSistemaId = queBD.substring(queBD.length-5, queBD.length-3)
+            fEmail = prefs.getString(fSistemaId + "_usuario_servicio", "") ?: ""
+            fPassword = prefs.getString(fSistemaId + "_password_servicio", "") ?: ""
+            urlServicio = prefs.getString(fSistemaId + "_url_servicio", "") ?: ""
         }
-        else {
-            prefs.getString("sistemaId_servicio", "00") ?: "00"
+        else
+        {
+            fSistemaId = prefs.getString("sistemaId_servicio", "00") ?: "00"
+            fEmail = prefs.getString("usuario_servicio", "") ?: ""
+            fPassword = prefs.getString("password_servicio", "") ?: ""
+            urlServicio = prefs.getString("url_servicio", "") ?: ""
         }
         fSistemaId = Base64.encodeBase64String(fSistemaId.toByteArray()).replace("\r", "").replace("\n", "").replace("+", "-").replace("\\", "_").replace("=", "*")
     }

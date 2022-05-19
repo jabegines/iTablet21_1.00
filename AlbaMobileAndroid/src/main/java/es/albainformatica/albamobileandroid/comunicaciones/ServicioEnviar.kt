@@ -39,7 +39,10 @@ class ServicioEnviar: AppCompatActivity() {
     private val numExpDao: NumExportDao? = MyDatabase.getInstance(this)?.numExportDao()
     private lateinit var prefs: SharedPreferences
     private lateinit var fContext: Context
+    private var fEmail: String = ""
+    private var fPassword: String = ""
     private var urlServicio: String = ""
+    private var fHuella: String = ""
     private lateinit var miscCom: MiscComunicaciones
     private lateinit var handler: Handler
     private var fNumArchivo: Int = 1
@@ -74,18 +77,26 @@ class ServicioEnviar: AppCompatActivity() {
         fContext = this
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        fHuella = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
+
         val usarMultisistema = prefs.getBoolean("usar_multisistema", false)
-        fSistemaId = if (usarMultisistema) {
+        if (usarMultisistema) {
             val queBD = queBDRoom
-            queBD.substring(queBD.length-5, queBD.length-3)
+            fSistemaId = queBD.substring(queBD.length-5, queBD.length-3)
+            fEmail = prefs.getString(fSistemaId + "_usuario_servicio", "") ?: ""
+            fPassword = prefs.getString(fSistemaId + "_password_servicio", "") ?: ""
+            urlServicio = prefs.getString(fSistemaId + "_url_servicio", "") ?: ""
         }
-        else {
-            prefs.getString("sistemaId_servicio", "00") ?: "00"
+        else
+        {
+            fSistemaId = prefs.getString("sistemaId_servicio", "00") ?: "00"
+            fEmail = prefs.getString("usuario_servicio", "") ?: ""
+            fPassword = prefs.getString("password_servicio", "") ?: ""
+            urlServicio = prefs.getString("url_servicio", "") ?: ""
         }
         fSistemaId = Base64.encodeBase64String(fSistemaId.toByteArray()).replace("\r", "").replace("\n", "").replace("+", "-").replace("\\", "_").replace("=", "*")
 
         fEnviarAutom = intent.getBooleanExtra("enviarAutom", false)
-        urlServicio = prefs.getString("url_servicio", "") ?: ""
 
         inicializarControles()
         // Creamos el Handler
@@ -267,9 +278,9 @@ class ServicioEnviar: AppCompatActivity() {
 
     @SuppressLint("SimpleDateFormat", "HardwareIds")
     private fun dimeEstadoPaquete(fNumPaquete: Int): String {
-        val fEmail = prefs.getString("usuario_servicio", "") ?: ""
-        val fHuella = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
-        val fPassword = prefs.getString("password_servicio", "")
+        //val fEmail = prefs.getString("usuario_servicio", "") ?: ""
+        //val fHuella = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
+        //val fPassword = prefs.getString("password_servicio", "")
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         val fFechaHora = sdf.format(Date()).replace("/", "").replace(":", "").replace(" ", "")
         val fAccion = "13"
@@ -316,9 +327,9 @@ class ServicioEnviar: AppCompatActivity() {
 
     @SuppressLint("HardwareIds", "SimpleDateFormat")
     private fun enviarZip(): Boolean {
-        val fEmail = prefs.getString("usuario_servicio", "") ?: ""
-        val fHuella = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
-        val fPassword = prefs.getString("password_servicio", "")
+        //val fEmail = prefs.getString("usuario_servicio", "") ?: ""
+        //val fHuella = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
+        //val fPassword = prefs.getString("password_servicio", "")
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         val fFechaHora = sdf.format(Date()).replace("/", "").replace(":", "").replace(" ", "")
         val fAccion = "1"
@@ -399,9 +410,9 @@ class ServicioEnviar: AppCompatActivity() {
 
     @SuppressLint("HardwareIds")
     private fun paqueteEnServicio(fNumPaquete: Int): Int {
-        val fEmail = prefs.getString("usuario_servicio", "") ?: ""
-        val fHuella = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
-        val fPassword = prefs.getString("password_servicio", "")
+        //val fEmail = prefs.getString("usuario_servicio", "") ?: ""
+        //val fHuella = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
+        //val fPassword = prefs.getString("password_servicio", "")
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
         val fFechaHora = sdf.format(Date()).replace("/", "").replace(":", "").replace(" ", "")
         val fAccion = "13"

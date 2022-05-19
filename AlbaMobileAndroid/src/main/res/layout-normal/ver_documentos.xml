@@ -226,21 +226,19 @@
             android:textAllCaps="false"
             />
 
-        <!--
-                <Button
-                    android:id="@+id/btnVDBorrar"
-                    style="?android:attr/buttonBarButtonStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawableTop="@drawable/borrar"
-                    android:onClick="borrarDoc"
-                    android:text="@string/btn_borrar"
-                    android:textColor="@color/texto_botones"
-                    android:textSize="14sp"
-                    android:textAllCaps="false"
-                    />
-        -->
+        <Button
+            android:id="@+id/btnVDBorrar"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/borrar"
+            android:onClick="borrarDoc"
+            android:text="@string/btn_borrar"
+            android:textColor="@color/texto_botones"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            />
 
         <Button
             android:id="@+id/btnVDReenviar"

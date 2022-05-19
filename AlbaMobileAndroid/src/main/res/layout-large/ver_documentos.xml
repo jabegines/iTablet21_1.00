@@ -202,7 +202,6 @@
         android:textAllCaps="false"
       />
 
-<!--
     <Button
       android:id="@+id/btnVDBorrar"
       style="?android:attr/buttonBarButtonStyle"
@@ -216,7 +215,6 @@
       android:textSize="14sp"
         android:textAllCaps="false"
       />
--->
 
     <Button
       android:id="@+id/btnVDReenviar"

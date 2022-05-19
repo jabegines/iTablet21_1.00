@@ -5,13 +5,14 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Environment
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.comunicaciones.MiscServicio
+import es.albainformatica.albamobileandroid.database.MyDatabase
 import kotlinx.android.synthetic.main.new_prefs.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.doAsync
@@ -21,7 +22,7 @@ import org.jetbrains.anko.uiThread
 class NewPrefs: AppCompatActivity() {
     private lateinit var prefs: SharedPreferences
     private var numClicks: Int = 0
-
+    private var fUsarMultisistema: Boolean = false
 
 
     public override fun onCreate(savedInstance: Bundle?) {
@@ -34,6 +35,8 @@ class NewPrefs: AppCompatActivity() {
 
 
     private fun inicializarControles() {
+        fUsarMultisistema = prefs.getBoolean("usar_multisistema", false)
+
         val queTerminal = "Terminal " + prefs.getString("terminal", "")
         tvTerminal.text = queTerminal
         val queTexto = "Ruta local de comunicación: " + prefs.getString("rutacomunicacion", "")
@@ -44,14 +47,28 @@ class NewPrefs: AppCompatActivity() {
         tvUsuarioWifi.text = prefs.getString("usuario_wifi", "")
         tvPasswWifi.text = prefs.getString("password_wifi", "")
 
-        tvUsarServ.text = if (prefs.getBoolean("usar_servicio", false)) "Usar servicio: SI"
-        else "Usar servicio: NO"
-        tvRutaComServ.text = prefs.getString("url_servicio", "")
-        tvUsuarioServ.text = prefs.getString("usuario_servicio", "")
-        tvPassServ.text = prefs.getString("password_servicio", "")
-        val envDocs: String = if (prefs.getBoolean("enviar_docs_autom", false)) "Enviar documentos automáticamente: SI"
-        else "Enviar documentos automáticamente: NO"
-        tvEnvDoc.text = envDocs
+        if (fUsarMultisistema) {
+            val queBD = MyDatabase.queBDRoom
+            val fSistemaId = queBD.substring(queBD.length - 5, queBD.length-3)
+
+            tvUsarServ.text = if (prefs.getBoolean(fSistemaId + "_usar_servicio", false)) "Usar servicio: SI"
+            else "Usar servicio: NO"
+            tvRutaComServ.text = prefs.getString(fSistemaId + "_url_servicio", "")
+            tvUsuarioServ.text = prefs.getString(fSistemaId + "_usuario_servicio", "")
+            tvPassServ.text = prefs.getString(fSistemaId + "_password_servicio", "")
+            val envDocs: String = if (prefs.getBoolean(fSistemaId + "_enviar_docs_autom", false)) "Enviar documentos automáticamente: SI"
+            else "Enviar documentos automáticamente: NO"
+            tvEnvDoc.text = envDocs
+        } else {
+            tvUsarServ.text = if (prefs.getBoolean("usar_servicio", false)) "Usar servicio: SI"
+            else "Usar servicio: NO"
+            tvRutaComServ.text = prefs.getString("url_servicio", "")
+            tvUsuarioServ.text = prefs.getString("usuario_servicio", "")
+            tvPassServ.text = prefs.getString("password_servicio", "")
+            val envDocs: String = if (prefs.getBoolean("enviar_docs_autom", false)) "Enviar documentos automáticamente: SI"
+            else "Enviar documentos automáticamente: NO"
+            tvEnvDoc.text = envDocs
+        }
 
         var queTipoDoc = prefs.getString("doc_defecto", "1") ?: "1"
         queTipoDoc = "Documento por defecto: " + docDefectoAsString(queTipoDoc.toByte())
@@ -195,18 +212,44 @@ class NewPrefs: AppCompatActivity() {
         val edtCuenta = dialogLayout.findViewById<EditText>(R.id.edtCuentaServicio)
         val edtPassword = dialogLayout.findViewById<EditText>(R.id.edtPasswServicio)
         val chkEnvDoc = dialogLayout.findViewById<CheckBox>(R.id.chkEnvDocAut)
-        chkUsarServ.isChecked = prefs.getBoolean("usar_servicio", false)
-        edtUrl.setText(prefs.getString("url_servicio", ""))
-        edtCuenta.setText(prefs.getString("usuario_servicio", ""))
-        edtPassword.setText(prefs.getString("password_servicio", ""))
-        chkEnvDoc.isChecked = prefs.getBoolean("enviar_docs_autom", false)
+
+        if (fUsarMultisistema) {
+            val queBD = MyDatabase.queBDRoom
+            val fSistemaId = queBD.substring(queBD.length - 5, queBD.length-3)
+
+            chkUsarServ.isChecked = prefs.getBoolean(fSistemaId + "_usar_servicio", false)
+            edtUrl.setText(prefs.getString(fSistemaId + "_url_servicio", ""))
+            edtCuenta.setText(prefs.getString(fSistemaId + "_usuario_servicio", ""))
+            edtPassword.setText(prefs.getString(fSistemaId + "_password_servicio", ""))
+            chkEnvDoc.isChecked = prefs.getBoolean(fSistemaId + "_enviar_docs_autom", false)
+
+        } else {
+            chkUsarServ.isChecked = prefs.getBoolean("usar_servicio", false)
+            edtUrl.setText(prefs.getString("url_servicio", ""))
+            edtCuenta.setText(prefs.getString("usuario_servicio", ""))
+            edtPassword.setText(prefs.getString("password_servicio", ""))
+            chkEnvDoc.isChecked = prefs.getBoolean("enviar_docs_autom", false)
+        }
+
         builder.setView(dialogLayout)
         builder.setPositiveButton("OK") { _, _ ->
-            prefs.edit().putBoolean("usar_servicio", chkUsarServ.isChecked).apply()
-            prefs.edit().putString("url_servicio", edtUrl.text.toString()).apply()
-            prefs.edit().putString("usuario_servicio", edtCuenta.text.toString()).apply()
-            prefs.edit().putString("password_servicio", edtPassword.text.toString()).apply()
-            prefs.edit().putBoolean("enviar_docs_autom", chkEnvDoc.isChecked).apply()
+            if (fUsarMultisistema) {
+                val queBD = MyDatabase.queBDRoom
+                val fSistemaId = queBD.substring(queBD.length - 5, queBD.length-3)
+
+                prefs.edit().putBoolean(fSistemaId + "_usar_servicio", chkUsarServ.isChecked).apply()
+                prefs.edit().putString(fSistemaId + "_url_servicio", edtUrl.text.toString()).apply()
+                prefs.edit().putString(fSistemaId + "_usuario_servicio", edtCuenta.text.toString()).apply()
+                prefs.edit().putString(fSistemaId + "_password_servicio", edtPassword.text.toString()).apply()
+                prefs.edit().putBoolean(fSistemaId + "_enviar_docs_autom", chkEnvDoc.isChecked).apply()
+
+            } else {
+                prefs.edit().putBoolean("usar_servicio", chkUsarServ.isChecked).apply()
+                prefs.edit().putString("url_servicio", edtUrl.text.toString()).apply()
+                prefs.edit().putString("usuario_servicio", edtCuenta.text.toString()).apply()
+                prefs.edit().putString("password_servicio", edtPassword.text.toString()).apply()
+                prefs.edit().putBoolean("enviar_docs_autom", chkEnvDoc.isChecked).apply()
+            }
 
             inicializarControles()
         }
