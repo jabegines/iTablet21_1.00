@@ -86,8 +86,6 @@ class ServicioRecibir: AppCompatActivity() {
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
         fCodTerminal = prefs.getString("terminal", "") ?: ""
         fHuella = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
-        urlServBajarFich = "$urlServicio/Service/Action/DownloadPackage"
-        urlServBajarImag = "$urlServicio/Service/Action/DownloadProductAttachment"
 
         val usarMultisistema = prefs.getBoolean("usar_multisistema", false)
          if (usarMultisistema) {
@@ -104,6 +102,8 @@ class ServicioRecibir: AppCompatActivity() {
              fPassword = prefs.getString("password_servicio", "") ?: ""
              urlServicio = prefs.getString("url_servicio", "") ?: ""
         }
+        urlServBajarFich = "$urlServicio/Service/Action/DownloadPackage"
+        urlServBajarImag = "$urlServicio/Service/Action/DownloadProductAttachment"
         fSistemaId = Base64.encodeBase64String(fSistemaId.toByteArray()).replace("\r", "").replace("\n", "").replace("+", "-").replace("\\", "_").replace("=", "*")
 
         asignarRutas(usarMultisistema)

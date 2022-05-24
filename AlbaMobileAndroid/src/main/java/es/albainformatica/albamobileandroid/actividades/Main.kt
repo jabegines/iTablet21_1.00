@@ -76,19 +76,20 @@ class Main: AppCompatActivity() {
 
         // Lo primero que hacemos es cargar las preferencias para ver si trabajamos con multisistema.
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        fUsarServicio = prefs?.getBoolean("usar_servicio", false) ?: false
         fUsarMultisistema = prefs?.getBoolean("usar_multisistema", false) ?: false
         imgHayPaquetes.visibility = View.GONE
         imgHayImagenes.visibility = View.GONE
 
         comprobarMultisistema()
 
-        fSistemaId = if (fUsarMultisistema) {
+        if (fUsarMultisistema) {
             val queBD = queBDRoom
-            queBD.substring(queBD.length - 5, queBD.length-3)
+            fSistemaId = queBD.substring(queBD.length - 5, queBD.length-3)
+            fUsarServicio = prefs?.getBoolean(fSistemaId + "_usar_servicio", false) ?: false
         }
         else {
-            prefs?.getString("sistemaId_servicio", "00") ?: "00"
+            fSistemaId = prefs?.getString("sistemaId_servicio", "00") ?: "00"
+            fUsarServicio = prefs?.getBoolean("usar_servicio", false) ?: false
         }
         fSistemaId = Base64.encodeBase64String(fSistemaId.toByteArray()).replace("\r", "").replace("\n", "").replace("+", "-").replace("\\", "_").replace("=", "*")
 
