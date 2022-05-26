@@ -102,7 +102,14 @@
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout/reparto_devoluciones.xml" value="0.990625" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/layout/ventas_cp.xml" value="0.26416666666666666" />
         <entry key="..\:/GitHub/iTablet21_1.00/AlbaMobileAndroid/src/main/res/menu/menu_configuracion.xml" value="0.26416666666666666" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-large/buscar_articulos.xml" value="0.3" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-large/ficha_clientes.xml" value="0.3" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-large/layout_direcc_cltes.xml" value="0.3" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-large/main.xml" value="0.3516666666666667" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-large/tab_direcc_clientes.xml" value="0.3" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-large/ventas_lineas.xml" value="0.3" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-large/ver_documentos.xml" value="0.3" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/item_articulos_list.xml" value="0.33" />
         <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/buscar_articulos.xml" value="0.4675" />
         <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/clientes_activity.xml" value="0.4675" />
         <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/cobrar.xml" value="0.42125" />
@@ -220,7 +227,7 @@
       </value>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

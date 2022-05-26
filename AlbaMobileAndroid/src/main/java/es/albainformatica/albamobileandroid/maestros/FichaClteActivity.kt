@@ -37,7 +37,7 @@ class FichaClteActivity: AppCompatActivity() {
 
     private lateinit var fRecDirecciones: RecyclerView
     private lateinit var fAdpDirecciones: DirCltesRvAdapter
-    private lateinit var fDatActDir: DireccCltesEnt
+    private var fDatActDir: DireccCltesEnt? = null
 
     private lateinit var fRecyclerTlfs: RecyclerView
     private lateinit var fAdapterTlfs: TlfsClteRvAdapter
@@ -192,10 +192,10 @@ class FichaClteActivity: AppCompatActivity() {
         view.getTag(0)          // Para que no dé warning el compilador
 
         if (fIdDir > 0) {
-            if (fDatActDir.direccion != "") {
-                buscarDireccion(fDatActDir.direccion + ','
-                            + fDatActDir.cPostal + ',' + fDatActDir.localidad + ','
-                            + fDatActDir.provincia)
+            if (fDatActDir?.direccion != "") {
+                buscarDireccion(fDatActDir?.direccion + ','
+                            + fDatActDir?.cPostal + ',' + fDatActDir?.localidad + ','
+                            + fDatActDir?.provincia)
             }
         } else MsjAlerta(this).alerta("Tiene que seleccionar una dirección")
     }
@@ -499,10 +499,10 @@ class FichaClteActivity: AppCompatActivity() {
         val edtDirCP = findViewById<View>(R.id.edtDir_CPostal) as EditText
         val edtDirProv = findViewById<View>(R.id.edtDir_Provincia) as EditText
 
-        edtDirDirecc.setText(fDatActDir.direccion)
-        edtDirPoblac.setText(fDatActDir.localidad)
-        edtDirCP.setText(fDatActDir.cPostal)
-        edtDirProv.setText(fDatActDir.provincia)
+        edtDirDirecc.setText(fDatActDir?.direccion)
+        edtDirPoblac.setText(fDatActDir?.localidad)
+        edtDirCP.setText(fDatActDir?.cPostal)
+        edtDirProv.setText(fDatActDir?.provincia)
     }
 
 
@@ -616,10 +616,10 @@ class FichaClteActivity: AppCompatActivity() {
 
                     val i = Intent(this, EditarDirClte::class.java)
                     i.putExtra("nuevo", false)
-                    i.putExtra("direccion", fDatActDir.direccion)
-                    i.putExtra("poblacion", fDatActDir.localidad)
-                    i.putExtra("codpostal", fDatActDir.cPostal)
-                    i.putExtra("provincia", fDatActDir.provincia)
+                    i.putExtra("direccion", fDatActDir?.direccion)
+                    i.putExtra("poblacion", fDatActDir?.localidad)
+                    i.putExtra("codpostal", fDatActDir?.cPostal)
+                    i.putExtra("provincia", fDatActDir?.provincia)
                     startActivityForResult(i, fRequestEditarDir)
                 } else MsjAlerta(this).alerta("Tiene que seleccionar una dirección")
             }

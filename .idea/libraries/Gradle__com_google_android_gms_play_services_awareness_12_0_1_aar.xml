@@ -7,8 +7,8 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/16ee803c4ba147a20711beb6a27ec1de/transformed/jetified-play-services-awareness-12.0.1/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/dadf104f999ac3d999c36114e711c73d/transformed/jetified-play-services-awareness-12.0.1/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/e50c9c95a674d000f363b97fd0d4c840/transformed/jetified-play-services-awareness-12.0.1/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/e50c9c95a674d000f363b97fd0d4c840/transformed/jetified-play-services-awareness-12.0.1/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/e50c9c95a674d000f363b97fd0d4c840/transformed/jetified-play-services-awareness-12.0.1/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/dadf104f999ac3d999c36114e711c73d/transformed/jetified-play-services-awareness-12.0.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/dadf104f999ac3d999c36114e711c73d/transformed/jetified-play-services-awareness-12.0.1/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

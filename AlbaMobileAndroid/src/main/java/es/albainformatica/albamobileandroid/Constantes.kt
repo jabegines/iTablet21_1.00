@@ -127,7 +127,7 @@ class ListaArticulos {
     var idOferta: Int = 0
     var codigo: String = ""
     var descripcion: String = ""
-    var ucaja: String? = null
+    var uCaja: String? = null
     var precio: String? = null
     var dto: String? = null
     var prCaja: String? = null

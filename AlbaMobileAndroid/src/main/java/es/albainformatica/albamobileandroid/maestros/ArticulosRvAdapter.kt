@@ -96,9 +96,9 @@ class ArticulosRvAdapter(var articulos: MutableList<ListaArticulos>, val fIvaInc
                 String.format("%.2f", articulo.dto?.toDouble()) + context.resources.getString(R.string.porcentaje)
             else ""
 
-            val dUCaja = articulo.ucaja?.toDouble()
+            val dUCaja = articulo.uCaja?.toDouble()
             val queUCaja = if (dUCaja != null)
-                String.format("%.0f", dUCaja) + context.resources.getString(R.string.unidades)
+                String.format("%.0f", dUCaja) + " " + context.resources.getString(R.string.unidades)
             else ""
 
             val queStock = articulo.stock ?: "0"
