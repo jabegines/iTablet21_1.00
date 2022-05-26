@@ -14,6 +14,9 @@ interface EjerciciosDao {
     fun getEjercicioActual(queFecha: String): Short
 
 
+    @Query("SELECT COUNT(*) FROM Ejercicios WHERE (julianday(fechaInicio) <= julianday(:queFecha)) AND (julianday(fechaFin) >= julianday(:queFecha))")
+    fun hayDatosEjercicioActual(queFecha: String): Int
+
     @Query("DELETE FROM Ejercicios")
     fun vaciar()
 

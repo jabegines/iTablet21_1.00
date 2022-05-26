@@ -10,6 +10,7 @@ import android.widget.*
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.ventas.NumberTextWatcher
 import es.albainformatica.albamobileandroid.entity.CobrosEnt
+import org.jetbrains.anko.alert
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -254,19 +255,33 @@ class Cobrar: Activity() {
                 cobroEnt.vAlmacen = ""
                 cobroEnt.vEjercicio = ""
             }
-            fCobros.nuevoCobro(cobroEnt)
-            if (fEsPendiente) fPendiente.actualizarCobrado(
-                edtImpte.text.toString().replace(",", "."), fPendiente.pendienteId
-            )
-            actualizarSaldo(
-                this,
-                cobroEnt.clienteId,
-                queEmpresa,
-                -cobroEnt.cobro.replace(',', '.').toDouble()
-            )
-            val returnIntent = Intent()
-            setResult(RESULT_OK, returnIntent)
-            finish()
+
+            // Nos aseguramos de que hemos encontrado un ejercicio válido
+            if (cobroEnt.ejercicio > -1) {
+
+                fCobros.nuevoCobro(cobroEnt)
+                if (fEsPendiente) fPendiente.actualizarCobrado(
+                    edtImpte.text.toString().replace(",", "."), fPendiente.pendienteId
+                )
+                actualizarSaldo(
+                    this,
+                    cobroEnt.clienteId,
+                    queEmpresa,
+                    -cobroEnt.cobro.replace(',', '.').toDouble()
+                )
+                val returnIntent = Intent()
+                setResult(RESULT_OK, returnIntent)
+                finish()
+
+            } else {
+                alert("No se ha encontrado un ejercicio válido", "Ejercicio incorrecto") {
+                    positiveButton("Ok") {
+                        val returnIntent = Intent()
+                        setResult(RESULT_CANCELED, returnIntent)
+                        finish()
+                    }
+                }.show()
+            }
         }
     }
 

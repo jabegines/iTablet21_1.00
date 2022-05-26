@@ -153,7 +153,10 @@ class Configuracion(queContexto: Context) {
         val df = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val fFecha = df.format(tim)
 
-        return ejerciciosDao?.getEjercicioActual(fFecha) ?: 0
+        if ((ejerciciosDao?.hayDatosEjercicioActual(fFecha) ?: 0) > 0) {
+            return ejerciciosDao?.getEjercicioActual(fFecha) ?: 0
+        }
+        else return -1
     }
 
     fun hayReparto(): Boolean {

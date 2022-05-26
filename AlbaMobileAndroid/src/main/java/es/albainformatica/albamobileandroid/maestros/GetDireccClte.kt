@@ -25,7 +25,7 @@ class GetDireccClte: Activity() {
 
     private lateinit var fRecDirecciones: RecyclerView
     private lateinit var fAdpDirecciones: DirCltesRvAdapter
-    private lateinit var fDatActDir: DireccCltesEnt
+    private var fDatActDir: DireccCltesEnt? = null
 
     private var fCliente = 0
     private val fRequestEditarDir = 1
@@ -79,19 +79,19 @@ class GetDireccClte: Activity() {
         val edtDirPoblac = findViewById<View>(R.id.edtDir_Poblacion) as EditText
         val edtDirCP = findViewById<View>(R.id.edtDir_CPostal) as EditText
         val edtDirProv = findViewById<View>(R.id.edtDir_Provincia) as EditText
-        edtDirDirecc.setText(fDatActDir.direccion)
-        edtDirPoblac.setText(fDatActDir.localidad)
-        edtDirCP.setText(fDatActDir.cPostal)
-        edtDirProv.setText(fDatActDir.provincia)
+        edtDirDirecc.setText(fDatActDir?.direccion)
+        edtDirPoblac.setText(fDatActDir?.localidad)
+        edtDirCP.setText(fDatActDir?.cPostal)
+        edtDirProv.setText(fDatActDir?.provincia)
     }
 
     fun aceptarDireccion(view: View) {
         view.getTag(0)              // Para que no dé warning el compilador
 
         val returnIntent = Intent()
-        returnIntent.putExtra("idDireccion", fDatActDir.direccionId)
-        returnIntent.putExtra("almDireccion", fDatActDir.almacen)
-        returnIntent.putExtra("ordenDireccion", fDatActDir.orden)
+        returnIntent.putExtra("idDireccion", fDatActDir?.direccionId)
+        returnIntent.putExtra("almDireccion", fDatActDir?.almacen)
+        returnIntent.putExtra("ordenDireccion", fDatActDir?.orden)
         setResult(RESULT_OK, returnIntent)
         finish()
     }
@@ -108,15 +108,16 @@ class GetDireccClte: Activity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == fRequestEditarDir) {
             if (resultCode == RESULT_OK) {
-                val aDatosDirecc = ArrayList<String>(7)
-                aDatosDirecc[0] = 0.toString()
-                aDatosDirecc[1] = fCliente.toString()
-                aDatosDirecc[2] = fConfiguracion.almacen().toString()
-                aDatosDirecc[3] = data?.getStringExtra("direccion") ?: ""
-                aDatosDirecc[4] = data?.getStringExtra("poblacion") ?: ""
-                aDatosDirecc[5] = data?.getStringExtra("codpostal") ?: ""
-                aDatosDirecc[6] = data?.getStringExtra("provincia") ?: ""
-                aceptarDir(aDatosDirecc)
+                val aDatosDirecc: MutableList<String> = ArrayList()
+
+                aDatosDirecc.add(0, 0.toString())
+                aDatosDirecc.add(1, fCliente.toString())
+                aDatosDirecc.add(2, fConfiguracion.almacen().toString())
+                aDatosDirecc.add(3, data?.getStringExtra("direccion") ?: "")
+                aDatosDirecc.add(4, data?.getStringExtra("poblacion") ?: "")
+                aDatosDirecc.add(5, data?.getStringExtra("codpostal") ?: "")
+                aDatosDirecc.add(6, data?.getStringExtra("provincia") ?: "")
+                aceptarDir(ArrayList(aDatosDirecc))
                 refrescarDirecc()
             }
         }

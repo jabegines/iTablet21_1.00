@@ -184,10 +184,10 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
         txtDescrCat = findViewById(R.id.tvBioDescrCat)
         when (fModoVtaCat) {
-            1 -> if (fCatalogos.lClasCat.count() > 0)
+            1 -> if (fCatalogos.lClasCat.isNotEmpty())
                 txtDescrCat.text = fCatalogos.lClasCat[0].descripcion
             2 -> if (fViendoDep) {
-                if (fDepartamentos.lDepCat.count() > 0)
+                if (fDepartamentos.lDepCat.isNotEmpty())
                     txtDescrCat.text = fDepartamentos.lDepCat[0].descripcion
             }
             3 -> txtDescrCat.text = resources.getString(R.string.btn_hco)
@@ -444,10 +444,10 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
         if (fModoVtaCat < 3) {
             if (fModoVtaCat == 1) {
-                if (fCatalogos.lClasCat.count() > 0)
+                if (fCatalogos.lClasCat.isNotEmpty())
                     prepararRvCatalogos()
                 else {
-                    if (fGrupos.lGrupCat.count() > 0) {
+                    if (fGrupos.lGrupCat.isNotEmpty()) {
                         prepararRvGrupos()
                     } else {
                         alert("No tiene ningún catálogo ni tampoco ningún grupo.\nNo podrá vender en el modo Catálogo Visual.") {
@@ -457,10 +457,10 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
                     }
                 }
             } else {
-                if (fGrupos.lGrupCat.count() > 0)
+                if (fGrupos.lGrupCat.isNotEmpty())
                     prepararRvGrupos()
                 else {
-                    if (fCatalogos.lClasCat.count() > 0) {
+                    if (fCatalogos.lClasCat.isNotEmpty()) {
                         prepararRvCatalogos()
                     } else {
                         alert("No tiene ningún catálogo ni tampco ningún grupo.\nNo podrá vender en el modo Catálogo Visual.") {
@@ -476,7 +476,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
     }
 
     private fun prepararRvCatalogos() {
-        if (fCatalogos.lClasCat.count() > 0) {
+        if (fCatalogos.lClasCat.isNotEmpty()) {
             fModoVtaCat = 1
             nhTvTipoCatalogo.text = resources.getString(R.string.cat_catalogos)
 
@@ -518,7 +518,7 @@ class BioCatalogo: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
 
     private fun prepararRvGrupos() {
-        if (fGrupos.lGrupCat.count() > 0) {
+        if (fGrupos.lGrupCat.isNotEmpty()) {
             fModoVtaCat = 2
             nhTvTipoCatalogo.text = resources.getString(R.string.grupos)
 
