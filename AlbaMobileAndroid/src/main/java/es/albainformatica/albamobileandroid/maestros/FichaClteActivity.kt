@@ -41,7 +41,7 @@ class FichaClteActivity: AppCompatActivity() {
 
     private lateinit var fRecyclerTlfs: RecyclerView
     private lateinit var fAdapterTlfs: TlfsClteRvAdapter
-    private lateinit var fDatActTlf: ContactosCltesEnt
+    private var fDatActTlf: ContactosCltesEnt? = null
 
 
     private var fCliente = 0
@@ -513,11 +513,11 @@ class FichaClteActivity: AppCompatActivity() {
         val edtEmail = findViewById<View>(R.id.edtTlfEmail) as EditText
         val edtObs = findViewById<View>(R.id.edtObsTlf) as EditText
 
-        edtContacto.setText(fDatActTlf.nombre)
-        edtTlf1.setText(fDatActTlf.telefono1)
-        edtTlf2.setText(fDatActTlf.telefono2)
-        edtEmail.setText(fDatActTlf.eMail)
-        edtObs.setText(fDatActTlf.obs1)
+        edtContacto.setText(fDatActTlf?.nombre)
+        edtTlf1.setText(fDatActTlf?.telefono1)
+        edtTlf2.setText(fDatActTlf?.telefono2)
+        edtEmail.setText(fDatActTlf?.eMail)
+        edtObs.setText(fDatActTlf?.obs1)
     }
 
     fun salvarDatos(view: View) {
@@ -593,11 +593,11 @@ class FichaClteActivity: AppCompatActivity() {
                     botonesFlotantesTlf()
                     val i = Intent(this, EditarTlfClte::class.java)
                     i.putExtra("nuevo", false)
-                    i.putExtra("contacto", fDatActTlf.nombre)
-                    i.putExtra("telefono1", fDatActTlf.telefono1)
-                    i.putExtra("telefono2", fDatActTlf.telefono2)
-                    i.putExtra("email", fDatActTlf.eMail)
-                    i.putExtra("observ", fDatActTlf.obs1)
+                    i.putExtra("contacto", fDatActTlf?.nombre)
+                    i.putExtra("telefono1", fDatActTlf?.telefono1)
+                    i.putExtra("telefono2", fDatActTlf?.telefono2)
+                    i.putExtra("email", fDatActTlf?.eMail)
+                    i.putExtra("observ", fDatActTlf?.obs1)
                     startActivityForResult(i, fRequestEditarTlf)
                 } else MsjAlerta(this).alerta("Tiene que seleccionar un contacto")
             }
@@ -718,7 +718,7 @@ class FichaClteActivity: AppCompatActivity() {
             val permissionCheck = ContextCompat.checkSelfPermission(applicationContext, permission.CALL_PHONE)
             if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
                 val callIntent = Intent(Intent.ACTION_CALL)
-                callIntent.data = Uri.parse("tel:" + fDatActTlf.telefono1)
+                callIntent.data = Uri.parse("tel:" + fDatActTlf?.telefono1)
                 startActivity(callIntent)
             } else {
                 // Aunque tengamos la constante REQUEST_PERMISO_LLAMAR, por ahora no la usamos
@@ -740,7 +740,7 @@ class FichaClteActivity: AppCompatActivity() {
                 ContextCompat.checkSelfPermission(applicationContext, permission.CALL_PHONE)
             if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
                 val callIntent = Intent(Intent.ACTION_CALL)
-                callIntent.data = Uri.parse("tel:" + fDatActTlf.telefono2)
+                callIntent.data = Uri.parse("tel:" + fDatActTlf?.telefono2)
                 startActivity(callIntent)
             } else {
                 ActivityCompat.requestPermissions(

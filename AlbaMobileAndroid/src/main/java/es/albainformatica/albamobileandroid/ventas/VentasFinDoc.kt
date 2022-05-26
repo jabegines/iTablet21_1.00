@@ -87,8 +87,7 @@ class VentasFinDoc: AppCompatActivity() {
         val tvNomComerc =
             findViewById<TextView>(R.id.tvVL_NComClte)
         // Si tenemos rutero_reparto no mostraremos aquí el botón de incidencia, porque ya lo tenemos en la actividad de documentos.
-        val btnIncidencia =
-            findViewById<Button>(R.id.btnIncidenciaDoc)
+        val btnIncidencia = findViewById<Button>(R.id.btnIncidenciaDoc)
         if (fConfiguracion.hayReparto()) btnIncidencia.visibility = View.GONE
         //dpFEntrega = findViewById(R.id.datePicker)
         tvFEntrega = findViewById(R.id.tvFEntr)
@@ -373,7 +372,7 @@ class VentasFinDoc: AppCompatActivity() {
     }
 
     class DialogoIncidenciaDoc : DialogFragment() {
-        override fun onCreateDialog(savedInstanceState: Bundle): Dialog {
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
             // Usamos la clase Builder para construir el diálogo
             val builder = AlertDialog.Builder(activity)
@@ -388,8 +387,7 @@ class VentasFinDoc: AppCompatActivity() {
             // Llamamos a Inflate y establecemos un layout propio para el dialogo
             builder.setView(dialogView) // Añadimos action buttons
                 .setPositiveButton(android.R.string.yes) { _: DialogInterface?, _: Int ->
-                    (activity as VentasFinDoc).fDocumento.fTextoIncidencia =
-                        edtTexto.text.toString()
+                    (activity as VentasFinDoc).fDocumento.fTextoIncidencia = edtTexto.text.toString()
                     ocultarTeclado(activity)
                 }
                 .setNegativeButton(android.R.string.no) { _: DialogInterface?, _: Int -> }

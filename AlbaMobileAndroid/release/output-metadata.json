@@ -11,8 +11,8 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 2,
-      "versionName": "2.00",
+      "versionCode": 1,
+      "versionName": "1.00",
       "outputFile": "AlbaMobileAndroid-release.apk"
     }
   ],
