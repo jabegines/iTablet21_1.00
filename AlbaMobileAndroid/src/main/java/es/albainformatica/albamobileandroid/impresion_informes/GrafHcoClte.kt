@@ -78,8 +78,6 @@ class GrafHcoClte: AppCompatActivity() {
             tvImpteAnt.text = ""
             tvImpte.text = ""
         }
-
-        fHcoMes.cCursorHco.close()
     }
 
 

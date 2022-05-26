@@ -65,7 +65,6 @@ class AcumuladosAnyo: Activity() {
 
             drawChart(queCantidad, hco.mes)
             mesActual++
-            fHistorico.cCursorHco.moveToNext()
         }
 
         if (mesActual < 13) {

@@ -15,8 +15,6 @@ import java.util.*
 class HistoricoMes(val contexto: Context) {
     private var histMesDao: HistMesDao? = MyDatabase.getInstance(contexto)?.histMesDao()
 
-    lateinit var cCursorHco: Cursor
-
     lateinit var lDatosHistMes: List<HistMesEnt>
     lateinit var lDatosHMAnyo: List<DatosHistMesAnyo>
     lateinit var lDatosHMDif: List<DatosHistMesDif>
