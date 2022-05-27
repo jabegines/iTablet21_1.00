@@ -39,9 +39,12 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
     private var fTerminar: Boolean = false
     private val fDesdeServicio: Boolean = desdeServicio
     private var rutaLocal: String
+    private var rutaLog: String
     var rutaLocalEnvio: String
     private var fCodTerminal: String = prefs.getString("terminal", "") ?: ""
     private var fUsarMultisistema: Boolean = false
+
+    private lateinit var fLog: FileOutputStream
 
     private var fImportando: Boolean = false
     var aCabeceras: ArrayList<Int> = ArrayList()
@@ -74,6 +77,8 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             if (fUsarMultisistema) "$rutaLocal/envio/$fCodTerminal/$queBDRoom"
             else "$rutaLocal/envio/$fCodTerminal"
         }
+
+        rutaLog = context.getExternalFilesDir(null)?.path ?: rutaLocalEnvio
     }
 
 
@@ -3496,10 +3501,35 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
     }
 
 
+    private fun iniciarLog() {
+        // Borraremos los ficheros de log con una antigüedad mayor a 30 días
+        val rutaLocLog = File(rutaLog)
+        val logFiles = rutaLocLog.listFiles() ?: emptyArray()
+        for (File in logFiles) {
+            val date1 = System.currentTimeMillis()
+            val date2 = File.lastModified()
+            val diff = date1 - date2
+            val segundos = diff / 1000
+            val minutos = segundos / 60
+            val horas = minutos / 60
+            val dias = horas / 24
+
+            if (dias > 30) {
+                File.delete()
+            }
+        }
+
+        val df = SimpleDateFormat("dd_MM_yyyy_HH_mm_ss", Locale.getDefault())
+        val fFecha = df.format(System.currentTimeMillis())
+        val outFileName = "$rutaLog/Log_$fFecha.txt"
+        fLog = FileOutputStream(outFileName)
+        val queCadena = "SE INICIA EL ENVIO DE DATOS: $fFecha\n\n"
+        fLog.write(queCadena.toByteArray())
+    }
+
 
     @SuppressLint("SimpleDateFormat")
     fun baseDatosAXML(queNumExportacion: Int): Boolean {
-        //val fConfiguracion = Comunicador.fConfiguracion
         var resultado = false
         val fClientes = ClientesClase(fContext)
         val fNotas = NotasClientes(fContext)
@@ -3528,6 +3558,9 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
         val continuar = (quedanFich.isEmpty())
 
         if (continuar) {
+            // Creamos el fichero log
+            iniciarLog()
+
             val lClientes = fClientes.abrirParaEnviar(queNumExportacion)
             if (lClientes.isNotEmpty()) {
                 hayClientes = true
@@ -3569,6 +3602,12 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             if (enviarFacturas(queNumExportacion, iSigExportacion)) hayFacturas = true
             if (enviarCobros(queNumExportacion, iSigExportacion)) hayCobros = true
             if (enviarPendiente(queNumExportacion, iSigExportacion)) hayPendiente = true
+
+            // Guardamos el fichero log
+            val queCadena = "\nFIN DEL ENVIO DE DATOS"
+            fLog.write(queCadena.toByteArray())
+            fLog.flush()
+            fLog.close()
 
             if (hayClientes || hayDirecc || hayContactos || hayNotas || hayDocumentos || hayFacturas || hayCobros || hayPendiente || hayCargas) {
                 // Enviamos información técnica de la tablet
@@ -4171,6 +4210,9 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                 serializer.attribute(null, "Hora", cargaEnt.hora)
                 serializer.attribute(null, "ESFINDEDIA", cargaEnt.esFinDeDia)
                 serializer.endTag("", "record")
+
+                val queCadena = "Se graba la carga: " + cargaEnt.cargaId + "\n"
+                fLog.write(queCadena.toByteArray())
             }
             serializer.endTag("", "consulta")
 
@@ -4180,8 +4222,13 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             fTamCargas = outputFile.length()
 
         } catch (e: FileNotFoundException) {
+            val queCadena = "ERROR enviando cargas: " + e.message + "\n"
+            fLog.write(queCadena.toByteArray())
             mostrarExcepcion(e)
+
         } catch (e: Exception) {
+            val queCadena = "ERROR enviando cargas: " + e.message + "\n"
+            fLog.write(queCadena.toByteArray())
             mostrarExcepcion(e)
         }
     }
@@ -4214,8 +4261,13 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             fTamCargasLineas = outputFile.length()
 
         } catch (e: FileNotFoundException) {
+            val queCadena = "ERROR enviando líneas de cargas: " + e.message + "\n"
+            fLog.write(queCadena.toByteArray())
             mostrarExcepcion(e)
+
         } catch (e: Exception) {
+            val queCadena = "ERROR enviando líneas de cargas: " + e.message + "\n"
+            fLog.write(queCadena.toByteArray())
             mostrarExcepcion(e)
         }
     }
@@ -4291,6 +4343,10 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                 serializer.attribute(null, "ALMDIRECCIONCLTE", "000")
                 serializer.attribute(null, "ORDENDIRECCIONCLTE", cabeceraEnt.ordenDireccion)
                 serializer.endTag("", "record")
+
+                val queCadena = "Se graba el tipo de documento " + cabeceraEnt.tipoDoc +
+                        " con serie " + cabeceraEnt.serie + " y número " + cabeceraEnt.numero + "\n"
+                fLog.write(queCadena.toByteArray())
             }
             serializer.endTag("", "consulta")
 
@@ -4300,8 +4356,13 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             fTamCabec = outputFile.length()
 
         } catch (e: FileNotFoundException) {
+            val queCadena = "ERROR enviando cabeceras: " + e.message + "\n"
+            fLog.write(queCadena.toByteArray())
             mostrarExcepcion(e)
+
         } catch (e: Exception) {
+            val queCadena = "ERROR enviando cabeceras: " + e.message + "\n"
+            fLog.write(queCadena.toByteArray())
             mostrarExcepcion(e)
         }
     }
@@ -4375,6 +4436,9 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                 serializer.attribute(null, "ALMDIRECCIONCLTE", "000")
                 serializer.attribute(null, "ORDENDIRECCIONCLTE", cabeceraEnt.ordenDireccion)
                 serializer.endTag("", "record")
+
+                val queCadena = "Se graba la factura con serie " + cabeceraEnt.serie + " y número " + cabeceraEnt.numero + "\n"
+                fLog.write(queCadena.toByteArray())
             }
             serializer.endTag("", "consulta")
 
@@ -4384,8 +4448,13 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             fTamFacturas = outputFile.length()
 
         } catch (e: FileNotFoundException) {
+            val queCadena = "ERROR enviando facturas: " + e.message + "\n"
+            fLog.write(queCadena.toByteArray())
             mostrarExcepcion(e)
+
         } catch (e: Exception) {
+            val queCadena = "ERROR enviando facturas: " + e.message + "\n"
+            fLog.write(queCadena.toByteArray())
             mostrarExcepcion(e)
         }
     }
@@ -4442,8 +4511,13 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             fTamLineas = outputFile.length()
 
         } catch (e: FileNotFoundException) {
+            val queCadena = "ERROR enviando líneas: " + e.message + "\n"
+            fLog.write(queCadena.toByteArray())
             mostrarExcepcion(e)
+
         } catch (e: Exception) {
+            val queCadena = "ERROR enviando líneas: " + e.message + "\n"
+            fLog.write(queCadena.toByteArray())
             mostrarExcepcion(e)
         }
     }
@@ -4500,8 +4574,13 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             fTamLinFras = outputFile.length()
 
         } catch (e: FileNotFoundException) {
+            val queCadena = "ERROR enviando líneas de facturas: " + e.message + "\n"
+            fLog.write(queCadena.toByteArray())
             mostrarExcepcion(e)
+
         } catch (e: Exception) {
+            val queCadena = "ERROR enviando líneas de facturas: " + e.message + "\n"
+            fLog.write(queCadena.toByteArray())
             mostrarExcepcion(e)
         }
     }
@@ -4536,8 +4615,13 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             fout.close()
 
         } catch (e: FileNotFoundException) {
+            val queCadena = "ERROR enviando descuentos por línea: " + e.message + "\n"
+            fLog.write(queCadena.toByteArray())
             mostrarExcepcion(e)
+
         } catch (e: Exception) {
+            val queCadena = "ERROR enviando descuentos por línea: " + e.message + "\n"
+            fLog.write(queCadena.toByteArray())
             mostrarExcepcion(e)
         }
     }
@@ -4573,8 +4657,13 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             fout.close()
 
         } catch (e: FileNotFoundException) {
+            val queCadena = "ERROR enviando descuentos por línea de facturas: " + e.message + "\n"
+            fLog.write(queCadena.toByteArray())
             mostrarExcepcion(e)
+
         } catch (e: Exception) {
+            val queCadena = "ERROR enviando descuentos por línea de facturas: " + e.message + "\n"
+            fLog.write(queCadena.toByteArray())
             mostrarExcepcion(e)
         }
     }
@@ -4648,6 +4737,10 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                 serializer.attribute(null, "Matricula", cobro.matricula)
 
                 serializer.endTag("", "record")
+
+                val queCadena = "Se graba el cobro con id " + cobro.cobroId + " del cliente " + cobro.clienteId +
+                                " con fecha " + cobro.fechaCobro + " e importe " + cobro.cobro + "\n"
+                fLog.write(queCadena.toByteArray())
             }
             serializer.endTag("", "consulta")
 
@@ -4657,8 +4750,13 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             fTamCobros = outputFile.length()
 
         } catch (e: FileNotFoundException) {
+            val queCadena = "ERROR enviando cobros: " + e.message + "\n"
+            fLog.write(queCadena.toByteArray())
             mostrarExcepcion(e)
+
         } catch (e: Exception) {
+            val queCadena = "ERROR enviando cobros: " + e.message + "\n"
+            fLog.write(queCadena.toByteArray())
             mostrarExcepcion(e)
         }
     }
@@ -4736,6 +4834,11 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                 serializer.attribute(null, "ANOTACION", pendiente.anotacion)
 
                 serializer.endTag("", "record")
+
+                val queCadena = "Se graba el pendiente del cliente " + pendiente.clienteId +
+                        " con serie " + pendiente.serie + " y número " + pendiente.numero +
+                        " e importe " + pendiente.importe.replace('.', ',') + "\n"
+                fLog.write(queCadena.toByteArray())
             }
             serializer.endTag("", "consulta")
 
@@ -4745,8 +4848,13 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             fTamPdte = outputFile.length()
 
         } catch (e: FileNotFoundException) {
+            val queCadena = "ERROR enviando pendiente: " + e.message + "\n"
+            fLog.write(queCadena.toByteArray())
             mostrarExcepcion(e)
+
         } catch (e: Exception) {
+            val queCadena = "ERROR enviando pendiente: " + e.message + "\n"
+            fLog.write(queCadena.toByteArray())
             mostrarExcepcion(e)
         }
     }
