@@ -587,7 +587,10 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                         clienteEnt.tieneIncid = "F"
 
                         if (clienteEnt.clienteId > 0) {
-                            clientesDao?.insertar(clienteEnt)
+                            val queCliente = clientesDao?.existeClteId(clienteEnt.clienteId) ?: 0
+                            if (queCliente == 0) {
+                                clientesDao?.insertar(clienteEnt)
+                            }
                         }
                     }
                     event = parser.next()
@@ -754,7 +757,36 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
 
         val lCltes = clientesDao?.getAllCltes() ?: emptyList<ClientesEnt>().toMutableList()
         for (cliente in lCltes) {
-            tempCltesDao?.insertar(cliente)
+            val tmpClteEnt = TempCltesEnt()
+            tmpClteEnt.clienteId = cliente.clienteId
+            tmpClteEnt.codigo = cliente.codigo
+            tmpClteEnt.nombre = cliente.nombre
+            tmpClteEnt.nombreComercial = cliente.nombreComercial
+            tmpClteEnt.cif = cliente.cif
+            tmpClteEnt.direccion = cliente.direccion
+            tmpClteEnt.localidad = cliente.localidad
+            tmpClteEnt.cPostal = cliente.cPostal
+            tmpClteEnt.provincia = cliente.provincia
+            tmpClteEnt.aplIva = cliente.aplIva
+            tmpClteEnt.aplRec = cliente.aplRec
+            tmpClteEnt.tipoIva = cliente.tipoIva
+            tmpClteEnt.tarifaId = cliente.tarifaId
+            tmpClteEnt.tarifaDtoId = cliente.tarifaDtoId
+            tmpClteEnt.tarifaPiezas = cliente.tarifaPiezas
+            tmpClteEnt.fPago = cliente.fPago
+            tmpClteEnt.rutaId = cliente.rutaId
+            tmpClteEnt.riesgo = cliente.riesgo
+            tmpClteEnt.pendiente = cliente.pendiente
+            tmpClteEnt.flag = cliente.flag
+            tmpClteEnt.flag2 = cliente.flag2
+            tmpClteEnt.estado = cliente.estado
+            tmpClteEnt.ramo = cliente.ramo
+            tmpClteEnt.numExport = cliente.numExport
+            tmpClteEnt.tieneIncid = cliente.tieneIncid
+            tmpClteEnt.maxDias = cliente.maxDias
+            tmpClteEnt.maxFrasPdtes = cliente.maxFrasPdtes
+
+            tempCltesDao?.insertar(tmpClteEnt)
         }
     }
 

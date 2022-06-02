@@ -19,6 +19,6 @@ interface TempCltesDao {
     fun vaciar()
 
     @Insert
-    fun insertar(tempClte: ClientesEnt)
+    fun insertar(tempClte: TempCltesEnt)
 
 }

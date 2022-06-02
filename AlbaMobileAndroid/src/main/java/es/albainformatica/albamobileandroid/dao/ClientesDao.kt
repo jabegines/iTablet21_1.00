@@ -1,9 +1,6 @@
 package es.albainformatica.albamobileandroid.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import es.albainformatica.albamobileandroid.DatosReparto
 import es.albainformatica.albamobileandroid.ListaClientes
 import es.albainformatica.albamobileandroid.entity.ClientesEnt
