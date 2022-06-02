@@ -3,7 +3,6 @@ package es.albainformatica.albamobileandroid.comunicaciones
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Environment
 import android.os.Handler
 import android.os.Message
 import androidx.preference.PreferenceManager
@@ -109,7 +108,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             0
         }
 
-        rutaLocal = if (rutaLocal == "") Environment.getExternalStorageDirectory().path + "/alba/recepcion/$fCodTerminal"
+        rutaLocal = if (rutaLocal == "") fContext.getExternalFilesDir(null)?.path + "/alba/recepcion/$fCodTerminal"
         else "$rutaLocal/recepcion/$fCodTerminal"
 
         val rutarecepcion = File(rutaLocal)
@@ -3013,7 +3012,10 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                             }
                         }
                         if (tarifaEnt.articuloId > 0) {
-                            tarifasDao?.insertar(tarifaEnt)
+                            val queTarifa = tarifasDao?.existe(tarifaEnt.articuloId, tarifaEnt.tarifaId) ?: 0
+                            if (queTarifa == 0) {
+                                tarifasDao?.insertar(tarifaEnt)
+                            }
                         }
                     }
                     event = parser.next()
@@ -3215,7 +3217,10 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                             }
                         }
                         if (articClasifEnt.articuloId > 0) {
-                            articClasifDao?.insertar(articClasifEnt)
+                            val queArticuloId = articClasifDao?.existe(articClasifEnt.articuloId, articClasifEnt.clasificadorId) ?: 0
+                            if (queArticuloId == 0) {
+                                articClasifDao?.insertar(articClasifEnt)
+                            }
                         }
                     }
                     event = parser.next()

@@ -12,7 +12,6 @@ import android.text.Spannable
 import android.content.Intent
 import androidx.preference.PreferenceManager
 import android.widget.Toast
-import android.text.Html
 import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
@@ -137,11 +136,10 @@ class Enviar: AppCompatActivity() {
             finish()
         }
         usarMultisistema = prefs.getBoolean("usar_multisistema", false)
-        puente = object : Handler() {
+        puente = object: Handler(Looper.getMainLooper()) {
             override fun handleMessage(msg: Message) {
-                tvDatos.setText(
-                    tvDatos.getText().toString() + Html.fromHtml("<br />") + msg.obj.toString()
-                )
+                val queTexto = tvDatos.text.toString() + HtmlCompat.fromHtml("<br />", HtmlCompat.FROM_HTML_MODE_LEGACY) + msg.obj.toString()
+                tvDatos.text = queTexto
             }
         }
         val tvTitulo = findViewById<TextView>(R.id.tvNombreActivity)
@@ -284,14 +282,14 @@ class Enviar: AppCompatActivity() {
     private fun enviarFirmasFtp(ftpClient: FTPClient, msjEnv: String) {
         val dirlocFirmas = dimeRutaLocalFirmas()
         val rutaLocalFirmas = File(dirlocFirmas)
-        val firmasFiles = rutaLocalFirmas.listFiles { _, name -> nombreFirmaValido(name) }
+        val firmasFiles = rutaLocalFirmas.listFiles { _, name -> nombreFirmaValido(name) } ?: emptyArray()
         // Encriptamos los ficheros de firmas
         for (file in firmasFiles) {
             val encodedBytes = Base64.encodeBase64(loadFileAsBytesArray(dirlocFirmas + file.name))
             writeByteArraysToFile(dirlocFirmas + file.name + ".txt", encodedBytes)
         }
         // Volvemos a leer en un array los ficheros .txt, que son los que enviaremos
-        val firmasTxt = rutaLocalFirmas.listFiles { _, name -> name.endsWith("txt") }
+        val firmasTxt = rutaLocalFirmas.listFiles { _, name -> name.endsWith("txt") } ?: emptyArray()
         try {
             for (file in firmasTxt) {
                 if (fTerminar) break

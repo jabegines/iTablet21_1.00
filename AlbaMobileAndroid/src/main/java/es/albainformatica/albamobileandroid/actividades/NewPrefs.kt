@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Environment
 import androidx.preference.PreferenceManager
 import android.view.View
 import android.widget.*
@@ -140,7 +139,7 @@ class NewPrefs: AppCompatActivity() {
         val edtRutaLocal = dialogLayout.findViewById<EditText>(R.id.edtRutaLocal)
         editText.setText(prefs.getString("terminal", ""))
         //edtRutaLocal.setText(prefs.getString("rutacomunicacion", "/sdcard/alba"))
-        edtRutaLocal.setText(prefs.getString("rutacomunicacion", Environment.getExternalStorageDirectory().path))
+        edtRutaLocal.setText(prefs.getString("rutacomunicacion", this.getExternalFilesDir(null)?.path))
 
         builder.setView(dialogLayout)
         builder.setPositiveButton("OK") { _, _ ->
