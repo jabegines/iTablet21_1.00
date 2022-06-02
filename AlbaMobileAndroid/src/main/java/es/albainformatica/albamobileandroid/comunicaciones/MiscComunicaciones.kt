@@ -2993,7 +2993,10 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                             }
                         }
                         if (stockEnt.articuloId > 0) {
-                            stockDao?.insertar(stockEnt)
+                            val queStock = stockDao?.existeArtYEmpresa(stockEnt.articuloId, stockEnt.empresa) ?: 0
+                            if (queStock == 0) {
+                                stockDao?.insertar(stockEnt)
+                            }
                         }
                     }
                     event = parser.next()
