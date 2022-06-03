@@ -33,7 +33,7 @@ class Configuracion(queContexto: Context) {
             val fSistema = prefs.getString("sistema", "00") ?: "00"
             val optionalPath = fContext.getExternalFilesDir(null)?.absolutePath ?: ""
             // Extraemos de optionalPath la parte que no nos interesa
-            val extraPortion = ("/Android/data/es.albaibs.ibstablet/files")
+            val extraPortion = ("/Android/data/es.albainformatica.albamobileandroid/files")
             var queResultado = optionalPath.replace(extraPortion, "")
             queResultado = "$queResultado/alba/$fSistema/$fCodTablet"
 

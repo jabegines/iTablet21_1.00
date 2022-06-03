@@ -267,9 +267,9 @@ class ServicioRecibir: AppCompatActivity() {
                 var continuar = true
 
                 if (hayImagenesParaTerminal()) {
-                    if (aImagArt.count() > 0) continuar = recibirImagenesArt()
+                    if (aImagArt.isNotEmpty()) continuar = recibirImagenesArt()
                     if (continuar) {
-                        if (aImagBorr.count() > 0) continuar = borrarImagenesArt()
+                        if (aImagBorr.isNotEmpty()) continuar = borrarImagenesArt()
                     }
                     if (continuar)
                         confirmarRecogidaImag()

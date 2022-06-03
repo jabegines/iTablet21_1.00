@@ -170,36 +170,45 @@ class MiscServicio(context: Context) {
         else "$localDirectory/actualizacion/"
 
         // Nos aseguramos de que la carpeta existe y, si no, la creamos.
+        var resultado = true
         val rutaActualizacion = File(localDirectory)
-        if (!rutaActualizacion.exists()) rutaActualizacion.mkdirs()
+        if (!rutaActualizacion.exists()) {
+            resultado = rutaActualizacion.mkdirs()
+        }
 
-        val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
-        val fFechaHora = sdf.format(Date()).replace("/", "").replace(":", "").replace(" ", "")
-        val fAccion = "15"
-        val fAppId = "1"
+        if (resultado) {
+            val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+            val fFechaHora = sdf.format(Date()).replace("/", "").replace(":", "").replace(" ", "")
+            val fAccion = "15"
+            val fAppId = "1"
 
-        var fFirma = fEmail + ";;;" + fHuella + ";;;" + (fEmail + fHuella).length + ";;;" + fPassword +
-                ";;;" + fAccion + ";;;" + fAppId + ";;;" + fFechaHora
-        fFirma = fFirma + ";;;" + sha1(fFirma)
-        fFirma = Base64.encodeBase64String(fFirma.toByteArray())
-        fFirma = fFirma.replace("\r", "").replace("\n", "").replace("+", "-").replace("\\", "_").replace("=", "*")
+            var fFirma =
+                fEmail + ";;;" + fHuella + ";;;" + (fEmail + fHuella).length + ";;;" + fPassword +
+                        ";;;" + fAccion + ";;;" + fAppId + ";;;" + fFechaHora
+            fFirma = fFirma + ";;;" + sha1(fFirma)
+            fFirma = Base64.encodeBase64String(fFirma.toByteArray())
+            fFirma = fFirma.replace("\r", "").replace("\n", "").replace("+", "-").replace("\\", "_")
+                .replace("=", "*")
 
-        val client = OkHttpClient.Builder().readTimeout(5, TimeUnit.MINUTES).build()
-        val queUrl = "$urlServicio/Service/Action/DownloadApp"
-        val call = client.newCall(Request.Builder()
-                .url("$queUrl?Sign=$fFirma&SystemId=$fSistemaId")
-                .get()
-                .build())
+            val client = OkHttpClient.Builder().readTimeout(5, TimeUnit.MINUTES).build()
+            val queUrl = "$urlServicio/Service/Action/DownloadApp"
+            val call = client.newCall(
+                Request.Builder()
+                    .url("$queUrl?Sign=$fFirma&SystemId=$fSistemaId")
+                    .get()
+                    .build()
+            )
 
-        val response = call.execute()
+            val response = call.execute()
 
-        return if (response.isSuccessful) {
-            if (downloadApk(response, localDirectory)) {
-                descomprApk(localDirectory)
+            return if (response.isSuccessful) {
+                if (downloadApk(response, localDirectory)) {
+                    descomprApk(localDirectory)
 
+                } else false
             } else false
         }
-        else false
+        else return false
     }
 
 
