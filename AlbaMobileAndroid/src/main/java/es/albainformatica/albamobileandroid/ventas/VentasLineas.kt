@@ -76,13 +76,12 @@ class VentasLineas: AppCompatActivity() {
 
     // Layouts de bases imponibles que mostraremos/ocultaremos
     private lateinit var lyTotales: LinearLayout
-    private lateinit var pref: SharedPreferences
+    private lateinit var prefs: SharedPreferences
     private var fPrimeraVez: Boolean = false // Nos sirve para saber si es la primera vez que entramos a nueva línea o no.
     private var modoVenta = 0
     private var fDocEnviarGuardar = 0
     private lateinit var fQueData: Intent
     private lateinit var btnTerminar: Button
-    private var carpetaImagenes: String = ""
 
     // Formatos
     private var fFtoDecImpIva: String = ""
@@ -114,7 +113,7 @@ class VentasLineas: AppCompatActivity() {
         fHistorico = Historico(this)
 
         // Leemos las preferencias de la aplicación;
-        pref = PreferenceManager.getDefaultSharedPreferences(this)
+        prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val intent = intent
         if (inicializarDocumento(intent)) {
             inicializarControles()
@@ -208,7 +207,7 @@ class VentasLineas: AppCompatActivity() {
 
         // Establecemos la visibilidad de los layouts de totales para dejarla igual
         // que la última vez que estuvimos vendiendo.
-        if (pref.getBoolean("verTotales", true)) {
+        if (prefs.getBoolean("verTotales", true)) {
             lyTotales.visibility = View.VISIBLE
         } else {
             lyTotales.visibility = View.GONE
@@ -231,7 +230,7 @@ class VentasLineas: AppCompatActivity() {
         fFtoDecPrIva = fConfiguracion.formatoDecPrecioIva()
         fFtoDecPrBase = fConfiguracion.formatoDecPrecioBase()
         fFtoDecCant = fConfiguracion.formatoDecCantidad()
-        carpetaImagenes = dimeRutaImagenes(this)
+
         fUsarPiezas = fConfiguracion.usarPiezas()
         fUsarTasa1 = fConfiguracion.usarTasa1()
         fUsarTasa2 = fConfiguracion.usarTasa2()
@@ -253,7 +252,7 @@ class VentasLineas: AppCompatActivity() {
         prepararBases()
 
         // Vemos como tenemos configurado el modo de venta
-        var sModoVenta = pref.getString("modo_venta", "1")
+        var sModoVenta = prefs.getString("modo_venta", "1")
         if (sModoVenta == null) sModoVenta = "1"
         modoVenta = sModoVenta.toInt()
         fPrimeraVez = true
@@ -472,7 +471,7 @@ class VentasLineas: AppCompatActivity() {
                 fQueData = data ?: Intent()
 
                 // Si tenemos configurado 'Clasificar documentos como Enviar/Guardar' pediremos qué hacer con él.
-                if (pref.getBoolean("ventas_enviar_guardar", false)) {
+                if (prefs.getBoolean("ventas_enviar_guardar", false)) {
                     // Creamos un objeto de la clase EnviarOGuardar y lo mostramos para elegir si guardamos o está listo para el envío.
                     val newFragment: DialogFragment = EnviarOGuardar.newInstance(R.string.app_name)
                     newFragment.show(fragmentManager, "dialog")
@@ -531,16 +530,16 @@ class VentasLineas: AppCompatActivity() {
     }
 
     private fun imprimirDoc() {
-        var fExportar = pref.getBoolean("ventas_exportar_pdf", false)
+        var fExportar = prefs.getBoolean("ventas_exportar_pdf", false)
         if (fExportar && fDocumento.fTipoDoc == TIPODOC_PEDIDO) {
-            if (pref.getBoolean("ventas_enviar_guardar", false))
+            if (prefs.getBoolean("ventas_enviar_guardar", false))
                 fExportar = fDocEnviarGuardar == 1
         } else fExportar = false
 
         if (fConfiguracion.imprimir() || fExportar) {
 
             // Comprobamos si tenemos alguna impresora configurada para imprimir
-            val mDeviceAddress: String = pref.getString("impresoraBT", "") ?: ""
+            val mDeviceAddress: String = prefs.getString("impresoraBT", "") ?: ""
             if (fExportar || mDeviceAddress != "") {
 
                 // Volvemos a recalcular el documento, para que no pase lo que le ha pasado a Artesantequera,
@@ -1042,7 +1041,7 @@ class VentasLineas: AppCompatActivity() {
 
         // Dejaremos guardado en preferencias el estado de los layouts, de forma que la siguiente vez
         // que entremos a vender serán visibles o no en función de cómo los hayamos dejado.
-        val editor = pref.edit()
+        val editor = prefs.edit()
         editor.putBoolean("verTotales", lyTotales.visibility == View.VISIBLE)
         editor.apply()
     }

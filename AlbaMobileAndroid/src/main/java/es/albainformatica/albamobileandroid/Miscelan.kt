@@ -36,9 +36,9 @@ import kotlin.math.pow
 
 
 fun dimeRutaImagenes(activity: Activity): String {
-        val pref = PreferenceManager.getDefaultSharedPreferences(activity)
-        val usarMultisistema = pref.getBoolean("usar_multisistema", false)
-        val rutaImagenes = pref.getString("rutacomunicacion", "") ?: ""
+        val prefs = PreferenceManager.getDefaultSharedPreferences(activity)
+        val usarMultisistema = prefs.getBoolean("usar_multisistema", false)
+        val rutaImagenes = prefs.getString("rutacomunicacion", "") ?: ""
         val carpetaImagenes: String = if (rutaImagenes == "") {
             if (usarMultisistema) "/storage/sdcard0/alba/imagenes/$queBDRoom/"
             else "/storage/sdcard0/alba/imagenes/"

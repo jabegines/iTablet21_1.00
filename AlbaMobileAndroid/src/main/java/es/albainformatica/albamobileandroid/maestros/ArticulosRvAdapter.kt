@@ -1,5 +1,6 @@
 package es.albainformatica.albamobileandroid.maestros
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
@@ -8,14 +9,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import es.albainformatica.albamobileandroid.Comunicador
-import es.albainformatica.albamobileandroid.Configuracion
-import es.albainformatica.albamobileandroid.ListaArticulos
-import es.albainformatica.albamobileandroid.R
+import es.albainformatica.albamobileandroid.*
 
 
-class ArticulosRvAdapter(var articulos: MutableList<ListaArticulos>, val fIvaIncluido: Boolean, val context: Context,
-                 private var listener: OnItemClickListener): RecyclerView.Adapter<ArticulosRvAdapter.ViewHolder>() {
+class ArticulosRvAdapter(var articulos: MutableList<ListaArticulos>, val fIvaIncluido: Boolean,
+                         val activity: Activity, private var listener: OnItemClickListener): RecyclerView.Adapter<ArticulosRvAdapter.ViewHolder>() {
 
     private val fConfiguracion: Configuracion = Comunicador.fConfiguracion
     var articuloId: Int = 0
@@ -25,7 +23,7 @@ class ArticulosRvAdapter(var articulos: MutableList<ListaArticulos>, val fIvaInc
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = articulos[position]
-        holder.bind(item, context, fFtoPrecio, fFtoCant)
+        holder.bind(item, activity.baseContext, fFtoPrecio, fFtoCant)
 
         holder.itemView.setOnClickListener {
             listener.onClick(it, articulos[position])
@@ -35,7 +33,8 @@ class ArticulosRvAdapter(var articulos: MutableList<ListaArticulos>, val fIvaInc
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         setOnItemClickListener(listener)
         val layoutInflater = LayoutInflater.from(parent.context)
-        return ViewHolder(layoutInflater.inflate(R.layout.item_articulos_list, parent, false), fIvaIncluido)
+        return ViewHolder(layoutInflater.inflate(R.layout.item_articulos_list, parent, false),
+            fIvaIncluido, activity)
     }
 
     override fun getItemCount(): Int {
@@ -50,11 +49,9 @@ class ArticulosRvAdapter(var articulos: MutableList<ListaArticulos>, val fIvaInc
         fun onClick(view: View, data: ListaArticulos)
     }
 
-    class ViewHolder(itemView: View, ivaIncluido: Boolean): RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View, ivaIncluido: Boolean, activity: Activity): RecyclerView.ViewHolder(itemView) {
         private val fIvaIncluido = ivaIncluido
-
-        private val fConfiguracion: Configuracion = Comunicador.fConfiguracion
-        private val fRutaImagenes = fConfiguracion.rutaLocalComunicacion() + "/imagenes"
+        private val fRutaImagenes = dimeRutaImagenes(activity)
         private val imagen = itemView.findViewById(R.id.imgvArtIm) as ImageView
         private val imgOfta = itemView.findViewById(R.id.imgvArtImgOft) as ImageView
 

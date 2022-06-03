@@ -1,6 +1,6 @@
 package es.albainformatica.albamobileandroid.ventas
 
-import android.content.Context
+import android.app.Activity
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Typeface
@@ -10,17 +10,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.Comunicador.Companion.fConfiguracion
-import es.albainformatica.albamobileandroid.DatosLinVtas
-import es.albainformatica.albamobileandroid.FLAG3LINEAVENTA_PRECIO_POR_PIEZAS
-import es.albainformatica.albamobileandroid.FLAGLINEAVENTA_SIN_CARGO
-import es.albainformatica.albamobileandroid.R
 import kotlinx.android.synthetic.main.ly_lineas_ventas.view.*
 import java.util.*
 
 
 class LineasVtasRvAdapter(var lineas: List<DatosLinVtas>, val fIvaIncluido: Boolean, val fAplicarIva: Boolean,
-          val context: Context, private var listener: OnItemClickListener): RecyclerView.Adapter<LineasVtasRvAdapter.ViewHolder>() {
+                          val activity: Activity, private var listener: OnItemClickListener):
+    RecyclerView.Adapter<LineasVtasRvAdapter.ViewHolder>() {
 
     private val fDecPrBase = fConfiguracion.decimalesPrecioBase()
     private val fDecPrIva = fConfiguracion.decimalesPrecioIva()
@@ -67,7 +65,7 @@ class LineasVtasRvAdapter(var lineas: List<DatosLinVtas>, val fIvaIncluido: Bool
         val layoutInflater = LayoutInflater.from(parent.context)
         return ViewHolder(layoutInflater.inflate(R.layout.ly_lineas_ventas, parent, false),
                     fIvaIncluido, fAplicarIva, fUsarPiezas, fUsarTasa1, fUsarTasa2, fNombreTasa1,
-                    fNombreTasa2, fDecPrBase, fDecPrIva, fDecImpBase, fDecImpIva)
+                    fNombreTasa2, fDecPrBase, fDecPrIva, fDecImpBase, fDecImpIva, activity)
     }
 
 
@@ -87,7 +85,7 @@ class LineasVtasRvAdapter(var lineas: List<DatosLinVtas>, val fIvaIncluido: Bool
 
     class ViewHolder(itemView: View, ivaIncluido: Boolean, aplicarIva: Boolean, usarPiezas: Boolean,
                      usarTasa1: Boolean, usarTasa2: Boolean, nombreTasa1: String, nombreTasa2: String, decPrBase: Int,
-                     decPrIva: Int, decImpBase: Int, decImpIva: Int): RecyclerView.ViewHolder(itemView) {
+                     decPrIva: Int, decImpBase: Int, decImpIva: Int, activity: Activity): RecyclerView.ViewHolder(itemView) {
         private val fIvaIncluido = ivaIncluido
         private val fAplicarIva = aplicarIva
         private val fUsarTasa1 = usarTasa1
@@ -99,7 +97,7 @@ class LineasVtasRvAdapter(var lineas: List<DatosLinVtas>, val fIvaIncluido: Bool
         private val fDecPrIva = decPrIva
         private val fDecImpBase = decImpBase
         private val fDecImpIva = decImpIva
-        private val fRutaImagenes = fConfiguracion.rutaLocalComunicacion() + "/imagenes"
+        private val fRutaImagenes = dimeRutaImagenes(activity)
 
         private val imgArt = itemView.findViewById(R.id.imvArtLinea) as ImageView
         private val tvDescr = itemView.findViewById(R.id.ly_vl_descr) as TextView
