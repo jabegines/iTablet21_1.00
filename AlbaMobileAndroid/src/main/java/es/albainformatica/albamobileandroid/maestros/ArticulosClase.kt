@@ -239,7 +239,7 @@ class ArticulosClase(val contexto: Context) {
 
     // Buscamos una cadena dentro del histórico de un cliente concreto.
     fun abrirBusqEnHcoParaGridView(queBuscar: String, queCliente: Int, queOrdenacion: Short, queTarifa: Short) {
-        val cadenaLike = "'%$queBuscar%'"
+        val cadenaLike = "%$queBuscar%"
 
         lArtGridView = articulosDao?.abrirBusqEnHcoPGV(cadenaLike, queTarifa, queCliente,
                 queOrdenacion) ?: emptyList<DatosGridView>().toMutableList()

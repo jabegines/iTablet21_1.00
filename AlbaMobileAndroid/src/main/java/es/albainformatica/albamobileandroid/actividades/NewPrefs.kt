@@ -38,8 +38,8 @@ class NewPrefs: AppCompatActivity() {
 
         val queTerminal = "Terminal " + prefs.getString("terminal", "")
         tvTerminal.text = queTerminal
-        val queTexto = "Ruta local de comunicación: " + prefs.getString("rutacomunicacion", "")
-        tvRutaLocal.text = queTexto
+        //val queTexto = "Ruta local de comunicación: " + prefs.getString("rutacomunicacion", "")
+        //tvRutaLocal.text = queTexto
 
         tvRutaComWifi.text = prefs.getString("ruta_wifi", "")
         tvDominioWifi.text = prefs.getString("dominio_wifi", "")
@@ -136,15 +136,18 @@ class NewPrefs: AppCompatActivity() {
         builder.setTitle("Configurar terminal")
         val dialogLayout = inflater.inflate(R.layout.prefs_conf_terminal, null)
         val editText = dialogLayout.findViewById<EditText>(R.id.edtNumTerminal)
-        val edtRutaLocal = dialogLayout.findViewById<EditText>(R.id.edtRutaLocal)
+        //val edtRutaLocal = dialogLayout.findViewById<EditText>(R.id.edtRutaLocal)
         editText.setText(prefs.getString("terminal", ""))
-        //edtRutaLocal.setText(prefs.getString("rutacomunicacion", "/sdcard/alba"))
-        edtRutaLocal.setText(prefs.getString("rutacomunicacion", this.getExternalFilesDir(null)?.path))
+        //edtRutaLocal.setText(prefs.getString("rutacomunicacion", this.getExternalFilesDir(null)?.path))
 
         builder.setView(dialogLayout)
         builder.setPositiveButton("OK") { _, _ ->
             prefs.edit().putString("terminal", editText.text.toString()).apply()
-            prefs.edit().putString("rutacomunicacion", edtRutaLocal.text.toString()).apply()
+            //prefs.edit().putString("rutacomunicacion", edtRutaLocal.text.toString()).apply()
+            // Por ahora asignamos la ruta de comunicación sin preguntar, apuntamos a la carpeta
+            // que Android (a partir de la versión 10) asigna a la apk:
+            // 'Android/data/es.albainformatica.albamobileandroid/files'
+            prefs.edit().putString("rutacomunicacion", this.getExternalFilesDir(null)?.path).apply()
 
             inicializarControles()
         }

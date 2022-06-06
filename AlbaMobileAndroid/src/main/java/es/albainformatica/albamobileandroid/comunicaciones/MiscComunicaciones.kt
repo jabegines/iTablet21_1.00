@@ -2993,10 +2993,10 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                             }
                         }
                         if (stockEnt.articuloId > 0) {
-                            val queStock = stockDao?.existeArtYEmpresa(stockEnt.articuloId, stockEnt.empresa) ?: 0
-                            if (queStock == 0) {
+                            //val queStock = stockDao?.existeArtYEmpresa(stockEnt.articuloId, stockEnt.empresa) ?: 0
+                            //if (queStock == 0) {
                                 stockDao?.insertar(stockEnt)
-                            }
+                            //}
                         }
                     }
                     event = parser.next()
@@ -3047,10 +3047,10 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                             }
                         }
                         if (tarifaEnt.articuloId > 0) {
-                            val queTarifa = tarifasDao?.existe(tarifaEnt.articuloId, tarifaEnt.tarifaId) ?: 0
-                            if (queTarifa == 0) {
+                            //val queTarifa = tarifasDao?.existe(tarifaEnt.articuloId, tarifaEnt.tarifaId) ?: 0
+                            //if (queTarifa == 0) {
                                 tarifasDao?.insertar(tarifaEnt)
-                            }
+                            //}
                         }
                     }
                     event = parser.next()
@@ -3252,10 +3252,10 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                             }
                         }
                         if (articClasifEnt.articuloId > 0) {
-                            val queArticuloId = articClasifDao?.existe(articClasifEnt.articuloId, articClasifEnt.clasificadorId) ?: 0
-                            if (queArticuloId == 0) {
+                            //val queArticuloId = articClasifDao?.existe(articClasifEnt.articuloId, articClasifEnt.clasificadorId) ?: 0
+                            //if (queArticuloId == 0) {
                                 articClasifDao?.insertar(articClasifEnt)
-                            }
+                            //}
                         }
                     }
                     event = parser.next()

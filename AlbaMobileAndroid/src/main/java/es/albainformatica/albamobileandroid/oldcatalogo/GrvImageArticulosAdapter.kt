@@ -9,7 +9,7 @@ import es.albainformatica.albamobileandroid.ventas.Documento
 import android.view.LayoutInflater
 import android.content.SharedPreferences
 import android.net.Uri
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -175,7 +175,7 @@ class GrvImageArticulosAdapter: BaseAdapter {
         val usarOfertas = fConfiguracion.usarOfertas()
         val ofertas: List<Int> = ofertasDao?.getAllOftas(fEmpresaActual, fTarifa) ?: emptyList()
 
-        if (fArticulosGrv.lArtGridView.count() > 0) {
+        if (fArticulosGrv.lArtGridView.isNotEmpty()) {
 
             for (datoGridV in fArticulosGrv.lArtGridView) {
                 var quePrOfta = "0.0"

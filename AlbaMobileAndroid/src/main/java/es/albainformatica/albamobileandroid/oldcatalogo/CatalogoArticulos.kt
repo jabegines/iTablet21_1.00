@@ -185,15 +185,8 @@ class CatalogoArticulos: Activity(), Dlg2Listener {
                 fTarifa,
                 fVendiendo
             )
-            HISTORICO -> gridView.adapter = GrvImageArticulosAdapter(
-                this,
-                queBuscar,
-                dondeBuscar,
-                queOrdenacion,
-                fSoloOftas,
-                fTarifa,
-                fVendiendo
-            )
+            HISTORICO -> gridView.adapter = GrvImageArticulosAdapter(this, queBuscar,
+                dondeBuscar, queOrdenacion, fSoloOftas, fTarifa, fVendiendo)
         }
 
         // Si no hemos encontrado ningún artículo, avisamos.
@@ -254,8 +247,8 @@ class CatalogoArticulos: Activity(), Dlg2Listener {
             val editText = prompt.findViewById<EditText>(R.id.editText)
             val chkBsEnCat = prompt.findViewById<CheckBox>(R.id.chkEnCatalogo)
             val chkBsEnArt = prompt.findViewById<CheckBox>(R.id.chkEnArticulos)
-            if (dondeBuscar.toInt() == 0) chkBsEnCat.isChecked = true else chkBsEnArt.isChecked =
-                true
+            if (dondeBuscar.toInt() == 0) chkBsEnCat.isChecked = true
+            else chkBsEnArt.isChecked = true
             chkBsEnCat.setOnCheckedChangeListener { _: CompoundButton?, _: Boolean ->
                 chkBsEnArt.isChecked = !chkBsEnCat.isChecked
             }
