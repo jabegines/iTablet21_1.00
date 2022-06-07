@@ -329,6 +329,7 @@ class VerDocumentosActivity: Activity() {
                     aldDialog.setTitle(resources.getString(R.string.tit_borrardoc))
                     aldDialog.setMessage(R.string.dlg_borrarped)
                     aldDialog.setPositiveButton(resources.getString(R.string.dlg_si)) { _, _ ->
+                        fDocumento.cargarDocumento(fIdDocumento, false)
                         fDocumento.borrarDocumento(fIdDocumento)
                         refrescarLineas()
                         nuevoClick(fDataActual)
