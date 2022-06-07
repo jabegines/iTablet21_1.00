@@ -352,7 +352,7 @@ interface ArticulosDao {
     @Query("SELECT DISTINCT A.articuloId, A.codigo, A.descripcion, A.ucaja, C.precio, C.dto, D.precio prCaja, E.porcIva," +
             " (F.ent - F.sal) stock, '' descrfto, G.idOferta" +
             " FROM Articulos A"  +
-            " LEFT JOIN Busquedas B ON B.articuloId = A.articuloId AND B.tipo = 6" +
+            " LEFT JOIN Busquedas B ON B.articuloId = A.articuloId" +            //" AND B.tipo = 6" +
             " LEFT JOIN Tarifas C ON C.articuloId = A.articuloId AND C.tarifaId = :pTarifa" +
             " LEFT JOIN Tarifas D ON D.articuloId = A.articuloId AND D.tarifaId = :pTarifaCajas" +
             " LEFT JOIN Ivas E ON E.tipo = A.tipoiva" +
@@ -368,7 +368,7 @@ interface ArticulosDao {
     @Query("SELECT DISTINCT A.articuloId, A.codigo, A.descripcion, A.ucaja, C.precio, C.dto, D.precio prCaja, E.porcIva," +
             " SUM(F.ent - F.sal) stock, '' descrfto, G.idOferta" +
             " FROM Articulos A"  +
-            " LEFT JOIN Busquedas B ON B.articuloId = A.articuloId AND B.tipo = 6" +
+            " LEFT JOIN Busquedas B ON B.articuloId = A.articuloId" +   //" AND B.tipo = 6" +
             " LEFT JOIN Tarifas C ON C.articuloId = A.articuloId AND C.tarifaId = :pTarifa" +
             " LEFT JOIN Tarifas D ON D.articuloId = A.articuloId AND D.tarifaId = :pTarifaCajas" +
             " LEFT JOIN Ivas E ON E.tipo = A.tipoiva" +

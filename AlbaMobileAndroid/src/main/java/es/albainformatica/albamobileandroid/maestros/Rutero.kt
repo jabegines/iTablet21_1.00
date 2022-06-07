@@ -22,9 +22,10 @@ class Rutero(contexto: Context) {
 
 
     fun abrirRuta(fRuta: Short): Boolean {
-        lRutero = ruterosDao?.abrirRuta(fRuta) ?: emptyList<DatosRutero>().toMutableList()
+        lRutero = if (fRuta > 0) ruterosDao?.abrirRuta(fRuta) ?: emptyList<DatosRutero>().toMutableList()
+        else ruterosDao?.abrirAllRutas() ?: emptyList<DatosRutero>().toMutableList()
 
-        return (lRutero.count() > 0)
+        return (lRutero.isNotEmpty())
     }
 
     /*
@@ -48,7 +49,7 @@ class Rutero(contexto: Context) {
         else
             ruterosDao?.abrirCodPostal(queCodPostal, 1) ?: emptyList<DatosRutero>().toMutableList()
 
-        return (lRutero.count() > 0)
+        return (lRutero.isNotEmpty())
     }
 
 

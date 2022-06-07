@@ -27,6 +27,13 @@ interface RuterosDao {
     fun abrirRuta(queRuta: Short): List<DatosRutero>
 
 
+    @Query("SELECT A.orden, A.clienteId, B.codigo, B.nombre, B.nombreComercial, B.tieneIncid" +
+            " FROM Rutero A" +
+            " JOIN Clientes B ON B.clienteId = A.clienteId" +
+            " ORDER BY A.orden ")
+    fun abrirAllRutas(): List<DatosRutero>
+
+
     @Query("DELETE FROM Rutero")
     fun vaciar()
 

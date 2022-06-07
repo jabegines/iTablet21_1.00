@@ -109,6 +109,9 @@ class NewPrefs: AppCompatActivity() {
         val mantBusq: String = if (prefs.getBoolean("mantener_ult_busq", false)) "Mantener ultima busqueda: " + "SI"
         else "Mantener ultima busqueda: " +"NO"
         tvMantUltBusq.text = mantBusq
+        val usarDescrLarga: String = if (prefs.getBoolean("usar_descr_larga", false)) "Usar descripción larga: " + "SI"
+        else "Usar descripción larga: " +"NO"
+        tvUsarDescrLarga.text = usarDescrLarga
 
         val lineasDoc = "Lineas del documento: " + prefs.getString("lineas_doc", "48")
         tvLineasDoc.text = lineasDoc
@@ -416,13 +419,16 @@ class NewPrefs: AppCompatActivity() {
 
         val chkCargarTodos = dialogLayout.findViewById<CheckBox>(R.id.chkCargarTodos)
         val chkMantUltBusq = dialogLayout.findViewById<CheckBox>(R.id.chkMantUltBusq)
+        val chkUsarDescrLarga = dialogLayout.findViewById<CheckBox>(R.id.chkUsarDescrLarga)
         chkCargarTodos.isChecked = prefs.getBoolean("cargar_todos_art", true)
         chkMantUltBusq.isChecked = prefs.getBoolean("mantener_ult_busq", false)
+        chkUsarDescrLarga.isChecked = prefs.getBoolean("usar_descr_larga", false)
 
         builder.setView(dialogLayout)
         builder.setPositiveButton("OK") { _, _ ->
             prefs.edit().putBoolean("cargar_todos_art", chkCargarTodos.isChecked).apply()
             prefs.edit().putBoolean("mantener_ult_busq", chkMantUltBusq.isChecked).apply()
+            prefs.edit().putBoolean("usar_descr_larga", chkUsarDescrLarga.isChecked).apply()
 
             inicializarControles()
         }

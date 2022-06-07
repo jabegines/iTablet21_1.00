@@ -461,6 +461,13 @@
                     android:text="Mantener ultima busqueda:"
                     android:textSize="12sp" />
 
+                <TextView
+                    android:id="@+id/tvUsarDescrLarga"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Usar descripción larga:"
+                    android:textSize="12sp" />
+
             </LinearLayout>
         </LinearLayout>
 

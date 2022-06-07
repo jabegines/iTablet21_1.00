@@ -497,7 +497,11 @@ class VentasActivity: AppCompatActivity() {
             spRuta.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                     val fOldRuta = fRutaActiva
-                    fRutaActiva = (spRuta.getItemAtPosition(position).toString().substring(0, 3).trim { it <= ' ' }).toShort()
+                    val quePosicion = spRuta.getItemAtPosition(position).toString().indexOf(" ")
+                    fRutaActiva = if (quePosicion > -1)
+                        (spRuta.getItemAtPosition(position).toString().substring(0, quePosicion).trim { it <= ' ' }).toShort()
+                    else
+                        0
 
                     if (fRutaActiva != fOldRuta) {
                         if (fRutaActiva > 0) {

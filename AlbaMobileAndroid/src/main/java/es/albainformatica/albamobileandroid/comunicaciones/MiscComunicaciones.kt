@@ -41,6 +41,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
     private var rutaLog: String
     var rutaLocalEnvio: String
     private var fCodTerminal: String = prefs.getString("terminal", "") ?: ""
+    private var fUsarDescrLarga: Boolean = prefs.getBoolean("usar_descr_larga", false)
     private var fUsarMultisistema: Boolean = false
 
     private lateinit var fLog: FileOutputStream
@@ -491,7 +492,6 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                             when {
                                 sCampo.equals("Articulo", true) -> articEnt.articuloId = parser.getAttributeValue("", sCampo).toInt()
                                 sCampo.equals("Codigo", true) -> articEnt.codigo = parser.getAttributeValue("", sCampo)
-                                sCampo.equals("Descr", true) -> articEnt.descripcion = parser.getAttributeValue("", sCampo)
                                 sCampo.equals("Iva", true) -> articEnt.tipoIva = parser.getAttributeValue("", sCampo).toShort()
                                 sCampo.equals("Prov", true) -> articEnt.proveedorId = parser.getAttributeValue("", sCampo).toInt()
                                 sCampo.equals("UCaja", true) -> articEnt.uCaja = parser.getAttributeValue("", sCampo)
@@ -506,6 +506,14 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                                 sCampo.equals("Tasa2", true) -> articEnt.tasa2 = parser.getAttributeValue("", sCampo)
                                 sCampo.equals("Enlace", true) -> articEnt.enlace = parser.getAttributeValue("", sCampo).toInt()
                             }
+                            if (fUsarDescrLarga) {
+                                if (sCampo.equals("Descripcion", true))
+                                    articEnt.descripcion = parser.getAttributeValue("", sCampo)
+                            } else {
+                                if (sCampo.equals("Descr", true)) articEnt.descripcion = parser.getAttributeValue("", sCampo)
+                                if (sCampo.equals("DescripcionEtiqueta", true)) articEnt.descripcion = parser.getAttributeValue("", sCampo)
+                            }
+
                         }
                         if (articEnt.articuloId > 0)
                             articulosDao?.insertar(articEnt)

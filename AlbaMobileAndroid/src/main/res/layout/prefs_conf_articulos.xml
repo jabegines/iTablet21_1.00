@@ -7,7 +7,6 @@
     android:padding="20dp"
     >
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,7 +27,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-
     </LinearLayout>
 
     <LinearLayout
@@ -48,6 +46,27 @@
 
         <CheckBox
             android:id="@+id/chkMantUltBusq"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView35"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="Usar descripción larga:"
+            android:textSize="18sp" />
+
+        <CheckBox
+            android:id="@+id/chkUsarDescrLarga"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
