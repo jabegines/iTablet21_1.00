@@ -21,8 +21,9 @@ import es.albainformatica.albamobileandroid.entity.*
     HistRepreEnt::class, IvasEnt::class, LineasDifEnt::class, LineasEnt::class, LineasFrasEnt::class, LotesEnt::class,
     NotasCltesEnt::class, NumExportEnt::class, OfertasEnt::class, OftCantRangosEnt::class, OftVolRangosEnt::class,
     OftVolumenEnt::class, PendienteEnt::class, ProveedoresEnt::class, RatingArtEnt::class, RatingGruposEnt::class,
-    RatingProvEnt::class, RutasEnt::class, RuterosEnt::class, SaldosEnt::class, SeriesEnt::class, StockEnt::class,
-    TarifasEnt::class, TempCltesEnt::class, TiposIncEnt::class, TmpHcoEnt::class, TrfFormatosEnt::class],
+    RatingProvEnt::class, RegistroDeEventosEnt::class, RutasEnt::class, RuterosEnt::class, SaldosEnt::class,
+    SeriesEnt::class, StockEnt::class, TarifasEnt::class, TempCltesEnt::class, TiposIncEnt::class, TmpHcoEnt::class,
+    TrfFormatosEnt::class],
     version = VERSION_BD,
     exportSchema = true
 )
@@ -83,13 +84,14 @@ abstract class MyDatabase: RoomDatabase() {
     abstract fun ratingArtDao(): RatingArtDao
     abstract fun ratingGruposDao(): RatingGruposDao
     abstract fun ratingProvDao(): RatingProvDao
+    abstract fun regEventosDao(): RegistroDeEventosDao
     abstract fun rutasDao(): RutasDao
     abstract fun ruterosDao(): RuterosDao
     abstract fun saldosDao(): SaldosDao
     abstract fun seriesDao(): SeriesDao
     abstract fun stockDao(): StockDao
     abstract fun tarifasDao(): TarifasDao
-    abstract fun  tempCltesDao(): TempCltesDao
+    abstract fun tempCltesDao(): TempCltesDao
     abstract fun tiposIncDao(): TiposIncDao
     abstract fun tmpHcoDao(): TmpHcoDao
     abstract fun trfFormatosDao(): TrfFormatosDao

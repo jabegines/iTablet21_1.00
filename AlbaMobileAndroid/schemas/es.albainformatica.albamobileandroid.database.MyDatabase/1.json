@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d2f6918afc8a67286eaacf91472418ff",
+    "identityHash": "4c8cfa08e615c4b413bba5830a1ee054",
     "entities": [
       {
         "tableName": "Almacenes",
@@ -4301,6 +4301,128 @@
         "foreignKeys": []
       },
       {
+        "tableName": "RegistroDeEventos",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`eventoId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `fechaYHora` TEXT NOT NULL, `ordenDiarioPuesto` INTEGER NOT NULL, `usuario` INTEGER NOT NULL, `almacen` INTEGER NOT NULL, `puesto` INTEGER NOT NULL, `codigoEvento` TEXT NOT NULL, `ip` TEXT NOT NULL, `ejercicio` INTEGER NOT NULL, `empresa` INTEGER NOT NULL, `descrEvento` TEXT NOT NULL, `textoEvento` TEXT NOT NULL, `referenciaAnterior` TEXT NOT NULL, `huellaRefAnterior` TEXT NOT NULL, `huella` TEXT NOT NULL, `firma` TEXT NOT NULL, `firmaCadena` TEXT NOT NULL, `firmaVersion` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "eventoId",
+            "columnName": "eventoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fechaYHora",
+            "columnName": "fechaYHora",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ordenDiarioPuesto",
+            "columnName": "ordenDiarioPuesto",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "usuario",
+            "columnName": "usuario",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "almacen",
+            "columnName": "almacen",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "puesto",
+            "columnName": "puesto",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "codigoEvento",
+            "columnName": "codigoEvento",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ip",
+            "columnName": "ip",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ejercicio",
+            "columnName": "ejercicio",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "empresa",
+            "columnName": "empresa",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descrEvento",
+            "columnName": "descrEvento",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "textoEvento",
+            "columnName": "textoEvento",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "referenciaAnterior",
+            "columnName": "referenciaAnterior",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "huellaRefAnterior",
+            "columnName": "huellaRefAnterior",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "huella",
+            "columnName": "huella",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "firma",
+            "columnName": "firma",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "firmaCadena",
+            "columnName": "firmaCadena",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "firmaVersion",
+            "columnName": "firmaVersion",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "eventoId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
         "tableName": "Rutas",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rutaId` INTEGER NOT NULL, `descripcion` TEXT NOT NULL, PRIMARY KEY(`rutaId`))",
         "fields": [
@@ -5014,7 +5136,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd2f6918afc8a67286eaacf91472418ff')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4c8cfa08e615c4b413bba5830a1ee054')"
     ]
   }
 }

@@ -1,57 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical" >
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
 
   <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
       android:orientation="vertical"
-      android:paddingRight="10dp">
+      android:layout_width="0dp"
+      android:layout_height="120dp"
+      android:layout_weight="0.2"
+      android:padding="10dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp">
-
-        <TextView
-            android:id="@+id/ly_vl_descr"
-            style="@style/Texto14.Negrita"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:lines="1"
-            android:text="@string/descr" />
-
-      <TextView
-          android:id="@+id/ly_vl_cant"
-          style="@style/Texto14.Negrita"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="5dp"
-          android:layout_weight="1"
-          android:gravity="right"
-          android:text="@string/cantidad" />
-
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/ly_vl_descrfto"
-        style="@style/Texto14"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/formato" />
-
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/imvArtLinea"
+        android:contentDescription="@string/cajas"
+        android:focusableInTouchMode="false"/>
   </LinearLayout>
 
   <LinearLayout
-      android:id="@+id/datosDetalleLinea"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
       android:orientation="vertical"
-      android:visibility="visible">
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="0.8">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:paddingRight="10dp">
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="5dp"
+          android:paddingRight="10dp">
+
+        <TextView
+            android:id="@+id/ly_vl_descr"
+            style="@style/Texto20.Negrita"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="3"
+            android:text="@string/descr"/>
+
+        <TextView
+            android:id="@+id/ly_vl_impte"
+            style="@style/Texto20.Negrita"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="@string/importe"/>
+
+      </LinearLayout>
+
+      <TextView
+          android:id="@+id/ly_vl_descrfto"
+          style="@style/Texto14"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/formato"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -60,82 +74,104 @@
         android:orientation="horizontal">
 
       <TextView
-          android:id="@+id/tvExento"
-          style="@style/Texto12"
-          android:layout_width="40dp"
-          android:layout_height="wrap_content"
-          android:text="@string/codigo" />
-
-      <TextView
           android:id="@+id/ly_vl_codart"
-          style="@style/Texto12"
-          android:layout_width="60dp"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="10dp"
-          android:text="@string/codigo" />
-
-      <TextView
-          android:id="@+id/tvRec_Datos"
-          style="@style/Texto12"
-          android:layout_width="60dp"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="10dp"
-          android:text="@string/codigo" />
-
-      <TextView
-          android:id="@+id/textView3"
-          style="@style/Texto12"
-          android:layout_width="40dp"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="10dp"
-          android:text="@string/tarifa" />
+          style="@style/Texto16"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:layout_weight="0.25"
+          android:background="@color/gris_alba"
+          android:drawableLeft="@drawable/cod_barras"
+          android:gravity="end"
+          android:padding="3dp"
+          android:text="@string/codigo"/>
 
       <TextView
           android:id="@+id/ly_vl_tarifa"
-          style="@style/Texto12"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="10dp"
-          android:text="@string/tarifa" />
+          style="@style/Texto16"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:layout_marginLeft="3dp"
+          android:layout_weight="0.12"
+          android:background="@color/gris_alba"
+          android:drawableLeft="@drawable/tarifa"
+          android:gravity="end"
+          android:padding="3dp"
+          android:text="@string/vacio"/>
+
+      <TextView
+          android:id="@+id/ly_vl_piezas"
+          style="@style/Texto16"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:layout_marginLeft="3dp"
+          android:layout_weight="0.25"
+          android:background="@color/gris_alba"
+          android:drawableLeft="@drawable/piezas"
+          android:gravity="end"
+          android:padding="3dp"/>
+
+      <!-- Uso este TextView para ajustar horizontalmente los demás textviews del layout -->
+      <TextView
+          android:id="@+id/ly_vl_textolinea"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:layout_weight="0.25"
+          android:text="New Text"/>
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:orientation="horizontal">
-
-      <TextView
-          android:id="@+id/textView4"
-          style="@style/Texto12"
-          android:layout_width="40dp"
-          android:layout_height="wrap_content"
-          android:text="@string/cajas" />
+        android:orientation="horizontal" >
 
       <TextView
           android:id="@+id/ly_vl_cajas"
-          style="@style/Texto12"
-          android:layout_width="60dp"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="10dp"
-          android:text="@string/cajas" />
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:text="@string/cajas"
+          android:background="@color/gris_alba"
+          style="@style/Texto16"
+          android:gravity="end"
+          android:layout_weight="0.25"
+          android:drawableLeft="@drawable/cajas"
+          android:padding="3dp"
+          />
 
       <TextView
-          android:id="@+id/textView5"
-          style="@style/Texto12"
-          android:layout_width="60dp"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="10dp"
-          android:text="@string/cantidad" />
+          android:id="@+id/ly_vl_cant"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:text="@string/cantidad"
+          android:background="@color/gris_alba"
+          style="@style/Texto16"
+          android:gravity="end"
+          android:layout_weight="0.25"
+          android:drawableLeft="@drawable/unidades"
+          android:padding="3dp"
+          android:layout_marginLeft="3dp"/>
 
       <TextView
-          android:id="@+id/ly_vl_piezas"
-          style="@style/Texto12"
-          android:layout_width="120dp"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="10dp"
-          android:text="@string/piezas" />
+          android:id="@+id/ly_vl_tasa1"
+          style="@style/Texto16"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:layout_marginLeft="3dp"
+          android:layout_weight="0.25"
+          android:background="@color/gris_alba"
+          android:gravity="end"
+          android:padding="3dp"
+          android:text="@string/tasa1"/>
+
+      <!-- Uso este TextView para ajustar horizontalmente los demás textviews del layout -->
+      <TextView
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:text="New Text"
+          android:id="@+id/textView16"
+          android:layout_weight="0.25"
+          android:visibility="invisible"/>
 
     </LinearLayout>
 
@@ -143,51 +179,56 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp">
-
-      <TextView
-          android:id="@+id/textView6"
-          style="@style/Texto12"
-          android:layout_width="40dp"
-          android:layout_height="wrap_content"
-          android:text="@string/precio" />
+        android:layout_marginTop="5dp" >
 
       <TextView
           android:id="@+id/ly_vl_precio"
-          style="@style/Texto12"
-          android:layout_width="60dp"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="10dp"
-          android:text="@string/precio" />
-
-      <TextView
-          android:id="@+id/textView7"
-          style="@style/Texto12"
-          android:layout_width="60dp"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="10dp"
-          android:text="@string/dto" />
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:text="@string/precio"
+          android:background="@color/gris_alba"
+          style="@style/Texto16"
+          android:gravity="end"
+          android:layout_weight="0.25"
+          android:drawableLeft="@drawable/precio"
+          android:padding="3dp"
+          />
 
       <TextView
           android:id="@+id/ly_vl_dto"
-          style="@style/Texto12"
-          android:layout_width="50dp"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="10dp"
-          android:text="@string/dto" />
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:text="@string/dto"
+          android:background="@color/gris_alba"
+          style="@style/Texto16"
+          android:gravity="end"
+          android:layout_weight="0.25"
+          android:drawableLeft="@drawable/descuento"
+          android:padding="3dp"
+          android:layout_marginLeft="3dp"/>
 
       <TextView
-          android:id="@+id/ly_vl_impte"
-          style="@style/Texto14.Negrita"
+          android:id="@+id/ly_vl_tasa2"
+          style="@style/Texto16"
           android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="5dp"
-          android:layout_weight="1"
-          android:gravity="right"
-          android:text="@string/importe" />
+          android:layout_height="match_parent"
+          android:layout_marginLeft="3dp"
+          android:layout_weight="0.25"
+          android:background="@color/gris_alba"
+          android:gravity="right|end"
+          android:padding="3dp"
+          android:text="@string/tasa2"/>
+
+      <!-- Uso este TextView para ajustar horizontalmente los demás textviews del layout -->
+      <TextView
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:text="New Text"
+          android:id="@+id/textView15"
+          android:layout_weight="0.25"
+          android:visibility="invisible"
+          />
 
     </LinearLayout>
-
   </LinearLayout>
-
 </LinearLayout>

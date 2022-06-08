@@ -1479,7 +1479,7 @@ class Documento(private val fContexto: Context) {
             val lLineasArt = lineasDao?.getArticNoCambPr(queArticulo, fIdDoc) ?: emptyList<LineasEnt>().toMutableList()
 
             // Actualizamos las líneas con el flag 16384 (artículo en posible oferta)
-            if (lLineasArt.count() > 0) {
+            if (lLineasArt.isNotEmpty()) {
                 for (lineaEnt in lLineasArt) {
                     lineasDao?.marcarComoPosOfta(lineaEnt.lineaId)
                 }
@@ -1495,7 +1495,7 @@ class Documento(private val fContexto: Context) {
             val lLineasArt = lineasDao?.getArticNoCambPr(queArticulo, fIdDoc) ?: emptyList<LineasEnt>().toMutableList()
 
             // Actualizamos la línea con el flag 16384 (posible oferta)
-            if (lLineasArt.count() > 0) {
+            if (lLineasArt.isNotEmpty()) {
                 for (lineaEnt in lLineasArt) {
                     lineasDao?.marcarComoPosOfta(lineaEnt.lineaId)
                 }
