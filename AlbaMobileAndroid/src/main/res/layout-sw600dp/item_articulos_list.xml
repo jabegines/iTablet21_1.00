@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.1"
+        android:layout_weight="0.2"
         android:orientation="vertical">
 
         <ImageView
@@ -25,7 +25,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        android:layout_weight="0.9"
+        android:layout_weight="0.8"
         android:baselineAligned="false"
         android:orientation="vertical">
 
@@ -115,7 +115,7 @@
                         android:layout_weight="0.35"
                         android:background="@color/gris_alba"
                         android:drawableStart="@drawable/ctlg_precio"
-                        android:gravity="start"
+                        android:gravity="end"
                         android:padding="3dp"
                         android:text="@string/precio"
                         android:textSize="16sp"
@@ -134,7 +134,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:layout_weight="0.4"
+                        android:layout_weight="0.5"
                         android:background="@color/gris_alba"
                         android:drawableStart="@drawable/ctlg_cajas"
                         android:gravity="end"
@@ -147,18 +147,17 @@
                         android:id="@+id/tvExistencias"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="3dp"
                         android:layout_marginStart="3dp"
                         android:layout_marginTop="10dp"
-                        android:layout_weight="0.6"
+                        android:layout_weight="0.5"
                         android:background="@color/gris_alba"
-                        android:drawableLeft="@drawable/ctlg_stock"
-                        android:drawablePadding="10dp"
                         android:drawableStart="@drawable/ctlg_stock"
-                        android:gravity="start"
+                        android:gravity="end"
                         android:padding="3dp"
                         android:text="@string/stock"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:layout_marginLeft="3dp"
+                        android:drawableLeft="@drawable/ctlg_stock" />
 
 
                 </LinearLayout>

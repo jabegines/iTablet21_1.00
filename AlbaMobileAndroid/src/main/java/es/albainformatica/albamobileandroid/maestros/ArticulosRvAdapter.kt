@@ -95,7 +95,7 @@ class ArticulosRvAdapter(var articulos: MutableList<ListaArticulos>, val fIvaInc
 
             val dUCaja = articulo.uCaja?.toDouble()
             val queUCaja = if (dUCaja != null)
-                String.format("%.0f", dUCaja) + " " + context.resources.getString(R.string.unidades)
+                String.format("%.0f", dUCaja) + " " + context.resources.getString(R.string.und_resum)
             else ""
 
             val queStock = articulo.stock ?: "0"
@@ -109,9 +109,14 @@ class ArticulosRvAdapter(var articulos: MutableList<ListaArticulos>, val fIvaInc
             precio.text = quePrecio
             prCajas.text = quePrCajas
             dto.text = queDto
+
             if (dDto == 0.0) dto.alpha = 0.1f
+            else dto.alpha = 1f
             if (dUCaja == 0.0) unidCaja.alpha = 0.1f
+            else unidCaja.alpha = 1f
             if (dStock == 0.0) stock.alpha = 0.1f
+            else stock.alpha = 1f
+
         }
     }
 }
