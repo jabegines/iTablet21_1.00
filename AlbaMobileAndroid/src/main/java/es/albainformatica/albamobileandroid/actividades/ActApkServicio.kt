@@ -14,8 +14,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import es.albainformatica.albamobileandroid.R
+import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.comunicaciones.MiscServicio
+import es.albainformatica.albamobileandroid.registroEventos.RegistroEventosClase
 import org.jetbrains.anko.doAsync
 import java.io.File
 
@@ -23,12 +24,16 @@ import java.io.File
 class ActApkServicio: AppCompatActivity() {
     private var fVersionApk: String = ""
     private lateinit var prefs: SharedPreferences
+    private lateinit var fRegEventos: RegistroEventosClase
 
     private val fRequestPermisoAlmacenamiento = 1
 
     public override fun onCreate(savedInstance: Bundle?) {
         super.onCreate(savedInstance)
         setContentView(R.layout.actualizar_apk_servicio)
+
+        fRegEventos = Comunicador.fRegEventos
+        fRegEventos.registrarEvento(codEv_ActApk_Entrar, descrEv_ActApk_Entrar)
 
         val intent = intent
         fVersionApk = intent.getStringExtra("versionApk") ?: ""

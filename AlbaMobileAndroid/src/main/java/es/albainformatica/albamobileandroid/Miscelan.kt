@@ -35,7 +35,7 @@ import java.util.*
 import kotlin.math.pow
 
 
-fun dimeRutaImagenes(activity: Activity): String {
+    fun dimeRutaImagenes(activity: Activity): String {
         val prefs = PreferenceManager.getDefaultSharedPreferences(activity)
         val usarMultisistema = prefs.getBoolean("usar_multisistema", false)
         val rutaImagenes = prefs.getString("rutacomunicacion", "") ?: ""

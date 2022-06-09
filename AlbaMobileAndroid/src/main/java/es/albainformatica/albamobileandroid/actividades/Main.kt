@@ -41,6 +41,7 @@ import es.albainformatica.albamobileandroid.maestros.ClientesActivity
 import es.albainformatica.albamobileandroid.maestros.ElegirEmpresaActivity
 import es.albainformatica.albamobileandroid.oldcatalogo.CatalogoCatalogos
 import es.albainformatica.albamobileandroid.oldcatalogo.CatalogoGruposDep
+import es.albainformatica.albamobileandroid.registroEventos.RegistroEventosClase
 import es.albainformatica.albamobileandroid.reparto.DocsReparto
 import es.albainformatica.albamobileandroid.ventas.Documento
 import es.albainformatica.albamobileandroid.ventas.VentasActivity
@@ -57,8 +58,9 @@ import java.util.*
 class Main: AppCompatActivity() {
 
     private lateinit var fConfiguracion: Configuracion
-    //private var fFechaCorrecta: Boolean = false
     private var prefs: SharedPreferences? = null
+    private lateinit var fRegEventos: RegistroEventosClase
+
     private lateinit var chsBBDD: Array<CharSequence>
     private var fNumClicks: Short = 0
     private var fSistemaId: String = "00"
@@ -136,6 +138,21 @@ class Main: AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        // No debo cerrar fConfiguración (ya se encargará de ello el recolector de basura), porque he detectado que si salimos
+        // muy rápido de la aplicación hay instrucciones que graban en fConfiguracion que aún no se han ejecutado y, al hacer
+        // el fConfiguracion.close(), estamos cerrando la base de datos y, por lo tanto, al intentar ejecutar dichas instrucciones el
+        // programa nos dará un error. Un ejemplo de esto lo tenemos en la pantalla de Ventas.kt, que al cerrarla grabamos en fConfiguracion
+        // la última ruta activa. Si salimos de la pantalla de Ventas y rápidamente de la aplicación, nos daría error. Para comprobarlo
+        // sólo hay que descomentar las dos líneas que están más abajo.
+
+        //if (fConfiguracion != null)
+        //  fConfiguracion.close();
+        fRegEventos.registrarEvento(codEv_Salida_Sistema, descrEv_Salida_Sistema)
+
+        super.onDestroy()
+    }
+
     private fun comprobarActApk() {
         val miscServicio = MiscServicio(this)
         doAsync {
@@ -171,19 +188,6 @@ class Main: AppCompatActivity() {
         startActivity(i)
     }
 
-    //override fun onDestroy() {
-    // No debo cerrar fConfiguración (ya se encargará de ello el recolector de basura), porque he detectado que si salimos
-    // muy rápido de la aplicación hay instrucciones que graban en fConfiguracion que aún no se han ejecutado y, al hacer
-    // el fConfiguracion.close(), estamos cerrando la base de datos y, por lo tanto, al intentar ejecutar dichas instrucciones el
-    // programa nos dará un error. Un ejemplo de esto lo tenemos en la pantalla de Ventas.kt, que al cerrarla grabamos en fConfiguracion
-    // la última ruta activa. Si salimos de la pantalla de Ventas y rápidamente de la aplicación, nos daría error. Para comprobarlo
-    // sólo hay que descomentar las dos líneas que están más abajo.
-
-        //if (fConfiguracion != null)
-        //  fConfiguracion.close();
-
-        //super.onDestroy()
-    //}
 
 
     /*
@@ -304,14 +308,12 @@ class Main: AppCompatActivity() {
 
                 if (!existeBaseDatos)
                     MyDatabase.getInstance(this)
-                    //CrearBD(this)
             }
 
             fConfiguracion = Configuracion(this)
-            // Tendremos fConfiguracion visible durante toda la aplicación.
+            // Tendremos fConfiguracion visible durante toda la aplicación
             Comunicador.fConfiguracion = fConfiguracion
 
-            //comprobarFechas()
             inicializarControles()
             // Si el usuario tiene clave, la pedimos.
             if (fConfiguracion.claveUsuario() != "")
@@ -325,10 +327,14 @@ class Main: AppCompatActivity() {
             // Si llegamos hasta aquí es que no existe la base de datos, por eso la creamos (si usamos el servicio)
             if (fUsarServicio)
                 MyDatabase.getInstance(this)
-                //CrearBD(this)
 
             Toast.makeText(this, resources.getString(R.string.msj_AlgunProblema), Toast.LENGTH_LONG).show()
         }
+
+        fRegEventos = RegistroEventosClase(this)
+        // Tendremos fRegEventos visible durante toda la aplicación
+        Comunicador.fRegEventos = fRegEventos
+        fRegEventos.registrarEvento(codEv_Entrada_Sistema, descrEv_Entrada_Sistema)
     }
 
 
@@ -499,7 +505,7 @@ class Main: AppCompatActivity() {
         text1.setSpan(ForegroundColorSpan(Color.parseColor(COLOR_MENUS)), 0, text1.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         var item = menu.findItem(R.id.mni_cargas)
         item.title = text1
-        //if (fFechaCorrecta)
+
         try {
             item.isVisible = fConfiguracion.usarCargas()
         } catch (ex: Exception) {
@@ -567,23 +573,6 @@ class Main: AppCompatActivity() {
                 return true
             }
 
-            /*
-            R.id.mni_actualizar -> {
-                // Antes de actualizar comprobaremos que no tengamos nada pendiente de enviar
-                if (puedoRecibir(this)) {
-                    aldDialog = nuevoAlertBuilder(this, "Actualizar", "¿Actualizar la aplicación?", true)
-
-                    aldDialog.setPositiveButton("Sí") { _, _ -> lanzarActualizar() }
-                    alert = aldDialog.create()
-                    alert.show()
-                } else {
-                    MsjAlerta(this).alerta("Tiene documentos o cobros pendientes de enviar. No podrá actualizar.")
-                }
-
-                return true
-            }
-            */
-            
             R.id.mni_verID -> {
                 val fDispositivoId = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
                 MsjAlerta(this).informacion(fDispositivoId)
@@ -726,9 +715,7 @@ class Main: AppCompatActivity() {
                 // Ya que el modo histórico sólo tiene sentido desde ventas, si el último modo de visualización de artículos
                 // fue el histórico, cuando intentemos entrar en artículos desde Main, lo haremos en forma de LISTA_ARTICULOS.
                 HISTORICO -> lanzarListaArticulos()
-            }//case Constantes.CLASIFICADORES:
-            //  lanzarCatalClasAv();
-            //  break;
+            }
         } else {
             lanzarListaArticulos()
         }
@@ -813,11 +800,8 @@ class Main: AppCompatActivity() {
         view.getTag(0)              // Para que no dé warning el compilador
 
         fNumClicks = 0
-        //if (fFechaCorrecta) {
         val i = Intent(this, CobrosActivity::class.java)
         startActivity(i)
-        //} else
-        //    MsjAlerta(this).alerta(resources.getString(R.string.msj_FechaRango))
     }
 
 
@@ -878,9 +862,7 @@ class Main: AppCompatActivity() {
             val sChorizo: String
             try {
                 // Si no tenemos password, no le pasamos el algoritmo sha1.
-                sChorizo = if (sQuePassword == "") {
-                    sQuePassword
-                } else sha1(sQuePassword)
+                sChorizo = if (sQuePassword == "") { sQuePassword } else sha1(sQuePassword)
 
                 if (bSupervisor) {
                     if (!sChorizo.equals(fConfiguracion.claveSupervisor(), ignoreCase = true)) {
@@ -892,13 +874,8 @@ class Main: AppCompatActivity() {
                 } else {
                     // Si hemos introducido la clave 20032610 entraremos del tirón
                     if (sQuePassword != "20032610") {
-                        if (!sChorizo.equals(
-                                fConfiguracion.claveUsuario(),
-                                ignoreCase = true
-                            )
-                        ) {
-                            val t =
-                                Toast.makeText(this, "Contraseña incorrecta", Toast.LENGTH_LONG)
+                        if (!sChorizo.equals(fConfiguracion.claveUsuario(), ignoreCase = true)) {
+                            val t = Toast.makeText(this, "Contraseña incorrecta", Toast.LENGTH_LONG)
                             t.setGravity(Gravity.CENTER_VERTICAL, 0, 0)
                             t.show()
                             pedirClaveUsuario()

@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.comunicaciones.MiscServicio
 import es.albainformatica.albamobileandroid.database.MyDatabase
+import es.albainformatica.albamobileandroid.registroEventos.RegistroEventosClase
 import kotlinx.android.synthetic.main.new_prefs.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.doAsync
@@ -20,6 +21,8 @@ import org.jetbrains.anko.uiThread
 
 class NewPrefs: AppCompatActivity() {
     private lateinit var prefs: SharedPreferences
+    private lateinit var fRegEventos: RegistroEventosClase
+
     private var numClicks: Int = 0
     private var fUsarMultisistema: Boolean = false
 
@@ -28,8 +31,15 @@ class NewPrefs: AppCompatActivity() {
         super.onCreate(savedInstance)
         setContentView(R.layout.new_prefs)
 
+        fRegEventos = Comunicador.fRegEventos
+        fRegEventos.registrarEvento(codEv_Conf_Entrar, descrEv_Conf_Entrar)
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
         inicializarControles()
+    }
+
+    override fun onDestroy() {
+        fRegEventos.registrarEvento(codEv_Conf_Salir, descrEv_Conf_Salir)
+        super.onDestroy()
     }
 
 

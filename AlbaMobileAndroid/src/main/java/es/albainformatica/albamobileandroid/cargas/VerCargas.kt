@@ -23,6 +23,7 @@ import es.albainformatica.albamobileandroid.impresion_informes.ImprIntermecPB51
 import es.albainformatica.albamobileandroid.impresion_informes.ImprimirDocumento
 import es.albainformatica.albamobileandroid.maestros.ArticulosClase
 import es.albainformatica.albamobileandroid.maestros.LotesClase
+import es.albainformatica.albamobileandroid.registroEventos.RegistroEventosClase
 import kotlinx.android.synthetic.main.cargas.*
 import org.jetbrains.anko.alert
 import java.text.SimpleDateFormat
@@ -33,6 +34,7 @@ class VerCargas: AppCompatActivity() {
     private var cargasDao: CargasDao? = MyDatabase.getInstance(this)?.cargasDao()
     private var cargasLineasDao: CargasLineasDao? = MyDatabase.getInstance(this)?.cargasLineasDao()
     private lateinit var fConfiguracion: Configuracion
+    private lateinit var fRegEventos: RegistroEventosClase
     private lateinit var fLotes: LotesClase
     private lateinit var fArticulos: ArticulosClase
 
@@ -52,11 +54,19 @@ class VerCargas: AppCompatActivity() {
         super.onCreate(savedInstance)
         setContentView(R.layout.cargas)
 
+        fRegEventos = Comunicador.fRegEventos
+        fRegEventos.registrarEvento(codEv_Cargas_Entrar, descrEv_Cargas_Entrar)
+
         fLotes = LotesClase(this)
         fArticulos = ArticulosClase(this)
         fConfiguracion = Comunicador.fConfiguracion
         fDecimalesCant = fConfiguracion.decimalesCantidad()
         inicializarControles()
+    }
+
+    override fun onDestroy() {
+        fRegEventos.registrarEvento(codEv_Cargas_Salir, descrEv_Cargas_Salir)
+        super.onDestroy()
     }
 
 

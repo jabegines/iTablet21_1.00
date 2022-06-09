@@ -4,6 +4,7 @@ import es.albainformatica.albamobileandroid.cobros.CobrosClase
 import es.albainformatica.albamobileandroid.cobros.PendienteClase
 import es.albainformatica.albamobileandroid.historicos.Historico
 import es.albainformatica.albamobileandroid.maestros.ArticulosClase
+import es.albainformatica.albamobileandroid.registroEventos.RegistroEventosClase
 import es.albainformatica.albamobileandroid.ventas.Documento
 
 
@@ -18,6 +19,8 @@ class Comunicador {
         lateinit var fConfiguracion: Configuracion
         lateinit var fArticulos: ArticulosClase
         lateinit var fArticulosGrv: ArticulosClase
+
+        lateinit var fRegEventos: RegistroEventosClase
 
 /*
         // --------------------------------------------------------

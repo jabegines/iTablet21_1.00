@@ -54,4 +54,22 @@
       android:text="@string/ventas"
       android:textSize="12sp" />
 
+  <ImageView
+      android:id="@+id/lyvdDocFdo"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="15dp"
+      android:layout_marginTop="12dp"
+      android:background="@drawable/firmardoc_24"
+      android:contentDescription="@string/cajas"/>
+
+  <ImageView
+      android:id="@+id/lyvdDocIncid"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="10dp"
+      android:layout_marginTop="13dp"
+      android:background="@drawable/incidencia_24x23"
+      android:contentDescription="@string/cajas"/>
+
 </LinearLayout>

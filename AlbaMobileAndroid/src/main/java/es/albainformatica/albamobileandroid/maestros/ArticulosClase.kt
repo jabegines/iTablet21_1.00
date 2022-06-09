@@ -86,8 +86,8 @@ class ArticulosClase(val contexto: Context) {
             fCodProv = datosArticulo.proveedorId
             fPeso = if (datosArticulo.peso != "") datosArticulo.peso.replace(',', '.').toDouble() else 0.0
             fUCaja = if (datosArticulo.uCaja != "") datosArticulo.uCaja.replace(',', '.').toDouble() else 0.0
-            entradas = if (datosArticulo.ent != null) datosArticulo.ent?.replace(',', '.')?.toDouble() ?: 0.0 else 0.0
-            salidas = if (datosArticulo.sal != null) datosArticulo.sal?.replace(',', '.')?.toDouble() ?: 0.0 else 0.0
+            entradas = if (datosArticulo.ent != null && datosArticulo.ent != "") datosArticulo.ent?.replace(',', '.')?.toDouble() ?: 0.0 else 0.0
+            salidas = if (datosArticulo.sal != null && datosArticulo.sal != "") datosArticulo.sal?.replace(',', '.')?.toDouble() ?: 0.0 else 0.0
 
             return true
         }
@@ -136,26 +136,26 @@ class ArticulosClase(val contexto: Context) {
     fun abrirBioCatalogo(queCatalogo: Int, fOrdenacion: Int): Boolean {
 
         lArticulos = articulosDao?.abrirBioCatalogo(queCatalogo, fOrdenacion) ?: emptyList<Int>().toMutableList()
-        return (lArticulos.count() > 0)
+        return (lArticulos.isNotEmpty())
     }
 
     fun abrirBioDepartamento(queGrupo: Short, queDepartamento: Short, fOrdenacion: Int): Boolean {
 
         lArticulos = articulosDao?.abrirBioDepartamento(queGrupo, queDepartamento, fOrdenacion) ?: emptyList<Int>().toMutableList()
-        return (lArticulos.count() > 0)
+        return (lArticulos.isNotEmpty())
     }
 
     fun abrirBioHistorico(queCliente: Int, fOrdenacion: Int): Boolean {
 
         lArticulos = articulosDao?.abrirBioHistorico(queCliente, fOrdenacion) ?: emptyList<Int>().toMutableList()
-        return (lArticulos.count() > 0)
+        return (lArticulos.isNotEmpty())
     }
 
 
     fun bioBuscar(queBuscar: String): Boolean {
 
         lArticulos = articulosDao?.bioBuscar("%$queBuscar%") ?: emptyList<Int>().toMutableList()
-        return (lArticulos.count() > 0)
+        return (lArticulos.isNotEmpty())
     }
 
     // =============================================================================

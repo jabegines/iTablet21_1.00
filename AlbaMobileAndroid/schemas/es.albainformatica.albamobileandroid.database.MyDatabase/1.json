@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "4c8cfa08e615c4b413bba5830a1ee054",
+    "identityHash": "e7a0f857c06048077a64b082064ec2c2",
     "entities": [
       {
         "tableName": "Almacenes",
@@ -4302,7 +4302,7 @@
       },
       {
         "tableName": "RegistroDeEventos",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`eventoId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `fechaYHora` TEXT NOT NULL, `ordenDiarioPuesto` INTEGER NOT NULL, `usuario` INTEGER NOT NULL, `almacen` INTEGER NOT NULL, `puesto` INTEGER NOT NULL, `codigoEvento` TEXT NOT NULL, `ip` TEXT NOT NULL, `ejercicio` INTEGER NOT NULL, `empresa` INTEGER NOT NULL, `descrEvento` TEXT NOT NULL, `textoEvento` TEXT NOT NULL, `referenciaAnterior` TEXT NOT NULL, `huellaRefAnterior` TEXT NOT NULL, `huella` TEXT NOT NULL, `firma` TEXT NOT NULL, `firmaCadena` TEXT NOT NULL, `firmaVersion` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`eventoId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `fecha` TEXT NOT NULL, `hora` TEXT NOT NULL, `ordenDiarioPuesto` INTEGER NOT NULL, `usuario` INTEGER NOT NULL, `almacen` INTEGER NOT NULL, `puesto` INTEGER NOT NULL, `codigoEvento` TEXT NOT NULL, `ip` TEXT NOT NULL, `ejercicio` INTEGER NOT NULL, `empresa` INTEGER NOT NULL, `descrEvento` TEXT NOT NULL, `textoEvento` TEXT NOT NULL, `referenciaAnterior` TEXT NOT NULL, `huellaRefAnterior` TEXT NOT NULL, `huella` TEXT NOT NULL, `firma` TEXT NOT NULL, `firmaCadena` TEXT NOT NULL, `firmaVersion` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "eventoId",
@@ -4311,8 +4311,14 @@
             "notNull": true
           },
           {
-            "fieldPath": "fechaYHora",
-            "columnName": "fechaYHora",
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hora",
+            "columnName": "hora",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -5136,7 +5142,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4c8cfa08e615c4b413bba5830a1ee054')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e7a0f857c06048077a64b082064ec2c2')"
     ]
   }
 }

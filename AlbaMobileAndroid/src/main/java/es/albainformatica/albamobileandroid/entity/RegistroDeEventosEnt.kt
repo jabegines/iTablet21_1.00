@@ -9,7 +9,8 @@ data class RegistroDeEventosEnt (
     @PrimaryKey(autoGenerate = true)
     var eventoId: Int = 0,
 
-    var fechaYHora: String = "",
+    var fecha: String = "",
+    var hora: String = "",
     var ordenDiarioPuesto: Int = 0,
     var usuario: Short = 0,
     var almacen: Short = 0,
