@@ -104,7 +104,7 @@ interface LineasDao {
 
     @Query("SELECT A.* FROM Lineas A " +
             " LEFT JOIN Cabeceras B ON B.cabeceraId = A.cabeceraId " +
-            " WHERE B.numExport = :queNumExportacion AND B.estadoInicial IS NULL")
+            " WHERE B.numExport = :queNumExportacion AND B.estadoInicial = ''")
     fun abrirParaEnvExp(queNumExportacion: Int): MutableList<LineasEnt>
 
 
