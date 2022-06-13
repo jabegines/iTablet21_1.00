@@ -87,7 +87,7 @@ class VerCargas: AppCompatActivity() {
     private fun hacerClickEnRecycler() {
         // Mediante este código seleccionamos el primer registro del recyclerView y hacemos como si pulsáramos
         // click en él. Hay que hacerlo con un Handler().postDelayed() porque si no, da errores.
-        if (fAdapter.cargas.count() > 0) {
+        if (fAdapter.cargas.isNotEmpty()) {
             Handler().postDelayed({
                 fRecyclerView.findViewHolderForAdapterPosition(0)?.itemView?.performClick()
             }, 100)
@@ -197,7 +197,7 @@ class VerCargas: AppCompatActivity() {
         if (fConfiguracion.usarTrazabilidad()) {
             // Vemos los lotes
             fLotes.abrirLotesFinDia()
-            if (fLotes.lLotes.count() > 0) {
+            if (fLotes.lLotes.isNotEmpty()) {
                 var queEmpresa = fLotes.lLotes[0].empresa
 
                 for (loteEnt in fLotes.lLotes) {
@@ -237,7 +237,7 @@ class VerCargas: AppCompatActivity() {
             val stockDao: StockDao? = MyDatabase.getInstance(this)?.stockDao()
             val lStock = stockDao?.abrirParaFinDeDia() ?: emptyList<StockEnt>().toMutableList()
 
-            if (lStock.count() > 0) {
+            if (lStock.isNotEmpty()) {
                 var queEmpresa = lStock[0].empresa
 
                 for (stockEnt in lStock) {

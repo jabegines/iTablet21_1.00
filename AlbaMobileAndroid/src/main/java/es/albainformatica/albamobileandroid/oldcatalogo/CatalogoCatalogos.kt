@@ -11,8 +11,11 @@ import android.widget.GridView
 import android.widget.AdapterView
 import android.widget.Button
 import es.albainformatica.albamobileandroid.*
+import es.albainformatica.albamobileandroid.registroEventos.RegistroEventosClase
 
 class CatalogoCatalogos : Activity() {
+    private lateinit var fRegEventos: RegistroEventosClase
+
     private var fCatalogo = 0
     private var fDescrCat: String = ""
     private var fVendiendo: Boolean = false
@@ -22,6 +25,9 @@ class CatalogoCatalogos : Activity() {
     public override fun onCreate(savedInstance: Bundle?) {
         super.onCreate(savedInstance)
         setContentView(R.layout.catalogo_catalogos)
+
+        fRegEventos = Comunicador.fRegEventos
+        fRegEventos.registrarEvento(codEv_ArticCatal_Entrar, descrEv_ArticCatal_Entrar)
 
         // Pasamos fArticulosGrv al comunicador para hacer uso del objeto en CatalogoFichaArtic.
         Comunicador.fArticulosGrv = ArticulosClase(this)
@@ -33,8 +39,9 @@ class CatalogoCatalogos : Activity() {
     }
 
     override fun onDestroy() {
-        //if (!fVendiendo) guardarPreferencias();
         guardarPreferencias()
+        fRegEventos.registrarEvento(codEv_ArticCatal_Salir, descrEv_ArticCatal_Salir)
+
         super.onDestroy()
     }
 

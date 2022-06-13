@@ -18,6 +18,7 @@ import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.dao.ClientesDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.historicos.CargarHco
+import es.albainformatica.albamobileandroid.registroEventos.RegistroEventosClase
 import kotlinx.android.synthetic.main.clientes_activity.*
 import java.util.*
 
@@ -25,6 +26,7 @@ import java.util.*
 class ClientesActivity: AppCompatActivity(), View.OnClickListener {
     private val clientesDao: ClientesDao? = MyDatabase.getInstance(this)?.clientesDao()
     private lateinit var fConfiguracion: Configuracion
+    private lateinit var fRegEventos: RegistroEventosClase
 
     private lateinit var fRecyclerView: RecyclerView
     private lateinit var fAdapter: ClientesRvAdapter
@@ -50,6 +52,9 @@ class ClientesActivity: AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.clientes_activity)
 
+        fRegEventos = Comunicador.fRegEventos
+        fRegEventos.registrarEvento(codEv_Cltes_Entrar, descrEv_Cltes_Entrar)
+
         // Vemos si hemos sido llamados desde ventas, para entrar en modo búsqueda.
         val i = intent
         fBuscar = i != null && i.getBooleanExtra("buscar", false)
@@ -64,6 +69,8 @@ class ClientesActivity: AppCompatActivity(), View.OnClickListener {
 
     override fun onDestroy() {
         guardarPreferencias()
+        fRegEventos.registrarEvento(codEv_Cltes_Salir, descrEv_Cltes_Salir)
+
         super.onDestroy()
     }
 

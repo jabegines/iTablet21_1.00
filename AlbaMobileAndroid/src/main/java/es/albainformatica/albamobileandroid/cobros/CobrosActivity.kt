@@ -32,6 +32,7 @@ import es.albainformatica.albamobileandroid.impresion_informes.DocDiferidaPDF
 import es.albainformatica.albamobileandroid.maestros.ClientesActivity
 import es.albainformatica.albamobileandroid.maestros.ClientesClase
 import es.albainformatica.albamobileandroid.maestros.ElegirEmpresaActivity
+import es.albainformatica.albamobileandroid.registroEventos.RegistroEventosClase
 import es.albainformatica.albamobileandroid.ventas.VentasLineas
 import java.util.*
 
@@ -41,6 +42,7 @@ class CobrosActivity: AppCompatActivity() {
     private lateinit var fCobros: CobrosClase
     private lateinit var fPendiente: PendienteClase
     private lateinit var fConfiguracion: Configuracion
+    private lateinit var fRegEventos: RegistroEventosClase
 
     private var fCliente = 0
     private var idPendiente = 0
@@ -84,6 +86,9 @@ class CobrosActivity: AppCompatActivity() {
         fContexto = this
         setContentView(R.layout.cobros)
 
+        fRegEventos = Comunicador.fRegEventos
+        fRegEventos.registrarEvento(codEv_Cobros_Entrar, descrEv_Cobros_Entrar)
+
         fCobros = CobrosClase(this)
         fPendiente = PendienteClase(this)
         fClientes = ClientesClase(this)
@@ -101,6 +106,12 @@ class CobrosActivity: AppCompatActivity() {
         inicializarControles()
     }
 
+
+    override fun onDestroy() {
+        fRegEventos.registrarEvento(codEv_Cobros_Salir, descrEv_Cobros_Salir)
+
+        super.onDestroy()
+    }
 
 
     private fun inicializarControles() {

@@ -10,7 +10,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.view.*
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
@@ -26,9 +26,9 @@ import es.albainformatica.albamobileandroid.entity.ContactosCltesEnt
 import es.albainformatica.albamobileandroid.entity.TiposIncEnt
 import es.albainformatica.albamobileandroid.impresion_informes.*
 import es.albainformatica.albamobileandroid.maestros.Rutas
+import es.albainformatica.albamobileandroid.registroEventos.RegistroEventosClase
 import es.albainformatica.albamobileandroid.ventas.*
 import kotlinx.android.synthetic.main.docs_reparto.*
-import kotlinx.android.synthetic.main.ventas_rutero.*
 import java.util.ArrayList
 
 
@@ -38,6 +38,7 @@ class DocsReparto: AppCompatActivity() {
     private lateinit var fReparto: Reparto
     private lateinit var fRutas: Rutas
     private lateinit var prefs: SharedPreferences
+    private lateinit var fRegEventos: RegistroEventosClase
 
     private lateinit var fRecReparto: RecyclerView
     private lateinit var fAdpReparto: RepartoRvAdapter
@@ -64,6 +65,9 @@ class DocsReparto: AppCompatActivity() {
         super.onCreate(savedInstance)
         setContentView(R.layout.docs_reparto)
 
+        fRegEventos = Comunicador.fRegEventos
+        fRegEventos.registrarEvento(codEv_Vtas_RepEntr, descrEv_Vtas_RepEntr)
+
         fConfiguracion = Comunicador.fConfiguracion
         fDocumento = Documento(this)
         fReparto = Reparto(this)
@@ -79,6 +83,9 @@ class DocsReparto: AppCompatActivity() {
 
         // Guardamos la ruta activa para volver a presentarla la siguiente vez que entremos en NewDocsReparto
         fConfiguracion.activarRuta(fRutaActiva)
+
+        fRegEventos.registrarEvento(codEv_Vtas_RepSalir, descrEv_Vtas_RepSalir)
+
         super.onDestroy()
     }
 

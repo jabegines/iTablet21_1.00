@@ -15,13 +15,12 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import es.albainformatica.albamobileandroid.ListaPaquetes
-import es.albainformatica.albamobileandroid.R
+import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.dao.NumExportDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.queBDRoom
 import es.albainformatica.albamobileandroid.entity.NumExportEnt
-import es.albainformatica.albamobileandroid.sha1
+import es.albainformatica.albamobileandroid.registroEventos.RegistroEventosClase
 import kotlinx.android.synthetic.main.com_servicio_enviar.*
 import kotlinx.android.synthetic.main.com_servicio_recibir.progressBar
 import kotlinx.android.synthetic.main.com_servicio_recibir.tvNumArchivos
@@ -37,6 +36,8 @@ import java.util.concurrent.TimeUnit
 
 class ServicioEnviar: AppCompatActivity() {
     private val numExpDao: NumExportDao? = MyDatabase.getInstance(this)?.numExportDao()
+    private lateinit var fRegEventos: RegistroEventosClase
+
     private lateinit var prefs: SharedPreferences
     private lateinit var fContext: Context
     private var fEmail: String = ""
@@ -75,6 +76,9 @@ class ServicioEnviar: AppCompatActivity() {
         super.onCreate(savedInstance)
         setContentView(R.layout.com_servicio_enviar)
         fContext = this
+
+        fRegEventos = Comunicador.fRegEventos
+        fRegEventos.registrarEvento(codEv_ComServEnv_Entrar, descrEv_ComServEnv_Entrar)
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
         fHuella = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
@@ -122,6 +126,12 @@ class ServicioEnviar: AppCompatActivity() {
             // Arrancamos el Handler con el Runnable
             mainHandler.post(updateRecycler)
         }
+    }
+
+    override fun onDestroy() {
+        fRegEventos.registrarEvento(codEv_ComServEnv_Salir, descrEv_ComServEnv_Salir)
+
+        super.onDestroy()
     }
 
     private fun inicializarControles() {

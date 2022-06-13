@@ -750,9 +750,8 @@ class Main: AppCompatActivity() {
 
     fun lanzarVentas(view: View) {
         view.getTag(0)              // Para que no dé warning el compilador
-
         fNumClicks = 0
-        //if (fFechaCorrecta) {
+
         if (fConfiguracion.hayReparto()) {
             val i = Intent(this, DocsReparto::class.java)
             startActivity(i)
@@ -760,8 +759,6 @@ class Main: AppCompatActivity() {
             val i = Intent(this, VentasActivity::class.java)
             startActivity(i)
         }
-        //} else
-        //    MsjAlerta(this).alerta(resources.getString(R.string.msj_FechaRango))
     }
 
 

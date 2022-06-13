@@ -12,12 +12,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import es.albainformatica.albamobileandroid.*
+import es.albainformatica.albamobileandroid.registroEventos.RegistroEventosClase
 import java.io.File
 
 class CatalogoGruposDep: Activity() {
     private lateinit var fGrupos: Grupos
     private lateinit var fDepartamentos: Departamentos
     private lateinit var fArticulosGrv: ArticulosClase
+    private lateinit var fRegEventos: RegistroEventosClase
+
     private lateinit var lyScrollGrupos: LinearLayout
     private lateinit var grvDepartam: GridView
 
@@ -28,6 +31,9 @@ class CatalogoGruposDep: Activity() {
     public override fun onCreate(savedInstance: Bundle?) {
         super.onCreate(savedInstance)
         setContentView(R.layout.catalogo_gruposdep)
+
+        fRegEventos = Comunicador.fRegEventos
+        fRegEventos.registrarEvento(codEv_ArticGrpDep_Entrar, descrEv_ArticGrpDep_Entrar)
 
         fGrupos = Grupos(this)
         fDepartamentos = Departamentos(this)
@@ -43,6 +49,8 @@ class CatalogoGruposDep: Activity() {
 
     override fun onDestroy() {
         guardarPreferencias()
+        fRegEventos.registrarEvento(codEv_ArticGrpDep_Salir, descrEv_ArticGrpDep_Salir)
+
         super.onDestroy()
     }
 

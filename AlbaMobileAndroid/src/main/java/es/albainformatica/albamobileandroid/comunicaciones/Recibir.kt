@@ -23,6 +23,7 @@ import es.albainformatica.albamobileandroid.dao.CobrosDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.queBDRoom
 import es.albainformatica.albamobileandroid.entity.CobrosEnt
+import es.albainformatica.albamobileandroid.registroEventos.RegistroEventosClase
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.util.Base64
 import java.io.*
@@ -34,6 +35,7 @@ import java.lang.Exception
 class Recibir : Activity() {
     private lateinit var fConfiguracion: Configuracion
     private lateinit var puente: Handler
+    private lateinit var fRegEventos: RegistroEventosClase
 
     private lateinit var btnRecFTP: Button
     private lateinit var btnRecWifi: Button
@@ -54,12 +56,14 @@ class Recibir : Activity() {
 
     private val fRequestPedirConfFtp = 1
     private val fRequestPermisoAlmacenamiento = 2
-    //private val fRequestPermisoFtesDesc = 3
 
 
     public override fun onCreate(savedInstance: Bundle?) {
         super.onCreate(savedInstance)
         setContentView(R.layout.recibir)
+
+        fRegEventos = Comunicador.fRegEventos
+        fRegEventos.registrarEvento(codEv_ComRec_Entrar, descrEv_ComRec_Entrar)
 
         fConfiguracion = Comunicador.fConfiguracion
 
@@ -103,6 +107,8 @@ class Recibir : Activity() {
 
     override fun onDestroy() {
         detenerThread()
+        fRegEventos.registrarEvento(codEv_ComRec_Salir, descrEv_ComRec_Salir)
+
         super.onDestroy()
     }
 
@@ -185,7 +191,7 @@ class Recibir : Activity() {
 
         // Configuramos los parámetros, tanto para el FTP como para la recepción vía WIFI.
         configuracionTerminal()
-        puente = object : Handler() {
+        puente = object: Handler(Looper.getMainLooper()) {
             override fun handleMessage(msg: Message) {
                 if (msg.arg1 > 0) {
                     tvImportando.text = msg.obj.toString()
@@ -414,7 +420,10 @@ class Recibir : Activity() {
     }
 
     private fun deleteDirectory(fileOrDirectory: File) {
-        for (child in fileOrDirectory.listFiles()) child.delete()
+        val files = fileOrDirectory.listFiles() ?: emptyArray()
+        for (child in files) {
+            child.delete()
+        }
     }
 
     private fun comenzarRecepcionFTP() {

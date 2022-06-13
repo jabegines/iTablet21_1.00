@@ -26,6 +26,7 @@ import es.albainformatica.albamobileandroid.dao.EmpresasDao
 import es.albainformatica.albamobileandroid.dao.SeriesDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.maestros.*
+import es.albainformatica.albamobileandroid.registroEventos.RegistroEventosClase
 import kotlinx.android.synthetic.main.ventas_rutero.*
 
 
@@ -37,6 +38,7 @@ class VentasActivity: AppCompatActivity() {
     private lateinit var fRutero: Rutero
     private lateinit var fRutas: Rutas
     private lateinit var fClientes: ClientesClase
+    private lateinit var fRegEventos: RegistroEventosClase
 
     private lateinit var fRecRutero: RecyclerView
     private lateinit var fAdpRutero: RuteroRvAdapter
@@ -72,6 +74,9 @@ class VentasActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstance: Bundle?) {
         super.onCreate(savedInstance)
+
+        fRegEventos = Comunicador.fRegEventos
+        fRegEventos.registrarEvento(codEv_Vtas_Entrar, descrEv_Vtas_Entrar)
 
         fConfiguracion = Comunicador.fConfiguracion
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
@@ -127,6 +132,8 @@ class VentasActivity: AppCompatActivity() {
 
         // Guardamos la ruta activa para volver a presentarla la siguiente vez que entremos en ventas.
         if (fUsarRutero) fConfiguracion.activarRuta(fRutaActiva)
+
+        fRegEventos.registrarEvento(codEv_Vtas_Salir, descrEv_Vtas_Salir)
 
         super.onDestroy()
     }

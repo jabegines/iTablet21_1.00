@@ -22,6 +22,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.text.HtmlCompat
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.queBDRoom
+import es.albainformatica.albamobileandroid.registroEventos.RegistroEventosClase
 import kotlin.Throws
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.util.Base64
@@ -38,6 +39,7 @@ class Enviar: AppCompatActivity() {
     private lateinit var fNotas: NotasClientes
     private lateinit var fConfiguracion: Configuracion
     private lateinit var fNumExportaciones: NumExportaciones
+    private lateinit var fRegEventos: RegistroEventosClase
 
     private lateinit var puente: Handler
     private lateinit var tvDatos: TextView
@@ -58,6 +60,10 @@ class Enviar: AppCompatActivity() {
     public override fun onCreate(savedInstance: Bundle?) {
         super.onCreate(savedInstance)
         setContentView(R.layout.enviar)
+
+        fRegEventos = Comunicador.fRegEventos
+        fRegEventos.registrarEvento(codEv_ComEnv_Entrar, descrEv_ComEnv_Entrar)
+
         aCabeceras = ArrayList()
         // Utilizaremos fTerminar para terminar el thread antes de tiempo.
         fTerminar = false
@@ -68,8 +74,11 @@ class Enviar: AppCompatActivity() {
         inicializarControles()
     }
 
+
     override fun onDestroy() {
         aCabeceras.clear()
+        fRegEventos.registrarEvento(codEv_ComEnv_Salir, descrEv_ComEnv_Salir)
+
         super.onDestroy()
     }
 

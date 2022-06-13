@@ -15,12 +15,14 @@ import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.*
 import es.albainformatica.albamobileandroid.dao.ArticulosDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
+import es.albainformatica.albamobileandroid.registroEventos.RegistroEventosClase
 import kotlinx.android.synthetic.main.buscar_articulos.*
 import java.util.*
 
 
 class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
     private var fConfiguracion: Configuracion = Comunicador.fConfiguracion
+    private lateinit var fRegEventos: RegistroEventosClase
 
     private var fArticulo = 0
     private var fEnBusqueda = false
@@ -54,6 +56,9 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.buscar_articulos)
+
+        fRegEventos = Comunicador.fRegEventos
+        fRegEventos.registrarEvento(codEv_ArticLista_Entrar, descrEv_ArticLista_Entrar)
 
         // Vemos si hemos sido llamados desde ventas, para entrar en modo búsqueda.
         val i = intent
@@ -89,6 +94,8 @@ class ArticulosActivity: AppCompatActivity(), View.OnClickListener {
 
     override fun onDestroy() {
         guardarPreferencias()
+        fRegEventos.registrarEvento(codEv_ArticLista_Salir, descrEv_ArticLista_Salir)
+
         super.onDestroy()
     }
 
