@@ -41,6 +41,7 @@ class RegistroEventosClase(val contexto: Context) {
         regEventosEnt.ejercicio = fConfiguracion.ejercicio()
         val queEmpresa = prefs?.getInt("ultima_empresa", 0) ?: -1
         regEventosEnt.empresa = queEmpresa.toShort()
+        regEventosEnt.estado = "N"
 
         regEventosDao?.insertar(regEventosEnt)
     }

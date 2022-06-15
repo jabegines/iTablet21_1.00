@@ -151,22 +151,10 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                             ) -> importarArtHabituales()
                             nombreFich.equals("Busquedas.xml", true) -> importarBusquedas()
                             // Estos tres archivos no los vaciamos totalmente
-                            nombreFich.equals(
-                                "Facturas.xml",
-                                true
-                            ) -> importarCabeceras("Facturas.xml", TIPODOC_FACTURA)
-                            nombreFich.equals(
-                                "Albaranes.xml",
-                                true
-                            ) -> importarCabeceras("Albaranes.xml", TIPODOC_ALBARAN)
-                            nombreFich.equals(
-                                "Pedidos.xml",
-                                true
-                            ) -> importarCabeceras("Pedidos.xml", TIPODOC_PEDIDO)
-                            nombreFich.equals(
-                                "Presupuestos.xml",
-                                true
-                            ) -> importarCabeceras("Presupuestos.xml", TIPODOC_PRESUPUESTO)
+                            nombreFich.equals("Facturas.xml", true) -> importarFacturas()
+                            nombreFich.equals("Albaranes.xml", true) -> importarCabeceras("Albaranes.xml", TIPODOC_ALBARAN)
+                            nombreFich.equals("Pedidos.xml", true) -> importarCabeceras("Pedidos.xml", TIPODOC_PEDIDO)
+                            nombreFich.equals("Presupuestos.xml", true) -> importarCabeceras("Presupuestos.xml", TIPODOC_PRESUPUESTO)
                             nombreFich.equals("Pendiente.xml", true) -> importarPendiente()
                             nombreFich.equals("FrasDiferidas.xml", true) -> importarFrasDiferidas()
 
@@ -995,6 +983,107 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                 }
                 fin.close()
 
+            } catch (e: Exception) {
+                mostrarExcepcion(e)
+            }
+        } catch (e: Exception) {
+            mostrarExcepcion(e)
+        } finally {
+            try {
+                fin.close()
+            } catch (e: Exception) {
+                mostrarExcepcion(e)
+            }
+        }
+    }
+
+    private fun importarFacturas() {
+        val f = File(rutaLocal, "Facturas.xml")
+        val fin = FileInputStream(f)
+        var sCampo: String
+
+        try {
+            val parser = Xml.newPullParser()
+            try {
+                parser.setInput(fin, "UTF-8")
+                var event = parser.next()
+                var facturaId: Long = 0
+
+                while (event != XmlPullParser.END_DOCUMENT && !fTerminar) {
+                    if (event == XmlPullParser.START_TAG) {
+                        if (parser.name == "registro") {
+                            val facturaEnt = FacturasEnt()
+
+                            for (i in 0 until parser.attributeCount) {
+                                sCampo = parser.getAttributeName(i)
+
+                                when {
+                                    sCampo.equals("Empresa", ignoreCase = true) -> facturaEnt.empresa = parser.getAttributeValue("", sCampo).toShort()
+                                    sCampo.equals("Ejercicio", ignoreCase = true) -> facturaEnt.ejercicio = parser.getAttributeValue("", sCampo).toShort()
+                                    sCampo.equals("Almacen", ignoreCase = true) -> facturaEnt.almacen = parser.getAttributeValue("", sCampo).toShort()
+                                    sCampo.equals("Serie", ignoreCase = true) -> facturaEnt.serie = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Numero", ignoreCase = true) -> facturaEnt.numero = parser.getAttributeValue("", sCampo).toInt()
+                                    sCampo.equals("Fecha", ignoreCase = true) -> {
+                                        val sFecha = parser.getAttributeValue("", sCampo)
+                                        val sFecha2 = (sFecha.substring(8, 10) + "/" + sFecha.substring(5, 7) + "/" + sFecha.substring(0, 4))
+                                        facturaEnt.fecha = sFecha2
+                                    }
+                                    sCampo.equals("Cliente", ignoreCase = true) -> facturaEnt.clienteId = parser.getAttributeValue("", sCampo).toInt()
+                                    sCampo.equals("AplicarIva", ignoreCase = true) -> facturaEnt.aplicarIva = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("AplicarRecargo", ignoreCase = true) -> facturaEnt.aplicarRe = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Bruto", ignoreCase = true) -> facturaEnt.bruto = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Dto", ignoreCase = true) -> facturaEnt.dto = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Base", ignoreCase = true) -> facturaEnt.base = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Iva", ignoreCase = true) -> facturaEnt.iva = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Recargo", ignoreCase = true) -> facturaEnt.recargo = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Total", ignoreCase = true) -> facturaEnt.total = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Estado", ignoreCase = true) -> {
+                                        facturaEnt.estado = parser.getAttributeValue("", sCampo)
+                                        facturaEnt.estadoInicial = parser.getAttributeValue("", sCampo)
+                                    }
+                                    sCampo.equals("Flag", ignoreCase = true) -> facturaEnt.flag = parser.getAttributeValue("", sCampo).toInt()
+                                    sCampo.equals("Observ1", ignoreCase = true) -> facturaEnt.observ1 = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Observ2", ignoreCase = true) -> facturaEnt.observ2 = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Hoja", ignoreCase = true) -> facturaEnt.hojaReparto = parser.getAttributeValue("", sCampo).toInt()
+                                    sCampo.equals("Orden", ignoreCase = true) -> facturaEnt.ordenReparto = parser.getAttributeValue("", sCampo).toInt()
+                                }
+                            }
+                            // Llenamos el campo "firmado" a falso.
+                            facturaEnt.firmado = "F"
+
+                            facturaId = facturasDao?.insertar(facturaEnt) ?: 0
+
+                        } else if (parser.name == "linea") {
+                            val lineaEnt = LineasFrasEnt()
+                            for (i in 0 until parser.attributeCount) {
+                                sCampo = parser.getAttributeName(i)
+
+                                when {
+                                    //sCampo.equals("Linea", ignoreCase = true) -> lineaEnt.lineaId = parser.getAttributeValue("", sCampo).toInt()
+                                    sCampo.equals("Articulo", ignoreCase = true) -> lineaEnt.articuloId = parser.getAttributeValue("", sCampo).toInt()
+                                    sCampo.equals("Codigo", ignoreCase = true) -> lineaEnt.codArticulo = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Descripcion", ignoreCase = true) -> lineaEnt.descripcion = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Tarifa", ignoreCase = true) -> lineaEnt.tarifaId = parser.getAttributeValue("", sCampo).toShort()
+                                    sCampo.equals("Precio", ignoreCase = true) -> lineaEnt.precio = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Importe", ignoreCase = true) -> lineaEnt.importe = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Cajas", ignoreCase = true) -> lineaEnt.cajas = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Cantidad", ignoreCase = true) -> lineaEnt.cantidad = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Piezas", ignoreCase = true) -> lineaEnt.piezas = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("Dto", ignoreCase = true) -> lineaEnt.dto = parser.getAttributeValue("", sCampo)
+                                    sCampo.equals("TipoIva", ignoreCase = true) -> lineaEnt.codigoIva = parser.getAttributeValue("", sCampo).toShort()
+                                    sCampo.equals("Flag", ignoreCase = true) -> lineaEnt.flag = parser.getAttributeValue("", sCampo).toInt()
+                                    sCampo.equals("Flag3", ignoreCase = true) -> lineaEnt.flag3 = parser.getAttributeValue("", sCampo).toInt()
+                                    sCampo.equals("Formato", ignoreCase = true) -> lineaEnt.formatoId = parser.getAttributeValue("", sCampo).toShort()
+                                }
+                            }
+                            lineaEnt.facturaId = facturaId.toInt()
+
+                            linFrasDao?.insertar(lineaEnt)
+                        }
+                    }
+                    event = parser.next()
+                }
+                fin.close()
             } catch (e: Exception) {
                 mostrarExcepcion(e)
             }
@@ -3642,7 +3731,6 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                 hayNotas = true
                 enviarNotas(lNotas)
             }
-
             if (queNumExportacion == 0) fNotas.marcarComoExportadas(iSigExportacion)
 
             if (enviarCargas(queNumExportacion, iSigExportacion)) hayCargas = true
@@ -3652,14 +3740,15 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             if (enviarPendiente(queNumExportacion, iSigExportacion)) hayPendiente = true
 
             // Guardamos el fichero log
-            val queCadena = "\nFIN DEL ENVIO DE DATOS"
-            fLog.write(queCadena.toByteArray())
-            fLog.flush()
-            fLog.close()
+            //val queCadena = "\nFIN DEL ENVIO DE DATOS"
+            //fLog.write(queCadena.toByteArray())
+            //fLog.flush()
+            //fLog.close()
 
             if (hayClientes || hayDirecc || hayContactos || hayNotas || hayDocumentos || hayFacturas || hayCobros || hayPendiente || hayCargas) {
-                // Enviamos información técnica de la tablet
+                // Enviamos información técnica de la tablet y el registro de eventos
                 enviarInfTecnica()
+                enviarRegEventos(queNumExportacion, iSigExportacion)
 
                 crearLog(hayClientes, hayDirecc, hayContactos, hayNotas, hayDocumentos, hayFacturas, hayCobros,
                     hayPendiente, hayCargas)
@@ -3695,6 +3784,13 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                 msg.obj = fContext.getString(string.msj_NoDatosExport)
                 puente.sendMessage(msg)
             }
+
+            // Guardamos el fichero log
+            val queCadena = "\nFIN DEL ENVIO DE DATOS"
+            fLog.write(queCadena.toByteArray())
+            fLog.flush()
+            fLog.close()
+
         } else {
             val msg = Message()
             msg.obj = fContext.getString(string.msj_NoDatosExport)
@@ -3821,6 +3917,7 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             mostrarExcepcion(e)
         }
     }
+
 
 
     private fun enviarClientes(lClientes: List<ClientesEnt>) {
@@ -4016,6 +4113,29 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
         }
     }
 
+
+    private fun enviarRegEventos(queNumExportacion: Int, iSigExportacion: Int) {
+        val regEventosDao: RegistroDeEventosDao? = MyDatabase.getInstance(fContext)?.regEventosDao()
+
+        val lEventos: MutableList<RegistroDeEventosEnt> = if (queNumExportacion == 0) {
+            regEventosDao?.abrirParaEnviar() ?: emptyList<RegistroDeEventosEnt>().toMutableList()
+        } else {
+            regEventosDao?.abrirExportacion(queNumExportacion) ?: emptyList<RegistroDeEventosEnt>().toMutableList()
+        }
+
+        if (lEventos.isNotEmpty()) {
+            val msg = Message()
+            msg.obj = "Preparando registro de eventos"
+            puente.sendMessage(msg)
+
+            regEventosAXML(lEventos)
+
+            // Marcamos los eventos como exportados
+            if (queNumExportacion == 0) {
+                regEventosDao?.marcarComoExportados(iSigExportacion)
+            }
+        }
+    }
 
 
     private fun enviarCargas(queNumExportacion: Int, iSigExportacion: Int): Boolean {
@@ -4236,6 +4356,61 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
             else "$directorioLocal/firmas/"
         }
         return result
+    }
+
+
+    private fun regEventosAXML(lEventos: MutableList<RegistroDeEventosEnt>) {
+        try {
+            val outputFile = File(rutaLocalEnvio, "RegEventos.xml")
+            val fout = FileOutputStream(outputFile, false)
+
+            val serializer = Xml.newSerializer()
+            serializer.setOutput(fout, "UTF-8")
+            serializer.startDocument(null, true)
+            serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true)
+
+            serializer.startTag("", "consulta")
+            for (eventoEnt in lEventos) {
+                serializer.startTag("", "record")
+                serializer.attribute(null, "Fecha", eventoEnt.fecha)
+                serializer.attribute(null, "Hora", eventoEnt.hora)
+                serializer.attribute(null, "OrdenDiarioPto", eventoEnt.ordenDiarioPuesto.toString())
+                serializer.attribute(null, "Usuario", eventoEnt.usuario.toString())
+                serializer.attribute(null, "Almacen", eventoEnt.almacen.toString())
+                serializer.attribute(null, "Puesto", eventoEnt.puesto.toString())
+                serializer.attribute(null, "CodigoEvento", eventoEnt.codigoEvento)
+                serializer.attribute(null, "Ip", eventoEnt.ip)
+                serializer.attribute(null, "Ejercicio", eventoEnt.ejercicio.toString())
+                serializer.attribute(null, "Empresa", eventoEnt.empresa.toString())
+                serializer.attribute(null, "DescrEvento", eventoEnt.descrEvento)
+                serializer.attribute(null, "TextoEvento", eventoEnt.textoEvento)
+                serializer.attribute(null, "RefAnterior", eventoEnt.referenciaAnterior)
+                serializer.attribute(null, "HuellaRefAnt", eventoEnt.huellaRefAnterior)
+                serializer.attribute(null, "Huella", eventoEnt.huella)
+                serializer.attribute(null, "Firma", eventoEnt.firma)
+                serializer.attribute(null, "FirmaCadena", eventoEnt.firmaCadena)
+                serializer.attribute(null, "FirmaVersion", eventoEnt.firmaVersion)
+                serializer.endTag("", "record")
+
+                val queCadena = "Se graba el evento: " + eventoEnt.eventoId + "\n"
+                fLog.write(queCadena.toByteArray())
+            }
+            serializer.endTag("", "consulta")
+
+            serializer.endDocument()
+            serializer.flush()
+            fout.close()
+
+        } catch (e: FileNotFoundException) {
+            val queCadena = "ERROR enviando eventos: " + e.message + "\n"
+            fLog.write(queCadena.toByteArray())
+            mostrarExcepcion(e)
+
+        } catch (e: Exception) {
+            val queCadena = "ERROR enviando eventos: " + e.message + "\n"
+            fLog.write(queCadena.toByteArray())
+            mostrarExcepcion(e)
+        }
     }
 
 

@@ -26,5 +26,7 @@ data class RegistroDeEventosEnt (
     var huella: String = "",
     var firma: String = "",
     var firmaCadena: String = "",
-    var firmaVersion: String = ""
+    var firmaVersion: String = "",
+    var numExport: Int = 0,
+    var estado: String = ""
 )

@@ -4,7 +4,6 @@ import androidx.room.*
 import es.albainformatica.albamobileandroid.DatosReparto
 import es.albainformatica.albamobileandroid.ListaClientes
 import es.albainformatica.albamobileandroid.entity.ClientesEnt
-import es.albainformatica.albamobileandroid.entity.TempCltesEnt
 
 
 @Dao

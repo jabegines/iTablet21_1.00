@@ -8,6 +8,7 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
 import androidx.preference.PreferenceManager
 import android.provider.Settings
@@ -184,7 +185,7 @@ class ServicioRecibir: AppCompatActivity() {
         progressBar.visibility = View.GONE
 
         handler = @SuppressLint("HandlerLeak")
-        object: Handler() {
+        object: Handler(Looper.getMainLooper()) {
 
             override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
@@ -377,6 +378,13 @@ class ServicioRecibir: AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 Log.e("continuarRecepcion", "continuarRecepcion", e)
+                uiThread {
+                    alert(e.message ?: "Error, no se pudo recibir") {
+                        title = "Error al recibir"
+                        yesButton { finish() }
+                    }.show()
+
+                }
             }
         }
     }
@@ -704,7 +712,7 @@ class ServicioRecibir: AppCompatActivity() {
             }
         }
 
-        return (aImagArt.count() > 0 || aImagBorr.count() > 0)
+        return (aImagArt.isNotEmpty() || aImagBorr.isNotEmpty())
     }
 
 
@@ -729,9 +737,6 @@ class ServicioRecibir: AppCompatActivity() {
 
     @SuppressLint("HardwareIds", "SimpleDateFormat")
     private fun hayPaquetesParaTerminal() {
-        //val fEmail = prefs.getString("usuario_servicio", "") ?: ""
-        //val fHuella = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
-        //val fPassword = prefs.getString("password_servicio", "")
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         val fFechaHora = sdf.format(Date()).replace("/", "").replace(":", "").replace(" ", "")
         val fAccion = "2"

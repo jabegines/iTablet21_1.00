@@ -10,12 +10,14 @@ const val descrEv_Entrada_Sistema = "Entrada al sistema"
 const val descrEv_Salida_Sistema = "Salida del sistema"
 const val descrEv_ActApk_Entrar = "Entrada a actualizar apk"
 
+
 // Cargas
 const val codEv_Cargas_Entrar = "TBL-CAR000001"
 const val codEv_Cargas_Salir = "TBL-CAR000002"
 
 const val descrEv_Cargas_Entrar = "Entrada a cargas"
 const val descrEv_Cargas_Salir = "Salida de cargas"
+
 
 // Configuración
 const val codEv_Conf_Entrar = "TBL-CNF000001"
@@ -69,13 +71,13 @@ const val codEv_ComServEnv_Salir = "TBL-COM000004"
 const val codEv_ComRec_Entrar = "TBL-COM000005"
 const val codEv_ComRec_Salir = "TBL-COM000006"
 
-
 const val descrEv_ComEnv_Entrar ="Entrada a enviar"
 const val descrEv_ComEnv_Salir = "Salida de enviar"
 const val descrEv_ComServEnv_Entrar = "Entrada a enviar por servicio"
 const val descrEv_ComServEnv_Salir = "Salida de enviar por servicio"
 const val descrEv_ComRec_Entrar = "Entrada a recibir"
 const val descrEv_ComRec_Salir = "Salida de recibir"
+
 
 // Cobros
 const val codEv_Cobros_Entrar = "TBL-COBR000001"
