@@ -137,18 +137,14 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                         nombreFich = file.name
                         if ((nombreFich != "Clientes.xml") && (nombreFich != "ConClientes.xml") &&
                             (nombreFich != "DirClientes.xml") && (nombreFich != "DtosClientes.xml") &&
-                            (nombreFich != "NotasClientes.xml") && (nombreFich != "Proveedores.xml")
-                        ) {
+                            (nombreFich != "NotasClientes.xml") && (nombreFich != "Proveedores.xml")) {
                             mensajeAActivity(file.name, numArchivos, i)
                             i++
                         }
 
                         when {
                             nombreFich.equals("Articulos.xml", true) -> importarArticulos()
-                            nombreFich.equals(
-                                "ArticulosHabituales.xml",
-                                true
-                            ) -> importarArtHabituales()
+                            nombreFich.equals("ArticulosHabituales.xml", true) -> importarArtHabituales()
                             nombreFich.equals("Busquedas.xml", true) -> importarBusquedas()
                             // Estos tres archivos no los vaciamos totalmente
                             nombreFich.equals("Facturas.xml", true) -> importarFacturas()
@@ -188,15 +184,9 @@ class MiscComunicaciones(context: Context, desdeServicio: Boolean) {
                             nombreFich.equals("Lotes.xml", true) -> importarLotes()
                             nombreFich.equals("Grupos.xml", true) -> importarGrupos()
                             nombreFich.equals("Departamentos.xml", true) -> importarDepartamentos()
-                            nombreFich.equals(
-                                "Clasificadores.xml",
-                                true
-                            ) -> importarClasificadores()
+                            nombreFich.equals("Clasificadores.xml", true) -> importarClasificadores()
                             nombreFich.equals("ArticClasif.xml", true) -> importarArticClasif()
-                            nombreFich.equals(
-                                "DatAdicArticulos.xml",
-                                true
-                            ) -> importarDatAdicArtic()
+                            nombreFich.equals("DatAdicArticulos.xml", true) -> importarDatAdicArtic()
                             nombreFich.equals("Formatos.xml", true) -> importarFormatos()
                             nombreFich.equals("TarifasFormatos.xml", true) -> importarTrfFormatos()
                             nombreFich.equals("TiposInc.xml", true) -> importarTiposIncidencia()

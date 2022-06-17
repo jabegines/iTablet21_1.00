@@ -19,6 +19,7 @@ class RegistroEventosClase(val contexto: Context) {
 
     fun registrarEvento(codEvento: String, descrEvento: String) {
         val fConfiguracion: Configuracion = Comunicador.fConfiguracion
+        val queEmpresa = prefs?.getInt("ultima_empresa", 0)?.toShort() ?: -1
         val regEventosEnt = RegistroDeEventosEnt()
 
         val tim = System.currentTimeMillis()
@@ -27,7 +28,7 @@ class RegistroEventosClase(val contexto: Context) {
         regEventosEnt.fecha = df.format(tim)
         regEventosEnt.hora = dfHora.format(tim)
 
-        var ultimoOrden = regEventosDao?.getUltimoOrdenDiario(regEventosEnt.fecha) ?: 0
+        var ultimoOrden = regEventosDao?.getUltimoOrdenDiario(regEventosEnt.fecha, queEmpresa) ?: 0
         ultimoOrden++
         regEventosEnt.ordenDiarioPuesto = ultimoOrden
         if (fConfiguracion.vendedor() != "") regEventosEnt.usuario = fConfiguracion.vendedor().toShort()
@@ -39,8 +40,7 @@ class RegistroEventosClase(val contexto: Context) {
         regEventosEnt.descrEvento = descrEvento
         regEventosEnt.ip = ""
         regEventosEnt.ejercicio = fConfiguracion.ejercicio()
-        val queEmpresa = prefs?.getInt("ultima_empresa", 0) ?: -1
-        regEventosEnt.empresa = queEmpresa.toShort()
+        regEventosEnt.empresa = queEmpresa
         regEventosEnt.estado = "N"
 
         regEventosDao?.insertar(regEventosEnt)

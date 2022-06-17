@@ -24,8 +24,8 @@ interface RegistroDeEventosDao {
 
 
     @Query("SELECT MAX(ordenDiarioPuesto) FROM RegistroDeEventos " +
-            " WHERE fecha = :queFecha")
-    fun getUltimoOrdenDiario(queFecha: String): Int
+            " WHERE fecha = :queFecha AND empresa = :queEmpresa")
+    fun getUltimoOrdenDiario(queFecha: String, queEmpresa: Short): Int
 
     @Insert
     fun insertar(evento: RegistroDeEventosEnt)
