@@ -493,7 +493,7 @@ class DocPDF(contexto: Context) {
         private fun pdfDatosClteYDoc(writer: PdfWriter) {
             var y: Short = 710
             val canvas = writer.directContent
-            var c = Chunk(ponerCeros(fDocumento.fClientes.fCodigo.toString(), ancho_codclte) + " " + fDocumento.fClientes.fNombre)
+            var c = Chunk(ponerCeros(fDocumento.fClientes.fCodigo, ancho_codclte) + " " + fDocumento.fClientes.fNombre)
             mostrarChunk(canvas, c, 40f, y.toFloat(), fntHelv8)
             c = Chunk("Vendedor: " + fConfiguracion.vendedor())
             mostrarChunk(canvas, c, 400f, y.toFloat(), fntHelv8)

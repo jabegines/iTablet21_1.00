@@ -74,7 +74,7 @@ class PendienteClase(queContexto: Context) {
 
     fun abrirTodosDocClte(queCliente: Int): Boolean {
         lTodosDocClte = pendienteDao?.abrirTodosDocClte(queCliente) ?:  emptyList<String>().toMutableList()
-        return (lTodosDocClte.count() > 0)
+        return (lTodosDocClte.isNotEmpty())
     }
 
 
@@ -89,14 +89,14 @@ class PendienteClase(queContexto: Context) {
 
     fun abrirPorFDoc(queCliente: Int, queEmpresa: Int): Boolean {
         lTodosDocClte = pendienteDao?.abrirPorFDoc(queCliente, queEmpresa) ?: emptyList<String>().toMutableList()
-        return (lTodosDocClte.count() > 0)
+        return (lTodosDocClte.isNotEmpty())
     }
 
 
     fun abrir(queCliente: Int): Boolean {
         lPendiente = pendienteDao?.abrir(queCliente) ?: emptyList<PendienteEnt>().toMutableList()
 
-        if (lPendiente.count() > 0) {
+        if (lPendiente.isNotEmpty()) {
             val pdteEnt = lPendiente[0]
             clienteId = queCliente
             pendienteId = pdteEnt.pendienteId

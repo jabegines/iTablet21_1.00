@@ -490,7 +490,7 @@ class InfDocumentos(contexto: Context): Runnable {
         val lDocumentos = cabecerasDao?.getInfDocumentos(fechaEnJulian(fDesdeFecha), fechaEnJulian(fHastaFecha))
             ?: emptyList<DatosVerDocs>().toMutableList()
 
-        return (lDocumentos.count() > 0)
+        return (lDocumentos.isNotEmpty())
     }
 
 }

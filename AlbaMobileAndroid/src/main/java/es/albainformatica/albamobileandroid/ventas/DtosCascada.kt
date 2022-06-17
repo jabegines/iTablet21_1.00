@@ -130,7 +130,7 @@ class DtosCascada(fContexto: Context) {
 
 
     fun desdeRating(): Boolean {
-        return if (lDescuentos.count() > 0) {
+        return if (lDescuentos.isNotEmpty()) {
             lDescuentos[0].desdeRating == "T"
         } else false
     }

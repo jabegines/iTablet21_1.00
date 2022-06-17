@@ -3,7 +3,6 @@ package es.albainformatica.albamobileandroid.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import es.albainformatica.albamobileandroid.entity.CargasEnt
 import es.albainformatica.albamobileandroid.entity.RegistroDeEventosEnt
 
 @Dao

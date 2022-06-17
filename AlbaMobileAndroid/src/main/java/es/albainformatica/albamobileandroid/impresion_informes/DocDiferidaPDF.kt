@@ -391,10 +391,10 @@ class DocDiferidaPDF(private val fContexto: Context, idDocumento: Int) {
             mostrarChunk(c, 40f, y.toFloat(), Element.ALIGN_LEFT)
         }
         y = (y - 10).toShort()
-        c = Chunk(fConfiguracion.lineaPieDoc(cabDifEnt.empresa.toShort(), "1".toShort()))
+        c = Chunk(fConfiguracion.lineaPieDoc(cabDifEnt.empresa, "1".toShort()))
         mostrarChunk(c, 40f, y.toFloat(), Element.ALIGN_LEFT)
         y = (y - 10).toShort()
-        c = Chunk(fConfiguracion.lineaPieDoc(cabDifEnt.empresa.toShort(), "2".toShort()))
+        c = Chunk(fConfiguracion.lineaPieDoc(cabDifEnt.empresa, "2".toShort()))
         mostrarChunk(c, 40f, y.toFloat(), Element.ALIGN_LEFT)
     }
 
@@ -572,11 +572,11 @@ class DocDiferidaPDF(private val fContexto: Context, idDocumento: Int) {
             val canvas = writer.directContent
 
             // Añadimos la cabecera con una fuente personalizada.
-            var c = Chunk(docsCabPiesDao?.cabeceraDoc(fCabDifEnt.empresa.toShort()))
+            var c = Chunk(docsCabPiesDao?.cabeceraDoc(fCabDifEnt.empresa))
             mostrarChunk(canvas, c, 40f, y.toFloat(), fntCabecera)
             y = (y - 20).toShort()
             for (i in 0..4) {
-                c = Chunk(fConfiguracion.lineaCabDoc(fCabDifEnt.empresa.toShort(), ponerCeros(i.toString(), numceros).toShort()))
+                c = Chunk(fConfiguracion.lineaCabDoc(fCabDifEnt.empresa, ponerCeros(i.toString(), numceros).toShort()))
                 mostrarChunk(canvas, c, 40f, y.toFloat(), fntHelv8)
                 y = (y - 10).toShort()
             }
@@ -586,7 +586,7 @@ class DocDiferidaPDF(private val fContexto: Context, idDocumento: Int) {
         private fun pdfDatosClteYDoc(writer: PdfWriter) {
             var y: Short = 710
             val canvas = writer.directContent
-            var c = Chunk(ponerCeros(fClientes.fCodigo.toString(), ancho_codclte) + " " + fClientes.fNombre)
+            var c = Chunk(ponerCeros(fClientes.fCodigo, ancho_codclte) + " " + fClientes.fNombre)
             mostrarChunk(canvas, c, 40f, y.toFloat(), fntHelv8)
             c = Chunk("Vendedor: " + fConfiguracion.vendedor())
             mostrarChunk(canvas, c, 400f, y.toFloat(), fntHelv8)

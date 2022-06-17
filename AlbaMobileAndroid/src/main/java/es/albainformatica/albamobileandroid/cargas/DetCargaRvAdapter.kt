@@ -10,12 +10,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.DatosDetCarga
 import es.albainformatica.albamobileandroid.R
-import kotlinx.android.synthetic.main.item_cargas_list.view.*
-import kotlinx.android.synthetic.main.item_cargas_list.view.tvCargaId
 import kotlinx.android.synthetic.main.ly_ver_carga.view.*
 
 
-class DetCargaRvAdapter(var lDetalle: List<DatosDetCarga>, val context: Context, var listener: OnItemClickListener):
+class DetCargaRvAdapter(private var lDetalle: List<DatosDetCarga>, val context: Context, var listener: OnItemClickListener):
     RecyclerView.Adapter<DetCargaRvAdapter.ViewHolder>() {
 
     private var selectedPos: Int = RecyclerView.NO_POSITION

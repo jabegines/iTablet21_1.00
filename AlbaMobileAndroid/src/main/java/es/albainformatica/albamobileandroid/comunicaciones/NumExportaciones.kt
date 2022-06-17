@@ -1,6 +1,5 @@
 package es.albainformatica.albamobileandroid.comunicaciones
 
-import android.content.ContentValues
 import android.content.Context
 import es.albainformatica.albamobileandroid.dao.NumExportDao
 import es.albainformatica.albamobileandroid.database.MyDatabase

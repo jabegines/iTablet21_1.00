@@ -18,13 +18,13 @@ class Departamentos(contexto: Context) {
 
     fun abrir(fGrupo: Short): Boolean {
         lDepartamentos = departamentosDao?.getGrupo(fGrupo) ?: emptyList<DepartamentosEnt>().toMutableList()
-        return (lDepartamentos.count() > 0)
+        return (lDepartamentos.isNotEmpty())
     }
 
 
     fun abrirParaCatalogo(fGrupo: Short): Boolean {
         lDepCat = departamentosDao?.abrirParaCatalogo(fGrupo) ?: emptyList<DepartParaCat>().toMutableList()
-        return (lDepCat.count() > 0)
+        return (lDepCat.isNotEmpty())
     }
 
 

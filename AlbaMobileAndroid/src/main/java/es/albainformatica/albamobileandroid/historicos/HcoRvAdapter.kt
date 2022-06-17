@@ -11,12 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.Comunicador.Companion.fConfiguracion
 import es.albainformatica.albamobileandroid.DatosHistorico
 import es.albainformatica.albamobileandroid.R
-import es.albainformatica.albamobileandroid.entity.HistoricoEnt
 import kotlinx.android.synthetic.main.ly_hco_cliente.view.*
 
 
-class HcoRvAdapter(var lHistorico: List<DatosHistorico>, ivaIncluido: Boolean, aplicarIva: Boolean,
-                   val context: Context, var listener: OnItemClickListener):
+class HcoRvAdapter(private var lHistorico: List<DatosHistorico>, ivaIncluido: Boolean, aplicarIva: Boolean,
+    val context: Context, var listener: OnItemClickListener):
                     RecyclerView.Adapter<HcoRvAdapter.ViewHolder>() {
 
     var selectedPos: Int = RecyclerView.NO_POSITION

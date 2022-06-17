@@ -948,7 +948,7 @@ class ImprGenerica(contexto: Context): Runnable {
         var result: String
         var cCadena: String
         val sLongDatosClte: Short = 47
-        cCadena = ajustarCadena(fMargenIzq + ponerCeros(fDocumento.fClientes.fCodigo.toString(), ancho_codclte) + " " +
+        cCadena = ajustarCadena(fMargenIzq + ponerCeros(fDocumento.fClientes.fCodigo, ancho_codclte) + " " +
                 fDocumento.fClientes.fNombre, sLongDatosClte.toInt(), true)
         result = cCadena
         cCadena = stringOfChar(" ", 5) + "Vendedor: " + fConfiguracion.vendedor()
@@ -1069,7 +1069,7 @@ class ImprGenerica(contexto: Context): Runnable {
         val lineasCargas: CargasLineasDao? = getInstance(fContexto)?.cargasLineasDao()
         val lLineas = lineasCargas?.getCarga(fCargaId) ?: emptyList<DatosDetCarga>().toMutableList()
 
-        if (lLineas.count() > 0) {
+        if (lLineas.isNotEmpty()) {
             for (linea in lLineas) {
                 sCodigo = linea.codigo
                 sDescr = linea.descripcion

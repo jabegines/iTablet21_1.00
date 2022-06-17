@@ -21,19 +21,19 @@ class Clasificadores(contexto: Context) {
     // y el flag 1 nos indicará que el registro es un catálogo.
     fun abrir(quePadre: Int, queNivel: Int): Boolean {
         lClasificadores = clasificadoresDao?.getClasifPadre(quePadre, queNivel) ?: emptyList<ClasificadoresEnt>().toMutableList()
-        return (lClasificadores.count() > 0)
+        return (lClasificadores.isNotEmpty())
     }
 
 
     fun abrirCatalogos(): Boolean {
         lClasificadores = clasificadoresDao?.abrirCatalogos() ?: emptyList<ClasificadoresEnt>().toMutableList()
-        return (lClasificadores.count() > 0)
+        return (lClasificadores.isNotEmpty())
     }
 
 
     fun abrirBioCatalogo(): Boolean {
         lClasCat = clasificadoresDao?.abrirBioCatalogo() ?: emptyList<ClasifParaCat>().toMutableList()
-        return (lClasCat.count() > 0)
+        return (lClasCat.isNotEmpty())
     }
 
 

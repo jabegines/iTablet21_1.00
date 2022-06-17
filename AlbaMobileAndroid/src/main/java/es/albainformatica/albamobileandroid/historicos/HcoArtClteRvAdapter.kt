@@ -15,7 +15,7 @@ class HcoArtClteRvAdapter (var docs: List<DatosHcoArtClte>, val context: Context
 
     private var selectedPos: Int = RecyclerView.NO_POSITION
     var articuloId: Int = 0
-    var idHco: Int = 0
+    private var idHco: Int = 0
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -23,17 +23,17 @@ class HcoArtClteRvAdapter (var docs: List<DatosHcoArtClte>, val context: Context
         val item = docs[fPosicion]
         holder.bind(item)
 
-        if (selectedPos == fPosicion) {
+        //if (selectedPos == fPosicion) {
             //holder.itemView.tvHcoArtClCodArt.setTextColor(Color.BLACK)
             //holder.itemView.tvHcoArtClDescr.setTextColor(Color.BLACK)
             //holder.itemView.tvHcoArtClPorcDevol.setTextColor(Color.BLACK)
-        }
-        else
-        {
+        //}
+        //else
+        //{
             //holder.itemView.tvHcoArtClCodArt.setTextColor(Color.GRAY)
             //holder.itemView.tvHcoArtClDescr.setTextColor(Color.GRAY)
             //holder.itemView.tvHcoArtClPorcDevol.setTextColor(Color.GRAY)
-        }
+        //}
         //holder.itemView.tvHcoArtClCantPed.setTextColor(Color.MAGENTA)
 
 

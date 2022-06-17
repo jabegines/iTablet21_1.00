@@ -22,7 +22,7 @@ class Reparto(contexto: Context) {
         else
             emptyList<DatosReparto>().toMutableList()
 
-        return (lDocsReparto.count() > 0)
+        return (lDocsReparto.isNotEmpty())
     }
 
     fun buscarRutaActiva(): Short {

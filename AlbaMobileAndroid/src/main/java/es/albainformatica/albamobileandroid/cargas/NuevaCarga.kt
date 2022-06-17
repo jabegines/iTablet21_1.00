@@ -439,7 +439,7 @@ class NuevaCarga: AppCompatActivity() {
 
     private fun abandonarCarga() {
 
-        if (fAdapter.lCargas.count() > 0) {
+        if (fAdapter.lCargas.isNotEmpty()) {
             for (linea in fAdapter.lCargas) {
                 val queArticulo = linea.articuloId
                 var sCajas = linea.cajas

@@ -96,7 +96,7 @@ class Historico(contexto: Context)  {
         var fTmpHcoId = 0
 
         val lTmpHco = tmpHcoDao?.getAllLineas() ?: emptyList<TmpHcoEnt>().toMutableList()
-        if (lTmpHco.count() > 0) {
+        if (lTmpHco.isNotEmpty()) {
             for (tmpHco in lTmpHco) {
                 if (tmpHco.linea == fLinea) {
                     fInsertando = false

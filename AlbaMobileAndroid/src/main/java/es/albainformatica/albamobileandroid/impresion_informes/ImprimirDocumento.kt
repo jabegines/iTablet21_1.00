@@ -515,7 +515,7 @@ class ImprimirDocumento(contexto: Context): Runnable {
         if (fConfiguracion.aconsNomComercial()) {
             result = ajustarCadena(fDocumento.fClientes.fNomComercial, 35, true) + ccSaltoLinea
         }
-        var cCadena: String = ajustarCadena(ponerCeros(fDocumento.fClientes.fCodigo.toString(), ancho_codclte) + " " +
+        var cCadena: String = ajustarCadena(ponerCeros(fDocumento.fClientes.fCodigo, ancho_codclte) + " " +
                 fDocumento.fClientes.fNombre, 35, true)
         result += cCadena
         cCadena = stringOfChar(" ", 5) + "Vendedor: " + fConfiguracion.vendedor() // + " " + fConfiguracion.nombreVendedor(), 20, true);
@@ -700,7 +700,7 @@ class ImprimirDocumento(contexto: Context): Runnable {
         val lineasCargas: CargasLineasDao? = getInstance(fContexto)?.cargasLineasDao()
         val lLineas = lineasCargas?.getCarga(fCargaId) ?: emptyList<DatosDetCarga>().toMutableList()
 
-        if (lLineas.count() > 0) {
+        if (lLineas.isNotEmpty()) {
             for (linea in lLineas) {
                 sCodigo = linea.codigo
                 sDescr = linea.descripcion

@@ -1,15 +1,12 @@
 package es.albainformatica.albamobileandroid.ventas
 
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.Comunicador
-import es.albainformatica.albamobileandroid.DatosLinVtas
 import es.albainformatica.albamobileandroid.DatosOftVol
 import es.albainformatica.albamobileandroid.R
 
@@ -59,7 +56,7 @@ class OftVolDocRvAdapter(var lineas: List<DatosOftVol>, val context: Context,
 
         fun bind(oferta: DatosOftVol, fDecPrBase: Int) {
             tvDescr.text = oferta.descripcion
-            tvImporte.text = String.format("%." + fDecPrBase + "f", oferta.importe.toDouble())
+            tvImporte.text = String.format("%." + fDecPrBase + "f", oferta.importe)
         }
 
     }

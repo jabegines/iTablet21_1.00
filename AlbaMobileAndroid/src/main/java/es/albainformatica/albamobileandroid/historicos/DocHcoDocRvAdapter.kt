@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.DatosDocsHcArtClte
 import es.albainformatica.albamobileandroid.R
 import es.albainformatica.albamobileandroid.tipoDocResumAsString
-import kotlinx.android.synthetic.main.item_hcodoc_list.view.*
 import kotlinx.android.synthetic.main.ly_hco_doc.view.*
 
 
@@ -20,7 +19,7 @@ class DocHcoDocRvAdapter(var docs: List<DatosDocsHcArtClte>, val context: Contex
 
     private var selectedPos: Int = RecyclerView.NO_POSITION
     var articuloId: Int = 0
-    var idHco: Int = 0
+    private var idHco: Int = 0
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

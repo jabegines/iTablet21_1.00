@@ -46,7 +46,7 @@ class Documento(private val fContexto: Context) {
 
     lateinit var lLineas: List<DatosLinVtas>
     lateinit var cabActualEnt: CabecerasEnt
-    lateinit var factActualEnt: FacturasEnt
+    private lateinit var factActualEnt: FacturasEnt
 
     private val fDtosCascada: DtosCascada = DtosCascada(fContexto)
     var fClientes: ClientesClase = ClientesClase(fContexto)

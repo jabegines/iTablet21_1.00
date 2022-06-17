@@ -361,7 +361,7 @@ class ResumenPedidos(private val fContexto: Context) {
         val cabecerasDao: CabecerasDao? = MyDatabase.getInstance(fContexto)?.cabecerasDao()
         val lCabeceras = cabecerasDao?.getResumenPedidos() ?: emptyList<DatosResPedidos>().toMutableList()
 
-        return (lCabeceras.count() > 0)
+        return (lCabeceras.isNotEmpty())
     }
 
 
@@ -369,14 +369,14 @@ class ResumenPedidos(private val fContexto: Context) {
         val cobrosDao: CobrosDao? = MyDatabase.getInstance(fContexto)?.cobrosDao()
         val lCobros = cobrosDao?.getResumenPedidos() ?: emptyList<DatosCobrResPedidos>().toMutableList()
 
-        return (lCobros.count() > 0)
+        return (lCobros.isNotEmpty())
     }
 
     private fun obtenerLineas(cabecera: DatosResPedidos): Boolean {
         val lineasDao: LineasDao? = MyDatabase.getInstance(fContexto)?.lineasDao()
         lLineas = lineasDao?.getResumenPedidos(cabecera.cabeceraId) ?: emptyList<DatosLinResPedidos>().toMutableList()
 
-        return (lLineas.count() > 0)
+        return (lLineas.isNotEmpty())
     }
 
 

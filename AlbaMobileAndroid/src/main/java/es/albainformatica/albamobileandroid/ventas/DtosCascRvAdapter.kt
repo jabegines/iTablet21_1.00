@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.Comunicador
 import es.albainformatica.albamobileandroid.DescuentosLinea
 import es.albainformatica.albamobileandroid.R
-import es.albainformatica.albamobileandroid.entity.DtosLineasEnt
 
 
 class DtosCascRvAdapter(var desctos: List<DescuentosLinea>, val context: Context,

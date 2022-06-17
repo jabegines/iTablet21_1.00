@@ -129,7 +129,7 @@ class EditarDtosCascada: Activity(), OnFocusChangeListener {
         view.getTag(0)          // Para que no dé warning el compilador
 
         // Calculamos el descuento equivalente
-        if (fDtosCascada.lDescuentos.count() > 0) {
+        if (fDtosCascada.lDescuentos.isNotEmpty()) {
             fDocumento.fDtoLin = fDtosCascada.calcularDtoEquiv(fDocumento.fPrecio, fDecPrBase).toDouble()
             // Le decimos al documento que la línea tiene descuentos en cascada.
             fDocumento.fLineaConDtCasc = true

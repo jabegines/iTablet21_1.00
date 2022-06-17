@@ -18,7 +18,7 @@ class Tarifas(contexto: Context) {
     fun abrir(): Boolean {
         lTarifas = cnfTarifasDao?.getAllCnfTarifas() ?: emptyList<CnfTarifasEnt>().toMutableList()
 
-        return (lTarifas.count() > 0)
+        return (lTarifas.isNotEmpty())
     }
 
 

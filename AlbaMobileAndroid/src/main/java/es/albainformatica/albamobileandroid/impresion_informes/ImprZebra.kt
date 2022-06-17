@@ -249,7 +249,7 @@ import java.util.*
          var result = "^XA^LL290"
          // Posición 0,0 y altura de 20
          result += "^FT0,0^AKN,25$fCR$fLF"
-         result += "^FD" + ajustarCadena(ponerCeros(fDocumento.fClientes.fCodigo.toString(), ancho_codclte) + " " +
+         result += "^FD" + ajustarCadena(ponerCeros(fDocumento.fClientes.fCodigo, ancho_codclte) + " " +
                  fDocumento.fClientes.fNombre, sLongDatosClte.toInt(), true) + fCR + fLF + "^FS" + fCR + fLF
 
          result += "^FT0,50^AKN,20$fCR$fLF"

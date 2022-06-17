@@ -65,7 +65,7 @@ class CargarHcoPorDoc: AppCompatActivity() {
 
         // Mediante este código seleccionamos el primer registro del recyclerView y hacemos como si pulsáramos
         // click en él. Hay que hacerlo con un Handler().postDelayed() porque si no, da errores.
-        if (fAdpArt.docs.count() > 0) {
+        if (fAdpArt.docs.isNotEmpty()) {
             Handler().postDelayed({
                 fRecArticulos.findViewHolderForAdapterPosition(0)?.itemView?.performClick()
             }, 100)

@@ -27,7 +27,6 @@ import es.albainformatica.albamobileandroid.dao.CnfTarifasDao
 import es.albainformatica.albamobileandroid.dao.OftCantRangosDao
 import es.albainformatica.albamobileandroid.dao.SeriesDao
 import es.albainformatica.albamobileandroid.dao.TiposIncDao
-import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.getInstance
 import es.albainformatica.albamobileandroid.entity.CnfTarifasEnt
 import es.albainformatica.albamobileandroid.entity.DtosLinFrasEnt
@@ -180,7 +179,7 @@ class VentasDatosLinea: Activity() {
         carpetaImagenes = dimeRutaImagenes(this)
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
 
-        val fSeriesDao: SeriesDao? = MyDatabase.getInstance(this)?.seriesDao()
+        val fSeriesDao: SeriesDao? = getInstance(this)?.seriesDao()
         val queFlagSerie = fSeriesDao?.getFlag(fDocumento.serie, fDocumento.fEjercicio) ?: 0
         val fForzarPrIvaIncl = queFlagSerie and FLAGSERIE_FORZAR_PR_IVA_INCL > 0
         fIvaIncluido = fForzarPrIvaIncl || fConfiguracion.ivaIncluido(fDocumento.fEmpresa)

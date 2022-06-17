@@ -10,9 +10,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.R
 import es.albainformatica.albamobileandroid.entity.ContactosCltesEnt
-import es.albainformatica.albamobileandroid.entity.NumExportEnt
 import kotlinx.android.synthetic.main.layout_telf_cltes.view.*
-import kotlinx.android.synthetic.main.ly_numexportac.view.*
+
 
 
 

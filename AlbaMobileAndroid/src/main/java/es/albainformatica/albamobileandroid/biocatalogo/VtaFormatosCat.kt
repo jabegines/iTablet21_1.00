@@ -106,7 +106,7 @@ class VtaFormatosCat: AppCompatActivity() {
 
         fFormato = 0
         // Comprobamos si hay formatos o tenemos que trabajar sin ellos
-        if (fFormatos.lFtosCat.count() > 0)
+        if (fFormatos.lFtosCat.isNotEmpty())
             activarDesactivarEdits(false)
         else {
             activarDesactivarEdits(true)

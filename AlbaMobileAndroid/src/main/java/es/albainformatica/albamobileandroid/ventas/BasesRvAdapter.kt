@@ -10,8 +10,9 @@ import es.albainformatica.albamobileandroid.Comunicador.Companion.fConfiguracion
 import es.albainformatica.albamobileandroid.R
 
 
-class BasesRvAdapter(var bases: ArrayList<ListaBasesDoc.TBaseDocumento>, val context: Context,
-                     private var listener: OnItemClickListener): RecyclerView.Adapter<BasesRvAdapter.ViewHolder>() {
+class BasesRvAdapter(
+    private var bases: ArrayList<ListaBasesDoc.TBaseDocumento>, val context: Context,
+    private var listener: OnItemClickListener): RecyclerView.Adapter<BasesRvAdapter.ViewHolder>() {
 
     //var selectedPos: Int = RecyclerView.NO_POSITION
     private val fDecPrBase = fConfiguracion.decimalesImpBase()

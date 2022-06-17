@@ -77,7 +77,7 @@ class VtaDetallesCat: AppCompatActivity() {
     private fun escogerLineaArt(fArticulo: Int) {
         val listItems: MutableList<String> = ArrayList()
 
-        if (fDocumento.lLineas.count() > 0) {
+        if (fDocumento.lLineas.isNotEmpty()) {
             for (linea in fDocumento.lLineas) {
                 if (linea.articuloId == fArticulo) {
 

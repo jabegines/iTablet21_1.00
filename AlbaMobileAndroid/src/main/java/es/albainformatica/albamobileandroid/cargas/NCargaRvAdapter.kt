@@ -10,8 +10,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.DatosDetCarga
 import es.albainformatica.albamobileandroid.R
-import kotlinx.android.synthetic.main.item_cargas_list.view.*
-import kotlinx.android.synthetic.main.item_cargas_list.view.tvCargaId
 import kotlinx.android.synthetic.main.ly_nueva_carga.view.*
 
 

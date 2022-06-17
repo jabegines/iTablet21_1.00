@@ -72,7 +72,7 @@ class BuscarLotes: Activity() {
         fLotes.getAllLotesArticulo(fArticulo, fConfiguracion.sumarStockEmpresas())
 
         // Si no tenemos datos cerramos la actividad y si sólo tenemos un registro lo devolvemos (si así lo tenemos configurado)
-        if (fLotes.lLotes.count() == 0) finish()
+        if (fLotes.lLotes.isEmpty()) finish()
         else if (fLotes.lLotes.count() == 1) {
             if (!fMantenerVista) {
                 val returnIntent = Intent()

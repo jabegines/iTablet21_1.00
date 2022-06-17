@@ -16,13 +16,13 @@ class Formatos(val contexto: Context) {
 
     fun abrirFormatos(queArticulo: Int, queCliente: Int): Boolean {
         lFtosCat = formatosDao?.abrirFtosParaCat(queArticulo, queCliente) ?: emptyList<DatosVtaFtos>().toMutableList()
-        return (lFtosCat.count() > 0)
+        return (lFtosCat.isNotEmpty())
     }
 
 
     fun todosLosFormatos(): Boolean {
         lFormatos = formatosDao?.getAllFormatos() ?: emptyList<FormatosEnt>().toMutableList()
-        return (lFormatos.count() > 0)
+        return (lFormatos.isNotEmpty())
     }
 
 

@@ -162,7 +162,7 @@ class DocsReparto: AppCompatActivity() {
     private fun hacerClickEnRecycler() {
         // Mediante este código seleccionamos el primer registro del recyclerView y hacemos como si pulsáramos
         // click en él. Hay que hacerlo con un Handler().postDelayed() porque si no, da errores.
-        if (fAdpReparto.datosReparto.count() > 0) {
+        if (fAdpReparto.datosReparto.isNotEmpty()) {
             Handler().postDelayed({
                 fRecReparto.findViewHolderForAdapterPosition(0)?.itemView?.performClick()
             }, 100)

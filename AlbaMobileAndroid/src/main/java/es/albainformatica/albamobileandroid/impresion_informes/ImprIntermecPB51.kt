@@ -752,7 +752,7 @@ class ImprIntermecPB51(contexto: Context): Runnable {
         val lineasCargas: CargasLineasDao? = getInstance(fContexto)?.cargasLineasDao()
         val lLineas = lineasCargas?.getCarga(fCargaId) ?: emptyList<DatosDetCarga>().toMutableList()
 
-        if (lLineas.count() > 0) {
+        if (lLineas.isNotEmpty()) {
             for (linea in lLineas) {
                 sCodigo = linea.codigo
                 sDescr = linea.descripcion

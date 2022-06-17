@@ -1,8 +1,6 @@
 package es.albainformatica.albamobileandroid.maestros
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +11,7 @@ import es.albainformatica.albamobileandroid.DatosTrfArt
 import es.albainformatica.albamobileandroid.R
 import es.albainformatica.albamobileandroid.ancho_tarifa
 import es.albainformatica.albamobileandroid.ponerCeros
-import kotlinx.android.synthetic.main.item_cargas_list.view.*
+
 
 
 class TrfArtRvAdapter(var tarifas: List<DatosTrfArt>, private val usarFormatos: Boolean, val fPorcIva: Double,

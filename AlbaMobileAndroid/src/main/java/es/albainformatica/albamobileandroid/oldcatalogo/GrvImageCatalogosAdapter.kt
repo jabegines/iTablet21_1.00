@@ -30,7 +30,7 @@ class GrvImageCatalogosAdapter(private val activity: Activity): BaseAdapter() {
 
     private fun obtenerItems(): ArrayList<ItemCatalogo> {
         val items = ArrayList<ItemCatalogo>()
-        if (fCatalogos.lClasificadores.count() > 0) {
+        if (fCatalogos.lClasificadores.isNotEmpty()) {
 
             for (catalogo in fCatalogos.lClasificadores) {
                 items.add(ItemCatalogo(catalogo.clasificadorId, catalogo.descripcion))

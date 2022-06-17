@@ -1,11 +1,10 @@
 package es.albainformatica.albamobileandroid.actividades
 
 import android.app.Activity
-import android.content.Context
 import android.widget.TextView
 import android.widget.ProgressBar
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.text.Html
 import android.widget.Toast
 import org.apache.commons.net.ftp.FTPClient
@@ -259,11 +258,7 @@ class ActualizarApk : Activity() {
         try {
             val file = File(nombreApk)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                val fileUri = FileProvider.getUriForFile(
-                    baseContext,
-                    applicationContext.packageName + ".provider",
-                    file
-                )
+                val fileUri = FileProvider.getUriForFile(baseContext, applicationContext.packageName + ".provider", file)
                 val intent = Intent(Intent.ACTION_VIEW, fileUri)
                 intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true)
                 intent.setDataAndType(fileUri, "application/vnd.android.package-archive")
@@ -281,10 +276,11 @@ class ActualizarApk : Activity() {
         }
     }
 
-
+    /*
     fun getFileUri(context: Context, file: File): Uri {
         return FileProvider.getUriForFile(context, context.applicationContext.packageName + ".provider", file)
     }
+    */
 
     // Manejo los eventos del teclado en la actividad.
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {

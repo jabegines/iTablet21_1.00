@@ -1,8 +1,6 @@
 package es.albainformatica.albamobileandroid.maestros
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.R
 import es.albainformatica.albamobileandroid.entity.DireccCltesEnt
-import kotlinx.android.synthetic.main.item_cargas_list.view.*
+
 
 
 class DirCltesRvAdapter(var direcciones: List<DireccCltesEnt>, val context: Context, var listener: OnItemClickListener):
@@ -25,19 +23,19 @@ class DirCltesRvAdapter(var direcciones: List<DireccCltesEnt>, val context: Cont
         holder.bind(item)
 
 
-        if (selectedPos == fPosicion) {
+        //if (selectedPos == fPosicion) {
             //holder.itemView.tvCargaId.setTextColor(Color.BLACK)
             //holder.itemView.tvCargaId.typeface = Typeface.DEFAULT_BOLD
             //holder.itemView.tvEmpresaCarga.setTextColor(Color.BLACK)
             //holder.itemView.tvEmpresaCarga.typeface = Typeface.DEFAULT_BOLD
-        }
-        else
-        {
+        //}
+        //else
+        //{
             //holder.itemView.tvCargaId.setTextColor(Color.GRAY)
             //holder.itemView.tvCargaId.typeface = Typeface.DEFAULT
             //holder.itemView.tvEmpresaCarga.setTextColor(Color.GRAY)
             //holder.itemView.tvEmpresaCarga.typeface = Typeface.DEFAULT
-        }
+        //}
 
         holder.itemView.setOnClickListener {
             // Tenemos en cuenta si el registro sobre el que pulsamos estaba anteriormente seleccionado

@@ -61,13 +61,14 @@ class RepartoRvAdapter(var datosReparto: List<DatosReparto>, val context: Contex
         }
     }
 
-
+    /*
     fun localizarClte(queClteId: Int) {
         for (datRut in datosReparto) {
             if (datRut.clienteId == queClteId)
                 selectedPos = datosReparto.indexOf(datRut)
         }
     }
+    */
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         setOnItemClickListener(listener)

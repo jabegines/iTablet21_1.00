@@ -17,7 +17,6 @@ import es.albainformatica.albamobileandroid.impresion_informes.*
 import es.albainformatica.albamobileandroid.reparto.FirmarDoc
 import java.io.File
 import java.util.ArrayList
-import android.net.Uri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.dao.ContactosCltesDao
@@ -512,6 +511,7 @@ class VerDocumentosActivity: Activity() {
     }
 */
 
+    /*
     private fun enviarPorWhatsapSoloTexto() {
         val sendIntent = Intent(Intent.ACTION_VIEW)
         sendIntent.type = "text/plain"
@@ -529,7 +529,7 @@ class VerDocumentosActivity: Activity() {
         }
 
     }
-
+    */
 
 
     fun imprimirDoc(view: View) {

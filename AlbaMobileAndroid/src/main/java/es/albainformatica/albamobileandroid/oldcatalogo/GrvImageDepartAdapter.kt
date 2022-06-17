@@ -29,7 +29,7 @@ class GrvImageDepartAdapter(private val activity: Activity, fGrupo: Short) : Bas
 
     private fun obtenerItems(): ArrayList<ItemDepartam> {
         val items = ArrayList<ItemDepartam>()
-        if (fDepartamentos.lDepartamentos.count() > 0) {
+        if (fDepartamentos.lDepartamentos.isNotEmpty()) {
             for (departamento in fDepartamentos.lDepartamentos) {
                 items.add(ItemDepartam(departamento.grupoId, departamento.departamentoId, departamento.descripcion))
             }

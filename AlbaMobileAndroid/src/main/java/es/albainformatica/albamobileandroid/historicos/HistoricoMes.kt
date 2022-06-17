@@ -1,7 +1,6 @@
 package es.albainformatica.albamobileandroid.historicos
 
 import android.content.Context
-import android.database.Cursor
 import es.albainformatica.albamobileandroid.DatosHistMesAnyo
 import es.albainformatica.albamobileandroid.DatosHistMesClte
 import es.albainformatica.albamobileandroid.DatosHistMesDif
@@ -33,13 +32,13 @@ class HistoricoMes(val contexto: Context) {
 
     fun abrirArticulo(queArticulo: Int, queCliente: Int): Boolean {
         lDatosHistMes = histMesDao?.abrirArticulo(queArticulo, queCliente) ?: emptyList<HistMesEnt>().toMutableList()
-        return (lDatosHistMes.count() > 0)
+        return (lDatosHistMes.isNotEmpty())
     }
 
 
     fun abrirCliente(queCliente: Int): Boolean {
         lDatosHistMes = histMesDao?.abrirCliente(queCliente) ?: emptyList<HistMesEnt>().toMutableList()
-        return (lDatosHistMes.count() > 0)
+        return (lDatosHistMes.isNotEmpty())
     }
 
 

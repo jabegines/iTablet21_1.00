@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.Query
 import es.albainformatica.albamobileandroid.DescuentosLinea
 import es.albainformatica.albamobileandroid.entity.DtosLinFrasEnt
-import es.albainformatica.albamobileandroid.entity.DtosLineasEnt
 
 
 @Dao

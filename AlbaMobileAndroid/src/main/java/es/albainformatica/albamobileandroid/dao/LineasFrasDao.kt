@@ -7,7 +7,6 @@ import androidx.room.Update
 import es.albainformatica.albamobileandroid.DatosLinIva
 import es.albainformatica.albamobileandroid.DatosLinVtas
 import es.albainformatica.albamobileandroid.DatosOftVol
-import es.albainformatica.albamobileandroid.entity.LineasEnt
 import es.albainformatica.albamobileandroid.entity.LineasFrasEnt
 
 

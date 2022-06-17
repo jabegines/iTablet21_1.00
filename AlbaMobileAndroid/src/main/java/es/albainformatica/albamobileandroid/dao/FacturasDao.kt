@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import es.albainformatica.albamobileandroid.DatosVerDocs
-import es.albainformatica.albamobileandroid.entity.CabecerasEnt
 import es.albainformatica.albamobileandroid.entity.FacturasEnt
 
 

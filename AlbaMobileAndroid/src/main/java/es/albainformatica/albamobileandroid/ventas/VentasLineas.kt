@@ -329,7 +329,7 @@ class VentasLineas: AppCompatActivity() {
     fun editarLinea(view: View) {
         view.getTag(0)              // Para que no dé warning el compilador
 
-        if (fEstado == est_Vl_Browse && fDocumento.lLineas.count() > 0) {
+        if (fEstado == est_Vl_Browse && fDocumento.lLineas.isNotEmpty()) {
             if (fLinea > 0) {
 
                 // Desactivo el adapter del listView porque he detectado que al movernos
@@ -1047,7 +1047,7 @@ class VentasLineas: AppCompatActivity() {
     }
 
     class EnviarOGuardar: DialogFragment() {
-        var queOpcion = 0
+        private var queOpcion = 0
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
             queOpcion = 0

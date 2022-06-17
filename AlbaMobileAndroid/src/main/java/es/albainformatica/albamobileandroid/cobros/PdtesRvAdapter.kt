@@ -12,9 +12,7 @@ import es.albainformatica.albamobileandroid.FLAGPENDIENTE_EN_CARTERA
 import es.albainformatica.albamobileandroid.R
 import es.albainformatica.albamobileandroid.entity.PendienteEnt
 import es.albainformatica.albamobileandroid.tipoDocAsString
-import kotlinx.android.synthetic.main.ly_lineas_ventas.view.*
 import kotlinx.android.synthetic.main.ly_ver_pendientes.view.*
-import org.w3c.dom.Text
 
 
 class PdtesRvAdapter(private var lPendiente: List<PendienteEnt>, val context: Context,

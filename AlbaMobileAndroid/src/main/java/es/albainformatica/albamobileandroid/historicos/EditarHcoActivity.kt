@@ -235,7 +235,7 @@ class EditarHcoActivity: AppCompatActivity() {
 
         val fecha = Calendar.getInstance()
         val anyo = fecha[Calendar.YEAR]
-        val nombreMes: String = if (fHistMes.lDatosHistMes.count() > 0)
+        val nombreMes: String = if (fHistMes.lDatosHistMes.isNotEmpty())
             dimeNombreMesResum(fHistMes.lDatosHistMes[0].mes - 1)
         else
             dimeNombreMesResum(fecha[Calendar.MONTH])
@@ -254,7 +254,7 @@ class EditarHcoActivity: AppCompatActivity() {
         var sCantidad: String
         var dCantidad = 0.0
         var dCantidadAnt = 0.0
-        if (fHistMes.lDatosHistMes.count() > 0) {
+        if (fHistMes.lDatosHistMes.isNotEmpty()) {
             sCantidad = fHistMes.lDatosHistMes[0].cantidadAnt.replace(',', '.')
             dCantidadAnt = sCantidad.toDouble()
             tvAcumCantAnt.text = String.format(fFtoDecCantidad, dCantidadAnt)
