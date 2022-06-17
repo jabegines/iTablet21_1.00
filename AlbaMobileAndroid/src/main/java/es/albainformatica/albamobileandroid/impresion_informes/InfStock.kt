@@ -11,7 +11,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.os.SystemClock
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.widget.Toast
 import datamaxoneil.connection.ConnectionBase
 import datamaxoneil.connection.Connection_Bluetooth
@@ -44,7 +44,7 @@ class InfStock(contexto: Context) : Runnable {
     private lateinit var mBluetoothSocket: BluetoothSocket
     private lateinit var mBluetoothDevice: BluetoothDevice
 
-    private val CC_SALTO_LINEA = "\n"
+    private val CCSALTOLINEA = "\n"
 
 
 
@@ -120,11 +120,11 @@ class InfStock(contexto: Context) : Runnable {
         val t: Thread = object : Thread() {
             override fun run() {
                 fAnchoPapel = 48
-                val docExPCL_LP = DocumentExPCL_LP(5)
-                cabeceraInfDatamaxApex2(docExPCL_LP)
-                lineasInfDatamaxApex2(docExPCL_LP)
-                pieInfDatamaxApex2(docExPCL_LP)
-                val printData: ByteArray = docExPCL_LP.documentData
+                val docExPCLLP = DocumentExPCL_LP(5)
+                cabeceraInfDatamaxApex2(docExPCLLP)
+                lineasInfDatamaxApex2(docExPCLLP)
+                pieInfDatamaxApex2(docExPCLLP)
+                val printData: ByteArray = docExPCLLP.documentData
                 var conn: ConnectionBase? = null
                 try {
                     conn = Connection_Bluetooth.createClient(prefs.getString("impresoraBT", ""))
@@ -259,7 +259,7 @@ class InfStock(contexto: Context) : Runnable {
             if (sDiferencia.length < 7)
                 sDiferencia = String(CharArray(7 - sDiferencia.length)).replace("\u0000", " ") + sDiferencia
             result += sDiferencia
-            result += CC_SALTO_LINEA
+            result += CCSALTOLINEA
             fElementosImpresos++
             try {
                 os.write(stringABytes(result))
@@ -300,16 +300,16 @@ class InfStock(contexto: Context) : Runnable {
         val dfHora = SimpleDateFormat("HH:mm", Locale.getDefault())
         fFechaHora = dfHora.format(tim) + "  " + fFechaHora
         fFechaHora = String(CharArray(60 - fFechaHora.length)).replace("\u0000", " ") + fFechaHora
-        result = result + fFechaHora + CC_SALTO_LINEA
-        result = "$result                    Listado de Stock$CC_SALTO_LINEA"
+        result = result + fFechaHora + CCSALTOLINEA
+        result = "$result                    Listado de Stock$CCSALTOLINEA"
         lineaSimple = ""
         for (x in 0..59) {
             lineaSimple = "$lineaSimple-"
         }
-        result = result + lineaSimple + CC_SALTO_LINEA
+        result = result + lineaSimple + CCSALTOLINEA
         result =
-            result + "Codigo   Descripcion       Empresa  Carga  Vendido    Difer." + CC_SALTO_LINEA
-        result = result + lineaSimple + CC_SALTO_LINEA
+            result + "Codigo   Descripcion       Empresa  Carga  Vendido    Difer." + CCSALTOLINEA
+        result = result + lineaSimple + CCSALTOLINEA
         return result
     }
 
@@ -333,9 +333,9 @@ class InfStock(contexto: Context) : Runnable {
         for (x in 0..59) {
             lineaSimple = "$lineaSimple-"
         }
-        result = result + lineaSimple + CC_SALTO_LINEA
-        result = "$result      Elementos impresos:     $fElementosImpresos$CC_SALTO_LINEA"
-        result = result + lineaSimple + CC_SALTO_LINEA
+        result = result + lineaSimple + CCSALTOLINEA
+        result = "$result      Elementos impresos:     $fElementosImpresos$CCSALTOLINEA"
+        result = result + lineaSimple + CCSALTOLINEA
         return result
     }
 

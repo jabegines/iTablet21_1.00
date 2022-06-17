@@ -45,7 +45,7 @@ class VerDocumentosActivity: Activity() {
     private lateinit var btnBorrar: Button
     private lateinit var imvFirma: ImageView
     private var fFtoDecImpIva: String = ""
-    private lateinit var Dialogo: ProgressDialog
+    private lateinit var fDialogo: ProgressDialog
     private var fCliente = 0
     private var fClteDoc = 0
 
@@ -416,7 +416,7 @@ class VerDocumentosActivity: Activity() {
             refrescarLineas()
             nuevoClick(fDataActual)
 
-            Dialogo = ProgressDialog.show(this, "Exportar a PDF", "Creando PDF ...", true, true)
+            fDialogo = ProgressDialog.show(this, "Exportar a PDF", "Creando PDF ...", true, true)
 
             val hiloExport: Thread = object : Thread() {
                 override fun run() {
@@ -428,7 +428,7 @@ class VerDocumentosActivity: Activity() {
                     documPDF.crearPDF()
 
                     // Cerramos el diálogo y mostramos mensaje.
-                    Dialogo.dismiss()
+                    fDialogo.dismiss()
 
                     // Comprobamos si el Whatsapp está instalado
                     if (whatsappInstalado(this@VerDocumentosActivity)) {
