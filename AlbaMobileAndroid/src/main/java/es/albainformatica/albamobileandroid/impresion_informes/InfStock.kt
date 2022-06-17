@@ -44,7 +44,7 @@ class InfStock(contexto: Context) : Runnable {
     private lateinit var mBluetoothSocket: BluetoothSocket
     private lateinit var mBluetoothDevice: BluetoothDevice
 
-    private val CCSALTOLINEA = "\n"
+    private val ccSALTOLINEA = "\n"
 
 
 
@@ -259,7 +259,7 @@ class InfStock(contexto: Context) : Runnable {
             if (sDiferencia.length < 7)
                 sDiferencia = String(CharArray(7 - sDiferencia.length)).replace("\u0000", " ") + sDiferencia
             result += sDiferencia
-            result += CCSALTOLINEA
+            result += ccSALTOLINEA
             fElementosImpresos++
             try {
                 os.write(stringABytes(result))
@@ -300,16 +300,16 @@ class InfStock(contexto: Context) : Runnable {
         val dfHora = SimpleDateFormat("HH:mm", Locale.getDefault())
         fFechaHora = dfHora.format(tim) + "  " + fFechaHora
         fFechaHora = String(CharArray(60 - fFechaHora.length)).replace("\u0000", " ") + fFechaHora
-        result = result + fFechaHora + CCSALTOLINEA
-        result = "$result                    Listado de Stock$CCSALTOLINEA"
+        result = result + fFechaHora + ccSALTOLINEA
+        result = "$result                    Listado de Stock$ccSALTOLINEA"
         lineaSimple = ""
         for (x in 0..59) {
             lineaSimple = "$lineaSimple-"
         }
-        result = result + lineaSimple + CCSALTOLINEA
+        result = result + lineaSimple + ccSALTOLINEA
         result =
-            result + "Codigo   Descripcion       Empresa  Carga  Vendido    Difer." + CCSALTOLINEA
-        result = result + lineaSimple + CCSALTOLINEA
+            result + "Codigo   Descripcion       Empresa  Carga  Vendido    Difer." + ccSALTOLINEA
+        result = result + lineaSimple + ccSALTOLINEA
         return result
     }
 
@@ -333,9 +333,9 @@ class InfStock(contexto: Context) : Runnable {
         for (x in 0..59) {
             lineaSimple = "$lineaSimple-"
         }
-        result = result + lineaSimple + CCSALTOLINEA
-        result = "$result      Elementos impresos:     $fElementosImpresos$CCSALTOLINEA"
-        result = result + lineaSimple + CCSALTOLINEA
+        result = result + lineaSimple + ccSALTOLINEA
+        result = "$result      Elementos impresos:     $fElementosImpresos$ccSALTOLINEA"
+        result = result + lineaSimple + ccSALTOLINEA
         return result
     }
 

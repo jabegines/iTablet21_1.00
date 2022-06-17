@@ -54,14 +54,13 @@ class DetCargaRvAdapter(private var lDetalle: List<DatosDetCarga>, val context: 
 
         holder.itemView.setOnClickListener {
             // Tenemos en cuenta si el registro sobre el que pulsamos estaba anteriormente seleccionado
-            if (selectedPos == fPosicion) { //Deseleccionamos el registro
+            selectedPos = if (selectedPos == fPosicion) { //Deseleccionamos el registro
                 //cargaId = 0
-                selectedPos = RecyclerView.NO_POSITION
-            }
-            else //Seleccionamos el registro
+                RecyclerView.NO_POSITION
+            } else //Seleccionamos el registro
             {
                 //cargaId = cargas[fPosicion].cargaId
-                selectedPos = fPosicion
+                fPosicion
             }
 
             notifyDataSetChanged()

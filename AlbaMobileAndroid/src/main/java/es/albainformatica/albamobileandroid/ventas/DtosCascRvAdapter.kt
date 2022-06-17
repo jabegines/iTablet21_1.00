@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.Comunicador
 import es.albainformatica.albamobileandroid.DescuentosLinea
@@ -50,18 +49,18 @@ class DtosCascRvAdapter(var desctos: List<DescuentosLinea>, val context: Context
 
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        private val tvDescr = itemView.findViewById(R.id.ly_vl_descr) as TextView
-        private val tvImporte = itemView.findViewById(R.id.ly_vl_impte) as TextView
-        private val tvDescrFto = itemView.findViewById(R.id.ly_vl_descrfto) as TextView
-        private val tvCodArt = itemView.findViewById(R.id.ly_vl_codart) as TextView
-        private val tvTarifa = itemView.findViewById(R.id.ly_vl_tarifa) as TextView
-        private val tvPiezas = itemView.findViewById(R.id.ly_vl_piezas) as TextView
-        private val tvCajas = itemView.findViewById(R.id.ly_vl_cajas) as TextView
-        private val tvCantidad = itemView.findViewById(R.id.ly_vl_cant) as TextView
-        private val tvTasa1 = itemView.findViewById(R.id.ly_vl_tasa1) as TextView
-        private val tvPrecio = itemView.findViewById(R.id.ly_vl_precio) as TextView
-        private val tvDto = itemView.findViewById(R.id.ly_vl_dto) as TextView
-        private val tvTasa2 = itemView.findViewById(R.id.ly_vl_tasa2) as TextView
+        //private val tvDescr = itemView.findViewById(R.id.ly_vl_descr) as TextView
+        //private val tvImporte = itemView.findViewById(R.id.ly_vl_impte) as TextView
+        //private val tvDescrFto = itemView.findViewById(R.id.ly_vl_descrfto) as TextView
+        //private val tvCodArt = itemView.findViewById(R.id.ly_vl_codart) as TextView
+        //private val tvTarifa = itemView.findViewById(R.id.ly_vl_tarifa) as TextView
+        //private val tvPiezas = itemView.findViewById(R.id.ly_vl_piezas) as TextView
+        //private val tvCajas = itemView.findViewById(R.id.ly_vl_cajas) as TextView
+        //private val tvCantidad = itemView.findViewById(R.id.ly_vl_cant) as TextView
+        //private val tvTasa1 = itemView.findViewById(R.id.ly_vl_tasa1) as TextView
+        //private val tvPrecio = itemView.findViewById(R.id.ly_vl_precio) as TextView
+        //private val tvDto = itemView.findViewById(R.id.ly_vl_dto) as TextView
+        //private val tvTasa2 = itemView.findViewById(R.id.ly_vl_tasa2) as TextView
 
         fun bind(dto: DescuentosLinea, fDecPrBase: Int) {
 

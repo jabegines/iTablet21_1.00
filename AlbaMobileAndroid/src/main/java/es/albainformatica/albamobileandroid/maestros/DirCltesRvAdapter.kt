@@ -39,12 +39,11 @@ class DirCltesRvAdapter(var direcciones: List<DireccCltesEnt>, val context: Cont
 
         holder.itemView.setOnClickListener {
             // Tenemos en cuenta si el registro sobre el que pulsamos estaba anteriormente seleccionado
-            if (selectedPos == fPosicion) { //Deseleccionamos el registro
-                selectedPos = RecyclerView.NO_POSITION
-            }
-            else //Seleccionamos el registro
+            selectedPos = if (selectedPos == fPosicion) { //Deseleccionamos el registro
+                RecyclerView.NO_POSITION
+            } else //Seleccionamos el registro
             {
-                selectedPos = fPosicion
+                fPosicion
             }
 
             notifyDataSetChanged()

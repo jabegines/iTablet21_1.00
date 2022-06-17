@@ -110,16 +110,24 @@
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-large/ly_ver_documentos.xml" value="0.3" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-large/main.xml" value="0.3516666666666667" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-large/pedir_password.xml" value="0.3" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-large/recibir.xml" value="0.3" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-large/tab_direcc_clientes.xml" value="0.3" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-large/ventas_cargarhco.xml" value="0.3" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-large/ventas_lineas.xml" value="0.3" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-large/ver_documentos.xml" value="0.3" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-normal/buscar_articulos.xml" value="0.4" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-normal/clientes_activity.xml" value="0.4" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-normal/ficha_clientes.xml" value="0.4" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-normal/ly_lineas_ventas.xml" value="0.4" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-normal/ly_ver_documentos.xml" value="0.3435185185185185" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-normal/recibir.xml" value="0.4" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-normal/tab_varios_clientes.xml" value="0.4" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-normal/ventas_lineas.xml" value="0.4" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-normal/ventas_rutero.xml" value="0.4" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-normal/ver_documentos.xml" value="0.4" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-sw600dp/item_articulos_list.xml" value="0.3" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-sw600dp/new_prefs.xml" value="0.25" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-sw600dp/ventas_datoslinea.xml" value="0.3" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout-sw600dp/ventas_fin_doc.xml" value="0.22847222222222222" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/actualizar_apk_servicio.xml" value="0.4" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/acum_comp_sem_mes.xml" value="0.4" />
@@ -133,15 +141,29 @@
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/cargas.xml" value="0.4" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/cargas_conf.xml" value="0.4" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/catalog_alert_dialog_with_edittext.xml" value="0.4" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/catalogo_gruposdep.xml" value="0.4" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/com_servicio_recibir.xml" value="0.4" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/editar_texto.xml" value="0.4" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/graf_vtas_art.xml" value="0.4" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/graf_vtas_clte.xml" value="0.4" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/item_articulos_list.xml" value="0.33" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/item_formatos_list.xml" value="0.4" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/item_hcodoc_list.xml" value="0.4" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/item_paquetes_list.xml" value="0.4" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/layout_biogrupos.xml" value="0.4" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/ly_nueva_carga.xml" value="0.4" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/mostrar_oft_vol_doc.xml" value="0.4" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/new_prefs.xml" value="0.33" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/nueva_carga.xml" value="0.4" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/pedir_dosis.xml" value="0.4" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/prefs_conf_articulos.xml" value="0.33" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/prefs_conf_terminal.xml" value="0.4" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/selecc_codpostal.xml" value="0.4" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/selecc_empresa.xml" value="0.4" />
         <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/ventas_cp.xml" value="0.4" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/ventas_datoslinea.xml" value="0.4" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/ver_riesgo.xml" value="0.4" />
+        <entry key="..\:/GitHub/iTablet21_1.01/AlbaMobileAndroid/src/main/res/layout/vtas_selecc_serie.xml" value="0.4" />
         <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/buscar_articulos.xml" value="0.4675" />
         <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/clientes_activity.xml" value="0.4675" />
         <entry key="..\:/GitHub/ibsTablet_2.00/AlbaMobileAndroid/src/main/res/layout-large/cobrar.xml" value="0.42125" />

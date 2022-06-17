@@ -42,12 +42,11 @@ class PdtesRvAdapter(private var lPendiente: List<PendienteEnt>, val context: Co
 
         holder.itemView.setOnClickListener {
             // Tenemos en cuenta si el registro sobre el que pulsamos estaba anteriormente seleccionado
-            if (selectedPos == fPosicion) {
-                selectedPos = RecyclerView.NO_POSITION
-            }
-            else //Seleccionamos el registro
+            selectedPos = if (selectedPos == fPosicion) {
+                RecyclerView.NO_POSITION
+            } else //Seleccionamos el registro
             {
-                selectedPos = fPosicion
+                fPosicion
             }
 
             notifyDataSetChanged()
