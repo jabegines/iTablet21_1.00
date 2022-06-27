@@ -569,18 +569,15 @@ class VentasLineas: AppCompatActivity() {
                 if (fConfiguracion.imprimir()) {
                     btnImpr.setOnClickListener {
                         fDocImprimido = true
-                        val chkSinValorar =
-                            alertDialog.findViewById<CheckBox>(es.albainformatica.albamobileandroid.R.id.chkSinValorar)
-                        val btnNoImpr =
-                            alertDialog.findViewById<Button>(es.albainformatica.albamobileandroid.R.id.btnNoImpr)
+                        val chkSinValorar = alertDialog.findViewById<CheckBox>(es.albainformatica.albamobileandroid.R.id.chkSinValorar)
+                        val btnNoImpr = alertDialog.findViewById<Button>(es.albainformatica.albamobileandroid.R.id.btnNoImpr)
                         btnNoImpr.visibility = View.GONE
                         chkSinValorar.visibility = View.GONE
                         comenzarImprDoc(chkSinValorar.isChecked, imprDocDtmApex2, imprDocIntermec,
                             imprDocBixolon, imprZebra, imprDoc, alertDialog, btnImpr)
                     }
                 } else btnImpr.visibility = View.GONE
-                val btnNoImpr =
-                    alertDialog.findViewById<Button>(es.albainformatica.albamobileandroid.R.id.btnNoImpr)
+                val btnNoImpr = alertDialog.findViewById<Button>(es.albainformatica.albamobileandroid.R.id.btnNoImpr)
                 btnNoImpr.setOnClickListener {
                     alertDialog.cancel()
                     finalizarVenta()

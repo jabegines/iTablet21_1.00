@@ -722,16 +722,16 @@ class Recibir : Activity() {
 
     private fun dimeRutaEnvSistema(): String {
         return when (queBDRoom) {
-            "DBAlba00" -> "/ALBADB00"
-            "DBAlba10" -> "/ALBADB10"
-            "DBAlba20" -> "/ALBADB20"
-            "DBAlba30" -> "/ALBADB30"
-            "DBAlba40" -> "/ALBADB40"
-            "DBAlba50" -> "/ALBADB50"
-            "DBAlba60" -> "/ALBADB60"
-            "DBAlba70" -> "/ALBADB70"
-            "DBAlba80" -> "/ALBADB80"
-            "DBAlba90" -> "/ALBADB90"
+            "ibsTablet00.db" -> "/ALBADB00"
+            "ibsTablet10.db" -> "/ALBADB10"
+            "ibsTablet20.db" -> "/ALBADB20"
+            "ibsTablet30.db" -> "/ALBADB30"
+            "ibsTablet40.db" -> "/ALBADB40"
+            "ibsTablet50.db" -> "/ALBADB50"
+            "ibsTablet60.db" -> "/ALBADB60"
+            "ibsTablet70.db" -> "/ALBADB70"
+            "ibsTablet80.db" -> "/ALBADB80"
+            "ibsTablet90.db" -> "/ALBADB90"
             else -> ""
         }
     }

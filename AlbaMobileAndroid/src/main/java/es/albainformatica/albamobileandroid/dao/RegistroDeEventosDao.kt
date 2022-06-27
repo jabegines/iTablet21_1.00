@@ -26,6 +26,17 @@ interface RegistroDeEventosDao {
             " WHERE fecha = :queFecha AND empresa = :queEmpresa")
     fun getUltimoOrdenDiario(queFecha: String, queEmpresa: Short): Int
 
+
+    @Query("SELECT * FROM RegistroDeEventos WHERE eventoId < :queId AND Empresa = :queEmpresa" +
+            " ORDER BY eventoId DESC LIMIT 1")
+    fun getEventoAnterior(queId: Int, queEmpresa: Short): RegistroDeEventosEnt
+
+    @Query("UPDATE RegistroDeEventos SET referenciaAnterior = :queRefAnterior, huellaRefAnterior = :queHuellaAnterior, " +
+            " huella = :queHuella, firma = :queFirma, firmaCadena = :queFirmaCadena, firmaVersion = :queFirmaVersion " +
+            " WHERE eventoId = :queId")
+    fun actualizarHuella(queId: Int, queRefAnterior: String, queHuellaAnterior: String, queHuella: String,
+                         queFirma: String, queFirmaCadena: String, queFirmaVersion: String)
+
     @Insert
-    fun insertar(evento: RegistroDeEventosEnt)
+    fun insertar(evento: RegistroDeEventosEnt): Long
 }

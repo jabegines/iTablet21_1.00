@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import androidx.preference.PreferenceManager
 import android.text.InputFilter
 import android.text.InputFilter.LengthFilter
 import android.view.WindowManager
@@ -18,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
 import androidx.core.text.HtmlCompat
+import androidx.preference.PreferenceManager
 import es.albainformatica.albamobileandroid.dao.CabecerasDao
 import es.albainformatica.albamobileandroid.dao.CargasDao
 import es.albainformatica.albamobileandroid.dao.CobrosDao
@@ -25,17 +25,15 @@ import es.albainformatica.albamobileandroid.dao.SaldosDao
 import es.albainformatica.albamobileandroid.database.MyDatabase
 import es.albainformatica.albamobileandroid.database.MyDatabase.Companion.queBDRoom
 import java.io.File
-import java.lang.Exception
-import java.lang.NumberFormatException
-import java.lang.StringBuilder
 import java.math.RoundingMode
 import java.security.MessageDigest
 import java.text.NumberFormat
 import java.util.*
+
 import kotlin.math.pow
 
 
-    fun dimeRutaImagenes(activity: Activity): String {
+fun dimeRutaImagenes(activity: Activity): String {
         val prefs = PreferenceManager.getDefaultSharedPreferences(activity)
         val usarMultisistema = prefs.getBoolean("usar_multisistema", false)
         val rutaImagenes = prefs.getString("rutacomunicacion", "") ?: ""
@@ -245,6 +243,18 @@ fun redondear(dNumero: Float, iDecimales: Int): Float {
             messageDigest.update(clearString.toByteArray(charset("UTF-8")))
             byteArrayToString(messageDigest.digest())
 
+        } catch (ignored: Exception) {
+            ignored.printStackTrace()
+            ""
+        }
+    }
+
+
+    fun sha512(clearString: String): String {
+        return try {
+            val messageDigest = MessageDigest.getInstance("SHA-512")
+            messageDigest.update(clearString.toByteArray(charset("UTF-8")))
+            byteArrayToString(messageDigest.digest())
         } catch (ignored: Exception) {
             ignored.printStackTrace()
             ""

@@ -152,7 +152,27 @@ import java.util.*
              override fun run() {
                  var texto: String
                  try {
-                     val os = mBluetoothSocket.outputStream
+                    val os = mBluetoothSocket.outputStream
+
+                     /*
+                     texto ="! U1 setvar \"device.languages\" \"line_print\"" + fCR + fLF
+                     texto += "! U1 SETLP 7 0 24" + fCR + fLF
+                     texto += "! U1 PRINT" + fCR + fLF
+                     texto += "This line is printed as raw text" + fCR + fLF
+                     texto += "These lines are in font 7 size 0" + fCR + fLF
+
+                     texto += "! U1 SETLP 7 1 24" + fCR + fLF
+                     texto += "! U1 PRINT" + fCR + fLF
+                     texto += "These lines are in font 7 size 1" + fCR + fLF
+
+                     texto += "! U1 SETLP 5 2 46" + fCR + fLF
+                     texto += "! U1 PRINT" + fCR + fLF
+                     texto += "These lines are in font 5 size 2" + fCR + fLF
+                     texto += "ESPAÑA áéíóú ÁÉÍÓÚ"
+
+                     os.write(texto.toByteArray())
+                     */
+
                      texto = imprCabeceraZPL()
 
                      texto += imprDatClteDoc80ZPL()
@@ -177,6 +197,7 @@ import java.util.*
                      }
                      texto += imprPieZPL()
                      os.write(texto.toByteArray())
+
 
                      // Llamo a destruir porque he comprobado que la clase no pasa por el método onDestroy() (supongo que porque
                      // no hereda de Activity), así me aseguro de cerrar el socket y los demás objetos abiertos.

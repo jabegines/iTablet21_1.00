@@ -148,8 +148,9 @@ class Main: AppCompatActivity() {
 
         //if (fConfiguracion != null)
         //  fConfiguracion.close();
-        fRegEventos.registrarEvento(codEv_Salida_Sistema, descrEv_Salida_Sistema)
 
+
+        //fRegEventos.registrarEvento(codEv_Salida_Sistema, descrEv_Salida_Sistema)
         super.onDestroy()
     }
 
