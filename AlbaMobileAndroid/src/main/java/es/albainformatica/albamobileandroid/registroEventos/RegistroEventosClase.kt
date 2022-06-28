@@ -54,7 +54,7 @@ class RegistroEventosClase(val contexto: Context) {
 
         val queRegId = regEventosDao?.insertar(regEventosEnt) ?: 0
 
-
+        /*
         val fDato = "<row FECHAYHORA=\"" + regEventosEnt.fecha + "T" +
                 regEventosEnt.hora + "\" ORDENDIARIOPUESTO=\"" + regEventosEnt.ordenDiarioPuesto +
                 "\" USUARIO=\"" + regEventosEnt.usuario + "\" ALMACEN=\"" + regEventosEnt.almacen +
@@ -81,6 +81,7 @@ class RegistroEventosClase(val contexto: Context) {
 
         regEventosDao?.actualizarHuella(queRegId.toInt(), fDatoRefAnterior, fHashRefAnterior, fHuella, fFirmaRegistro,
                         fFirmaEncadenada, versionHuella)
+         */
     }
     
 

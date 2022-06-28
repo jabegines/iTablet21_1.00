@@ -104,7 +104,10 @@ import java.util.*
              mHandler.sendEmptyMessage(0)
              fImprimiendo = true
              //if (queImprimir == fImprimirDocumento) imprimirDoc()
-             if (queImprimir == fImprimirDocumento) imprimirDocZPL()
+             if (queImprimir == fImprimirDocumento) {
+                 if (fConfiguracion.lenguaje == "ZPL") imprimirDocZPL()
+                 else imprimirDocCPCL()
+             }
              //else if (queImprimir == fImprimirCarga) imprimeCarga()
          } catch (eConnectException: IOException) {
              closeSocket(mBluetoothSocket)
@@ -140,6 +143,7 @@ import java.util.*
 
          if (fImpresora == IMPRESORA_ZEBRA_80) anchoPapel = 64
      }
+
 
 
      private fun imprimirDocZPL() {
