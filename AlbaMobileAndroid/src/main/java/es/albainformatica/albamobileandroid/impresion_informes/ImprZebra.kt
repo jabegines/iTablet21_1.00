@@ -85,13 +85,8 @@ import java.util.*
              val mDeviceAddress: String = prefs.getString("impresoraBT", "") ?: ""
              queImprimir = fImprimirDocumento
              mBluetoothDevice = mBluetoothAdapter.getRemoteDevice(mDeviceAddress)
-             mBluetoothConnectProgressDialog = ProgressDialog.show(
-                 fContexto,
-                 "Conectando...",
-                 mBluetoothDevice.name,
-                 true,
-                 false
-             )
+             mBluetoothConnectProgressDialog = ProgressDialog.show(fContexto, "Conectando...",
+                 mBluetoothDevice.name, true, false)
              val mBluetoothConnectThread = Thread(this)
              mBluetoothConnectThread.start()
              // Una vez conectados, arrancamos el hilo. Una vez que arrancamos el
@@ -154,21 +149,42 @@ import java.util.*
                  try {
                     val os = mBluetoothSocket.outputStream
 
-                     /*
+                    /*
                      texto ="! U1 setvar \"device.languages\" \"line_print\"" + fCR + fLF
-                     texto += "! U1 SETLP 7 0 24" + fCR + fLF
+                     texto += "! U1 SETLP \"SWIS7208.CPF\" 1 24" + fCR + fLF
                      texto += "! U1 PRINT" + fCR + fLF
-                     texto += "This line is printed as raw text" + fCR + fLF
-                     texto += "These lines are in font 7 size 0" + fCR + fLF
+                     texto += "These lines are in font Swis7208.cpf size 1" + fCR + fLF
+                     texto += "ESPAÑA áéíóú ÁÉÍÓÚ" + fCR + fLF
 
-                     texto += "! U1 SETLP 7 1 24" + fCR + fLF
+                     texto += "! U1 SETLP 8 2 24" + fCR + fLF
                      texto += "! U1 PRINT" + fCR + fLF
-                     texto += "These lines are in font 7 size 1" + fCR + fLF
+                     texto += "These lines are in font 8 size 2" + fCR + fLF
+                     texto += "ESPAÑA áéíóú ÁÉÍÓÚ" + fCR + fLF
 
-                     texto += "! U1 SETLP 5 2 46" + fCR + fLF
+                     texto += "! U1 SETLP 8 3 24" + fCR + fLF
                      texto += "! U1 PRINT" + fCR + fLF
-                     texto += "These lines are in font 5 size 2" + fCR + fLF
-                     texto += "ESPAÑA áéíóú ÁÉÍÓÚ"
+                     texto += "These lines are in font 8 size 3" + fCR + fLF
+                     texto += "ESPAÑA áéíóú ÁÉÍÓÚ" + fCR + fLF
+
+                     texto += "! U1 SETLP 8 4 24" + fCR + fLF
+                     texto += "! U1 PRINT" + fCR + fLF
+                     texto += "These lines are in font 8 size 4" + fCR + fLF
+                     texto += "ESPAÑA áéíóú ÁÉÍÓÚ" + fCR + fLF
+
+                     texto += "! U1 SETLP 8 5 24" + fCR + fLF
+                     texto += "! U1 PRINT" + fCR + fLF
+                     texto += "These lines are in font 8 size 5" + fCR + fLF
+                     texto += "ESPAÑA áéíóú ÁÉÍÓÚ" + fCR + fLF
+
+                     texto += "! U1 SETLP 8 6 24" + fCR + fLF
+                     texto += "! U1 PRINT" + fCR + fLF
+                     texto += "These lines are in font 8 size 6" + fCR + fLF
+                     texto += "ESPAÑA áéíóú ÁÉÍÓÚ" + fCR + fLF
+
+                     texto += "! U1 SETLP 8 7 24" + fCR + fLF
+                     texto += "! U1 PRINT" + fCR + fLF
+                     texto += "These lines are in font 8 size 7" + fCR + fLF
+                     texto += "ESPAÑA áéíóú ÁÉÍÓÚ" + fCR + fLF
 
                      os.write(texto.toByteArray())
                      */

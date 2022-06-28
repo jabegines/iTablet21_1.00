@@ -499,19 +499,19 @@ class Enviar: AppCompatActivity() {
     }
 
     private fun dimeRutaEnvSistema(): String {
-        when (queBDRoom) {
-            "DBAlba00" -> return "/ALBADB00"
-            "DBAlba10" -> return "/ALBADB10"
-            "DBAlba20" -> return "/ALBADB20"
-            "DBAlba30" -> return "/ALBADB30"
-            "DBAlba40" -> return "/ALBADB40"
-            "DBAlba50" -> return "/ALBADB50"
-            "DBAlba60" -> return "/ALBADB60"
-            "DBAlba70" -> return "/ALBADB70"
-            "DBAlba80" -> return "/ALBADB80"
-            "DBAlba90" -> return "/ALBADB90"
+        return when (queBDRoom) {
+            "ibsTablet00.db" -> "/ALBADB00"
+            "ibsTablet10.db" -> "/ALBADB10"
+            "ibsTablet20.db" -> "/ALBADB20"
+            "ibsTablet30.db" -> "/ALBADB30"
+            "ibsTablet40.db" -> "/ALBADB40"
+            "ibsTablet50.db" -> "/ALBADB50"
+            "ibsTablet60.db" -> "/ALBADB60"
+            "ibsTablet70.db" -> "/ALBADB70"
+            "ibsTablet80.db" -> "/ALBADB80"
+            "ibsTablet90.db" -> "/ALBADB90"
+            else -> ""
         }
-        return ""
     }
 
 
