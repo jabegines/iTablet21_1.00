@@ -1426,8 +1426,8 @@ import java.util.*
         textoReplace = textoReplace.replace('Ú','U', false)
         textoReplace = textoReplace.replace('ü','u', false)
         textoReplace = textoReplace.replace('Ü','U', false)
-        textoReplace = textoReplace.replace("ñ","ni", false)
-        textoReplace = textoReplace.replace("Ñ","Ni", false)
+        textoReplace = textoReplace.replace("ñ","n", false)
+        textoReplace = textoReplace.replace("Ñ","N", false)
 
         return textoReplace
     }
