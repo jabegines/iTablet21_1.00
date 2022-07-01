@@ -22,7 +22,6 @@ import java.io.OutputStream
 import java.util.*
 
 
-<<<<<<< Updated upstream
  class ImprZebra(context: Context): Runnable {
      private val fContexto = context
      private var fDocumento: Documento = Comunicador.fDocumento
@@ -86,8 +85,10 @@ import java.util.*
              val mDeviceAddress: String = prefs.getString("impresoraBT", "") ?: ""
              queImprimir = fImprimirDocumento
              mBluetoothDevice = mBluetoothAdapter.getRemoteDevice(mDeviceAddress)
-             mBluetoothConnectProgressDialog = ProgressDialog.show(fContexto, "Conectando...",
-                 mBluetoothDevice.name, true, false)
+             mBluetoothConnectProgressDialog = ProgressDialog.show(
+                 fContexto, "Conectando...",
+                 mBluetoothDevice.name, true, false
+             )
              val mBluetoothConnectThread = Thread(this)
              mBluetoothConnectThread.start()
              // Una vez conectados, arrancamos el hilo. Una vez que arrancamos el
@@ -129,108 +130,6 @@ import java.util.*
          } catch (ex: IOException) {
          }
      }
-=======
-class ImprZebra(context: Context): Runnable {
-    private val fContexto = context
-    private var fDocumento: Documento = Comunicador.fDocumento
-    private var fConfiguracion: Configuracion = Comunicador.fConfiguracion
-    private var fFormasPago: FormasPagoClase = FormasPagoClase(context)
-    private var fPendiente: PendienteClase = PendienteClase(context)
-    private val docsCabPiesDao: DocsCabPiesDao? = MyDatabase.getInstance(context)?.docsCabPiesDao()
-    private lateinit var prefs: SharedPreferences
-
-    private lateinit var fFtoCant: String
-    private lateinit var fFtoPrBase: String
-    private lateinit var fFtoPrII: String
-    private lateinit var fFtoImpBase: String
-    private lateinit var fFtoImpII: String
-    private var fVtaIvaIncluido = true
-
-    private val fCR = 13.toChar()
-    private val fLF = 10.toChar()
-    //private val fDOBLEANCHO = "! U1 SETLP 7 1 48"
-    //private val fNORMAL = "! U1 SETLP 7 0 24"
-
-    private val applicationUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
-    private var mBluetoothConnectProgressDialog: ProgressDialog? = null
-    private lateinit var mBluetoothAdapter: BluetoothAdapter
-    private lateinit var mBluetoothSocket: BluetoothSocket
-    private lateinit var mBluetoothDevice: BluetoothDevice
-
-    var fTerminado = false
-    var fImprimiendo = false
-    private var queImprimir: Short = 1
-
-    private val fImprimirDocumento: Short = 1
-    //private val fImprimirCarga: Short = 2
-
-    private var fImpresora = IMPRESORA_ZEBRA_80
-    private var anchoPapel: Short = 48
-
-
-    init {
-        fImpresora = fConfiguracion.impresora()
-        inicializarControles()
-    }
-
-    private fun destruir() {
-    try {
-        mBluetoothSocket.close()
-    } catch (e: Exception) {
-    }
-    }
-
-    fun imprimir() {
-        // Intentamos conectar con Bluetooth. Para ello pasamos la dirección de la impresora.
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        if (!mBluetoothAdapter.isEnabled) {
-            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            fContexto.startActivity(enableBtIntent)
-        } else {
-            // Leemos la dirección de la impresora Bluetooth de las preferencias.
-            val mDeviceAddress: String = prefs.getString("impresoraBT", "") ?: ""
-            queImprimir = fImprimirDocumento
-            mBluetoothDevice = mBluetoothAdapter.getRemoteDevice(mDeviceAddress)
-            mBluetoothConnectProgressDialog = ProgressDialog.show(fContexto, "Conectando...",
-            mBluetoothDevice.name, true, false)
-            val mBluetoothConnectThread = Thread(this)
-            mBluetoothConnectThread.start()
-            // Una vez conectados, arrancamos el hilo. Una vez que arrancamos el
-            // hilo, se ejecutará el método run() de la actividad.
-        }
-    }
-
-    override fun run() {
-        try {
-            // Obtenemos un bluetoothsocket y lo conectamos. A partir de entonces, llamamos a imprimirDoc().
-            mBluetoothSocket = mBluetoothDevice.createRfcommSocketToServiceRecord(applicationUUID)
-            mBluetoothAdapter.cancelDiscovery()
-            mBluetoothSocket.connect()
-            mHandler.sendEmptyMessage(0)
-            fImprimiendo = true
-            //if (queImprimir == fImprimirDocumento) imprimirDoc()
-            if (queImprimir == fImprimirDocumento) {
-                if (fConfiguracion.lenguaje == "ZPL") imprimirDocZPL()
-                else imprimirDocCPCL()
-            }
-        //else if (queImprimir == fImprimirCarga) imprimeCarga()
-        } catch (eConnectException: IOException) {
-            closeSocket(mBluetoothSocket)
-        }
-    }
-
-    private val mHandler: Handler = object : Handler() {
-        override fun handleMessage(msg: Message) {
-            mBluetoothConnectProgressDialog?.dismiss()
-        }
-    }
-
-    private fun closeSocket(nOpenSocket: BluetoothSocket) {
-        try {
-            nOpenSocket.close()
-        } catch (ex: IOException) {
-        }
-    }
 
     private fun inicializarControles() {
         fFtoCant = fConfiguracion.formatoDecCantidad()
@@ -256,7 +155,7 @@ class ImprZebra(context: Context): Runnable {
                 var texto: String
                 try {
                     val os = mBluetoothSocket.outputStream
->>>>>>> Stashed changes
+
 
                     /*texto += "! U1 SETLP \"SWIS7208.CPF\" 1 24" + fCR + fLF
                     texto += "These lines are in font Swis7208.cpf size 1" + fCR + fLF
