@@ -623,6 +623,11 @@ class Configuracion(queContexto: Context) {
         }
     }
 
+    fun usarCPCL(): Boolean {
+        val queValor = configuracionDao?.getValor(703) ?: "F"
+        return (queValor == "T")
+    }
+
 
     fun dtoPie1(): Boolean {
         val queValor = configuracionDao?.getValor(902) ?: "F"

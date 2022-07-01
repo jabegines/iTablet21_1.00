@@ -105,8 +105,8 @@ import java.util.*
              fImprimiendo = true
              //if (queImprimir == fImprimirDocumento) imprimirDoc()
              if (queImprimir == fImprimirDocumento) {
-                 if (fConfiguracion.lenguaje == "ZPL") imprimirDocZPL()
-                 else imprimirDocCPCL()
+                 if (fConfiguracion.usarCPCL()) imprimirDocCPCL()
+                 else imprimirDocZPL()
              }
              //else if (queImprimir == fImprimirCarga) imprimeCarga()
          } catch (eConnectException: IOException) {

@@ -48,7 +48,8 @@ class RegistroEventosClase(val contexto: Context) {
         regEventosEnt.codigoEvento = codEvento
         regEventosEnt.descrEvento = descrEvento
         regEventosEnt.ip = ""
-        regEventosEnt.ejercicio = fConfiguracion.ejercicio()
+        if (fConfiguracion.ejercicio() > -1) regEventosEnt.ejercicio = fConfiguracion.ejercicio()
+        else regEventosEnt.ejercicio = 0
         regEventosEnt.empresa = queEmpresa
         regEventosEnt.estado = "N"
 
