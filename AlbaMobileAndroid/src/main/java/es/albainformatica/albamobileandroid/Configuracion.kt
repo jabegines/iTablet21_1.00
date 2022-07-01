@@ -510,8 +510,22 @@ class Configuracion(queContexto: Context) {
         return configuracionDao?.getValor(924) ?: ""
     }
 
+    fun lineasCabDocZebraCPCL(queEmpresa: Short): String {
+        val fCR = 13.toChar().toString()
+        val fLF = 10.toChar().toString()
+        val resultado = StringBuilder()
+        var posicion = 80
 
-    fun lineasCabDocZebra(queEmpresa: Short, lineasDobles: String): String {
+        val lLineas = docsCabPiesDao?.lineasCabDoc(queEmpresa) ?: emptyList<String>().toMutableList()
+
+        for (x in lLineas) {
+            resultado.append(x).append(fCR).append(fLF)
+            posicion += 20
+        }
+        return resultado.toString()
+    }
+
+    fun lineasCabDocZebraZPL(queEmpresa: Short, lineasDobles: String): String {
         val fCR = 13.toChar().toString()
         val fLF = 10.toChar().toString()
         val resultado = StringBuilder()
@@ -580,6 +594,25 @@ class Configuracion(queContexto: Context) {
         for (x in lLineas) {
             resultado.append("^FT0,").append(posicion).append("^AKN,20").append(fCR).append(fLF)
             resultado.append("^FD").append(x).append("^FS").append(fCR).append(fLF)
+            if (primeraLinea) {
+                posicion += 35
+                primeraLinea = false
+            } else posicion += 20
+        }
+        return resultado.toString()
+    }
+
+    fun lineasPieDocZebraCPCL(queEmpresa: Short): String {
+        val fCR = 13.toChar().toString()
+        val fLF = 10.toChar().toString()
+        val resultado = java.lang.StringBuilder()
+        var posicion = 0
+        var primeraLinea = true
+
+        val lLineas = docsCabPiesDao?.lineasPieDoc(queEmpresa) ?: emptyList<String>().toMutableList()
+
+        for (x in lLineas) {
+            resultado.append(x).append(fCR).append(fLF)
             if (primeraLinea) {
                 posicion += 35
                 primeraLinea = false

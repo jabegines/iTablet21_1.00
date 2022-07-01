@@ -7,6 +7,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/d201c9ae3239ed1d6c17206879a9b066/transformed/jetified-firebase-messaging-12.0.1/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/d201c9ae3239ed1d6c17206879a9b066/transformed/jetified-firebase-messaging-12.0.1/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/d201c9ae3239ed1d6c17206879a9b066/transformed/jetified-firebase-messaging-12.0.1/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/1a7b79a2be57a8268d59292d26c937e5/transformed/jetified-firebase-messaging-12.0.1/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/1a7b79a2be57a8268d59292d26c937e5/transformed/jetified-firebase-messaging-12.0.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/1a7b79a2be57a8268d59292d26c937e5/transformed/jetified-firebase-messaging-12.0.1/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
