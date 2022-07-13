@@ -855,7 +855,8 @@ class Main: AppCompatActivity() {
     private var resultClaveUsuario = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
 
-            val sQuePassword = result.data?.getStringExtra("password")?.uppercase(Locale.ROOT) ?: ""
+            //val sQuePassword = result.data?.getStringExtra("password")?.uppercase(Locale.ROOT) ?: ""
+            val sQuePassword = result.data?.getStringExtra("password") ?: ""
             val bSupervisor = result.data?.getBooleanExtra("supervisor", false) ?: false
             val sChorizo: String
             try {
