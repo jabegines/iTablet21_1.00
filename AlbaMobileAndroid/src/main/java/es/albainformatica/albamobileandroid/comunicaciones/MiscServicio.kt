@@ -165,9 +165,11 @@ class MiscServicio(context: Context) {
     }
 
     fun descargarApk(): Boolean {
-        var localDirectory = prefs.getString("rutacomunicacion", "") ?: ""
-        localDirectory = if (localDirectory == "") Environment.getExternalStorageDirectory().path + "/actualizacion/"
-        else "$localDirectory/actualizacion/"
+        //var localDirectory = prefs.getString("rutacomunicacion", "") ?: ""
+        //localDirectory = if (localDirectory == "") Environment.getExternalStorageDirectory().path + "/actualizacion/"
+        //else "$localDirectory/actualizacion/"
+
+        val localDirectory = fContext.getExternalFilesDir(null)?.path + "/actualizacion/"
 
         // Nos aseguramos de que la carpeta existe y, si no, la creamos.
         var resultado = true
