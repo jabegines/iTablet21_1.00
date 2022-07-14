@@ -186,11 +186,17 @@ class CargarHco: Activity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         // Actividad editar historico.
         if (requestCode == fRequestEditarHco) {
-            if (resultCode == RESULT_OK)
+            if (resultCode == RESULT_OK) {
                 prepararRecyclerView(queBuscar)
-
+                // Nos situamos en el item del recycler sobre el que hemos pulsado
+                val position = fAdapter.getItemPosition(fLinea)
+                if (position >= 0) {
+                    fRecyclerView.scrollToPosition(position)
+                }
+            }
         }
     }
+
 
     fun cancelarHco(view: View?) {
         view?.getTag(0)          // Para que no dé warning el compilador

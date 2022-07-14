@@ -82,6 +82,16 @@ class HcoRvAdapter(private var lHistorico: List<DatosHistorico>, ivaIncluido: Bo
     }
 
 
+    fun getItemPosition(queHcoId: Int): Int {
+        for (i in lHistorico.indices) {
+            if (lHistorico[i].historicoId == queHcoId) {
+                return i
+            }
+        }
+        return -1
+    }
+
+
     fun setOnItemClickListener(listener: OnItemClickListener) {
         this.listener = listener
     }
