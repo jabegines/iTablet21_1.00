@@ -7,12 +7,13 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/2bc8b679acd461411724a9b310a9f7d8/transformed/jetified-play-services-safetynet-12.0.1/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/d8c19cd1603c46a3954cc5aadeffaa75/transformed/jetified-play-services-safetynet-12.0.1/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/28c70fde4ca0d4df8ae6543a904ea95f/transformed/jetified-play-services-safetynet-12.0.1/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/0083dd649642d88a1eabc0c6fa568b62/transformed/jetified-play-services-safetynet-12.0.1/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/0083dd649642d88a1eabc0c6fa568b62/transformed/jetified-play-services-safetynet-12.0.1/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/0083dd649642d88a1eabc0c6fa568b62/transformed/jetified-play-services-safetynet-12.0.1/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/3cab1837f041d2c43fa27f357f00e863/transformed/jetified-play-services-safetynet-12.0.1/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/3cab1837f041d2c43fa27f357f00e863/transformed/jetified-play-services-safetynet-12.0.1/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/3cab1837f041d2c43fa27f357f00e863/transformed/jetified-play-services-safetynet-12.0.1/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/fe4690eceed9811a1b45d8aa8fc36eb4/transformed/jetified-play-services-safetynet-12.0.1/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/fe4690eceed9811a1b45d8aa8fc36eb4/transformed/jetified-play-services-safetynet-12.0.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/fe4690eceed9811a1b45d8aa8fc36eb4/transformed/jetified-play-services-safetynet-12.0.1/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

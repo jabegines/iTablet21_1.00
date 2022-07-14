@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import es.albainformatica.albamobileandroid.*
@@ -13,7 +14,7 @@ import es.albainformatica.albamobileandroid.database.MyDatabase
 /**
  * Created by jabegines on 16/02/2018.
  */
-class ListaPreciosEspeciales : Activity() {
+class ListaPreciosEspeciales: AppCompatActivity() {
     private var fCliente = 0
     private lateinit var fConfiguracion: Configuracion
 
@@ -25,6 +26,7 @@ class ListaPreciosEspeciales : Activity() {
     private var fFtoDecPrII: String = ""
     private var fDecPrII = 0
     private lateinit var fDocumento: Documento
+
 
     public override fun onCreate(savedInstance: Bundle?) {
         super.onCreate(savedInstance)
@@ -58,6 +60,8 @@ class ListaPreciosEspeciales : Activity() {
             override fun onClick(view: View, data: ListaPreciosEsp) {
             }
         })
+
+        fRecycler.adapter = fAdapter
     }
 
 

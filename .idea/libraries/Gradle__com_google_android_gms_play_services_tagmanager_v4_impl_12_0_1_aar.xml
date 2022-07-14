@@ -8,11 +8,12 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/b9e464802b0c0189df50d402fa81d045/transformed/jetified-play-services-tagmanager-v4-impl-12.0.1/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/3489ca2965195be610ac1927b7bf199a/transformed/jetified-play-services-tagmanager-v4-impl-12.0.1/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/99a2748d1548854adb6fb6525209dfeb/transformed/jetified-play-services-tagmanager-v4-impl-12.0.1/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/99a2748d1548854adb6fb6525209dfeb/transformed/jetified-play-services-tagmanager-v4-impl-12.0.1/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/99a2748d1548854adb6fb6525209dfeb/transformed/jetified-play-services-tagmanager-v4-impl-12.0.1/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/0e4572bf429f31ee86dd6952bf8855b7/transformed/jetified-play-services-tagmanager-v4-impl-12.0.1/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/0e4572bf429f31ee86dd6952bf8855b7/transformed/jetified-play-services-tagmanager-v4-impl-12.0.1/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/0e4572bf429f31ee86dd6952bf8855b7/transformed/jetified-play-services-tagmanager-v4-impl-12.0.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/f3202ad8615c062ebfaac1d4cfd5764d/transformed/jetified-play-services-tagmanager-v4-impl-12.0.1/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/f3202ad8615c062ebfaac1d4cfd5764d/transformed/jetified-play-services-tagmanager-v4-impl-12.0.1/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/f3202ad8615c062ebfaac1d4cfd5764d/transformed/jetified-play-services-tagmanager-v4-impl-12.0.1/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

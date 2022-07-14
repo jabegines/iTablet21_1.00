@@ -7,12 +7,13 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/208af1c803ba94c17cd92a23290209ea/transformed/jetified-play-services-wearable-12.0.1/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/6c5bc4d09f85b77a284f325eabbac1f6/transformed/jetified-play-services-wearable-12.0.1/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/ca477081c8ed144f8e8de44f0f3efb36/transformed/jetified-play-services-wearable-12.0.1/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/9e9046eb674200495e4d4e28cb02f01b/transformed/jetified-play-services-wearable-12.0.1/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/9e9046eb674200495e4d4e28cb02f01b/transformed/jetified-play-services-wearable-12.0.1/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/9e9046eb674200495e4d4e28cb02f01b/transformed/jetified-play-services-wearable-12.0.1/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/df1a9ee86b05c395fb88184297dc724a/transformed/jetified-play-services-wearable-12.0.1/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/df1a9ee86b05c395fb88184297dc724a/transformed/jetified-play-services-wearable-12.0.1/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/df1a9ee86b05c395fb88184297dc724a/transformed/jetified-play-services-wearable-12.0.1/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/60b86c1a13a387fca7978b105f424e60/transformed/jetified-play-services-wearable-12.0.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/60b86c1a13a387fca7978b105f424e60/transformed/jetified-play-services-wearable-12.0.1/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/60b86c1a13a387fca7978b105f424e60/transformed/jetified-play-services-wearable-12.0.1/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

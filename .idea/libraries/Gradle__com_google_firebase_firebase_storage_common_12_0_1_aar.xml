@@ -7,12 +7,13 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/1333da81452713467b4f758d2ce760f7/transformed/jetified-firebase-storage-common-12.0.1/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/86596f525bedd304a5033cbe09b094e5/transformed/jetified-firebase-storage-common-12.0.1/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/ea2b5bd0efaa4947992eabf7dab474d1/transformed/jetified-firebase-storage-common-12.0.1/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/724fc8869fe3a6fe05f014c3f53be08a/transformed/jetified-firebase-storage-common-12.0.1/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/724fc8869fe3a6fe05f014c3f53be08a/transformed/jetified-firebase-storage-common-12.0.1/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/724fc8869fe3a6fe05f014c3f53be08a/transformed/jetified-firebase-storage-common-12.0.1/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/eaee44a926fef095710d094f8503e55b/transformed/jetified-firebase-storage-common-12.0.1/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/eaee44a926fef095710d094f8503e55b/transformed/jetified-firebase-storage-common-12.0.1/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/eaee44a926fef095710d094f8503e55b/transformed/jetified-firebase-storage-common-12.0.1/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/f5c6d395ca0509db59119636169d0321/transformed/jetified-firebase-storage-common-12.0.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/f5c6d395ca0509db59119636169d0321/transformed/jetified-firebase-storage-common-12.0.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/f5c6d395ca0509db59119636169d0321/transformed/jetified-firebase-storage-common-12.0.1/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

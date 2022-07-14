@@ -1,6 +1,6 @@
 package es.albainformatica.albamobileandroid.ventas
 
-import android.content.Context
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +11,8 @@ import es.albainformatica.albamobileandroid.Comunicador.Companion.fConfiguracion
 import java.util.*
 
 
-class PrecEspRvAdapter(private var lPrecios: List<ListaPreciosEsp>, private val fIvaIncl: Boolean, val context: Context,
-                       var listener: OnItemClickListener): RecyclerView.Adapter<PrecEspRvAdapter.ViewHolder>() {
+class PrecEspRvAdapter(private var lPrecios: List<ListaPreciosEsp>, private val fIvaIncl: Boolean,
+                       val activity: Activity, var listener: OnItemClickListener): RecyclerView.Adapter<PrecEspRvAdapter.ViewHolder>() {
 
     private val fFtoDecPrII = fConfiguracion.formatoDecPrecioIva()
     private val fDecPrII = fConfiguracion.decimalesPrecioIva()

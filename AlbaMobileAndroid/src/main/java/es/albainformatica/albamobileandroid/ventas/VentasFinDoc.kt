@@ -459,8 +459,8 @@ class VentasFinDoc: AppCompatActivity() {
             if (resultCode == RESULT_OK) {
                 val queIdDireccion = data?.getIntExtra("idDireccion", 0) ?: 0
                 if (queIdDireccion > 0) {
-                    fDocumento.fAlmDireccion = data?.getStringExtra("almDireccion") ?: ""
-                    fDocumento.fOrdenDireccion = data?.getStringExtra("ordenDireccion") ?: ""
+                    fDocumento.fAlmDireccion = data?.getShortExtra("almDireccion", 0).toString()
+                    fDocumento.fOrdenDireccion = data?.getShortExtra("ordenDireccion", 0).toString()
                 }
             }
             terminaAceptarPie()
