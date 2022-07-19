@@ -212,6 +212,12 @@ import java.util.*
                     //Imprimimos el pie
                     texto = imprPieCPCL()
                     os.write(texto.toByteArray())
+
+                    // Llamo a destruir porque he comprobado que la clase no pasa por el método onDestroy() (supongo que porque
+                    // no hereda de Activity), así me aseguro de cerrar el socket y los demás objetos abiertos.
+                    destruir()
+                    fTerminado = true
+                    fImprimiendo = false
                 }
                 catch (e: java.lang.Exception) {
                     fTerminado = true
