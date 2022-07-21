@@ -1056,7 +1056,7 @@ class VentasDatosLinea: Activity() {
             }
         }
         var sCantidad = edtCantidad.text.toString().replace(',', '.')
-        if (sCantidad == "") sCantidad = "0.0"
+        if (sCantidad == "" || sCantidad == "." || sCantidad == "-") sCantidad = "0.0"
         val dCantidad = sCantidad.toDouble()
         if (dCantidad < 0 && fConfiguracion.noVenderNeg()) {
             MsjAlerta(this).alerta(resources.getString(R.string.msj_NoVenderNeg))
